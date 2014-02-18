@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	 xmlns:android="http://schemas.android.com/apk/res/android"
+	 android:layout_width="match_parent"
+	 android:layout_height="match_parent"
+	 android:orientation="horizontal"
+	 android:gravity="center"
+	 android:background="#3d454f"
+	 android:weightSum="1">
+
+	<LinearLayout 
+	    android:orientation="vertical"
+	    android:layout_width="0dp"
+	    android:layout_height="fill_parent"
+	    android:layout_weight=".25"
+	    android:gravity="bottom|center_horizontal"
+	    android:weightSum="1">
+	    <View
+		    android:id="@+id/view"
+		    android:background="#ef4136"
+		    android:layout_width="40dp"
+		    android:layout_height="0dp"
+		    android:layout_weight=".5" />
+	    
+	</LinearLayout>
+	
+	<LinearLayout 
+	    android:orientation="vertical"
+	    android:layout_width="0dp"
+	    android:layout_height="fill_parent"
+	    android:gravity="bottom|center_horizontal"
+	    android:layout_weight=".25"
+	    android:weightSum="1">
+	    <View
+		    android:id="@+id/view"
+		    android:background="#a6ce42"
+		    android:layout_width="40dp"
+		    android:layout_height="0dp"
+		    android:layout_weight=".9" />
+	    
+	</LinearLayout>
+	
+	<LinearLayout 
+	    android:orientation="vertical"
+	    android:layout_width="0dp"
+	    android:layout_height="fill_parent"
+	    android:gravity="bottom|center_horizontal"
+	    android:layout_weight=".25"
+	    android:weightSum="1">
+	    <View
+		    android:id="@+id/view"
+		    android:background="#00aeef"
+		    android:layout_width="40dp"
+		    android:layout_height="0dp"
+		    android:layout_weight=".4" />
+	    
+	</LinearLayout>	 
+	
+	<LinearLayout 
+	    android:orientation="vertical"
+	    android:layout_width="0dp"
+	    android:layout_height="fill_parent"
+	    android:gravity="bottom|center_horizontal"
+	    android:layout_weight=".25"
+	    android:weightSum="1">
+	    <View
+		    android:id="@+id/view"
+		    android:background="#FFF"
+		    android:layout_width="40dp"
+		    android:layout_height="0dp"
+		    android:layout_weight=".6" />
+	    
+	</LinearLayout>	 
+		
+</LinearLayout>
