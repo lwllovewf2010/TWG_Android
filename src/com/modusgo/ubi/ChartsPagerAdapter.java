@@ -8,9 +8,9 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 public class ChartsPagerAdapter extends FragmentStatePagerAdapter {
     
-	ArrayList<Chart> charts = new ArrayList<Chart>();
+	ArrayList<ChartFragment> charts = new ArrayList<ChartFragment>();
 	
-	public ChartsPagerAdapter(FragmentManager fm, ArrayList<Chart> charts) {
+	public ChartsPagerAdapter(FragmentManager fm, ArrayList<ChartFragment> charts) {
         super(fm);
         this.charts = charts;
     }
@@ -18,7 +18,7 @@ public class ChartsPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int i) {
         
-        return charts.get(i).fragment;
+        return charts.get(i);
     }
 
     @Override
@@ -28,6 +28,6 @@ public class ChartsPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return charts.get(position).name;
+        return charts.get(position).title;
     }
 }

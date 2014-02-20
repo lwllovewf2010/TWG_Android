@@ -7,42 +7,57 @@
  android:layout_height="match_parent"
  android:orientation="vertical">
 
-	<fragment
-	    android:id="@+id/fragment1"
-	    android:name="com.modusgo.ubi.DriversFragment"
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    tools:layout="@layout/drivers_fragment" />
-
-	<HorizontalScrollView
-	    android:id="@+id/horizontalScrollView1"
-	    android:layout_width="fill_parent"
-	    android:scrollbars="none"
-	    android:layout_height="wrap_content" >
-
-	    <LinearLayout
-	        android:id="@+id/chartButtons"
-	        android:layout_width="match_parent"
-	        android:layout_height="match_parent"
-	        android:orientation="horizontal" >
-	        
-	    </LinearLayout>
-	</HorizontalScrollView>
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollView"
+        android:layout_width="match_parent"
+		android:layout_height="0dp"
+		android:layout_weight=".4"
+		android:fillViewport="true" >
+        <fragment
+		    android:id="@+id/fragment1"
+		    android:name="com.modusgo.ubi.DriversFragment"
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent"
+		    tools:layout="@layout/drivers_fragment" />
+    </HorizontalScrollView>
+    
+	<RelativeLayout
+		 android:layout_width="match_parent"
+	     android:layout_height="0dp"
+		 android:layout_weight=".6"
+		 android:orientation="vertical">
 		<android.support.v4.view.ViewPager
 		    xmlns:android="http://schemas.android.com/apk/res/android"
 		    android:id="@+id/pager"
 		    android:layout_width="match_parent"
 		    android:layout_height="match_parent">
 	    
-		    <android.support.v4.view.PagerTitleStrip
+		    <android.support.v4.view.PagerTabStrip
 		        android:id="@+id/pager_title_strip"
 		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
+		        android:layout_height="54dp"
 		        android:layout_gravity="top"
-		        android:background="#33b5e5"
+		        android:gravity="center"
+		        android:background="@color/pagerTabStripBg"
 		        android:textColor="#fff"
-		        android:paddingTop="4dp"
-		        android:paddingBottom="4dp" />
+		    	android:textSize="17.67dp"
+		        android:paddingLeft="33dp"
+		        android:paddingRight="33dp" />
 		    
 	    </android.support.v4.view.ViewPager>
+	    <ImageView
+		    android:id="@+id/arrowPrev"
+		    android:layout_width="wrap_content"
+		    android:layout_height="54dp"
+		    android:layout_alignTop="@+id/pager"
+		    android:layout_alignLeft="@+id/pager"
+		    android:src="@drawable/ic_action_previous_item" />
+	    <ImageView
+		    android:id="@+id/arrowNext"
+		    android:layout_width="wrap_content"
+		    android:layout_height="54dp"
+		    android:layout_alignTop="@+id/pager"
+		    android:layout_alignRight="@+id/pager"
+		    android:src="@drawable/ic_action_next_item" />
+	</RelativeLayout>
 </LinearLayout>

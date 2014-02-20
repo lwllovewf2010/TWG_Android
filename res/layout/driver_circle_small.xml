@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+		<Button
+            android:layout_centerInParent="true"
+		    android:id="@+id/button"
+		    android:layout_width="67.24dp"
+		    android:layout_height="67.24dp"
+		    android:background="@drawable/btn_circle_small"
+		    android:layout_margin="5dp" />
+        <TextView 
+		    android:id="@+id/tvName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignTop="@+id/button"
+            android:paddingTop="11dp"
+		    android:textSize="13.74dp"
+		    android:textColor="#FFF"/>
+        <TextView 
+            android:id="@+id/tvScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignBottom="@+id/button"
+            android:paddingBottom="13dp"
+		    android:textSize="17.67dp"
+		    android:textColor="#FFF"/>
+    </RelativeLayout>
