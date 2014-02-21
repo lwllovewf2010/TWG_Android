@@ -92,7 +92,7 @@ public class ChartFragment extends Fragment {
 		    
 		    
 		    final TextView tvMarker = (TextView)inflater.inflate(R.layout.chart_marker_text, null);
-		    LayoutParams p3 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT,1f);
+		    LayoutParams p3 = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT,1f);
 	    	p3.height = 0;
 		    tvMarker.setLayoutParams(p3);
 		    tvMarker.setTypeface(robotoLight);
