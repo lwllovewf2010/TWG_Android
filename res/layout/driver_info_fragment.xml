@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:ubi="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/LinearLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/appBg"
+    android:orientation="vertical"
+    android:paddingTop="10dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:paddingBottom="0dp" >
+
+    <LinearLayout 
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".28"
+        android:background="#FFF"
+        android:layout_marginBottom="16dp">
+        
+        <LinearLayout
+	        android:layout_width="0dp"
+	        android:layout_height="match_parent"
+	        android:layout_weight=".5"
+	        android:orientation="vertical"
+	        android:background="#fff">
+	        
+	        <LinearLayout 
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content">
+	            <LinearLayout 
+	                android:id="@+id/left_line"
+	                android:layout_width="4dp"
+	                android:layout_height="match_parent"
+	                android:orientation="horizontal"
+	                android:background="#96d038"></LinearLayout>
+	            <LinearLayout 
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:orientation="vertical">
+	                <com.modusgo.ubi.customviews.TypefacedTextView
+		                android:id="@+id/tv_driver_name"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:layout_toRightOf="@+id/left_line"
+		                android:text="Sally"
+		                android:paddingTop="5dp"
+		                android:paddingBottom="1dp"
+		                android:paddingLeft="10dp"
+		                android:textSize="16.69sp"
+		                android:textColor="#000"
+		                ubi:typeface="Roboto-Light.ttf" />
+		            <com.modusgo.ubi.customviews.TypefacedTextView
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:layout_toRightOf="@+id/left_line"
+		                android:layout_below="@+id/tv_driver_name"
+		                android:text="Mercedes-Benz GL450"
+		                android:paddingBottom="4dp"
+		                android:paddingLeft="10dp"
+		                android:textSize="8.83sp"
+		                android:textColor="#000"
+		                ubi:typeface="Roboto-Light.ttf" />
+	            </LinearLayout>
+	            
+	        </LinearLayout>
+	        
+	        <com.modusgo.ubi.customviews.TypefacedTextView
+	            android:layout_width="match_parent"
+	            android:layout_height="0dp"
+	            android:layout_weight="1"
+	            android:gravity="center_vertical"
+	            android:drawableLeft="@drawable/ic_address"
+	            android:drawablePadding="4dp"
+	            android:paddingLeft="14dp"
+	            android:text="923 Hamilton Ave\nMenlo Park, CA 94025"
+	            android:textColor="#000"
+	            android:textSize="8.83sp" />
+
+	        <com.modusgo.ubi.customviews.TypefacedTextView
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:paddingBottom="3dp"
+	            android:paddingLeft="14dp"
+	            android:text="Updated 01/04/14 9:54 PM PST"
+	            android:textColor="#a3a3a3"
+	            android:textSize="8.83sp"
+	            ubi:typeface="Roboto-Light.ttf" />
+	            
+	    </LinearLayout>
+	    
+        <ImageView
+            android:id="@+id/imageView1"
+	        android:layout_width="0dp"
+	        android:layout_height="match_parent"
+	        android:layout_weight=".5"
+            android:scaleType="centerCrop"
+            android:src="@drawable/current_location" />
+    </LinearLayout>
+    
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".24"
+        android:orientation="horizontal"
+        android:layout_marginBottom="15dp">
+        
+        <LinearLayout
+	        android:layout_width="0dp"
+	        android:layout_height="match_parent"
+	        android:layout_weight=".5"
+	        android:layout_marginRight="8dp"
+	        android:orientation="vertical"
+	        android:background="#fff">
+	        
+	        <com.modusgo.ubi.customviews.TypefacedTextView
+	                android:layout_width="match_parent"
+	                android:layout_height="wrap_content"
+	                android:gravity="center"
+	                android:background="@color/driver_stats_block_header"
+	                android:text="Score"
+	                android:paddingTop="5dp"
+	                android:paddingBottom="5dp"
+	                android:textSize="18.65sp"
+	                android:textColor="#fff"
+		            ubi:typeface="Roboto-Thin.ttf" />
+	        <com.modusgo.ubi.customviews.TypefacedTextView
+	                android:id="@+id/textView1"
+	                android:layout_width="match_parent"
+	                android:layout_height="match_parent"
+	                android:text="B"
+	                android:gravity="center"
+	                android:textSize="29.45dp"
+	                android:textColor="@color/driver_stats_block_header"
+	                ubi:typeface="Roboto-Light.ttf" />
+	    </LinearLayout>
+	    
+    	<LinearLayout
+	        android:layout_width="0dp"
+	        android:layout_height="match_parent"
+	        android:layout_weight=".5"
+	        android:layout_marginLeft="8dp"
+	        android:orientation="vertical"
+	        android:background="#fff">
+	        
+	        <com.modusgo.ubi.customviews.TypefacedTextView
+	                android:layout_width="match_parent"
+	                android:layout_height="wrap_content"
+	                android:gravity="center"
+	                android:background="@color/driver_stats_block_header"
+	                android:text="Trips"
+	                android:paddingTop="5dp"
+	                android:paddingBottom="5dp"
+	                android:textSize="18.65sp"
+	                android:textColor="#fff"
+	                ubi:typeface="Roboto-Thin.ttf" />
+	        <com.modusgo.ubi.customviews.TypefacedTextView
+	                android:id="@+id/textView1"
+	                android:layout_width="match_parent"
+	                android:layout_height="match_parent"
+	                android:text="34"
+	                android:gravity="center"
+	                android:textSize="29.45dp"
+	                android:textColor="@color/driver_stats_block_header"
+	                ubi:typeface="Roboto-Light.ttf" />
+	    </LinearLayout>
+    </LinearLayout>
+    
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".24"
+        android:orientation="horizontal"
+        android:layout_marginBottom="15dp">
+        
+        <LinearLayout
+	        android:layout_width="0dp"
+	        android:layout_height="match_parent"
+	        android:layout_weight=".5"
+	        android:layout_marginRight="8dp"
+	        android:orientation="vertical"
+	        android:background="#fff">
+	        
+	        <com.modusgo.ubi.customviews.TypefacedTextView
+	                android:layout_width="match_parent"
+	                android:layout_height="wrap_content"
+	                android:gravity="center"
+	                android:background="@color/driver_stats_block_header"
+	                android:text="Distance"
+	                android:paddingTop="5dp"
+	                android:paddingBottom="5dp"
+	                android:textSize="18.65sp"
+	                android:textColor="#fff"
+	                ubi:typeface="Roboto-Thin.ttf" />
+	        <com.modusgo.ubi.customviews.TypefacedTextView
+	                android:id="@+id/textView1"
+	                android:layout_width="match_parent"
+	                android:layout_height="match_parent"
+	                android:text="176"
+	                android:gravity="center"
+	                android:textSize="29.45dp"
+	                android:textColor="@color/driver_stats_block_header"
+	                ubi:typeface="Roboto-Light.ttf" />
+	    </LinearLayout>
+	    
+    	<LinearLayout
+	        android:layout_width="0dp"
+	        android:layout_height="match_parent"
+	        android:layout_weight=".5"
+	        android:layout_marginLeft="8dp"
+	        android:orientation="vertical"
+	        android:background="#fff">
+	        
+	        <com.modusgo.ubi.customviews.TypefacedTextView
+	                android:layout_width="match_parent"
+	                android:layout_height="wrap_content"
+	                android:gravity="center"
+	                android:background="@color/driver_stats_block_header"
+	                android:text="Drive Time"
+	                android:paddingTop="5dp"
+	                android:paddingBottom="5dp"
+	                android:textSize="18.65sp"
+	                android:textColor="#fff"
+	                ubi:typeface="Roboto-Thin.ttf" />
+	        <com.modusgo.ubi.customviews.TypefacedTextView
+	                android:id="@+id/textView1"
+	                android:layout_width="match_parent"
+	                android:layout_height="match_parent"
+	                android:text="7:12"
+	                android:gravity="center"
+	                android:textSize="29.45dp"
+	                android:textColor="@color/driver_stats_block_header"
+	                ubi:typeface="Roboto-Light.ttf" />
+	    </LinearLayout>
+    </LinearLayout>
+    
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".24"
+        android:orientation="horizontal">
+        
+        <LinearLayout
+	        android:layout_width="0dp"
+	        android:layout_height="match_parent"
+	        android:layout_weight=".5"
+	        android:layout_marginRight="8dp"
+	        android:orientation="vertical"
+	        android:background="#fff">
+	        
+	        <com.modusgo.ubi.customviews.TypefacedTextView
+	                android:layout_width="match_parent"
+	                android:layout_height="wrap_content"
+	                android:gravity="center"
+	                android:background="@color/driver_stats_block_header"
+	                android:text="Avg. Speed"
+	                android:paddingTop="5dp"
+	                android:paddingBottom="5dp"
+	                android:textSize="18.65sp"
+	                android:textColor="#fff"
+	                ubi:typeface="Roboto-Thin.ttf" />
+	        <com.modusgo.ubi.customviews.TypefacedTextView
+	                android:id="@+id/textView1"
+	                android:layout_width="match_parent"
+	                android:layout_height="match_parent"
+	                android:text="37"
+	                android:gravity="center"
+	                android:textSize="29.45dp"
+	                android:textColor="@color/driver_stats_block_header"
+	                ubi:typeface="Roboto-Light.ttf" />
+	    </LinearLayout>
+	    
+    	<LinearLayout
+	        android:layout_width="0dp"
+	        android:layout_height="match_parent"
+	        android:layout_weight=".5"
+	        android:layout_marginLeft="8dp"
+	        android:orientation="vertical"
+	        android:background="#fff">
+	        
+	        <com.modusgo.ubi.customviews.TypefacedTextView
+	                android:layout_width="match_parent"
+	                android:layout_height="wrap_content"
+	                android:gravity="center"
+	                android:background="@color/driver_stats_block_header_red"
+	                android:text="Max. Speed"
+	                android:paddingTop="5dp"
+	                android:paddingBottom="5dp"
+	                android:textSize="18.65sp"
+	                android:textColor="#fff"
+	                ubi:typeface="Roboto-Thin.ttf" />
+	        <com.modusgo.ubi.customviews.TypefacedTextView
+	                android:id="@+id/textView1"
+	                android:layout_width="match_parent"
+	                android:layout_height="match_parent"
+	                android:text="74"
+	                android:gravity="center"
+	                android:textSize="29.45dp"
+	                android:textColor="@color/driver_stats_block_header"
+	                ubi:typeface="Roboto-Light.ttf" />
+	    </LinearLayout>
+    </LinearLayout>
+    
+    <!-- RelativeLayout 
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".3">
+        
+        <LinearLayout 
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_alignParentLeft="true">
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sally"
+                android:textSize="30sp" />
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Drive score: A" />
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Trips: 42" />
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Drive time: 17:02" />
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Distance(miles):666" />
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#ef4136"
+                android:text="Extreme braking events: 13" />
+            
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/current_location" />
+        
+    </RelativeLayout>
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".7">
+        
+    </LinearLayout-->
+    
+    
+</LinearLayout>

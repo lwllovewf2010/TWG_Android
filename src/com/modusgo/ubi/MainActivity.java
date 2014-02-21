@@ -2,7 +2,6 @@ package com.modusgo.ubi;
 
 import java.util.ArrayList;
 
-import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -11,19 +10,11 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.support.v7.app.ActionBarActivity;
 import android.util.TypedValue;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.modusgo.modusadmin.R;
 
 public class MainActivity extends ActionBarActivity /*implements OnClickListener*/ {
 
@@ -151,26 +142,6 @@ public class MainActivity extends ActionBarActivity /*implements OnClickListener
 			arrowNext.setVisibility(View.INVISIBLE);
 		else
 			arrowNext.setVisibility(View.VISIBLE);
-	}
-	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-	    // Inflate the menu items for use in the action bar
-	    MenuInflater inflater = getMenuInflater();
-	    inflater.inflate(R.menu.main, menu);
-	    return super.onCreateOptionsMenu(menu);
-	}
-	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-	    // Handle presses on the action bar items
-	    switch (item.getItemId()) {
-	        case R.id.action_settings:
-	            startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
-	            return true;
-	        default:
-	            return super.onOptionsItemSelected(item);
-	    }
 	}
 
 	/*public void onClick(View v) {

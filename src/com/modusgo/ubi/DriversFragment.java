@@ -1,5 +1,6 @@
 package com.modusgo.ubi;
 
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -8,13 +9,12 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.modusgo.modusadmin.R;
 
 public class DriversFragment extends Fragment {
 
@@ -24,7 +24,6 @@ public class DriversFragment extends Fragment {
 	    Log.d(LOG_TAG, "Fragment1 onCreateView");
 	    LinearLayout rootView = (LinearLayout)inflater.inflate(R.layout.drivers_fragment, null);
 	    
-
 	    int[] backgroundResources = new int[]{R.color.red,R.color.green,R.color.orange,R.color.blue,R.color.yellow,R.color.white};
 	    int[] circleSize = new int[]{0,1,0,1};
 	    String names[] = new String[]{"Mary", "Kate","John","Philip"};
@@ -50,6 +49,12 @@ public class DriversFragment extends Fragment {
 	    	
 		  	//nl.setLayoutParams(p);
 	    	Button btn = (Button)circleLayout.findViewById(R.id.button);
+	    	btn.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View arg0) {
+					startActivity(new Intent(getActivity(),DriverActivity.class));
+				}
+			});
 	    	Drawable btnBack = btn.getBackground();
 	    	btnBack.mutate();
 	    	btnBack.setColorFilter(getResources().getColor(backgroundResources[i]), PorterDuff.Mode.MULTIPLY);

@@ -14,8 +14,6 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.modusgo.modusadmin.R;
-
 public class ChartFragment extends Fragment {
 
 	private final static String SAVED_PERCENTS = "columnPercents";

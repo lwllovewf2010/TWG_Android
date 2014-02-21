@@ -3,6 +3,8 @@
      <color name="pagerTabStripBg">#1a243c</color>
      <color name="appBg">#253456</color>
      
+     <color name="driver_stats_block_header">#2493d0</color>
+     <color name="driver_stats_block_header_red">#fe4c4c</color>
      
      <color name="red">#ef4136</color>
      <color name="green">#a8cf49</color>
