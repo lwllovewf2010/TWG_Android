@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
@@ -74,7 +75,7 @@ public class ChartFragment extends Fragment {
 	    DecimalFormat df = new DecimalFormat("0");
 	    
 	    for (int i = 0; i < columnPercents.length; i++) {
-	    	LinearLayout nl = (LinearLayout) inflater.inflate(R.layout.chart_column, null);
+	    	final LinearLayout nl = (LinearLayout) inflater.inflate(R.layout.chart_column, null);
 	    	LayoutParams p = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT,1f);
 	    	p.width = 0;
 	    	
@@ -90,11 +91,31 @@ public class ChartFragment extends Fragment {
 		  	
 		    
 		    
-		    TextView tvMarker = (TextView)inflater.inflate(R.layout.chart_marker_text, null);
+		    final TextView tvMarker = (TextView)inflater.inflate(R.layout.chart_marker_text, null);
 		    LayoutParams p3 = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT,1f);
 	    	p3.height = 0;
 		    tvMarker.setLayoutParams(p3);
 		    tvMarker.setTypeface(robotoLight);
+		    tvMarker.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					if(nl.getVisibility()==View.VISIBLE){
+						//tvMarker.setAlpha(0.3f); - Do not use, not compatible with API <11
+						tvMarker.setTextColor(tvMarker.getTextColors().withAlpha(76));
+						for (Drawable d : tvMarker.getCompoundDrawables()) {
+							if(d!=null) d.setAlpha(76);
+						}
+						nl.setVisibility(View.GONE);
+					}
+					else{
+						tvMarker.setTextColor(tvMarker.getTextColors().withAlpha(255));
+						for (Drawable d : tvMarker.getCompoundDrawables()) {
+							if(d!=null) d.setAlpha(255);
+						}
+						nl.setVisibility(View.VISIBLE);
+					}
+				}
+			});
 		    
 		    Drawable img = getResources().getDrawable( R.drawable.list_marker );
 		    img.mutate();
