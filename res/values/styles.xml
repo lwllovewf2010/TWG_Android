@@ -22,10 +22,10 @@
     <!-- ActionBar styles -->
     <style name="MyActionBar"
            parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
-        <item name="android:background">@color/appBg</item>
+        <item name="android:background">@drawable/actiob_bar_bg</item>
 
         <!-- Support library compatibility -->
-        <item name="background">@color/appBg</item>
+        <item name="background">@drawable/actiob_bar_bg</item>
     </style>
     
 
