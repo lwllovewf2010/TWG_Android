@@ -2,6 +2,8 @@ package com.modusgo.ubi;
 
 import java.util.ArrayList;
 
+import com.viewpagerindicator.CirclePageIndicator;
+
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -40,6 +42,30 @@ public class MainActivity extends ActionBarActivity /*implements OnClickListener
 	    //getSupportActionBar().set
 	    //getSupportActionBar().setBackgroundDrawable(getResources().getDrawable(R.color.appBg));
 	    
+	    ArrayList<Driver> drivers = new ArrayList<Driver>();
+	    drivers.add(new Driver("Mary","B"));
+	    drivers.add(new Driver("Kate","A"));
+	    drivers.add(new Driver("John","C"));
+	    drivers.add(new Driver("Philip","B"));
+	    drivers.add(new Driver("Marky","B"));
+	    
+	    DriversPagerAdapter driversPagerAdapter = new DriversPagerAdapter(getSupportFragmentManager(),drivers);
+	    
+	    ViewPager pagerDrivers = (ViewPager)findViewById(R.id.pager_drivers);
+	    pagerDrivers.setAdapter(driversPagerAdapter);
+	    
+	    //Bind the title indicator to the adapter
+        CirclePageIndicator indicator = (CirclePageIndicator)findViewById(R.id.indicator);
+        indicator.setViewPager(pagerDrivers);
+        indicator.setSnap(true);
+        
+        final float density = getResources().getDisplayMetrics().density;
+        indicator.setRadius(4 * density);
+        indicator.setPageColor(0x33FFFFFF);//unactive circle color
+        indicator.setFillColor(0xFFFFFFFF);
+        indicator.setStrokeWidth(0);
+        
+	    		
 	    String[] names = new String[]{"Kate","Mary","John","Philip","Marky"};
 	    
 	    charts = new ArrayList<ChartFragment>();

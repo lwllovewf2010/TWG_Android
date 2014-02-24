@@ -1,5 +1,7 @@
 package com.modusgo.ubi;
 
+import java.util.ArrayList;
+
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
@@ -19,30 +21,30 @@ import android.widget.TextView;
 public class DriversFragment extends Fragment {
 
 	final String LOG_TAG = "myLogs";
+	ArrayList<Driver> drivers;
+	
+	public DriversFragment(){
+	}
+	
+	public DriversFragment(ArrayList<Driver> drivers){
+		this.drivers = drivers;
+	}
 
-	  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 	    Log.d(LOG_TAG, "Fragment1 onCreateView");
 	    LinearLayout rootView = (LinearLayout)inflater.inflate(R.layout.drivers_fragment, null);
 	    
 	    int[] backgroundResources = new int[]{R.color.red,R.color.green,R.color.orange,R.color.blue,R.color.yellow,R.color.white};
-	    int[] circleSize = new int[]{0,1,0,1};
-	    String names[] = new String[]{"Mary", "Kate","John","Philip"};
-	    String scores[] = new String[]{"B","A","C","A"};
-	    
+
 	    Typeface robotoLight = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Roboto-Light.ttf");
-	    for (int i = 0; i < 4; i++) {
+	    for (int i = 0; i < drivers.size(); i++) {
 	    	RelativeLayout circleLayout;
 	    	
-	    	switch(circleSize[i]){
-		    	case 0:
-		    		circleLayout = (RelativeLayout) inflater.inflate(R.layout.driver_circle_small, null);
-			    	break;
-		    	case 1:
-		    		circleLayout = (RelativeLayout) inflater.inflate(R.layout.driver_circle_big, null);
-			    	break;
-			    default:
-			    	circleLayout = (RelativeLayout) inflater.inflate(R.layout.driver_circle_big, null);
-				   	break;
+	    	if(drivers.get(i).score.equals("A")){
+	    		circleLayout = (RelativeLayout) inflater.inflate(R.layout.driver_circle_big, null);	    		
+	    	}
+	    	else{
+	    		circleLayout = (RelativeLayout) inflater.inflate(R.layout.driver_circle_small, null);	    		
 	    	}
 	    	//LayoutParams p = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT,1f);
 	    	//p.width = 0;
@@ -61,11 +63,11 @@ public class DriversFragment extends Fragment {
 		    
 		    TextView tvName = (TextView)circleLayout.findViewById(R.id.tvName);
 		    tvName.setTypeface(robotoLight);
-		    tvName.setText(names[i]);
+		    tvName.setText(drivers.get(i).name);
 		    
 		    TextView tvScore = (TextView)circleLayout.findViewById(R.id.tvScore);
 		    tvScore.setTypeface(robotoLight);
-		    tvScore.setText(scores[i]);
+		    tvScore.setText(drivers.get(i).score);
 		    
 		    rootView.addView(circleLayout);
 		}
@@ -74,6 +76,6 @@ public class DriversFragment extends Fragment {
 	    //Drawable bg = b.getBackground();
 	    //bg.setColorFilter(Color.rgb(255, 0, 0),PorterDuff.Mode.MULTIPLY);
 	    return rootView;  
-	  }
+	}
 
 }
