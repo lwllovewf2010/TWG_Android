@@ -3,4 +3,19 @@
     <declare-styleable name="TypefacedTextView">
         <attr name="typeface" format="string" />
     </declare-styleable>
+    
+    <declare-styleable name="CircularProgressBar">
+        <attr name="cpb_radius" format="reference|dimension"/>
+        <attr name="progressColor" format="reference|color"/>
+        <attr name="backgroundColor" format="reference|color"/>
+        <attr name="innerBackgroundColor" format="reference|color"/>
+        <attr name="cpb_title" format="string"/>
+        <attr name="cpb_titleSize" format="reference|dimension"/>
+        <attr name="titleColor" format="reference|color"/>
+        <attr name="cpb_subtitle" format="string"/>
+        <attr name="cpb_subtitleSize" format="reference|dimension"/>
+        <attr name="cpb_subtitlePadding" format="reference|dimension"/>
+        <attr name="subtitleColor" format="reference|color"/>
+        <attr name="cpb_strokeWidth" format="reference|dimension"/>
+    </declare-styleable>
 </resources>
