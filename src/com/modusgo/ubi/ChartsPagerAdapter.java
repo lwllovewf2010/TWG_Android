@@ -8,9 +8,9 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 public class ChartsPagerAdapter extends FragmentStatePagerAdapter {
     
-	ArrayList<ChartFragment> charts = new ArrayList<ChartFragment>();
+	ArrayList<TitledFragment> charts = new ArrayList<TitledFragment>();
 	
-	public ChartsPagerAdapter(FragmentManager fm, ArrayList<ChartFragment> charts) {
+	public ChartsPagerAdapter(FragmentManager fm, ArrayList<TitledFragment> charts) {
         super(fm);
         this.charts = charts;
     }

@@ -6,7 +6,6 @@ import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -15,7 +14,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class ChartFragment extends Fragment {
+public class ChartFragment extends TitledFragment {
 
 	private final static String SAVED_PERCENTS = "columnPercents";
 	private final static String SAVED_VALUES = "values";
@@ -25,7 +24,6 @@ public class ChartFragment extends Fragment {
 	float[] columnPercents;
 	float[] columnValues;
 	int[] backgroundResources;
-	public String title;
 	String names[];
 	
 	public ChartFragment() {
