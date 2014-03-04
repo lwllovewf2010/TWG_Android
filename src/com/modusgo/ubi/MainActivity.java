@@ -25,7 +25,7 @@ public class MainActivity extends ActionBarActivity /*implements OnClickListener
 	FragmentTransaction fTrans;
 	CheckBox chbStack;
 	
-	ArrayList<ChartFragment> charts;
+	ArrayList<TitledFragment> charts;
 	
 	ChartsPagerAdapter mChartsPagerAdapter;
     ViewPager mViewPager;	
@@ -68,7 +68,7 @@ public class MainActivity extends ActionBarActivity /*implements OnClickListener
 	    		
 	    String[] names = new String[]{"Kate","Mary","John","Philip","Marky"};
 	    
-	    charts = new ArrayList<ChartFragment>();
+	    charts = new ArrayList<TitledFragment>();
 	    charts.add(new ChartFragment("Yippie", new float[]{107f,712f,215f,510f,510f},names));//4th equals to zero 'cause it is the average value and counts in Chart constructor
 	    charts.add(new ChartFragment("Ki", new float[]{15f,19f,16f,15f},names));
 	    charts.add(new ChartFragment("Yay", new float[]{33f,26f,18f},names));

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+ xmlns:android="http://schemas.android.com/apk/res/android"
+ xmlns:tools="http://schemas.android.com/tools"
+ xmlns:ubi="http://schemas.android.com/apk/res/com.modusgo.ubi"
+ android:id="@+id/LinearLayout1"
+ android:layout_width="match_parent"
+ android:layout_height="match_parent"
+ android:orientation="vertical">
+
+    <LinearLayout
+	    android:orientation="horizontal"
+	    android:layout_width="fill_parent"
+	    android:layout_height="0dp"
+	    android:layout_weight=".5"
+	    android:gravity="center"
+	    android:background="@color/appBg">
+		<com.modusgo.ubi.customviews.CircularProgressBar
+		    android:id="@+id/circularprogressbar1"
+            style="@style/Widget.ProgressBar.CircularProgressBar"
+		    android:layout_width="0dp"
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1"
+		    ubi:cpb_strokeWidth="5.4dp"
+		    ubi:innerBackgroundColor="#324262"
+		    ubi:progressColor="#d7b800"
+		    ubi:cpb_radius="30dp"		
+		    ubi:backgroundColor="#FFF"
+		    ubi:cpb_titleSize="16sp"
+		    ubi:titleColor="#FFF"    
+		    ubi:cpb_subtitle="Consistency"
+		    ubi:cpb_subtitleSize="14dp"
+		    ubi:subtitleColor="#FFF"
+		    ubi:cpb_subtitlePadding="8dp" />
+		
+		<com.modusgo.ubi.customviews.CircularProgressBar
+		    android:id="@+id/circularprogressbar2"
+            style="@style/Widget.ProgressBar.CircularProgressBar"
+		    android:layout_width="0dp"
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1.5"
+		    ubi:cpb_strokeWidth="12dp"
+		    ubi:innerBackgroundColor="#324262"
+		    ubi:progressColor="#90da00"
+		    ubi:cpb_radius="64dp"		
+		    ubi:backgroundColor="#FFF"
+		    ubi:cpb_titleSize="30sp"
+		    ubi:titleColor="#FFF"    
+		    ubi:cpb_subtitle="Speed"
+		    ubi:cpb_subtitleSize="23.56dp"
+		    ubi:subtitleColor="#FFF"
+		    ubi:cpb_subtitlePadding="8dp" />
+		
+		<com.modusgo.ubi.customviews.CircularProgressBar
+		    android:id="@+id/circularprogressbar3"
+            style="@style/Widget.ProgressBar.CircularProgressBar"
+		    android:layout_width="0dp"
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1"
+		    ubi:cpb_strokeWidth="5.4dp"
+		    ubi:innerBackgroundColor="#324262"
+		    ubi:progressColor="#ff7d54"
+		    ubi:cpb_radius="30dp"		
+		    ubi:backgroundColor="#FFF"
+		    ubi:cpb_titleSize="16sp"
+		    ubi:titleColor="#FFF"    
+		    ubi:cpb_subtitle="Anticipation"
+		    ubi:cpb_subtitleSize="14dp"
+		    ubi:subtitleColor="#FFF"
+		    ubi:cpb_subtitlePadding="8dp" />
+		
+	</LinearLayout>
+    
+	<RelativeLayout
+		 android:layout_width="match_parent"
+	     android:layout_height="0dp"
+		 android:layout_weight=".5"
+		 android:orientation="vertical">
+		<com.modusgo.ubi.customviews.ViewPager
+		    xmlns:android="http://schemas.android.com/apk/res/android"
+		    android:id="@+id/pager"
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent">
+	    
+		    <android.support.v4.view.PagerTabStrip
+		        android:id="@+id/pager_title_strip"
+		        android:layout_width="match_parent"
+		        android:layout_height="54dp"
+		        android:layout_gravity="top"
+		        android:gravity="center"
+		        android:background="@color/pagerTabStripBg"
+		        android:textColor="#fff"
+		    	android:textSize="17.67dp"
+		        android:paddingLeft="33dp"
+		        android:paddingRight="33dp" />
+		    
+	    </com.modusgo.ubi.customviews.ViewPager>
+	    <ImageView
+		    android:id="@+id/arrowPrev"
+		    android:layout_width="wrap_content"
+		    android:layout_height="54dp"
+		    android:layout_alignTop="@+id/pager"
+		    android:layout_alignLeft="@+id/pager"
+		    android:src="@drawable/ic_action_previous_item" />
+	    <ImageView
+		    android:id="@+id/arrowNext"
+		    android:layout_width="wrap_content"
+		    android:layout_height="54dp"
+		    android:layout_alignTop="@+id/pager"
+		    android:layout_alignRight="@+id/pager"
+		    android:src="@drawable/ic_action_next_item" />
+	</RelativeLayout>
+</LinearLayout>
