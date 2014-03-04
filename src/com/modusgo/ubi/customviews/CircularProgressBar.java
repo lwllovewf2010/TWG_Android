@@ -305,4 +305,14 @@ public class CircularProgressBar extends ProgressBar{
 	public String getTitle(){
 		return mTitle;
 	}
+	
+	@Override
+	public void setAlpha(float alpha){
+		int a = Math.round(alpha*255);
+		mBackgroundColorPaint.setAlpha(a);
+		mInnerBackgroundColorPaint.setAlpha(a);
+		mProgressColorPaint.setAlpha(a);
+		mSubtitlePaint.setAlpha(a);
+		mTitlePaint.setAlpha(a);
+	}
 }
