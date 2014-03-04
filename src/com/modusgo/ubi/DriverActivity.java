@@ -19,7 +19,7 @@ public class DriverActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 	    setContentView(R.layout.activity_driver_info);
 	    
-	    getSupportActionBar().setTitle("Limits");
+	    getSupportActionBar().setTitle("Sally");
 	    
 	    ArrayList<DriverInfoFragment> pages = new ArrayList<DriverInfoFragment>();
 	    pages.add(new DriverInfoFragment());
