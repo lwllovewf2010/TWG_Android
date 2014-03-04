@@ -67,10 +67,10 @@ public class PieChartView extends View{
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		
 		int width = measureWidth(widthMeasureSpec);
-		int height = measureWidth(heightMeasureSpec);
+		int height = measureHeight(heightMeasureSpec);
 		
 		int minSide = Math.min(width, height);
-		mCircleBounds.set(0, 0, minSide, minSide);
+		mCircleBounds.set((width-minSide)/2, (height-minSide)/2, (width-minSide)/2+minSide, (height-minSide)/2+minSide);
 		
 		setMeasuredDimension(width,height);
 	}
