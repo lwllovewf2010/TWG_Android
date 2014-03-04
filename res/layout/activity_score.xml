@@ -76,7 +76,7 @@
 	     android:layout_height="0dp"
 		 android:layout_weight=".5"
 		 android:orientation="vertical">
-		<android.support.v4.view.ViewPager
+		<com.modusgo.ubi.customviews.ViewPager
 		    xmlns:android="http://schemas.android.com/apk/res/android"
 		    android:id="@+id/pager"
 		    android:layout_width="match_parent"
@@ -94,7 +94,7 @@
 		        android:paddingLeft="33dp"
 		        android:paddingRight="33dp" />
 		    
-	    </android.support.v4.view.ViewPager>
+	    </com.modusgo.ubi.customviews.ViewPager>
 	    <ImageView
 		    android:id="@+id/arrowPrev"
 		    android:layout_width="wrap_content"

@@ -3,18 +3,17 @@ package com.modusgo.ubi;
 import java.util.ArrayList;
 
 import android.graphics.Typeface;
-import android.graphics.Shader.TileMode;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerTabStrip;
-import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 
 import com.modusgo.ubi.customviews.CircularProgressBar;
+import com.modusgo.ubi.customviews.ViewPager;
 
 public class ScoreActivity extends ActionBarActivity /*implements OnClickListener*/ {
 
