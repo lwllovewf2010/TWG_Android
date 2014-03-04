@@ -7,10 +7,13 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.AnimationSet;
+import android.view.animation.TranslateAnimation;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -25,6 +28,10 @@ public class ChartFragment extends TitledFragment {
 	float[] columnValues;
 	int[] backgroundResources;
 	String names[];
+	
+	float x = 0;
+	float offsetX = 0;
+	float viewHideOffset = 0;
 	
 	public ChartFragment() {
 	}
@@ -94,26 +101,49 @@ public class ChartFragment extends TitledFragment {
 	    	p3.height = 0;
 		    tvMarker.setLayoutParams(p3);
 		    tvMarker.setTypeface(robotoLight);
-		    tvMarker.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					if(nl.getVisibility()==View.VISIBLE){
-						//tvMarker.setAlpha(0.3f); - Do not use, not compatible with API <11
-						tvMarker.setTextColor(tvMarker.getTextColors().withAlpha(76));
-						for (Drawable d : tvMarker.getCompoundDrawables()) {
-							if(d!=null) d.setAlpha(76);
-						}
-						nl.setVisibility(View.GONE);
-					}
-					else{
-						tvMarker.setTextColor(tvMarker.getTextColors().withAlpha(255));
-						for (Drawable d : tvMarker.getCompoundDrawables()) {
-							if(d!=null) d.setAlpha(255);
-						}
-						nl.setVisibility(View.VISIBLE);
-					}
-				}
-			});
+		   
+		    if(viewHideOffset==0){
+		    	viewHideOffset = tvMarker.getCompoundDrawables()[0].getBounds().width()*0.685f;
+		    }
+		    
+		    tvMarker.setOnTouchListener(new View.OnTouchListener() { 
+	            @Override
+	            public boolean onTouch(View v, MotionEvent event){
+	            	switch(event.getAction()){
+	            		case MotionEvent.ACTION_DOWN:
+	            			x = event.getX();
+	            			break;
+	            		case MotionEvent.ACTION_MOVE:
+	            			offsetX = event.getX()-x;
+	            			break;
+	            		case MotionEvent.ACTION_UP:
+	            			if(offsetX>10){
+	            				if(nl.getVisibility()==View.GONE){
+	            					showMarker(tvMarker, 500);
+	            					nl.setVisibility(View.VISIBLE);
+	        					}
+	            			}
+	            			else if(offsetX<-10){
+	            				if(nl.getVisibility()==View.VISIBLE){
+	            					hideMarker(tvMarker, 500);
+	            					nl.setVisibility(View.GONE);
+	        					}	        					
+	            			}
+	            			else if(offsetX==0){
+	            				if(nl.getVisibility()==View.VISIBLE){
+	            					hideMarker(tvMarker, 500);
+	            					nl.setVisibility(View.GONE);
+	        					}
+	            				else{
+	            					showMarker(tvMarker, 500);
+	            					nl.setVisibility(View.VISIBLE);
+	            				}
+	            			}
+	            			break;
+	            	}
+					return true;
+	            }
+		    });
 		    
 		    Drawable img = getResources().getDrawable( R.drawable.list_marker );
 		    img.mutate();
@@ -130,11 +160,41 @@ public class ChartFragment extends TitledFragment {
 			    tvMarker.setText(names[i]);
 		  	}
 		    tvMarker.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
+		    if(nl.getVisibility()==View.GONE){
+				hideMarker(tvMarker, 0);
+			}
 		    ll.addView(nl);
 		    markersLayout.addView(tvMarker);
 		}
 	    
 	    return  rootView;
+	}
+	
+	private void hideMarker(View view, long duration)
+	{
+	    TranslateAnimation anim = new TranslateAnimation( 0, -viewHideOffset , 0,0);
+	    AlphaAnimation alphaAnim = new AlphaAnimation(1, 0.3f);
+	    
+	    AnimationSet as = new AnimationSet(true);
+	    as.addAnimation(anim);
+	    as.addAnimation(alphaAnim);
+	    as.setFillAfter(true);
+	    as.setDuration(duration);
+	    
+	    view.startAnimation(as);
+	}
+	private void showMarker(View view, long duration)
+	{
+	    TranslateAnimation anim = new TranslateAnimation( -viewHideOffset, 0 , 0,0);	    
+	    AlphaAnimation alphaAnim = new AlphaAnimation(0.3f, 1);
+	    
+	    AnimationSet as = new AnimationSet(true);
+	    as.addAnimation(anim);
+	    as.addAnimation(alphaAnim);
+	    as.setFillAfter(true);
+	    as.setDuration(duration);
+	    
+	    view.startAnimation(as);
 	}
 
 	@Override

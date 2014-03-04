@@ -2,21 +2,21 @@ package com.modusgo.ubi;
 
 import java.util.ArrayList;
 
-import com.viewpagerindicator.CirclePageIndicator;
-
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerTabStrip;
-import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.modusgo.ubi.customviews.ViewPager;
+import com.viewpagerindicator.CirclePageIndicator;
 
 public class MainActivity extends ActionBarActivity /*implements OnClickListener*/ {
 
@@ -53,6 +53,7 @@ public class MainActivity extends ActionBarActivity /*implements OnClickListener
 	    
 	    ViewPager pagerDrivers = (ViewPager)findViewById(R.id.pager_drivers);
 	    pagerDrivers.setAdapter(driversPagerAdapter);
+	    pagerDrivers.setSwipeEnabled(true);
 	    
 	    //Bind the title indicator to the adapter
         CirclePageIndicator indicator = (CirclePageIndicator)findViewById(R.id.indicator);
