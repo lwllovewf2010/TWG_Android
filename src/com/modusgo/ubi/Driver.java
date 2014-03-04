@@ -1,7 +1,10 @@
 package com.modusgo.ubi;
 
-public class Driver {
+import java.io.Serializable;
+
+public class Driver implements Serializable{
 	
+	private static final long serialVersionUID = 1315237349232671000L;
 	public String name;
 	public String score;
 	

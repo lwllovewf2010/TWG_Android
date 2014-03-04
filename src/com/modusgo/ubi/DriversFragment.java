@@ -20,6 +20,8 @@ import android.widget.TextView;
 
 public class DriversFragment extends Fragment {
 
+	private final static String SAVED_DRIVERS = "drivers";
+	
 	final String LOG_TAG = "myLogs";
 	ArrayList<Driver> drivers;
 	
@@ -30,9 +32,14 @@ public class DriversFragment extends Fragment {
 		this.drivers = drivers;
 	}
 
+	@SuppressWarnings("unchecked")
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 	    Log.d(LOG_TAG, "Fragment1 onCreateView");
 	    LinearLayout rootView = (LinearLayout)inflater.inflate(R.layout.drivers_fragment, null);
+	    
+	    if(savedInstanceState!=null) {
+            drivers = (ArrayList<Driver>) savedInstanceState.getSerializable(SAVED_DRIVERS);
+        }
 	    
 	    int[] backgroundResources = new int[]{R.color.red,R.color.green,R.color.orange,R.color.blue,R.color.yellow,R.color.white};
 
@@ -76,6 +83,11 @@ public class DriversFragment extends Fragment {
 	    //Drawable bg = b.getBackground();
 	    //bg.setColorFilter(Color.rgb(255, 0, 0),PorterDuff.Mode.MULTIPLY);
 	    return rootView;  
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		outState.putSerializable(SAVED_DRIVERS, drivers);
 	}
 
 }
