@@ -13,6 +13,10 @@ public class PieChartView extends View{
 	private final RectF mCircleBounds = new RectF();
 	private final Paint mBackgroundColorPaint = new Paint();
 	private final Paint mBackgroundColorPaint2 = new Paint();
+	
+	PieSector[] pieSectors;
+	
+	private static final int START_ANGLE = 270; 
 
 	public PieChartView(Context context, AttributeSet attrs, int defStyleAttr) {
 		super(context, attrs, defStyleAttr);
@@ -33,10 +37,29 @@ public class PieChartView extends View{
 		this(context,null);
 	}
 	
+	public void setChartSectors(PieSector[] pieSectors){
+		float sum = 0;
+		for (PieSector ps : pieSectors) {
+			sum+=ps.value;
+		}
+		for (PieSector ps : pieSectors) {
+			ps.valueDegree = ps.value/sum*360;
+		}
+		this.pieSectors = pieSectors;
+		invalidate();
+	}
+	
 	@Override
 	protected void onDraw(Canvas canvas) {
-		canvas.drawArc(mCircleBounds, 0, 270 , true, mBackgroundColorPaint);
-		canvas.drawArc(mCircleBounds, 270, 90 , true, mBackgroundColorPaint2);
+		float startAngle = START_ANGLE;
+		
+		canvas.drawArc(mCircleBounds, 0, 360 , true, mBackgroundColorPaint);
+		if(pieSectors!=null){
+			for (PieSector ps : pieSectors) {
+				canvas.drawArc(mCircleBounds, startAngle, ps.valueDegree , true, ps.colorPaint);
+				startAngle += ps.valueDegree;
+			}
+		}
 		super.onDraw(canvas);
 	}
 	
@@ -89,5 +112,23 @@ public class PieChartView extends View{
         }
         return result;
     }
+    
+    public class PieSector{
+    	float value;
+    	float valueDegree;
+    	Paint colorPaint;
+    	
+    	public PieSector(){}
+    	
+    	public PieSector(float value, int colorId){
+    		this.value = value;
+    		colorPaint = new Paint();
+    		colorPaint.setColor(getResources().getColor(colorId));
+    		colorPaint.setAntiAlias(true);
+    		colorPaint.setStyle(Paint.Style.FILL);
+    	}
+    }
 
 }
+
+
