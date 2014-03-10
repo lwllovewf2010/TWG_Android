@@ -111,6 +111,7 @@ public class ChartFragment extends TitledFragment {
 	            public boolean onTouch(View v, MotionEvent event){
 	            	switch(event.getAction()){
 	            		case MotionEvent.ACTION_DOWN:
+	            			offsetX = 0;
 	            			x = event.getX();
 	            			break;
 	            		case MotionEvent.ACTION_MOVE:
