@@ -7,6 +7,13 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
+
+import com.nineoldandroids.animation.Animator;
+import com.nineoldandroids.animation.Animator.AnimatorListener;
+import com.nineoldandroids.animation.ObjectAnimator;
+import com.nineoldandroids.animation.ValueAnimator;
+import com.nineoldandroids.animation.ValueAnimator.AnimatorUpdateListener;
 
 public class PieChartView extends View{
 	
@@ -47,6 +54,26 @@ public class PieChartView extends View{
 		}
 		this.pieSectors = pieSectors;
 		invalidate();
+	}
+	
+	public void animateChartSectors(final PieSector[] pieSectors){
+		for (int i = 0; i < this.pieSectors.length; i++) {
+			
+			final ValueAnimator va = ValueAnimator.ofFloat(this.pieSectors[i].value, pieSectors[i].value);
+			va.setDuration(500);
+			va.setInterpolator(new LinearInterpolator());
+
+			final int fi = i;
+			va.addUpdateListener(new AnimatorUpdateListener() {
+				@Override
+				public void onAnimationUpdate(final ValueAnimator animation) {
+					PieChartView.this.pieSectors[fi].value = (Float)animation.getAnimatedValue();
+					if(fi==PieChartView.this.pieSectors.length-1)
+						setChartSectors(PieChartView.this.pieSectors);
+				}
+			});
+			va.start();
+		}
 	}
 	
 	@Override

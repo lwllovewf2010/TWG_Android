@@ -89,13 +89,13 @@ public class PieChartFragment extends TitledFragment{
 	            public boolean onTouch(View v, MotionEvent event){
 	            	switch(event.getAction()){
 	            		case MotionEvent.ACTION_DOWN:
+	            			offsetX = 0;
 	            			x = event.getX();
 	            			break;
 	            		case MotionEvent.ACTION_MOVE:
 	            			offsetX = event.getX()-x;
 	            			break;
 	            		case MotionEvent.ACTION_UP:
-	            			//System.out.println(offsetX);
 	            			if(offsetX>10){
 	            				if(!isVisible[fi]){
 	            					showMarker(tvMarker, 500);
@@ -120,7 +120,8 @@ public class PieChartFragment extends TitledFragment{
 	            			}
 	            			break;
 	            	}
-	            	updateChart(pieChart);
+	            	updateChart(pieChart, true);
+	            	
 					return true;
 	            }
 		    });
@@ -139,7 +140,7 @@ public class PieChartFragment extends TitledFragment{
 		    
 		    markersLayout.addView(tvMarker);   	
 	    }
-	    updateChart(pieChart);
+	    updateChart(pieChart, false);
 	    
 	    return  rootView;
 	}
@@ -171,7 +172,7 @@ public class PieChartFragment extends TitledFragment{
 	    view.startAnimation(as);
 	}
 	
-	private void updateChart(PieChartView pieChart){
+	private void updateChart(PieChartView pieChart, boolean animate){
 		ArrayList<PieSector> pieSectors = new ArrayList<PieChartView.PieSector>();
 		for (int i = 0; i < chartValues.length; i++) {
 			if(isVisible[i])
@@ -180,7 +181,11 @@ public class PieChartFragment extends TitledFragment{
 		    	pieSectors.add(pieChart.new PieSector(0,backgroundResources[i]));
 		}
 		PieSector pieSectorsArr[] = new PieSector[pieSectors.size()];
-	    pieChart.setChartSectors(pieSectors.toArray(pieSectorsArr));
+		
+		if(!animate)
+		    pieChart.setChartSectors(pieSectors.toArray(pieSectorsArr));
+		else
+			pieChart.animateChartSectors(pieSectors.toArray(pieSectorsArr));
 	}
 
 	@Override
