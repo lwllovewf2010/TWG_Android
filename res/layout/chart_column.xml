@@ -10,7 +10,9 @@
 		    <View
 			    android:id="@+id/view"
 			    android:background="#fff"
-			    android:layout_width="20dp"
+			    android:layout_width="match_parent"
+			    android:layout_marginLeft="5dp"
+			    android:layout_marginRight="5dp"
 			    android:layout_height="0dp"
 			    android:layout_weight=".5" />
 
