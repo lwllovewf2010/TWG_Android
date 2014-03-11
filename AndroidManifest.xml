@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.modusgo.ubi"
-    android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionCode="101"
+    android:versionName="1.0.1" >
 
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="18" />
+    
+    <uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -35,6 +38,8 @@
             android:name="com.modusgo.ubi.ScoreActivity"
             android:label="Score" >
         </activity>
+        
+        <activity android:name="net.hockeyapp.android.UpdateActivity" />
     </application>
 
 </manifest>

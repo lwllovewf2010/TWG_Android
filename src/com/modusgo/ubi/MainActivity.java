@@ -2,6 +2,9 @@ package com.modusgo.ubi;
 
 import java.util.ArrayList;
 
+import net.hockeyapp.android.CrashManager;
+import net.hockeyapp.android.UpdateManager;
+
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -186,5 +189,21 @@ public class MainActivity extends ActionBarActivity /*implements OnClickListener
 	    //if (chbStack.isChecked()) fTrans.addToBackStack(null);
 	    	//fTrans.commit();
 	}*/
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+	    checkForCrashes();
+	    checkForUpdates();
+	}
+	
+	private void checkForCrashes() {
+		CrashManager.register(this, Constants.HOCKEY_APP_ID);
+	}
+
+	private void checkForUpdates() {
+		// Remove this for store builds!
+		UpdateManager.register(this, Constants.HOCKEY_APP_ID);
+	}
 
 }
