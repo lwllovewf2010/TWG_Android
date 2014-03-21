@@ -1,0 +1,13 @@
+<com.modusgo.ubi.customviews.TypefacedTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ubi="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/tvText"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:paddingLeft="36dp"
+    android:paddingRight="16dp"
+    android:minHeight="50dp"
+    android:textColor="@drawable/drawer_list_item_text_selector"
+    android:textSize="20sp"
+	ubi:typeface="Roboto-Light.ttf"
+    android:background="@drawable/drawer_list_item_bg_selector"/>

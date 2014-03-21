@@ -33,7 +33,7 @@
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="com.modusgo.ubi.DriverActivity"
+            android:name="com.modusgo.ubi.DriverFragment"
             android:label="@string/app_name" >
         </activity>
         <activity

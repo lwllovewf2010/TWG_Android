@@ -61,7 +61,12 @@ public class DriversFragment extends Fragment {
 	    	btn.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
-					startActivity(new Intent(getActivity(),DriverActivity.class));
+					getActivity().getSupportFragmentManager().beginTransaction()
+					.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
+					.replace(R.id.content_frame, new DriverFragment())
+					.addToBackStack(null)
+					.commit();
+					//startActivity(new Intent(getActivity(),DriverFragment.class));
 				}
 			});
 	    	Drawable btnBack = btn.getBackground();
