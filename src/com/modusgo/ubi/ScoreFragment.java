@@ -5,22 +5,18 @@ import java.util.ArrayList;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.CheckBox;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.modusgo.ubi.customviews.CircularProgressBar;
 import com.modusgo.ubi.customviews.ViewPager;
 
-public class ScoreActivity extends ActionBarActivity /*implements OnClickListener*/ {
-
-	Fragment frag1;
-	ChartFragment frag2;
-	FragmentTransaction fTrans;
-	CheckBox chbStack;
+public class ScoreFragment extends Fragment {
 	
 	ArrayList<TitledFragment> charts;
 	
@@ -31,29 +27,28 @@ public class ScoreActivity extends ActionBarActivity /*implements OnClickListene
     ImageView arrowNext;
     
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-	    setContentView(R.layout.activity_score);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	    LinearLayout rootView = (LinearLayout)inflater.inflate(R.layout.fragment_score, null);
 	    
-	    getSupportActionBar().setTitle("Score");
+	    //getSupportActionBar().setTitle("Score");
 	    //getSupportActionBar().set
 	    //getSupportActionBar().setBackgroundDrawable(getResources().getDrawable(R.color.appBg));
 
-		Typeface roboto = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Light.ttf");
+		Typeface roboto = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Roboto-Light.ttf");
 		
-		CircularProgressBar c1 = (CircularProgressBar) findViewById(R.id.circularprogressbar1);
+		CircularProgressBar c1 = (CircularProgressBar) rootView.findViewById(R.id.circularprogressbar1);
 		c1.setProgress(42);
 		c1.setTitleTypeface(roboto);
 		c1.setSubTitleTypeface(roboto);
 		c1.setAlpha(0.5f);
 	    
-	    CircularProgressBar c2 = (CircularProgressBar) findViewById(R.id.circularprogressbar2);
+	    CircularProgressBar c2 = (CircularProgressBar) rootView.findViewById(R.id.circularprogressbar2);
 	    c2.setProgress(18);
 	    c2.setTitleTypeface(roboto);
 	    c2.setSubTitleTypeface(roboto);
 	    
 		
-		CircularProgressBar c3 = (CircularProgressBar) findViewById(R.id.circularprogressbar3);
+		CircularProgressBar c3 = (CircularProgressBar) rootView.findViewById(R.id.circularprogressbar3);
 	    c3.setProgress(71);
 	    c3.setTitleTypeface(roboto);
 	    c3.setSubTitleTypeface(roboto);
@@ -61,8 +56,8 @@ public class ScoreActivity extends ActionBarActivity /*implements OnClickListene
 		
 		
 	    
-	    arrowPrev = (ImageView)findViewById(R.id.arrowPrev);
-	    arrowNext = (ImageView)findViewById(R.id.arrowNext);
+	    arrowPrev = (ImageView)rootView.findViewById(R.id.arrowPrev);
+	    arrowNext = (ImageView)rootView.findViewById(R.id.arrowNext);
 	    
 	    String[] names = new String[]{"Kate","Mary","John","Philip","Marky"};
 	    
@@ -72,13 +67,13 @@ public class ScoreActivity extends ActionBarActivity /*implements OnClickListene
 	    charts.add(new PieChartFragment("Yay", new float[]{33f,26f,18f},names));
 	    charts.add(new PieChartFragment("Mr. Willis", new float[]{59f,65f},names));
 	    
-	    mChartsPagerAdapter = new ChartsPagerAdapter(getSupportFragmentManager(),charts);
-        mViewPager = (ViewPager) findViewById(R.id.pager);
+	    mChartsPagerAdapter = new ChartsPagerAdapter(getActivity().getSupportFragmentManager(),charts);
+        mViewPager = (ViewPager) rootView.findViewById(R.id.pager);
         mViewPager.setAdapter(mChartsPagerAdapter);
         
         showHideArrows(mViewPager.getCurrentItem());
         
-        PagerTabStrip pagerTabStrip = (PagerTabStrip)findViewById(R.id.pager_title_strip);
+        PagerTabStrip pagerTabStrip = (PagerTabStrip)rootView.findViewById(R.id.pager_title_strip);
 		pagerTabStrip.setTabIndicatorColorResource(R.color.pagerTabStripBg);
         
         mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
@@ -93,6 +88,8 @@ public class ScoreActivity extends ActionBarActivity /*implements OnClickListene
 			public void onPageScrollStateChanged(int arg0) {
 			}
 		});
+        
+        return rootView;
 	}
 	
 	private void showHideArrows(int pageNum){
