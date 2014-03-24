@@ -8,6 +8,7 @@ import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.CrashManagerListener;
 import net.hockeyapp.android.FeedbackManager;
 import net.hockeyapp.android.UpdateManager;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -21,6 +22,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,11 +98,11 @@ public class MainActivity extends ActionBarActivity {
         // ActionBarDrawerToggle ties together the the proper interactions
         // between the sliding drawer and the action bar app icon
         mDrawerToggle = new ActionBarDrawerToggle(
-                this,                  /* host Activity */
-                mDrawerLayout,         /* DrawerLayout object */
-                R.drawable.ic_drawer,  /* nav drawer image to replace 'Up' caret */
-                R.string.app_name,  /* "open drawer" description for accessibility */
-                R.string.app_name  /* "close drawer" description for accessibility */
+                this,                  	/* host Activity */
+                mDrawerLayout,         	/* DrawerLayout object */
+                R.drawable.ic_drawer,  	/* nav drawer image to replace 'Up' caret */
+                R.string.app_name,  	/* "open drawer" description for accessibility */
+                R.string.app_name  		/* "close drawer" description for accessibility */
                 ) {
             public void onDrawerClosed(View view) {
                 //getActionBar().setTitle(mTitle);
@@ -122,6 +124,14 @@ public class MainActivity extends ActionBarActivity {
     }
     
     @Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    // Inflate the menu items for use in the action bar
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.main, menu);
+	    return super.onCreateOptionsMenu(menu);
+	}
+    
+    @Override
     protected void onResume() {
     	super.onResume();        
     	overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
@@ -132,7 +142,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // If the nav drawer is open, hide action items related to the content view
-        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+        //boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
         //menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
         return super.onPrepareOptionsMenu(menu);
     }
@@ -141,12 +151,18 @@ public class MainActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
          // The action bar home/up action should open or close the drawer.
          // ActionBarDrawerToggle will take care of this.
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
+    	if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
-        
-            return super.onOptionsItemSelected(item);
-        
+    	else{
+    		switch (item.getItemId()) {
+		        case R.id.action_settings:
+		            startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+		            return true;
+		        default:
+		            return super.onOptionsItemSelected(item);
+    		}
+    	}
     }
 
     /* The click listner for ListView in the navigation drawer */
@@ -156,19 +172,36 @@ public class MainActivity extends ActionBarActivity {
         	mDrawerLayout.closeDrawers();
         	switch (position) {
 	        case 1:
-	        	
+	        	//Score
+	        	getSupportFragmentManager().beginTransaction()
+				.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
+				.replace(R.id.content_frame, new ScoreFragment())
+				.addToBackStack(null)
+				.commit();
 	            break;
 	        case 2:
-	        	
+	        	//Dashboard
 	            break;
 	        case 3:
-	        	        	
+	        	//Trips
 	            break;
-	        case 4:        	
+	        case 4:
+	        	//Comparsion
 	            break;
 	        case 5:
+	        	//Alerts
 	        	break;
 	        case 6:
+	        	// - Divider -
+	            break;
+	        case 7:
+	        	//Distraction
+	            break;
+	        case 8:
+	        	//Limits
+	            break;
+	        case 9:
+	        	//Engine
 	            break;
         	}
         }
