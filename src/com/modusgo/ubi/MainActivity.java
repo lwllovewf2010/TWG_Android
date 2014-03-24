@@ -1,209 +1,267 @@
 package com.modusgo.ubi;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.hockeyapp.android.CrashManager;
+import net.hockeyapp.android.CrashManagerListener;
+import net.hockeyapp.android.FeedbackManager;
 import net.hockeyapp.android.UpdateManager;
-
-import android.content.res.Resources;
-import android.graphics.Typeface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.PagerTabStrip;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.util.TypedValue;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
+import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.ImageView;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
-import com.modusgo.ubi.customviews.ViewPager;
-import com.viewpagerindicator.CirclePageIndicator;
-
-public class MainActivity extends ActionBarActivity /*implements OnClickListener*/ {
-
-	Fragment frag1;
-	ChartFragment frag2;
-	FragmentTransaction fTrans;
-	CheckBox chbStack;
-	
-	ArrayList<TitledFragment> charts;
-	
-	ChartsPagerAdapter mChartsPagerAdapter;
-    ViewPager mViewPager;	
-	
-    ImageView arrowPrev;
-    ImageView arrowNext;
+public class MainActivity extends ActionBarActivity {
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
+    private ActionBarDrawerToggle mDrawerToggle;
     
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-	    setContentView(R.layout.activity_main);
-	    
-	    getSupportActionBar().setTitle("Dashboard");
-	    //getSupportActionBar().set
-	    //getSupportActionBar().setBackgroundDrawable(getResources().getDrawable(R.color.appBg));
-	    
-	    ArrayList<Driver> drivers = new ArrayList<Driver>();
-	    drivers.add(new Driver("Mary","B"));
-	    drivers.add(new Driver("Kate","A"));
-	    drivers.add(new Driver("John","C"));
-	    drivers.add(new Driver("Philip","B"));
-	    drivers.add(new Driver("Marky","B"));
-	    
-	    DriversPagerAdapter driversPagerAdapter = new DriversPagerAdapter(getSupportFragmentManager(),drivers);
-	    
-	    ViewPager pagerDrivers = (ViewPager)findViewById(R.id.pager_drivers);
-	    pagerDrivers.setAdapter(driversPagerAdapter);
-	    pagerDrivers.setSwipeEnabled(true);
-	    
-	    //Bind the title indicator to the adapter
-        CirclePageIndicator indicator = (CirclePageIndicator)findViewById(R.id.indicator);
-        indicator.setViewPager(pagerDrivers);
-        indicator.setSnap(true);
+    SharedPreferences prefs;
+
+    Fragment fragment;
+    
+    private static final String ATTRIBUTE_NAME_TEXT = "text"; 
+    
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+		checkForUpdates();
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
         
-        final float density = getResources().getDisplayMetrics().density;
-        indicator.setRadius(4 * density);
-        indicator.setPageColor(0x33FFFFFF);//unactive circle color
-        indicator.setFillColor(0xFFFFFFFF);
-        indicator.setStrokeWidth(0);
+        prefs = getSharedPreferences(getPackageName(), MODE_MULTI_PROCESS);
         
-	    		
-	    String[] names = new String[]{"Kate","Mary","John","Philip","Marky"};
-	    
-	    charts = new ArrayList<TitledFragment>();
-	    charts.add(new ChartFragment("Yippie", new float[]{107f,712f,215f,510f,510f},names));//4th equals to zero 'cause it is the average value and counts in Chart constructor
-	    charts.add(new ChartFragment("Ki", new float[]{15f,19f,16f,15f},names));
-	    charts.add(new ChartFragment("Yay", new float[]{33f,26f,18f},names));
-	    charts.add(new ChartFragment("Mr. Willis", new float[]{59f,65f},names));
-	    
-	    arrowPrev = (ImageView)findViewById(R.id.arrowPrev);
-	    arrowNext = (ImageView)findViewById(R.id.arrowNext);
-	    
-	    /*fTrans = getSupportFragmentManager().beginTransaction();
-	    fTrans.replace(R.id.charts, charts.get(0).fragment);
-		fTrans.commit();*/
-		
-		mChartsPagerAdapter = new ChartsPagerAdapter(getSupportFragmentManager(),charts);
-        mViewPager = (ViewPager) findViewById(R.id.pager);
-        mViewPager.setAdapter(mChartsPagerAdapter);
+        View v = getLayoutInflater().inflate(R.layout.drawer_list_header, null);
+        ((TextView)v.findViewById(R.id.tvName)).setText("John");
+        mDrawerList.addHeaderView(v);
         
-        showHideArrows(mViewPager.getCurrentItem());
+        // set a custom shadow that overlays the main content when the drawer opens
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         
-        mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
+        final String[] menuItems = new String[]{"Score","Dashboard","Trips","Comparsion","Alerts","-","Distraction","Limits","Engine"};
+        
+        ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>(menuItems.length);
+        Map<String, Object> m;
+        for (int i = 0; i < menuItems.length; i++) {
+        	m = new HashMap<String, Object>();
+	        m.put(ATTRIBUTE_NAME_TEXT, menuItems[i]);
+	        data.add(m);
+        }
+
+        String[] from = { ATTRIBUTE_NAME_TEXT};
+        int[] to = { R.id.tvText };
+
+        SimpleAdapter sAdapter = new SimpleAdapter(this, data, R.layout.drawer_list_item,
+            from, to){
+        	@Override
+        	public View getView(int position, View convertView,
+        			ViewGroup parent) {
+        		if(menuItems[position].equals("-"))
+        			convertView = getLayoutInflater().inflate(R.layout.drawer_list_item_divider, null);
+        		return super.getView(position, convertView, parent);
+        	}
+        };
+        
+        // set up the drawer's list view with items and click listener
+        mDrawerList.setAdapter(sAdapter);
+
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+        
+        mDrawerLayout.setScrimColor(Color.argb(120, 200, 200, 200));
+        
+        // enable ActionBar app icon to behave as action to toggle nav drawer
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
+        // ActionBarDrawerToggle ties together the the proper interactions
+        // between the sliding drawer and the action bar app icon
+        mDrawerToggle = new ActionBarDrawerToggle(
+                this,                  	/* host Activity */
+                mDrawerLayout,         	/* DrawerLayout object */
+                R.drawable.ic_drawer,  	/* nav drawer image to replace 'Up' caret */
+                R.string.app_name,  	/* "open drawer" description for accessibility */
+                R.string.app_name  		/* "close drawer" description for accessibility */
+                ) {
+            public void onDrawerClosed(View view) {
+                //getActionBar().setTitle(mTitle);
+                //invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+
+            public void onDrawerOpened(View drawerView) {
+                //getActionBar().setTitle(mDrawerTitle);
+                //invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+        };
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+        fragment = new MainFragment();
+        
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+
+    }
+    
+    @Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    // Inflate the menu items for use in the action bar
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.main, menu);
+	    return super.onCreateOptionsMenu(menu);
+	}
+    
+    @Override
+    protected void onResume() {
+    	super.onResume();        
+    	overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+		checkForCrashes();
+    }
+
+    /* Called whenever we call invalidateOptionsMenu() */
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // If the nav drawer is open, hide action items related to the content view
+        //boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+        //menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+         // The action bar home/up action should open or close the drawer.
+         // ActionBarDrawerToggle will take care of this.
+    	if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+    	else{
+    		switch (item.getItemId()) {
+		        case R.id.action_settings:
+		            startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+		            return true;
+		        default:
+		            return super.onOptionsItemSelected(item);
+    		}
+    	}
+    }
+
+    /* The click listner for ListView in the navigation drawer */
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        	mDrawerLayout.closeDrawers();
+        	switch (position) {
+	        case 1:
+	        	//Score
+	        	getSupportFragmentManager().beginTransaction()
+				.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
+				.replace(R.id.content_frame, new ScoreFragment())
+				.addToBackStack(null)
+				.commit();
+	            break;
+	        case 2:
+	        	//Dashboard
+	            break;
+	        case 3:
+	        	//Trips
+	            break;
+	        case 4:
+	        	//Comparsion
+	            break;
+	        case 5:
+	        	//Alerts
+	        	break;
+	        case 6:
+	        	// - Divider -
+	            break;
+	        case 7:
+	        	//Distraction
+	            break;
+	        case 8:
+	        	//Limits
+	            break;
+	        case 9:
+	        	//Engine
+	            break;
+        	}
+        }
+    }
+
+   /* @Override
+    public void setTitle(CharSequence title) {
+        mTitle = title;
+        getActionBar().setTitle(mTitle);
+    }*/
+
+    /**
+     * When using the ActionBarDrawerToggle, you must call it during
+     * onPostCreate() and onConfigurationChanged()...
+     */
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // Pass any configuration change to the drawer toggls
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+    
+    @Override
+    public boolean onKeyDown(int keycode, KeyEvent e) {
+        switch(keycode) {
+            case KeyEvent.KEYCODE_MENU:
+                if(mDrawerLayout.isDrawerOpen(Gravity.LEFT))
+                    mDrawerLayout.closeDrawers();
+                else
+                    mDrawerLayout.openDrawer(Gravity.LEFT);
+                return true;
+        }
+
+        return super.onKeyDown(keycode, e);
+    }
+    
+	private void checkForCrashes() {
+		CrashManager.register(this, Constants.HOCKEY_APP_ID, new CrashManagerListener() {
 			@Override
-			public void onPageSelected(int pageNum) {
-				showHideArrows(pageNum);					
-			}
-			@Override
-			public void onPageScrolled(int arg0, float arg1, int arg2) {
-			}
-			@Override
-			public void onPageScrollStateChanged(int arg0) {
+			public boolean shouldAutoUploadCrashes() {
+				return true;
 			}
 		});
-        
-        
-        
-		/*((Button)findViewById(R.id.button1)).setOnClickListener(this);
-		((Button)findViewById(R.id.button2)).setOnClickListener(this);
-		((Button)findViewById(R.id.button3)).setOnClickListener(this);*/
-	    
-	    /*final float scale = getResources().getDisplayMetrics().density;
-	    
-	    for (final Chart chart : charts) {
-	    	final Button chartBtn = new Button(getApplicationContext());
-	    	chartBtn.setText(chart.name);
-	    	chartBtn.setWidth((int) (160 * scale + 0.5f));
-	    	
-	    	chartBtn.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					int[] loc = new int[2];
-					chartBtn.getLocationOnScreen(loc);
-					
-					fTrans = getSupportFragmentManager().beginTransaction();
-					
-					HorizontalScrollView scrollView = (HorizontalScrollView)findViewById(R.id.horizontalScrollView1);
-					int scrollToPosX = (int)(chartBtn.getLeft()-chartBtn.getWidth()/2f);
-					if(scrollToPosX<scrollView.getScrollX())
-						fTrans.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
-					else
-						fTrans.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
-						
-					scrollView.smoothScrollTo(scrollToPosX,0);
-					
-					fTrans.replace(R.id.charts, chart.fragment);
-					if (chbStack.isChecked()) fTrans.addToBackStack(null);
-					fTrans.commit();
-				}
-			});
-	    	
-			((LinearLayout)findViewById(R.id.chartButtons)).addView(chartBtn);
-		}
-	    
-	    chbStack = (CheckBox)findViewById(R.id.chbStack);*/
-		
-		Typeface robotoThin = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Light.ttf");
-		
-		PagerTabStrip pagerTabStrip = (PagerTabStrip)findViewById(R.id.pager_title_strip);
-		pagerTabStrip.setTabIndicatorColorResource(R.color.pagerTabStripBg);
-		
-		Resources r = getResources();
-	    int paddingTop = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 7, r.getDisplayMetrics()));
-	       
-		for (int i = 0; i < pagerTabStrip.getChildCount(); ++i) {
-		    View nextChild = pagerTabStrip.getChildAt(i);
-		    if (nextChild instanceof TextView) {
-		       TextView textViewToConvert = (TextView) nextChild;
-		       textViewToConvert.setTypeface(robotoThin);
-		       textViewToConvert.setPadding(0, paddingTop, 0, 0);
-		    }
-		}
-	}
-	
-	private void showHideArrows(int pageNum){
-		if(pageNum==0)
-			arrowPrev.setVisibility(View.INVISIBLE);
-		else
-			arrowPrev.setVisibility(View.VISIBLE);
-		if(pageNum==charts.size()-1)
-			arrowNext.setVisibility(View.INVISIBLE);
-		else
-			arrowNext.setVisibility(View.VISIBLE);
-	}
-
-	/*public void onClick(View v) {
-	    //fTrans = getSupportFragmentManager().beginTransaction();
-	    //fTrans.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-	    switch (v.getId()) {
-	    	case R.id.button1:
-	    	case R.id.button2:
-	    	case R.id.button3:
-	    		startActivity(new Intent(getApplicationContext(), DriverActivity.class));
-	    	    break;
-		    default:
-		    	break;
-	    }
-	    //if (chbStack.isChecked()) fTrans.addToBackStack(null);
-	    	//fTrans.commit();
-	}*/
-	
-	@Override
-	protected void onResume() {
-		super.onResume();
-	    checkForCrashes();
-	    checkForUpdates();
-	}
-	
-	private void checkForCrashes() {
-		CrashManager.register(this, Constants.HOCKEY_APP_ID);
 	}
 
 	private void checkForUpdates() {
-		// Remove this for store builds!
+		//TODO Remove this for store builds!
 		UpdateManager.register(this, Constants.HOCKEY_APP_ID);
 	}
-
+	
+	public void showFeedbackActivity() {
+		  FeedbackManager.register(this, Constants.HOCKEY_APP_ID, null);
+		  FeedbackManager.showFeedbackActivity(this);
+		}
 }

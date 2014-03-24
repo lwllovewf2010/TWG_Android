@@ -7,31 +7,35 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.viewpagerindicator.CirclePageIndicator;
 
-public class DriverActivity extends ActionBarActivity {
+public class DriverFragment extends Fragment {
 	
 	DriverInfoAdapter mAdapter;
 	
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-	    setContentView(R.layout.activity_driver_info);
-	    
-	    getSupportActionBar().setTitle("Sally");
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState){
+	    //setContentView(R.layout.activity_driver_info);
+	    View rootView = inflater.inflate(R.layout.activity_driver_info, container, false);
+		
+	    //getActivity().getSupportActionBar().setTitle("Sally");
 	    
 	    ArrayList<DriverInfoFragment> pages = new ArrayList<DriverInfoFragment>();
 	    pages.add(new DriverInfoFragment());
 	    pages.add(new DriverInfoFragment());
 	    
-	    mAdapter = new DriverInfoAdapter(getSupportFragmentManager(),pages);
+	    mAdapter = new DriverInfoAdapter(getActivity().getSupportFragmentManager(),pages);
 	    
-	    ViewPager mPager = (ViewPager)findViewById(R.id.pager);
+	    ViewPager mPager = (ViewPager)rootView.findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
         
         //Bind the title indicator to the adapter
-        CirclePageIndicator indicator = (CirclePageIndicator)findViewById(R.id.titles);
+        CirclePageIndicator indicator = (CirclePageIndicator)rootView.findViewById(R.id.titles);
         indicator.setViewPager(mPager);
         indicator.setSnap(true);
         
@@ -40,7 +44,8 @@ public class DriverActivity extends ActionBarActivity {
         indicator.setPageColor(0x33FFFFFF);//unactive circle color
         indicator.setFillColor(0xFFFFFFFF);
         indicator.setStrokeWidth(0);
-
+        
+		return rootView;
 	}
 }
 
