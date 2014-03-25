@@ -57,7 +57,7 @@ public class MainFragment extends Fragment {
 	    drivers.add(new Driver("Philip","B"));
 	    drivers.add(new Driver("Marky","B"));
 	    
-	    DriversPagerAdapter driversPagerAdapter = new DriversPagerAdapter(getActivity().getSupportFragmentManager(),drivers);
+	    DriversPagerAdapter driversPagerAdapter = new DriversPagerAdapter(getChildFragmentManager(),drivers);
 	    
 	    ViewPager pagerDrivers = (ViewPager)rootView.findViewById(R.id.pager_drivers);
 	    pagerDrivers.setAdapter(driversPagerAdapter);
@@ -90,7 +90,7 @@ public class MainFragment extends Fragment {
 	    fTrans.replace(R.id.charts, charts.get(0).fragment);
 		fTrans.commit();*/
 		
-		mChartsPagerAdapter = new ChartsPagerAdapter(getActivity().getSupportFragmentManager(),charts);
+		mChartsPagerAdapter = new ChartsPagerAdapter(getChildFragmentManager(),charts);
         mViewPager = (ViewPager) rootView.findViewById(R.id.pager);
         mViewPager.setAdapter(mChartsPagerAdapter);
         
@@ -167,8 +167,6 @@ public class MainFragment extends Fragment {
 		    }
 		}
 		
-		System.out.println("on create ");
-		
 		return rootView;
 	}
 	
@@ -203,11 +201,8 @@ public class MainFragment extends Fragment {
 	public void onResume() {
 		super.onResume();
 	    checkForCrashes();
-	    checkForUpdates();
-	    
-	    
-System.out.println("on resume");
-	}
+	    checkForUpdates();   
+	 }
 	
 	private void checkForCrashes() {
 		CrashManager.register(getActivity(), Constants.HOCKEY_APP_ID);

@@ -119,7 +119,7 @@ public class MainActivity extends ActionBarActivity {
         fragment = new MainFragment();
         
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment,"test").commit();
 
     }
     
