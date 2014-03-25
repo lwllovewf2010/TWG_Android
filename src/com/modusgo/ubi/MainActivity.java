@@ -184,6 +184,11 @@ public class MainActivity extends ActionBarActivity {
 	            break;
 	        case 3:
 	        	//Trips
+	        	getSupportFragmentManager().beginTransaction()
+				.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
+				.replace(R.id.content_frame, new TripFragment())
+				.addToBackStack(null)
+				.commit();
 	            break;
 	        case 4:
 	        	//Comparsion
