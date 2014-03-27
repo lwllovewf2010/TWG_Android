@@ -2,7 +2,10 @@ package com.modusgo.ubi;
 
 import java.util.ArrayList;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerTabStrip;
@@ -67,7 +70,7 @@ public class ScoreFragment extends Fragment {
 	    charts.add(new PieChartFragment("Yay", new float[]{33f,26f,18f},names));
 	    charts.add(new PieChartFragment("Mr. Willis", new float[]{59f,65f},names));
 	    
-	    mChartsPagerAdapter = new ChartsPagerAdapter(getActivity().getSupportFragmentManager(),charts);
+	    mChartsPagerAdapter = new ChartsPagerAdapter(getChildFragmentManager(),charts);
         mViewPager = (ViewPager) rootView.findViewById(R.id.pager);
         mViewPager.setAdapter(mChartsPagerAdapter);
         
@@ -101,6 +104,32 @@ public class ScoreFragment extends Fragment {
 			arrowNext.setVisibility(View.INVISIBLE);
 		else
 			arrowNext.setVisibility(View.VISIBLE);
+	}
+	
+	private Bitmap b = null;
+	
+	@Override
+	public void onPause() {
+		b = loadBitmapFromView(getView());
+		super.onPause();
+	}
+
+	public static Bitmap loadBitmapFromView(View v) {
+		Bitmap b = Bitmap.createBitmap(v.getWidth(),
+				v.getHeight(), Bitmap.Config.ARGB_8888);
+		Canvas c = new Canvas(b);
+		v.layout(0, 0, v.getWidth(),
+				v.getHeight());
+		v.draw(c);
+		return b;
+	}
+
+	@Override
+	public void onDestroyView() {
+		BitmapDrawable bd = new BitmapDrawable(getResources(),b);
+		getView().findViewById(R.id.root_layout).setBackground(bd);
+		b = null;
+		super.onDestroyView();
 	}
 	
 }

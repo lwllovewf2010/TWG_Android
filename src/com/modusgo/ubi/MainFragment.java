@@ -5,7 +5,10 @@ import java.util.ArrayList;
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -196,6 +199,32 @@ public class MainFragment extends Fragment {
 	    //if (chbStack.isChecked()) fTrans.addToBackStack(null);
 	    	//fTrans.commit();
 	}*/
+	
+	private Bitmap b = null;
+	
+	@Override
+	public void onPause() {
+		b = loadBitmapFromView(getView());
+		super.onPause();
+	}
+	
+	public static Bitmap loadBitmapFromView(View v) {
+		Bitmap b = Bitmap.createBitmap(v.getWidth(),
+				v.getHeight(), Bitmap.Config.ARGB_8888);
+		Canvas c = new Canvas(b);
+		v.layout(0, 0, v.getWidth(),
+				v.getHeight());
+		v.draw(c);
+		return b;
+	}
+	
+	@Override
+	public void onDestroyView() {
+		BitmapDrawable bd = new BitmapDrawable(getResources(),b);
+		getView().findViewById(R.id.root_layout).setBackground(bd);
+		b = null;
+		super.onDestroyView();
+	}
 	
 	@Override
 	public void onResume() {

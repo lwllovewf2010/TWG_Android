@@ -2,6 +2,9 @@ package com.modusgo.ubi;
 
 import java.util.ArrayList;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -21,7 +24,7 @@ public class DriverFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState){
 	    //setContentView(R.layout.activity_driver_info);
-	    View rootView = inflater.inflate(R.layout.activity_driver_info, container, false);
+	    View rootView = inflater.inflate(R.layout.fragment_driver_info, container, false);
 		
 	    //getActivity().getSupportActionBar().setTitle("Sally");
 	    
@@ -29,7 +32,7 @@ public class DriverFragment extends Fragment {
 	    pages.add(new DriverInfoFragment());
 	    pages.add(new DriverInfoFragment());
 	    
-	    mAdapter = new DriverInfoAdapter(getActivity().getSupportFragmentManager(),pages);
+	    mAdapter = new DriverInfoAdapter(getChildFragmentManager(),pages);
 	    
 	    ViewPager mPager = (ViewPager)rootView.findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
@@ -46,6 +49,32 @@ public class DriverFragment extends Fragment {
         indicator.setStrokeWidth(0);
         
 		return rootView;
+	}
+	
+	private Bitmap b = null;
+	
+	@Override
+	public void onPause() {
+		b = loadBitmapFromView(getView());
+		super.onPause();
+	}
+
+	public static Bitmap loadBitmapFromView(View v) {
+		Bitmap b = Bitmap.createBitmap(v.getWidth(),
+				v.getHeight(), Bitmap.Config.ARGB_8888);
+		Canvas c = new Canvas(b);
+		v.layout(0, 0, v.getWidth(),
+				v.getHeight());
+		v.draw(c);
+		return b;
+	}
+
+	@Override
+	public void onDestroyView() {
+		BitmapDrawable bd = new BitmapDrawable(getResources(),b);
+		getView().findViewById(R.id.root_layout).setBackground(bd);
+		b = null;
+		super.onDestroyView();
 	}
 }
 
