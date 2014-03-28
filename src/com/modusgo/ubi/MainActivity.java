@@ -35,6 +35,7 @@ public class MainActivity extends ActionBarActivity {
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
+    private int mDrawerSelectedItem = -1;
     
     SharedPreferences prefs;
 
@@ -169,45 +170,52 @@ public class MainActivity extends ActionBarActivity {
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        	mDrawerLayout.closeDrawers();
-        	switch (position) {
-	        case 1:
-	        	//Score
-	        	getSupportFragmentManager().beginTransaction()
-				.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
-				.replace(R.id.content_frame, new ScoreFragment())
-				.addToBackStack(null)
-				.commit();
-	            break;
-	        case 2:
-	        	//Dashboard
-	            break;
-	        case 3:
-	        	//Trips
-	        	getSupportFragmentManager().beginTransaction()
-				.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
-				.replace(R.id.content_frame, new TripFragment())
-				.addToBackStack(null)
-				.commit();
-	            break;
-	        case 4:
-	        	//Comparsion
-	            break;
-	        case 5:
-	        	//Alerts
-	        	break;
-	        case 6:
-	        	// - Divider -
-	            break;
-	        case 7:
-	        	//Distraction
-	            break;
-	        case 8:
-	        	//Limits
-	            break;
-	        case 9:
-	        	//Engine
-	            break;
+        	System.out.println("pos: "+position+" checked: "+mDrawerList.getCheckedItemPosition());
+        	System.out.println(mDrawerList.isItemChecked(1));
+        	if(position!=mDrawerSelectedItem){
+	        	switch (position) {
+		        case 1:
+		        	//Score
+		        	getSupportFragmentManager().beginTransaction()
+					.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
+					.replace(R.id.content_frame, new ScoreFragment())
+					.addToBackStack(null)
+					.commit();
+		            break;
+		        case 2:
+		        	//Dashboard
+		            break;
+		        case 3:
+		        	//Trips
+		        	getSupportFragmentManager().beginTransaction()
+					.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
+					.replace(R.id.content_frame, new TripFragment())
+					.addToBackStack(null)
+					.commit();
+		            break;
+		        case 4:
+		        	//Comparsion
+		            break;
+		        case 5:
+		        	//Alerts
+		        	break;
+		        case 6:
+		        	// - Divider -
+		            break;
+		        case 7:
+		        	//Distraction
+		            break;
+		        case 8:
+		        	//Limits
+		            break;
+		        case 9:
+		        	//Engine
+		            break;
+	        	}
+	        	
+	        	mDrawerSelectedItem = position;
+	        	mDrawerList.setItemChecked(position, true);
+	        	mDrawerLayout.closeDrawers();
         	}
         }
     }
