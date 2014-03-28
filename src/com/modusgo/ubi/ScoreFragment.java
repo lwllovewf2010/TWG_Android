@@ -124,10 +124,17 @@ public class ScoreFragment extends Fragment {
 		return b;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onDestroyView() {
 		BitmapDrawable bd = new BitmapDrawable(getResources(),b);
-		getView().findViewById(R.id.root_layout).setBackground(bd);
+		
+		if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+			getView().findViewById(R.id.root_layout).setBackgroundDrawable(bd);
+		} else {
+			getView().findViewById(R.id.root_layout).setBackground(bd);
+		}
+		
 		b = null;
 		super.onDestroyView();
 	}
