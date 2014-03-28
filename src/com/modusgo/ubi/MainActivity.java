@@ -37,6 +37,30 @@ public class MainActivity extends ActionBarActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private int mDrawerSelectedItem = -1;
     
+    public static enum MenuItems {SCORE("Score",1), DASHBOARD("Dashboard",2), TRIPS("Trips",3), 
+    	COMPARSION("Comparsion",4), ALERTS("Alerts",5), DISTRACTION("Distraction",6), LIMITS("Limits",7), ENGINE("Engine",8); 
+	    private MenuItems(final String text, final int num) {
+	        this.text = text;
+	        this.num = num;
+	    }
+	
+	    private final String text;
+	    private final int num;
+		
+	    @Override
+	    public String toString() {
+	        return text;
+	    }
+	    
+	    public int toInt() {
+	        return num;
+	    }
+	    
+	    public String[] valuesString(){
+	    	return null;
+	    }
+    };
+    
     SharedPreferences prefs;
 
     Fragment fragment;
@@ -61,13 +85,14 @@ public class MainActivity extends ActionBarActivity {
         // set a custom shadow that overlays the main content when the drawer opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         
-        final String[] menuItems = new String[]{"Score","Dashboard","Trips","Comparsion","Alerts","Distraction","Limits","Engine"};
+        final MenuItems[] menuItemsArray = MenuItems.values();
+        //final String[] menuItems = new String[]{"Score","Dashboard","Trips","Comparsion","Alerts","Distraction","Limits","Engine"};
         
-        ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>(menuItems.length);
+        ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>(menuItemsArray.length);
         Map<String, Object> m;
-        for (int i = 0; i < menuItems.length; i++) {
+        for (int i = 0; i < menuItemsArray.length; i++) {
         	m = new HashMap<String, Object>();
-	        m.put(ATTRIBUTE_NAME_TEXT, menuItems[i]);
+	        m.put(ATTRIBUTE_NAME_TEXT, menuItemsArray[i].toString());
 	        data.add(m);
         }
 
@@ -79,7 +104,7 @@ public class MainActivity extends ActionBarActivity {
         	@Override
         	public View getView(int position, View convertView,	ViewGroup parent) {
         		View rowView = getLayoutInflater().inflate(R.layout.drawer_list_item, parent, false);
-        		((TextView)rowView.findViewById(R.id.tvText)).setText(menuItems[position]);
+        		((TextView)rowView.findViewById(R.id.tvText)).setText(menuItemsArray[position].toString());
         		
         		if( ((HashMap<?, ?>)getItem(position)).get("text").equals("Alerts") ){
         			rowView.findViewById(R.id.divider).setVisibility(View.VISIBLE);
@@ -220,6 +245,15 @@ public class MainActivity extends ActionBarActivity {
 	        	mDrawerLayout.closeDrawers();
         	}
         }
+    }
+    
+    /**
+     * 
+     * @param item MenuItem num
+     */
+    public void setNavigationDrawerItemSelected(int item){
+    	mDrawerSelectedItem = item;
+    	mDrawerList.setItemChecked(item, true);
     }
 
    /* @Override

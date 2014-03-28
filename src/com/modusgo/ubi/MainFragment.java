@@ -170,6 +170,13 @@ public class MainFragment extends Fragment {
 		    }
 		}
 		
+		try{
+			((MainActivity)getActivity()).setNavigationDrawerItemSelected(0);
+		}
+		catch(ClassCastException e){
+			e.printStackTrace();
+		}
+		
 		return rootView;
 	}
 	

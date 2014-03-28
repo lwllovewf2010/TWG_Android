@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.modusgo.ubi.MainActivity.MenuItems;
 import com.modusgo.ubi.customviews.CircularProgressBar;
 import com.modusgo.ubi.customviews.ViewPager;
 
@@ -91,6 +92,13 @@ public class ScoreFragment extends Fragment {
 			public void onPageScrollStateChanged(int arg0) {
 			}
 		});
+        
+        try{
+			((MainActivity)getActivity()).setNavigationDrawerItemSelected(MenuItems.SCORE.toInt());
+		}
+		catch(ClassCastException e){
+			e.printStackTrace();
+		}
         
         return rootView;
 	}
