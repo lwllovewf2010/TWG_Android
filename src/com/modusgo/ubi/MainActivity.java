@@ -61,7 +61,7 @@ public class MainActivity extends ActionBarActivity {
         // set a custom shadow that overlays the main content when the drawer opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         
-        final String[] menuItems = new String[]{"Score","Dashboard","Trips","Comparsion","Alerts","-","Distraction","Limits","Engine"};
+        final String[] menuItems = new String[]{"Score","Dashboard","Trips","Comparsion","Alerts","Distraction","Limits","Engine"};
         
         ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>(menuItems.length);
         Map<String, Object> m;
@@ -79,11 +79,19 @@ public class MainActivity extends ActionBarActivity {
         	@Override
         	public View getView(int position, View convertView,
         			ViewGroup parent) {
-        		if(menuItems[position].equals("-"))
-        			convertView = getLayoutInflater().inflate(R.layout.drawer_list_item_divider, null);
+        		try{
+        			if( ((HashMap<?, ?>)getItem(position)).get("text").equals("Alerts") ){
+	        			convertView = getLayoutInflater().inflate(R.layout.drawer_list_item, null);
+	        			convertView.findViewById(R.id.divider).setVisibility(View.VISIBLE);
+        			}
+        		}
+        		catch(Exception e){
+        			e.printStackTrace();
+        		}
         		return super.getView(position, convertView, parent);
         	}
         };
+        
         
         // set up the drawer's list view with items and click listener
         mDrawerList.setAdapter(sAdapter);
@@ -200,15 +208,12 @@ public class MainActivity extends ActionBarActivity {
 		        	//Alerts
 		        	break;
 		        case 6:
-		        	// - Divider -
-		            break;
-		        case 7:
 		        	//Distraction
 		            break;
-		        case 8:
+		        case 7:
 		        	//Limits
 		            break;
-		        case 9:
+		        case 8:
 		        	//Engine
 		            break;
 	        	}
