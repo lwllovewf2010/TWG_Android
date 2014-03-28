@@ -56,7 +56,7 @@ public class MainActivity extends ActionBarActivity {
         
         View v = getLayoutInflater().inflate(R.layout.drawer_list_header, null);
         ((TextView)v.findViewById(R.id.tvName)).setText("John");
-        mDrawerList.addHeaderView(v);
+        mDrawerList.addHeaderView(v,null,false);
         
         // set a custom shadow that overlays the main content when the drawer opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
@@ -77,18 +77,15 @@ public class MainActivity extends ActionBarActivity {
         SimpleAdapter sAdapter = new SimpleAdapter(this, data, R.layout.drawer_list_item,
             from, to){
         	@Override
-        	public View getView(int position, View convertView,
-        			ViewGroup parent) {
-        		try{
-        			if( ((HashMap<?, ?>)getItem(position)).get("text").equals("Alerts") ){
-	        			convertView = getLayoutInflater().inflate(R.layout.drawer_list_item, null);
-	        			convertView.findViewById(R.id.divider).setVisibility(View.VISIBLE);
-        			}
-        		}
-        		catch(Exception e){
-        			e.printStackTrace();
-        		}
-        		return super.getView(position, convertView, parent);
+        	public View getView(int position, View convertView,	ViewGroup parent) {
+        		View rowView = getLayoutInflater().inflate(R.layout.drawer_list_item, parent, false);
+        		((TextView)rowView.findViewById(R.id.tvText)).setText(menuItems[position]);
+        		
+        		if( ((HashMap<?, ?>)getItem(position)).get("text").equals("Alerts") ){
+        			rowView.findViewById(R.id.divider).setVisibility(View.VISIBLE);
+    			}
+        		
+        		return rowView;
         	}
         };
         
@@ -180,7 +177,7 @@ public class MainActivity extends ActionBarActivity {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         	System.out.println("pos: "+position+" checked: "+mDrawerList.getCheckedItemPosition());
         	System.out.println(mDrawerList.isItemChecked(1));
-        	if(position!=mDrawerSelectedItem){
+        	if(position!=mDrawerSelectedItem && position>0){
 	        	switch (position) {
 		        case 1:
 		        	//Score
