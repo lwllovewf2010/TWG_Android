@@ -46,22 +46,17 @@ public class ChartFragment extends TitledFragment {
 		this.names = names;
 		
 		float maxValue = 0;
-		columnPercents = new float[values.length+1];
-		columnValues = new float[values.length+1];
+		columnPercents = new float[values.length];
+		columnValues = new float[values.length];
 		
 		for (float f : values) {
 			maxValue = f>maxValue ? f : maxValue;
-			columnValues[values.length]+=f;
 		}
-		columnValues[values.length]/=values.length;
-		columnPercents[values.length] = columnValues[values.length]/maxValue;
 		
 		for (int i = 0; i < values.length; i++) {
 			columnValues[i] = values[i];
 			columnPercents[i] = columnValues[i]/maxValue;
 		}
-		
-		
 	}
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -171,18 +166,12 @@ public class ChartFragment extends TitledFragment {
 		    Drawable img = getResources().getDrawable( R.drawable.list_marker );
 		    img.mutate();
 		    
-		    if(i==columnPercents.length-1){
-		  		column.setBackgroundResource(backgroundResources[backgroundResources.length-1]);
-			    img.setColorFilter(getResources().getColor(backgroundResources[backgroundResources.length-1]),PorterDuff.Mode.MULTIPLY);
-			    tvMarker.setTextColor(getResources().getColor(backgroundResources[backgroundResources.length-1]));		  		
-		    }
-		  	else{
-		  		column.setBackgroundResource(backgroundResources[i]);
-			    img.setColorFilter(getResources().getColor(backgroundResources[i]),PorterDuff.Mode.MULTIPLY);
-			    tvMarker.setTextColor(getResources().getColor(backgroundResources[i]));
-			    tvMarker.setText(names[i]);
-		  	}
-		    tvMarker.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
+		    column.setBackgroundResource(backgroundResources[i]);
+			img.setColorFilter(getResources().getColor(backgroundResources[i]),PorterDuff.Mode.MULTIPLY);
+			tvMarker.setTextColor(getResources().getColor(backgroundResources[i]));
+			tvMarker.setText(names[i]);
+		  	
+			tvMarker.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
 		    if(nl.getVisibility()==View.GONE){
 				hideMarker(tvMarker, 0);
 			}
