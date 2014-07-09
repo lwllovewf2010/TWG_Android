@@ -143,15 +143,17 @@ public class ChartFragment extends TitledFragment {
 	        					}
 	            			}
 	            			else if(offsetX<-10){
-	            				if(nl.getVisibility()==View.VISIBLE){
+	            				if(nl.getVisibility()==View.VISIBLE && visibleColumns>2){
 	            					hideMarker(tvMarker, 500);
 	            					nl.setVisibility(View.GONE);
 	        					}	        					
 	            			}
 	            			else if(offsetX==0){
 	            				if(nl.getVisibility()==View.VISIBLE){
-	            					hideMarker(tvMarker, 500);
-	            					nl.setVisibility(View.GONE);
+	            					if(visibleColumns>2){
+		            					hideMarker(tvMarker, 500);
+		            					nl.setVisibility(View.GONE);
+	            					}
 	        					}
 	            				else{
 	            					showMarker(tvMarker, 500);
