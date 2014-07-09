@@ -26,8 +26,12 @@ public class ChartFragment extends TitledFragment {
 	final String LOG_TAG = "myLogs";
 	float[] columnPercents;
 	float[] columnValues;
+	int visibleColumns = 0;
 	int[] backgroundResources;
 	String names[];
+	
+	private LinearLayout left_nl;
+	private LinearLayout right_nl;
 	
 	float x = 0;
 	float offsetX = 0;
@@ -78,6 +82,20 @@ public class ChartFragment extends TitledFragment {
 	    Typeface robotoLight = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Roboto-Light.ttf");
 	    
 	    DecimalFormat df = new DecimalFormat("0");
+	    
+	    visibleColumns = columnPercents.length;
+	    
+	    left_nl = (LinearLayout) inflater.inflate(R.layout.chart_column, null);
+    	LayoutParams leftRight_nl_p = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT,0);
+    	leftRight_nl_p.width = 0;
+    	left_nl.setLayoutParams(leftRight_nl_p);
+    	left_nl.setVisibility(View.INVISIBLE);
+    	
+    	right_nl = (LinearLayout) inflater.inflate(R.layout.chart_column, null);
+    	right_nl.setLayoutParams(leftRight_nl_p);
+    	right_nl.setVisibility(View.INVISIBLE);
+	  	
+    	ll.addView(left_nl);
 	    
 	    for (int i = 0; i < columnPercents.length; i++) {
 	    	final LinearLayout nl = (LinearLayout) inflater.inflate(R.layout.chart_column, null);
@@ -142,6 +160,7 @@ public class ChartFragment extends TitledFragment {
 	            			}
 	            			break;
 	            	}
+	            	updateColumnsWidth();
 					return true;
 	            }
 		    });
@@ -168,7 +187,20 @@ public class ChartFragment extends TitledFragment {
 		    markersLayout.addView(tvMarker);
 		}
 	    
+	    ll.addView(right_nl);
+	    
+	    updateColumnsWidth();
+	    
 	    return  rootView;
+	}
+	
+	private void updateColumnsWidth(){		
+		if(visibleColumns<columnPercents.length-1){
+			LayoutParams leftRight_nl_p = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT,((float)(columnPercents.length-1-visibleColumns))/2f);
+	    	leftRight_nl_p.width = 0;
+	    	left_nl.setLayoutParams(leftRight_nl_p);
+	    	right_nl.setLayoutParams(leftRight_nl_p);
+		}
 	}
 	
 	private void hideMarker(View view, long duration)
@@ -183,6 +215,8 @@ public class ChartFragment extends TitledFragment {
 	    as.setDuration(duration);
 	    
 	    view.startAnimation(as);
+	    
+	    visibleColumns--;
 	}
 	private void showMarker(View view, long duration)
 	{
@@ -196,6 +230,8 @@ public class ChartFragment extends TitledFragment {
 	    as.setDuration(duration);
 	    
 	    view.startAnimation(as);
+	    
+	    visibleColumns++;
 	}
 
 	@Override
