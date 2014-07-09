@@ -3,13 +3,13 @@
     <!-- These settings headers are only used on tablets. -->
 
     <header
-        android:fragment="com.modusgo.modusadmin.SettingsActivity$GeneralPreferenceFragment"
+        android:fragment="com.modusgo.ubi.SettingsActivity$GeneralPreferenceFragment"
         android:title="@string/pref_header_general" />
     <header
-        android:fragment="com.modusgo.modusadmin.SettingsActivity$NotificationPreferenceFragment"
+        android:fragment="com.modusgo.ubi.SettingsActivity$NotificationPreferenceFragment"
         android:title="@string/pref_header_notifications" />
     <header
-        android:fragment="com.modusgo.modusadmin.SettingsActivity$DataSyncPreferenceFragment"
+        android:fragment="com.modusgo.ubi.SettingsActivity$DataSyncPreferenceFragment"
         android:title="@string/pref_header_data_sync" />
 
 </preference-headers>
