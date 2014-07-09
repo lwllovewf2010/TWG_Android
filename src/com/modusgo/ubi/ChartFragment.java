@@ -23,6 +23,7 @@ public class ChartFragment extends TitledFragment {
 	private final static String SAVED_VALUES = "values";
 	private final static String SAVED_TITLE = "title";
 	private final static String SAVED_NAMES = "names";
+	private final static int MAX_COLUMNS = 6;
 	final String LOG_TAG = "myLogs";
 	float[] columnPercents;
 	float[] columnValues;
@@ -197,8 +198,8 @@ public class ChartFragment extends TitledFragment {
 	}
 	
 	private void updateColumnsWidth(){		
-		if(visibleColumns<columnPercents.length-1){
-			LayoutParams leftRight_nl_p = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT,((float)(columnPercents.length-1-visibleColumns))/2f);
+		if(visibleColumns<MAX_COLUMNS-1){
+			LayoutParams leftRight_nl_p = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT,((float)(MAX_COLUMNS-1-visibleColumns))/2f);
 	    	leftRight_nl_p.width = 0;
 	    	left_nl.setLayoutParams(leftRight_nl_p);
 	    	right_nl.setLayoutParams(leftRight_nl_p);
