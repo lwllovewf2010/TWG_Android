@@ -21,6 +21,7 @@ import android.widget.TextView;
 public class DriversFragment extends Fragment {
 
 	private final static String SAVED_DRIVERS = "drivers";
+	private static int colorNum = 0;
 	
 	final String LOG_TAG = "myLogs";
 	ArrayList<Driver> drivers;
@@ -71,7 +72,8 @@ public class DriversFragment extends Fragment {
 			});
 	    	Drawable btnBack = btn.getBackground();
 	    	btnBack.mutate();
-	    	btnBack.setColorFilter(getResources().getColor(backgroundResources[i]), PorterDuff.Mode.MULTIPLY);
+	    	btnBack.setColorFilter(getResources().getColor(backgroundResources[colorNum]), PorterDuff.Mode.MULTIPLY);
+	    	colorNum++;
 		    
 		    TextView tvName = (TextView)circleLayout.findViewById(R.id.tvName);
 		    tvName.setTypeface(robotoLight);
