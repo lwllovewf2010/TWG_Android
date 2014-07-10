@@ -30,6 +30,7 @@ public class ChartFragment extends TitledFragment {
 	int visibleColumns = 0;
 	int[] backgroundResources;
 	String names[];
+	String rates[];
 	
 	private LinearLayout left_nl;
 	private LinearLayout right_nl;
@@ -41,9 +42,10 @@ public class ChartFragment extends TitledFragment {
 	public ChartFragment() {
 	}
 	
-	public ChartFragment(String title, float[] values, String[] names) {
+	public ChartFragment(String title, float[] values, String[] names, String[] rates) {
 		this.title = title;
 		this.names = names;
+		this.rates = rates;
 		
 		float maxValue = 0;
 		columnPercents = new float[values.length];
@@ -74,10 +76,8 @@ public class ChartFragment extends TitledFragment {
 	    LinearLayout ll = (LinearLayout)rootView.findViewById(R.id.chart);
 	    LinearLayout markersLayout = (LinearLayout)rootView.findViewById(R.id.markers);
 	    
-	    Typeface robotoThin = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Roboto-Thin.ttf");
 	    Typeface robotoLight = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Roboto-Light.ttf");
-	    
-	    DecimalFormat df = new DecimalFormat("0");
+	    Typeface robotoBold = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Roboto-Bold.ttf");
 	    
 	    visibleColumns = columnPercents.length;
 	    
@@ -101,8 +101,9 @@ public class ChartFragment extends TitledFragment {
 		  	nl.setLayoutParams(p);
 		    
 		    TextView tv = ((TextView)nl.findViewById(R.id.textView));
-		    tv.setTypeface(robotoThin);
-		    tv.setText(df.format(columnValues[i]));
+		    tv.setTypeface(robotoBold);
+		    tv.setTextColor(getResources().getColor(backgroundResources[i]));
+		    tv.setText(rates[i]);
 		    View column = nl.findViewById(R.id.view);
 		    LinearLayout.LayoutParams p2 = (LinearLayout.LayoutParams) column.getLayoutParams();
 		  	p2.weight = columnPercents[i];

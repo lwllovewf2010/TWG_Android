@@ -78,13 +78,14 @@ public class MainFragment extends Fragment {
         indicator.setStrokeWidth(0);
         
 	    		
-	    String[] names = new String[]{"Kate","Mary","John","Philip","Marky"};
+	    String[] names = new String[]{"Mary","Kate","John","Philip","Marky"};
+	    String[] rates = new String[]{"B","A","C","B","B"};
 	    
 	    charts = new ArrayList<TitledFragment>();
-	    charts.add(new ChartFragment("Yippie", new float[]{107f,712f,215f,510f,510f},names));//4th equals to zero 'cause it is the average value and counts in Chart constructor
-	    charts.add(new ChartFragment("Ki", new float[]{15f,19f,16f,15f},names));
-	    charts.add(new ChartFragment("Yay", new float[]{33f,26f,18f},names));
-	    charts.add(new ChartFragment("Mr. Willis", new float[]{59f,65f},names));
+	    charts.add(new ChartFragment("Distance", new float[]{107f,712f,215f,510f,510f},names, rates));
+	    charts.add(new ChartFragment("Acc", new float[]{15f,19f,16f,15f,10f},names, rates));
+	    charts.add(new ChartFragment("Max speed", new float[]{33f,26f,10f,18f,22f},names, rates));
+	    charts.add(new ChartFragment("Braking", new float[]{59f,65f,78f,40f,100f},names, rates));
 	    
 	    arrowPrev = (ImageView)rootView.findViewById(R.id.arrowPrev);
 	    arrowNext = (ImageView)rootView.findViewById(R.id.arrowNext);
