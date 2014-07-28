@@ -2,7 +2,7 @@ package com.modusgo.ubi;
 
 import java.util.ArrayList;
 
-import android.content.Intent;
+import android.annotation.SuppressLint;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+@SuppressLint("ValidFragment")
 public class DriversFragment extends Fragment {
 
 	private final static String SAVED_DRIVERS = "drivers";
@@ -35,7 +36,10 @@ public class DriversFragment extends Fragment {
 
 	@SuppressWarnings("unchecked")
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-	    Log.d(LOG_TAG, "Fragment1 onCreateView");
+	    if(colorNum>4)
+	    	colorNum = 0;
+		
+		Log.d(LOG_TAG, "Fragment1 onCreateView");
 	    LinearLayout rootView = (LinearLayout)inflater.inflate(R.layout.drivers_fragment, null);
 	    
 	    if(savedInstanceState!=null) {
@@ -57,14 +61,24 @@ public class DriversFragment extends Fragment {
 	    	//LayoutParams p = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT,1f);
 	    	//p.width = 0;
 	    	
+	    	final String name = drivers.get(i).name;
+	    	final String score = drivers.get(i).score;
+	    	
 		  	//nl.setLayoutParams(p);
 	    	Button btn = (Button)circleLayout.findViewById(R.id.button);
 	    	btn.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
+					
+					DriverFragment df = new DriverFragment();
+					Bundle b = new Bundle();
+					b.putString("name", name);
+					b.putString("score", score);
+					df.setArguments(b);
+					
 					getActivity().getSupportFragmentManager().beginTransaction()
 					.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
-					.replace(R.id.content_frame, new DriverFragment())
+					.replace(R.id.content_frame, df)
 					.addToBackStack(null)
 					.commit();
 					//startActivity(new Intent(getActivity(),DriverFragment.class));

@@ -1,7 +1,6 @@
 package com.modusgo.ubi;
 
-import java.text.DecimalFormat;
-
+import android.annotation.SuppressLint;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -17,6 +16,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+@SuppressLint("ValidFragment")
 public class ChartFragment extends TitledFragment {
 
 	private final static String SAVED_PERCENTS = "columnPercents";

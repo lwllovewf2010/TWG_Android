@@ -3,6 +3,7 @@ package com.modusgo.ubi;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import android.annotation.SuppressLint;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 import com.modusgo.ubi.customviews.PieChartView;
 import com.modusgo.ubi.customviews.PieChartView.PieSector;
 
+@SuppressLint("ValidFragment")
 public class PieChartFragment extends TitledFragment{
 
 	private final static String SAVED_VISIBILITIES = "visibilities";
