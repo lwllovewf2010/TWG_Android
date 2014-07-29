@@ -34,6 +34,10 @@
             android:label="HOME" >
         </activity>
         <activity
+            android:name="com.modusgo.ubi.DriverDetailsActivity"
+            android:label="DRIVER DETAIL" >
+        </activity>
+        <activity
             android:name="com.modusgo.ubi.MainActivity"
             android:label="@string/app_name" >
         </activity>

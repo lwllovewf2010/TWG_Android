@@ -91,6 +91,17 @@ public class HomeActivity extends Activity{
 		    }else{
 		    	((ImageView)view.findViewById(R.id.imageAlerts)).setImageResource(R.drawable.ic_alerts_red);		    	
 		    }
+		    
+		    view.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View arg0) {
+					Intent i = new Intent(HomeActivity.this, DriverDetailsActivity.class);
+					i.putExtra("id", position);
+					startActivity(i);
+				}
+			});
+		    
 		    return view;
 		}
 		
