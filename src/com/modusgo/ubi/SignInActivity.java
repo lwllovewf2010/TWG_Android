@@ -2,11 +2,11 @@ package com.modusgo.ubi;
 
 import java.util.concurrent.TimeUnit;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
@@ -16,7 +16,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public class SignInActivity extends ActionBarActivity {
+public class SignInActivity extends Activity {
     
 	View llProgress;
 	View llFields;
