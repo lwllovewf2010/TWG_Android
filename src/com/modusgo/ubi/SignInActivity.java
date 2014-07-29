@@ -81,7 +81,7 @@ public class SignInActivity extends ActionBarActivity {
 		@Override
 		protected void onPostExecute(Boolean result) {
 			if(result){
-				startActivity(new Intent(SignInActivity.this, MainActivity.class));
+				startActivity(new Intent(SignInActivity.this, HomeActivity.class));
 				finish();
 			}
 			else{

@@ -17,15 +17,16 @@
         android:layout_weight="1"
         android:orientation="vertical"
         android:layout_marginLeft="18dp"
-        android:layout_marginTop="7dp" >
+        android:layout_marginTop="4dp" >
 
         <com.modusgo.ubi.customviews.TypefacedTextView
             android:id="@+id/tvName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:lineSpacingExtra="-2dp"
             android:gravity="left|bottom"
             android:minLines="2"
-            android:text="Melissa\nHasalonglastname"
+            android:text="Melissa Hasalonglastname"
             android:textColor="#697078"
             android:textSize="17.5sp"
             ubi:typeface="EncodeSansNormal-300-Light.ttf" />
@@ -34,8 +35,8 @@
             android:id="@+id/tvVehicle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
             android:gravity="left"
             android:text="2012 Ford Edge"
             android:textColor="#00aeef"
