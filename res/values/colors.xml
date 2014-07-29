@@ -5,6 +5,7 @@
      
      <color name="driver_stats_block_header">#2493d0</color>
      <color name="driver_stats_block_header_red">#fe4c4c</color>
+     <color name="home_item_pressed">#83acff</color>
      
      <color name="transparent">#00000000</color>
      <color name="red">#ef4136</color>

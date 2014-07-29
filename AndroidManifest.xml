@@ -31,7 +31,7 @@
         </activity>
         <activity
             android:name="com.modusgo.ubi.HomeActivity"
-            android:label="@string/app_name" >
+            android:label="HOME" >
         </activity>
         <activity
             android:name="com.modusgo.ubi.MainActivity"
