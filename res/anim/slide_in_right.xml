@@ -19,6 +19,10 @@
 -->
 
 <set xmlns:android="http://schemas.android.com/apk/res/android">
-	<translate android:fromXDelta="100%p" android:toXDelta="0"
-            android:duration="@android:integer/config_mediumAnimTime"/>
+	<objectAnimator
+        android:duration="@android:integer/config_mediumAnimTime"
+        android:propertyName="x"
+        android:valueFrom="1000"
+        android:valueTo="0"
+        android:valueType="floatType" />
 </set>
