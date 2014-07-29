@@ -81,7 +81,7 @@ public class SignInActivity extends Activity {
 		@Override
 		protected void onPostExecute(Boolean result) {
 			if(result){
-				startActivity(new Intent(SignInActivity.this, HomeActivity.class));
+				startActivity(new Intent(SignInActivity.this, MainActivity.class));
 				finish();
 			}
 			else{

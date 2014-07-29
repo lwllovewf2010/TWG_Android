@@ -25,6 +25,7 @@
 	 
 	 <color name="forgot_password_press">#f15b2a</color>
      <color name="menu_blue">#1e7dc2</color>
+     <color name="menu_text_gray">#697078</color>
      
      <color name="trip_gray">#9f9f9f</color>
      <color name="trip_light_gray">#e7e7e7</color>

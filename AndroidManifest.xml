@@ -30,10 +30,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.modusgo.ubi.HomeActivity"
-            android:label="HOME" >
-        </activity>
-        <activity
             android:name="com.modusgo.ubi.DriverDetailsActivity"
             android:label="DRIVER DETAIL" >
         </activity>

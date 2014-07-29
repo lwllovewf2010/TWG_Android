@@ -5,9 +5,9 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Checkable;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
-public class CheckedLinearLayout extends LinearLayout implements Checkable {
+public class CheckedRelativeLayout extends RelativeLayout implements Checkable {
     
     private static final int[] CHECKED_STATE_SET = {
         android.R.attr.state_checked
@@ -16,15 +16,15 @@ public class CheckedLinearLayout extends LinearLayout implements Checkable {
     private boolean checked = false;
 
     @SuppressLint("NewApi")
-    public CheckedLinearLayout(Context context, AttributeSet attrs, int defStyle) {
+    public CheckedRelativeLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
-    public CheckedLinearLayout(Context context, AttributeSet attrs) {
+    public CheckedRelativeLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public CheckedLinearLayout(Context context) {
+    public CheckedRelativeLayout(Context context) {
         super(context);
     }
 

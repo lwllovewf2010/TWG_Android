@@ -2,7 +2,7 @@ package com.modusgo.ubi;
 
 import java.util.ArrayList;
 
-import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,28 +12,32 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class HomeActivity extends Activity{
+public class HomeFragment extends Fragment{
 	
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_home);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
 		
-		getActionBar().setTitle("HOME");
+		LinearLayout rootView = (LinearLayout)inflater.inflate(R.layout.activity_home, null);
 		
-		ListView lvDrivers = (ListView)findViewById(R.id.listViewDrivers);
+		((MainActivity)getActivity()).setActionBarTitle("HOME");
+		
+		ListView lvDrivers = (ListView)rootView.findViewById(R.id.listViewDrivers);
 		
 		ArrayList<Driver> data = new ArrayList<Driver>();
 		data.add(new Driver("Melissa Hasalonglastname", R.drawable.person_test, "2012 Ford Edge","07/05/2014 05:00 PM PST", true, true));
 		data.add(new Driver("Diana Johnson", R.drawable.person_test2, "2011 Ford Focus","07/05/2014 05:00 PM PST", true, false));
 		data.add(new Driver("Kate Summerton", R.drawable.person_test3, "1967 Ford Mustang","07/05/2014 05:00 PM PST", false, true));
 		
-		DriversAdapter driversAdapter = new DriversAdapter(this, data);
+		DriversAdapter driversAdapter = new DriversAdapter(getActivity(), data);
 		
 		lvDrivers.setAdapter(driversAdapter);
+		
+		return rootView;
 	}
 	
 	class DriversAdapter extends BaseAdapter{
@@ -96,7 +100,7 @@ public class HomeActivity extends Activity{
 				
 				@Override
 				public void onClick(View arg0) {
-					Intent i = new Intent(HomeActivity.this, DriverDetailsActivity.class);
+					Intent i = new Intent(ctx, DriverDetailsActivity.class);
 					i.putExtra("id", position);
 					startActivity(i);
 				}
