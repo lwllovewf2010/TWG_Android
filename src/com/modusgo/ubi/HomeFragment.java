@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -100,9 +99,16 @@ public class HomeFragment extends Fragment{
 				
 				@Override
 				public void onClick(View arg0) {
-					Intent i = new Intent(ctx, DriverDetailsActivity.class);
-					i.putExtra("id", position);
-					startActivity(i);
+					DriverDetailsFragment driverDetailsFragment = new DriverDetailsFragment();
+					Bundle b = new Bundle();
+					b.putInt("id", position);
+					driverDetailsFragment.setArguments(b);
+					getFragmentManager()
+					.beginTransaction()
+					.addToBackStack(null)
+					.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
+					.replace(R.id.content_frame, driverDetailsFragment,"DriverDetails")
+					.commit();
 				}
 			});
 		    
