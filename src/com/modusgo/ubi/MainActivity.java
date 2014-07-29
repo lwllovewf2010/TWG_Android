@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.hockeyapp.android.CrashManager;
+import net.hockeyapp.android.CrashManagerListener;
 import net.hockeyapp.android.FeedbackManager;
 import net.hockeyapp.android.UpdateManager;
 import android.app.ActionBar;
@@ -300,12 +302,12 @@ public class MainActivity extends Activity {
     }
     
 	private void checkForCrashes() {
-		/*CrashManager.register(this, Constants.HOCKEY_APP_ID, new CrashManagerListener() {
+		CrashManager.register(this, Constants.HOCKEY_APP_ID, new CrashManagerListener() {
 			@Override
 			public boolean shouldAutoUploadCrashes() {
 				return true;
 			}
-		});*/
+		});
 	}
 
 	private void checkForUpdates() {
