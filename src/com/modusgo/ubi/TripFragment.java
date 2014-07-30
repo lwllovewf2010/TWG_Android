@@ -15,12 +15,12 @@ public class TripFragment extends Fragment {
             Bundle savedInstanceState){
 		View rootView = inflater.inflate(R.layout.fragment_trip, container, false);
 		
-		try{
+		/*try{
 			((MainActivity)getActivity()).setNavigationDrawerItemSelected(MenuItems.SETTINGS.toInt());
 		}
 		catch(ClassCastException e){
 			e.printStackTrace();
-		}
+		}*/
 		
 		return rootView;
 	}

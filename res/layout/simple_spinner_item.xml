@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.modusgo.ubi.customviews.TypefacedTextView xmlns:android="http://schemas.android.com/apk/res/android" 
+    xmlns:ubi="http://schemas.android.com/apk/res-auto"
+    android:id="@android:id/text1"
+    style="?android:attr/spinnerItemStyle"
+    android:singleLine="true"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:ellipsize="marquee"
+    android:textAlignment="inherit"
+    android:textColor="#a1a6ad"
+    android:textSize="12.5sp"
+    android:textAllCaps="true"
+    ubi:typeface="EncodeSansNormal-500-Medium.ttf"/>

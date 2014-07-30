@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.hockeyapp.android.CrashManager;
-import net.hockeyapp.android.CrashManagerListener;
 import net.hockeyapp.android.FeedbackManager;
 import net.hockeyapp.android.UpdateManager;
 import android.app.ActionBar;
@@ -25,6 +23,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -35,6 +34,7 @@ public class MainActivity extends Activity {
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private int mDrawerSelectedItem = -1;
+    private ImageButton btnUp; 
     
     public static enum MenuItems {HOME("HOME",1), COMPARE("COMPARE",2), SETTINGS("SETTINGS",3), 
     	CALLSUPPORT("CALL SUPPORT",4), AGENT("AGENT",5), LOGOUT("LOGOUT",6); 
@@ -88,7 +88,15 @@ public class MainActivity extends Activity {
 		         }
 			}
 		});
-
+	    
+	    btnUp = (ImageButton)actionBar.getCustomView().findViewById(R.id.btnUp);
+	    btnUp.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				getFragmentManager().popBackStack();
+			}
+		});
+	    
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         
@@ -179,6 +187,13 @@ public class MainActivity extends Activity {
     public void setActionBarTitle(String title){
 	    ((TextView)getActionBar().getCustomView().findViewById(R.id.tvTitle)).setText(title);
     }
+    
+    public void setButtonUpVisibility(boolean visible){
+    	if(visible)
+    		btnUp.setVisibility(View.VISIBLE);
+    	else
+    		btnUp.setVisibility(View.GONE);
+    }
 
     @Override
     protected void onResume() {
@@ -214,20 +229,28 @@ public class MainActivity extends Activity {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         	System.out.println("pos: "+position+" checked: "+mDrawerList.getCheckedItemPosition());
         	System.out.println(mDrawerList.isItemChecked(1));
-        	if(position!=mDrawerSelectedItem && position>0){
-	        	switch (position) {
-		        case 1:
+        	if(position!=mDrawerSelectedItem){
+	        	boolean changeSelectedItem = false;
+        		switch (position) {
+		        case 0:
 		        	//Home
-		        	/*getSupportFragmentManager().beginTransaction()
+		        	changeSelectedItem = true;
+		        	getFragmentManager().beginTransaction()
 					.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
-					.replace(R.id.content_frame, new ScoreFragment())
+					.replace(R.id.content_frame, homeFragment)
 					.addToBackStack(null)
-					.commit();*/
+					.commit();
+		            break;
+		        case 1:
+		        	//Compare
+		        	changeSelectedItem = true;
+		        	getFragmentManager().beginTransaction()
+					.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
+					.replace(R.id.content_frame, new CompareFragment())
+					.addToBackStack("testt")
+					.commit();
 		            break;
 		        case 2:
-		        	//Compare
-		            break;
-		        case 3:
 		        	//Settings
 		        	/*getSupportFragmentManager().beginTransaction()
 					.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
@@ -235,20 +258,22 @@ public class MainActivity extends Activity {
 					.addToBackStack(null)
 					.commit();*/
 		            break;
-		        case 4:
+		        case 3:
 		        	//Call support
 		            break;
-		        case 5:
+		        case 4:
 		        	//Agent
 		        	break;
-		        case 6:
+		        case 5:
 		        	//Logout
 		            break;
 	        	}
 	        	
-	        	mDrawerSelectedItem = position;
-	        	mDrawerList.setItemChecked(position, true);
-	        	mDrawerLayout.closeDrawers();
+        		if(changeSelectedItem){
+        			mDrawerSelectedItem = position;
+        		}
+    	        mDrawerList.setItemChecked(mDrawerSelectedItem, true);        			
+        		mDrawerLayout.closeDrawers();
         	}
         }
     }
@@ -257,9 +282,9 @@ public class MainActivity extends Activity {
      * 
      * @param item MenuItem num
      */
-    public void setNavigationDrawerItemSelected(int item){
-    	mDrawerSelectedItem = item;
-    	mDrawerList.setItemChecked(item, true);
+    public void setNavigationDrawerItemSelected(MenuItems item){
+    	mDrawerSelectedItem = item.num-1;
+    	mDrawerList.setItemChecked(item.num-1, true);
     }
 
    /* @Override
@@ -291,15 +316,25 @@ public class MainActivity extends Activity {
     public boolean onKeyDown(int keycode, KeyEvent e) {
         switch(keycode) {
             case KeyEvent.KEYCODE_MENU:
-                if(mDrawerLayout.isDrawerOpen(Gravity.LEFT))
+                if(mDrawerLayout.isDrawerOpen(Gravity.RIGHT))
                     mDrawerLayout.closeDrawers();
                 else
-                    mDrawerLayout.openDrawer(Gravity.LEFT);
+                    mDrawerLayout.openDrawer(Gravity.RIGHT);
                 return true;
         }
 
         return super.onKeyDown(keycode, e);
     }
+    
+    @Override
+	public void onBackPressed() {
+	    if (mDrawerLayout.isDrawerOpen(Gravity.RIGHT)) {
+            mDrawerLayout.closeDrawers();
+	        return;
+	    }
+	
+	    super.onBackPressed();
+	}
     
 	private void checkForCrashes() {
 		CrashManager.register(this, Constants.HOCKEY_APP_ID, new CrashManagerListener() {
