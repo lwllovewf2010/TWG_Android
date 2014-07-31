@@ -8,10 +8,12 @@ import net.hockeyapp.android.FeedbackManager;
 import net.hockeyapp.android.UpdateManager;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.NavUtils;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -89,7 +91,7 @@ public class MainActivity extends Activity {
 	    btnUp.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				getFragmentManager().popBackStack();
+				NavUtils.navigateUpFromSameTask(MainActivity.this);
 			}
 		});
 	    
@@ -225,6 +227,7 @@ public class MainActivity extends Activity {
 		        case 0:
 		        	//Home
 		        	changeSelectedItem = true;
+		        	startActivity(new Intent(MainActivity.this, HomeActivity.class));
 //		        	getFragmentManager().beginTransaction()
 //					.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
 //					.replace(R.id.content_frame, homeFragment)
@@ -234,6 +237,7 @@ public class MainActivity extends Activity {
 		        case 1:
 		        	//Compare
 		        	changeSelectedItem = true;
+		        	startActivity(new Intent(MainActivity.this, CompareActivity.class));
 //		        	getFragmentManager().beginTransaction()
 //					.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
 //					.replace(R.id.content_frame, new CompareFragment())

@@ -19,7 +19,7 @@ public class HomeActivity extends MainActivity{
 	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
-		setContentView(R.layout.home_activity);
+		setContentView(R.layout.activity_home);
 		super.onCreate(savedInstanceState);
 		
 		setActionBarTitle("HOME");

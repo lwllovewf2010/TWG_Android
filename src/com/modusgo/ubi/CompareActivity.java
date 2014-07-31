@@ -2,7 +2,6 @@ package com.modusgo.ubi;
 
 import java.util.ArrayList;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -18,7 +17,6 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -27,27 +25,23 @@ import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 
-import com.modusgo.ubi.MainActivity.MenuItems;
-
-public class CompareFragment extends Fragment{
+public class CompareActivity extends MainActivity{
 	
 	private static enum Paramater { TRIPS_COUNT, HARSH_EVENTS, SCORE};
 	
 	TabHost tabHost;
 	View previousTab;
-	
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {
+		setContentView(R.layout.activity_compare);
+		super.onCreate(savedInstanceState);
 		
-		LinearLayout rootView = (LinearLayout)inflater.inflate(R.layout.compare_fragment, null);
-		
-		((MainActivity)getActivity()).setActionBarTitle("COMPARE");
+		setActionBarTitle("COMPARE");
 		
 		//ListView lvDrivers = (ListView)rootView.findViewById(R.id.listViewDrivers);
-		Spinner spinnerTimePerion = (Spinner)rootView.findViewById(R.id.spinnerTimePeriod);
+		Spinner spinnerTimePerion = (Spinner)findViewById(R.id.spinnerTimePeriod);
 		String[] spinnerItems = {"This Month", "Last Month", "All"};
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.simple_spinner_item, spinnerItems);
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.simple_spinner_item, spinnerItems);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		
 		spinnerTimePerion.setAdapter(adapter);
@@ -64,11 +58,11 @@ public class CompareFragment extends Fragment{
 			}
 		});
 		
-		tabHost = (TabHost) rootView.findViewById(android.R.id.tabhost);
+		tabHost = (TabHost) findViewById(android.R.id.tabhost);
         tabHost.setup();
-        setupTab(new TextView(getActivity()), "Trips", R.id.tab1);
-		setupTab(new TextView(getActivity()), "Harsh events", R.id.tab2);
-		setupTab(new TextView(getActivity()), "Score", R.id.tab3);
+        setupTab(new TextView(this), "Trips", R.id.tab1);
+		setupTab(new TextView(this), "Harsh events", R.id.tab2);
+		setupTab(new TextView(this), "Score", R.id.tab3);
 		
 		previousTab = tabHost.getCurrentView();
 		
@@ -81,19 +75,18 @@ public class CompareFragment extends Fragment{
         	}
         });
 		
-        ListView lvTrips = (ListView)rootView.findViewById(R.id.tab1);
-        DriversAdapter driverTripsAdapter = new DriversAdapter(getActivity(), DbHelper.getDrivers(), Paramater.TRIPS_COUNT);
+        ListView lvTrips = (ListView)findViewById(R.id.tab1);
+        DriversAdapter driverTripsAdapter = new DriversAdapter(this, DbHelper.getDrivers(), Paramater.TRIPS_COUNT);
 		lvTrips.setAdapter(driverTripsAdapter);
 		
-		ListView lvHarshEvents = (ListView)rootView.findViewById(R.id.tab2);
-        DriversAdapter driverHarshEventsAdapter = new DriversAdapter(getActivity(), DbHelper.getDrivers(), Paramater.HARSH_EVENTS);
+		ListView lvHarshEvents = (ListView)findViewById(R.id.tab2);
+        DriversAdapter driverHarshEventsAdapter = new DriversAdapter(this, DbHelper.getDrivers(), Paramater.HARSH_EVENTS);
         lvHarshEvents.setAdapter(driverHarshEventsAdapter);
         
-		ListView lvScore = (ListView)rootView.findViewById(R.id.tab3);
-        DriversAdapter driverScoreAdapter = new DriversAdapter(getActivity(), DbHelper.getDrivers(), Paramater.SCORE);
+		ListView lvScore = (ListView)findViewById(R.id.tab3);
+        DriversAdapter driverScoreAdapter = new DriversAdapter(this, DbHelper.getDrivers(), Paramater.SCORE);
         lvScore.setAdapter(driverScoreAdapter);
         
-		return rootView;
 	}
 	
 	private void setupTab(final View view, final String tag, int contentId) {
@@ -126,8 +119,8 @@ public class CompareFragment extends Fragment{
 	
 	@Override
 	public void onResume() {
-		((MainActivity)getActivity()).setNavigationDrawerItemSelected(MenuItems.COMPARE);
-		((MainActivity)getActivity()).setButtonUpVisibility(true);
+		setNavigationDrawerItemSelected(MenuItems.COMPARE);
+		setButtonUpVisibility(true);
 		super.onResume();
 	}
 	
@@ -190,7 +183,7 @@ public class CompareFragment extends Fragment{
 		    ((TextView) view.findViewById(R.id.tvName)).setText(d.name);
 		    ((ImageView)view.findViewById(R.id.imagePhoto)).setImageResource(d.imageId);
 		    
-		    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+		    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(CompareActivity.this);
 		    if(prefs.getInt(Constants.PREF_CURRENT_DRIVER, -1)>0 && prefs.getInt(Constants.PREF_CURRENT_DRIVER, -1)==position)
 			    ((TextView) view.findViewById(R.id.tvCurrent)).setVisibility(View.VISIBLE);
 		    
