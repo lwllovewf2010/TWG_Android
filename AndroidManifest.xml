@@ -30,6 +30,10 @@
             </intent-filter>
         </activity>
         <activity
+            android:name="com.modusgo.ubi.HomeActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
             android:name="com.modusgo.ubi.MainActivity"
             android:label="@string/app_name" >
         </activity>

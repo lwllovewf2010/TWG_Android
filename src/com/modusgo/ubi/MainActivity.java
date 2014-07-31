@@ -8,8 +8,6 @@ import net.hockeyapp.android.FeedbackManager;
 import net.hockeyapp.android.UpdateManager;
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -61,15 +59,13 @@ public class MainActivity extends Activity {
     };
     
     SharedPreferences prefs;
-
-    Fragment homeFragment;
     
     private static final String ATTRIBUTE_NAME_TEXT = "text"; 
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        //setContentView(R.layout.activity_main);
 		checkForUpdates();
 
 		final ActionBar actionBar = getActionBar();
@@ -176,12 +172,6 @@ public class MainActivity extends Activity {
             }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
-
-        homeFragment = new HomeFragment();
-        
-        FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.content_frame, homeFragment,"home").commit();
-
     }
     
     public void setActionBarTitle(String title){
@@ -235,20 +225,20 @@ public class MainActivity extends Activity {
 		        case 0:
 		        	//Home
 		        	changeSelectedItem = true;
-		        	getFragmentManager().beginTransaction()
-					.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
-					.replace(R.id.content_frame, homeFragment)
-					.addToBackStack(null)
-					.commit();
+//		        	getFragmentManager().beginTransaction()
+//					.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
+//					.replace(R.id.content_frame, homeFragment)
+//					.addToBackStack(null)
+//					.commit();
 		            break;
 		        case 1:
 		        	//Compare
 		        	changeSelectedItem = true;
-		        	getFragmentManager().beginTransaction()
-					.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
-					.replace(R.id.content_frame, new CompareFragment())
-					.addToBackStack("testt")
-					.commit();
+//		        	getFragmentManager().beginTransaction()
+//					.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
+//					.replace(R.id.content_frame, new CompareFragment())
+//					.addToBackStack("testt")
+//					.commit();
 		            break;
 		        case 2:
 		        	//Settings
@@ -337,12 +327,12 @@ public class MainActivity extends Activity {
 	}
     
 	private void checkForCrashes() {
-		CrashManager.register(this, Constants.HOCKEY_APP_ID, new CrashManagerListener() {
-			@Override
-			public boolean shouldAutoUploadCrashes() {
-				return true;
-			}
-		});
+//		CrashManager.register(this, Constants.HOCKEY_APP_ID, new CrashManagerListener() {
+//			@Override
+//			public boolean shouldAutoUploadCrashes() {
+//				return true;
+//			}
+//		});
 	}
 
 	private void checkForUpdates() {

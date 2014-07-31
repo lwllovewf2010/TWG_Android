@@ -2,9 +2,6 @@ package com.modusgo.ubi;
 
 import java.util.ArrayList;
 
-import com.modusgo.ubi.MainActivity.MenuItems;
-
-import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -15,27 +12,24 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class HomeFragment extends Fragment{
+public class HomeActivity extends MainActivity{
 	
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
+		setContentView(R.layout.home_activity);
+		super.onCreate(savedInstanceState);
 		
-		LinearLayout rootView = (LinearLayout)inflater.inflate(R.layout.home_fragment, null);
+		setActionBarTitle("HOME");
 		
-		((MainActivity)getActivity()).setActionBarTitle("HOME");
+		ListView lvDrivers = (ListView)findViewById(R.id.listViewDrivers);
 		
-		ListView lvDrivers = (ListView)rootView.findViewById(R.id.listViewDrivers);
-		
-		DriversAdapter driversAdapter = new DriversAdapter(getActivity(), DbHelper.getDrivers());
+		DriversAdapter driversAdapter = new DriversAdapter(this, DbHelper.getDrivers());
 		
 		lvDrivers.setAdapter(driversAdapter);
 		
-		return rootView;
 	}
 	
 	class DriversAdapter extends BaseAdapter{
@@ -98,7 +92,7 @@ public class HomeFragment extends Fragment{
 				
 				@Override
 				public void onClick(View arg0) {
-					SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+					SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(HomeActivity.this);
 					prefs.edit().putInt(Constants.PREF_CURRENT_DRIVER, position).commit();
 					
 					DriverDetailsFragment driverDetailsFragment = new DriverDetailsFragment();
@@ -125,8 +119,8 @@ public class HomeFragment extends Fragment{
 	
 	@Override
 	public void onResume() {
-		((MainActivity)getActivity()).setNavigationDrawerItemSelected(MenuItems.HOME);
-		((MainActivity)getActivity()).setButtonUpVisibility(false);
+		setNavigationDrawerItemSelected(MenuItems.HOME);
+		setButtonUpVisibility(false);
 		super.onResume();
 	}
 
