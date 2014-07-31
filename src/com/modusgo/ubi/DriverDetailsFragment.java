@@ -1,11 +1,11 @@
 package com.modusgo.ubi;
 
-import java.util.ArrayList;
-
-import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -34,11 +34,20 @@ public class DriverDetailsFragment extends Fragment {
 	    	((ImageView)rootView.findViewById(R.id.imageDiagnostics)).setImageResource(R.drawable.ic_diagnostics_red);		    	
 	    }
 	    
+	    ImageView imageAlerts = (ImageView)rootView.findViewById(R.id.imageAlerts);
+	    
 	    if(d.alertsOK){
-	    	((ImageView)rootView.findViewById(R.id.imageAlerts)).setImageResource(R.drawable.ic_alerts_green);
+	    	imageAlerts.setImageResource(R.drawable.ic_alerts_green);
 	    }else{
-	    	((ImageView)rootView.findViewById(R.id.imageAlerts)).setImageResource(R.drawable.ic_alerts_red);		    	
+	    	imageAlerts.setImageResource(R.drawable.ic_alerts_red);		    	
 	    }
+	    
+	    imageAlerts.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				startActivity(new Intent(getActivity(), AlertsActivity.class));			}
+		});
 		
 		return rootView;
 	}

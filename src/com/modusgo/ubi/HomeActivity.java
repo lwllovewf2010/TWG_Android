@@ -3,6 +3,7 @@ package com.modusgo.ubi;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -95,16 +96,20 @@ public class HomeActivity extends MainActivity{
 					SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(HomeActivity.this);
 					prefs.edit().putInt(Constants.PREF_CURRENT_DRIVER, position).commit();
 					
-					DriverDetailsFragment driverDetailsFragment = new DriverDetailsFragment();
-					Bundle b = new Bundle();
-					b.putInt("id", position);
-					driverDetailsFragment.setArguments(b);
-					getFragmentManager()
-					.beginTransaction()
-					.addToBackStack(null)
-					.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
-					.replace(R.id.content_frame, driverDetailsFragment,"DriverDetails")
-					.commit();
+					Intent i = new Intent(HomeActivity.this, DriverActivity.class);
+					i.putExtra("id", position);
+					startActivity(i);
+					
+//					DriverDetailsFragment driverDetailsFragment = new DriverDetailsFragment();
+//					Bundle b = new Bundle();
+//					b.putInt("id", position);
+//					driverDetailsFragment.setArguments(b);
+//					getFragmentManager()
+//					.beginTransaction()
+//					.addToBackStack(null)
+//					.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
+//					.replace(R.id.content_frame, driverDetailsFragment,"DriverDetails")
+//					.commit();
 				}
 			});
 		    

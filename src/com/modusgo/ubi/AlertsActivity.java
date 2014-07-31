@@ -3,14 +3,14 @@ package com.modusgo.ubi;
 import android.os.Bundle;
 
 
-public class SettingsActivity extends MainActivity {
+public class AlertsActivity extends MainActivity {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		setContentView(R.layout.activity_settings);
+		setContentView(R.layout.activity_alerts);
 		super.onCreate(savedInstanceState);
 
-		setActionBarTitle("SETTINGS");
+		setActionBarTitle("ALERTS");
 	}
 	
 }
