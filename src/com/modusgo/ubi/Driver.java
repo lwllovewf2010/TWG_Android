@@ -10,6 +10,8 @@ public class Driver implements Serializable{
 	public String vehicle;
 	public String lastTripDate;
 	public String score;
+	public String phone;
+	public String email;
 	public boolean diagnosticsOK;
 	public boolean alertsOK;
 	public int tripsCount;
@@ -20,10 +22,12 @@ public class Driver implements Serializable{
 		this.score = score;
 	}
 	
-	public Driver(String name, int imageId, String vehicle, String lastTripDate, boolean diagnosticsOK, boolean alertsOK, int tripsCount, int harshEvents, String score){
+	public Driver(String name, int imageId, String vehicle, String phone, String email, String lastTripDate, boolean diagnosticsOK, boolean alertsOK, int tripsCount, int harshEvents, String score){
 		this.name = name;
 		this.imageId = imageId;
 		this.vehicle = vehicle;
+		this.phone = phone;
+		this.email = email;
 		this.lastTripDate = lastTripDate;
 		this.diagnosticsOK = diagnosticsOK;
 		this.alertsOK = alertsOK;
@@ -31,6 +35,14 @@ public class Driver implements Serializable{
 		this.harshEvents = harshEvents;
 		this.score = score;
 	}
+	
+	public String getFirstName(){
+		return name.split(" ")[0];
+	}
+	
+	public String getLastName(){
+		return name.split(" ")[1];
+	}	
 	
 	public int getScoreAsNumber(){
 		switch (score) {

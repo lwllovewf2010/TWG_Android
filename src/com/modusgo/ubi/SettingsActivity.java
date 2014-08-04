@@ -11,6 +11,10 @@ public class SettingsActivity extends MainActivity {
 		super.onCreate(savedInstanceState);
 
 		setActionBarTitle("SETTINGS");
+		
+		SettingsViewFragment svf = new SettingsViewFragment();
+		
+		getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, svf).commit();
 	}
 	
 }
