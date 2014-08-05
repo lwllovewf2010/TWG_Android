@@ -10,13 +10,18 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -29,6 +34,19 @@ public class TripsFragment extends Fragment{
 		LinearLayout rootView = (LinearLayout)inflater.inflate(R.layout.framgent_trips, container, false);
 		
 		((MainActivity)getActivity()).setActionBarTitle("TRIPS");
+
+		Driver d = DbHelper.getDrivers().get(getArguments().getInt("id", 0));
+		
+		((TextView)rootView.findViewById(R.id.tvName)).setText(d.name);
+		((ImageView)rootView.findViewById(R.id.imagePhoto)).setImageResource(d.imageId);
+		
+		rootView.findViewById(R.id.btnTimePeriod).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				createDialog().show();
+			}
+		});
+		
 		
 		ListView lv = (ListView)rootView.findViewById(R.id.listView);
 		
@@ -55,6 +73,20 @@ public class TripsFragment extends Fragment{
 		lv.setAdapter(adapter);
 		
 		return rootView;
+	}
+	
+	String[] timePeriods = new String[]{"Last Month", "This Month", "All"};
+	
+	private Dialog createDialog() {
+	    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+	    builder.setTitle("Change time period")
+	           .setItems(timePeriods, new DialogInterface.OnClickListener() {
+	               public void onClick(DialogInterface dialog, int which) {
+	               // The 'which' argument contains the index position
+	               // of the selected item
+	           }
+	    });
+	    return builder.create();
 	}
 	
 	class TripsAdapter extends BaseAdapter{
