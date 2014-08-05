@@ -96,7 +96,7 @@ public class CompareActivity extends MainActivity{
 	}
 
 	private static View createTabView(final Context context, final String text) {
-		TextView tv = (TextView) LayoutInflater.from(context).inflate(R.layout.tabs_bg, null);
+		TextView tv = (TextView) LayoutInflater.from(context).inflate(R.layout.compare_tabs_bg, null);
 		tv.setText(text);
 		return tv;
 	}
