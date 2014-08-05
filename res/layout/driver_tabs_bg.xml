@@ -28,7 +28,7 @@
         android:layout_marginLeft="3dp"
         android:layout_marginTop="-5dp"
         android:layout_toRightOf="@+id/centerAnchor"
-        android:background="@drawable/red_rounded_rectangle"
+        android:background="@drawable/red_rounded_rectangle_radius_8"
         android:paddingBottom="2dp"
         android:paddingLeft="5.6dp"
         android:paddingRight="5.7dp"
