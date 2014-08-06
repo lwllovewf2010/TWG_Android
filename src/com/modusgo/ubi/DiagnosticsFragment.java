@@ -12,9 +12,11 @@ public class DiagnosticsFragment extends Fragment{
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		LinearLayout rootView = (LinearLayout)inflater.inflate(R.layout.fragment_diagnostics, null);
+		LinearLayout rootView = (LinearLayout)inflater.inflate(R.layout.fragment_diagnostics, container, false);
 		
 		((MainActivity)getActivity()).setActionBarTitle("DIAGNOSTICS");
+		
+		rootView.findViewById(R.id.btnTimePeriod).setVisibility(View.GONE);
 		
 		return rootView;
 	}
