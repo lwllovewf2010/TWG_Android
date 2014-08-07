@@ -8,7 +8,7 @@
 
     <ImageButton
         android:layout_width="25dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@color/btn_orange"
         android:paddingBottom="17dp"
         android:paddingTop="17dp"
