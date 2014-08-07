@@ -14,6 +14,9 @@
      <color name="blue">#00aeef</color>
      <color name="yellow">#FEEB51</color>
      <color name="white">#fff</color>
+    
+     <color name="light_orange">#fff9f1</color>
+     <color name="light_orange_2">#fde0b4</color>
      
      <color name="dark_green">#81a033</color>
      <color name="dark_orange">#bc4721</color>

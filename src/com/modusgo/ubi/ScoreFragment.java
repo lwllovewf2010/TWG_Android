@@ -5,16 +5,25 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 public class ScoreFragment extends Fragment{
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		LinearLayout rootView = (LinearLayout)inflater.inflate(R.layout.fragment_score, null);
+		LinearLayout rootView = (LinearLayout)inflater.inflate(R.layout.fragment_score, container, false);
 		
 		((MainActivity)getActivity()).setActionBarTitle("SCORE");
+		
+		Driver driver = DbHelper.getDrivers().get(getArguments().getInt("id", 0));
+		
+		((TextView)rootView.findViewById(R.id.tvName)).setText(driver.name);
+		((ImageView)rootView.findViewById(R.id.imagePhoto)).setImageResource(driver.imageId);
+
+		rootView.findViewById(R.id.btnTimePeriod).setVisibility(View.GONE);
 		
 		return rootView;
 	}
