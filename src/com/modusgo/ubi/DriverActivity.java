@@ -31,7 +31,7 @@ public class DriverActivity extends MainActivity{
 		setupTab(TripsFragment.class, b, "Trips", R.drawable.ic_tab_trips, 3);
 		setupTab(ScoreFragment.class, null, "Score", R.drawable.ic_tab_score, 0);
 		setupTab(DiagnosticsFragment.class, null, "Diagnostics", R.drawable.ic_tab_diagnostics, 0);
-		setupTab(LimitsFragment.class, null, "Limits", R.drawable.ic_tab_limits, 0);
+		setupTab(LimitsFragment.class, b, "Limits", R.drawable.ic_tab_limits, 0);
 		
 	}
 	
