@@ -17,6 +17,8 @@ public class PieChartView extends View{
 	private final Paint mBackgroundColorPaint = new Paint();
 	private final Paint mBackgroundColorPaint2 = new Paint();
 	
+	private final RectF mInsideCircleBounds = new RectF();
+	
 	PieSector[] pieSectors;
 	
 	private static final int START_ANGLE = 270; 
@@ -83,6 +85,7 @@ public class PieChartView extends View{
 				startAngle += ps.valueDegree;
 			}
 		}
+		canvas.drawArc(mInsideCircleBounds, 0, 360 , true, mBackgroundColorPaint);
 		super.onDraw(canvas);
 	}
 	
@@ -94,6 +97,9 @@ public class PieChartView extends View{
 		
 		int minSide = Math.min(width, height);
 		mCircleBounds.set((width-minSide)/2, (height-minSide)/2, (width-minSide)/2+minSide, (height-minSide)/2+minSide);
+		
+		int insideMinSide = Math.min((int) (width*0.63f), (int) (height*0.63f));
+		mInsideCircleBounds.set((width-insideMinSide)/2, (height-insideMinSide)/2, (width-insideMinSide)/2+insideMinSide, (height-insideMinSide)/2+insideMinSide);
 		
 		setMeasuredDimension(width,height);
 	}

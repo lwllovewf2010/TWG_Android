@@ -25,10 +25,10 @@ import com.modusgo.ubi.customviews.PieChartView.PieSector;
 @SuppressLint("ValidFragment")
 public class PieChartFragment extends TitledFragment{
 
-	private final static String SAVED_VISIBILITIES = "visibilities";
-	private final static String SAVED_VALUES = "values";
-	private final static String SAVED_TITLE = "title";
-	private final static String SAVED_NAMES = "names";
+	public final static String SAVED_VISIBILITIES = "visibilities";
+	public final static String SAVED_VALUES = "values";
+	public final static String SAVED_TITLE = "title";
+	public final static String SAVED_NAMES = "names";
 	final String LOG_TAG = "myLogs";
 	float[] chartValues;
 	int[] backgroundResources;
@@ -57,6 +57,13 @@ public class PieChartFragment extends TitledFragment{
             chartValues = savedInstanceState.getFloatArray(SAVED_VALUES);
             names = savedInstanceState.getStringArray(SAVED_NAMES);
             title = savedInstanceState.getString(SAVED_TITLE);
+	    }
+	    else if(getArguments()!=null){
+	    	title = getArguments().getString(SAVED_TITLE);	    	
+    		names = getArguments().getStringArray(SAVED_NAMES);
+    		chartValues = getArguments().getFloatArray(SAVED_VALUES);
+            isVisible = new boolean[chartValues.length];
+    		Arrays.fill(isVisible, Boolean.TRUE);
 	    }
 	    
 	    backgroundResources = new int[]{R.color.red,R.color.green,R.color.orange,R.color.blue,R.color.yellow,R.color.white};

@@ -140,10 +140,45 @@
                     </LinearLayout>
                 </LinearLayout>
             </com.modusgo.ubi.customviews.ExpandablePanel>
-            <TextView
+
+            <com.modusgo.ubi.customviews.ExpandableHeightGridView
+                android:id="@+id/gvPercentData"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="22.5dp"
+                android:layout_marginRight="22.5dp"
+                android:layout_marginTop="15dp"
+                android:gravity="center"
+                android:horizontalSpacing="17.5dp"
+                android:isScrollContainer="false"
+                android:listSelector="#00000000"
+                android:stretchMode="columnWidth" >
+            </com.modusgo.ubi.customviews.ExpandableHeightGridView>
+
+            <android.support.v4.app.FragmentTabHost 
+                android:id="@android:id/tabhost"
+                android:layout_width="match_parent"
+                android:layout_height="400dp" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical" >
+
+                    <TabWidget
+                        android:id="@+id/tabs"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Main score information will be here" />
+                        android:layout_height="wrap_content" >
+                    </TabWidget>
+
+                    <FrameLayout
+                        android:id="@+id/tabcontent"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+                    </FrameLayout>
+                </LinearLayout>
+            </android.support.v4.app.FragmentTabHost >
         </LinearLayout>
     </ScrollView>
 

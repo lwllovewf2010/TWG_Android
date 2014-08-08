@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTabHost;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SimpleAdapter;
+import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 
 import com.modusgo.ubi.customviews.ExpandableHeightGridView;
@@ -23,6 +26,8 @@ public class ScoreFragment extends Fragment{
 	
 	private static final String ATTRIBUTE_NAME_VALUE = "value";
 	private static final String ATTRIBUTE_NAME_TITLE = "title";
+	
+	FragmentTabHost tabHost;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,7 +51,33 @@ public class ScoreFragment extends Fragment{
 		
 		fillAdditionalInfo((LinearLayout)rootView.findViewById(R.id.llValue), inflater);
 		
+		tabHost = (FragmentTabHost) rootView.findViewById(android.R.id.tabhost);
+        tabHost.setup(getActivity(), getChildFragmentManager(), R.id.tabcontent);
+        setupTab(new TextView(getActivity()), "ROAD SETTING", R.id.tab1);
+		setupTab(new TextView(getActivity()), "ROAD TYPE", R.id.tab2);
+		setupTab(new TextView(getActivity()), "TIME OF DAY", R.id.tab3);
+        tabHost.getTabWidget().setStripEnabled(false);
+        tabHost.getTabWidget().setDividerDrawable(null);
+		
 		return rootView;
+	}
+	
+	private void setupTab(final View view, final String tag, int contentId) {
+		View tabview = createTabView(tabHost.getContext(), tag);
+	    TabSpec setContent = tabHost.newTabSpec(tag).setIndicator(tabview);
+	    
+	    Bundle b = new Bundle();
+	    b.putFloatArray(PieChartFragment.SAVED_VALUES, new float[]{10f,5f});
+	    b.putString(PieChartFragment.SAVED_TITLE, "test");
+	    b.putStringArray(PieChartFragment.SAVED_NAMES, new String[]{"6:30 AM - 9:30 AM","4:00 PM - 7:00 PM"});
+	    
+	    tabHost.addTab(setContent, PieChartFragment.class , b);
+	}
+
+	private static View createTabView(final Context context, final String text) {
+		TextView tv = (TextView) LayoutInflater.from(context).inflate(R.layout.compare_tabs_bg, null);
+		tv.setText(text);
+		return tv;
 	}
 	
 	private SimpleAdapter getPercentInfoAdapter(){
