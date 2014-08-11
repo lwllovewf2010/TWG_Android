@@ -27,12 +27,13 @@ public class PieChartFragment extends TitledFragment{
 
 	public final static String SAVED_VISIBILITIES = "visibilities";
 	public final static String SAVED_VALUES = "values";
-	public final static String SAVED_TITLE = "title";
-	public final static String SAVED_NAMES = "names";
+	public final static String SAVED_SUBTITLES = "title";
+	public final static String SAVED_TITLES = "names";
 	final String LOG_TAG = "myLogs";
 	float[] chartValues;
 	int[] backgroundResources;
-	String[] names;
+	String[] titles;
+	String[] subTitles;
 	boolean[] isVisible;
 	
 	float x = 0;
@@ -42,9 +43,9 @@ public class PieChartFragment extends TitledFragment{
 	public PieChartFragment() {
 	}
 	
-	public PieChartFragment(String title, float[] values, String[] names) {
-		this.title = title;
-		this.names = names;
+	public PieChartFragment(float[] values, String[] titles, String[] subTitles) {
+		this.titles = titles;
+		this.subTitles = subTitles;
 		this.chartValues = values;
 		isVisible = new boolean[chartValues.length];
 		Arrays.fill(isVisible, Boolean.TRUE);
@@ -55,99 +56,36 @@ public class PieChartFragment extends TitledFragment{
 	    if(savedInstanceState!=null){
             isVisible = savedInstanceState.getBooleanArray(SAVED_VISIBILITIES);
             chartValues = savedInstanceState.getFloatArray(SAVED_VALUES);
-            names = savedInstanceState.getStringArray(SAVED_NAMES);
-            title = savedInstanceState.getString(SAVED_TITLE);
+            titles = savedInstanceState.getStringArray(SAVED_TITLES);
+            subTitles = savedInstanceState.getStringArray(SAVED_SUBTITLES);
 	    }
-	    else if(getArguments()!=null){
-	    	title = getArguments().getString(SAVED_TITLE);	    	
-    		names = getArguments().getStringArray(SAVED_NAMES);
+	    else if(getArguments()!=null){    	
+    		titles = getArguments().getStringArray(SAVED_TITLES);
+    		subTitles = getArguments().getStringArray(SAVED_SUBTITLES);	
     		chartValues = getArguments().getFloatArray(SAVED_VALUES);
             isVisible = new boolean[chartValues.length];
     		Arrays.fill(isVisible, Boolean.TRUE);
 	    }
 	    
-	    backgroundResources = new int[]{R.color.red,R.color.green,R.color.orange,R.color.blue,R.color.yellow,R.color.white};
+	    backgroundResources = new int[]{R.color.pie_black,R.color.pie_green,R.color.pie_red,R.color.pie_gray,R.color.pie_orange,R.color.pie_blue};
 	    
-	    LinearLayout rootView = (LinearLayout)inflater.inflate(R.layout.pie_chart_fragment, null);
+	    LinearLayout rootView = (LinearLayout)inflater.inflate(R.layout.pie_chart_fragment, container, false);
     	final PieChartView pieChart = (PieChartView) rootView.findViewById(R.id.chart);
 	    LinearLayout markersLayout = (LinearLayout)rootView.findViewById(R.id.markers);
 	    
 	    pieChart.setChartSectors(new PieSector[]{pieChart.new PieSector(10,R.color.white),pieChart.new PieSector(17,R.color.green),pieChart.new PieSector(17,R.color.blue)});
 	    
-	    Typeface robotoLight = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Roboto-Light.ttf");
-	    
 	    for (int i = 0; i < chartValues.length; i++) {
-	    	
-	    	LayoutParams p = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT,1f);
-	    	p.width = 0;
 		    
-		    final TextView tvMarker = (TextView)inflater.inflate(R.layout.chart_marker_text, null);
-		    LayoutParams p3 = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT,1f);
-	    	p3.height = 0;
-		    tvMarker.setLayoutParams(p3);
-		    tvMarker.setTypeface(robotoLight);
-		    
-		    if(viewHideOffset==0){
-		    	viewHideOffset = tvMarker.getCompoundDrawables()[0].getBounds().width()*0.685f;
-		    }
-		    
-		    final int fi = i;
-		    
-		    tvMarker.setOnTouchListener(new View.OnTouchListener() { 
-	            @Override
-	            public boolean onTouch(View v, MotionEvent event){
-	            	switch(event.getAction()){
-	            		case MotionEvent.ACTION_DOWN:
-	            			offsetX = 0;
-	            			x = event.getX();
-	            			break;
-	            		case MotionEvent.ACTION_MOVE:
-	            			offsetX = event.getX()-x;
-	            			break;
-	            		case MotionEvent.ACTION_UP:
-	            			if(offsetX>10){
-	            				if(!isVisible[fi]){
-	            					showMarker(tvMarker, 500);
-	        						isVisible[fi] = true;
-	        					}
-	            			}
-	            			else if(offsetX<-10){
-	            				if(isVisible[fi]){
-	            					hideMarker(tvMarker, 500);
-	        						isVisible[fi] = false;
-	        					}	        					
-	            			}
-	            			else if(offsetX==0){
-	            				if(isVisible[fi]){
-	            					hideMarker(tvMarker, 500);
-	        						isVisible[fi] = false;
-	        					}
-	            				else{
-	            					showMarker(tvMarker, 500);
-	        						isVisible[fi] = true;
-	            				}
-	            			}
-	            			break;
-	            	}
-	            	updateChart(pieChart, true);
-	            	
-					return true;
-	            }
-		    });
-		    
-		    Drawable img = getResources().getDrawable( R.drawable.list_marker );
-		    img.mutate();
-		    
-		    img.setColorFilter(getResources().getColor(backgroundResources[i]),PorterDuff.Mode.MULTIPLY);
-			tvMarker.setTextColor(getResources().getColor(backgroundResources[i]));
-			tvMarker.setText(names[i]);
+		    LinearLayout llMarker = (LinearLayout)inflater.inflate(R.layout.chart_marker_text, markersLayout, false);
+		    TextView tvMarkerTitle = (TextView) llMarker.findViewById(R.id.tvTitle);
+		    tvMarkerTitle.setTextColor(getResources().getColor(backgroundResources[i]));
+			tvMarkerTitle.setText(titles[i]);
+			TextView tvMarkerSubTitle = (TextView) llMarker.findViewById(R.id.tvSubTitle);
+			tvMarkerSubTitle.setTextColor(getResources().getColor(backgroundResources[i]));
+			tvMarkerSubTitle.setText(subTitles[i]);
 		  	
-		    tvMarker.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
-		    if(!isVisible[i]){
-				hideMarker(tvMarker, 0);
-			}
-		    
-		    markersLayout.addView(tvMarker);   	
+		    markersLayout.addView(llMarker);   	
 	    }
 	    updateChart(pieChart, false);
 	    
@@ -206,7 +144,7 @@ public class PieChartFragment extends TitledFragment{
 	public void onSaveInstanceState(Bundle outState) {
 		outState.putBooleanArray(SAVED_VISIBILITIES, isVisible);
 	    outState.putFloatArray(SAVED_VALUES, chartValues);
-	    outState.putStringArray(SAVED_NAMES, names);
-	    outState.putString(SAVED_TITLE, title);
+	    outState.putStringArray(SAVED_TITLES, titles);
+	    outState.putStringArray(SAVED_SUBTITLES, subTitles);
 	}
 }

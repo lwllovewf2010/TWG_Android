@@ -53,7 +53,7 @@ public class ScoreFragment extends Fragment{
 		fillAdditionalInfo((LinearLayout)rootView.findViewById(R.id.llValue), inflater);
 		
 		tabHost = (FragmentTabHost) rootView.findViewById(android.R.id.tabhost);
-        tabHost.setup(getActivity(), getChildFragmentManager(), R.id.tabcontent);
+        tabHost.setup(getActivity(), getChildFragmentManager(), R.id.realtabcontent);
         setupTab(new TextView(getActivity()), "ROAD SETTING", R.id.tab1);
 		setupTab(new TextView(getActivity()), "ROAD TYPE", R.id.tab2);
 		setupTab(new TextView(getActivity()), "TIME OF DAY", R.id.tab3);
@@ -68,9 +68,9 @@ public class ScoreFragment extends Fragment{
 	    TabSpec setContent = tabHost.newTabSpec(tag).setIndicator(tabview);
 	    
 	    Bundle b = new Bundle();
-	    b.putFloatArray(PieChartFragment.SAVED_VALUES, new float[]{10f,5f});
-	    b.putString(PieChartFragment.SAVED_TITLE, "test");
-	    b.putStringArray(PieChartFragment.SAVED_NAMES, new String[]{"6:30 AM - 9:30 AM","4:00 PM - 7:00 PM"});
+	    b.putFloatArray(PieChartFragment.SAVED_VALUES, new float[]{35f,32f,15f,8f,7f,3f});
+	    b.putStringArray(PieChartFragment.SAVED_TITLES, new String[]{"6:30 AM - 9:30 AM","4:00 PM - 7:00 PM","All day","9:30 AM - 4:00 PM","7:00 PM - 11:59 PM","12:00 AM - 6:30 AM"});
+	    b.putStringArray(PieChartFragment.SAVED_SUBTITLES, new String[]{"35% WEEKDAY","32% WEEKDAY","15% WEEKEND","8% WEEKDAY","7% WEEKDAY","3% WEEKDAY"});
 	    
 	    tabHost.addTab(setContent, PieChartFragment.class , b);
 	}

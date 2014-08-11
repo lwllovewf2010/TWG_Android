@@ -81,7 +81,7 @@ public class PieChartView extends View{
 		canvas.drawArc(mCircleBounds, 0, 360 , true, mBackgroundColorPaint);
 		if(pieSectors!=null){
 			for (PieSector ps : pieSectors) {
-				canvas.drawArc(mCircleBounds, startAngle, ps.valueDegree , true, ps.colorPaint);
+				canvas.drawArc(mCircleBounds, startAngle, ps.valueDegree -1.5f, true, ps.colorPaint);
 				startAngle += ps.valueDegree;
 			}
 		}
