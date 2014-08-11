@@ -2,6 +2,7 @@ package com.modusgo.ubi.customviews;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.ViewGroup;
 import android.widget.GridView;
 
@@ -9,6 +10,7 @@ public class ExpandableHeightGridView extends GridView
 {
 
     boolean expanded = false;
+    private int additionalExpandHeight = 0;
 
     public ExpandableHeightGridView(Context context)
     {
@@ -30,6 +32,10 @@ public class ExpandableHeightGridView extends GridView
     {
         return expanded;
     }
+    
+    public void setAdditionalTextExpand(int lines, float textSizeSp){
+    	additionalExpandHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, lines*textSizeSp, getResources().getDisplayMetrics());
+    }
 
     @Override
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
@@ -39,10 +45,12 @@ public class ExpandableHeightGridView extends GridView
         {
             // Calculate entire height by providing a very large height hint.
             // View.MEASURED_SIZE_MASK represents the largest height possible.
-            int expandSpec = MeasureSpec.makeMeasureSpec(MEASURED_SIZE_MASK,
-                    MeasureSpec.AT_MOST);
+            int expandSpec = MeasureSpec.makeMeasureSpec(MEASURED_SIZE_MASK, MeasureSpec.AT_MOST);
             super.onMeasure(widthMeasureSpec, expandSpec);
 
+        	expandSpec = MeasureSpec.makeMeasureSpec(getMeasuredHeight() + additionalExpandHeight, MeasureSpec.EXACTLY);
+            super.onMeasure(widthMeasureSpec, expandSpec);
+            
             ViewGroup.LayoutParams params = getLayoutParams();
             params.height = getMeasuredHeight();
         }

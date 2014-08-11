@@ -47,6 +47,7 @@ public class ScoreFragment extends Fragment{
 		//gvPercentData.setColumnWidth(100);
 		gvPercentData.setNumColumns(3);
 		gvPercentData.setAdapter(getPercentInfoAdapter());
+		gvPercentData.setAdditionalTextExpand(1, 12.5f);
 		gvPercentData.setExpanded(true);
 		
 		fillAdditionalInfo((LinearLayout)rootView.findViewById(R.id.llValue), inflater);
