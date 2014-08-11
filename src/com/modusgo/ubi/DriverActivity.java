@@ -27,7 +27,7 @@ public class DriverActivity extends MainActivity{
         Bundle b = new Bundle();
 		b.putInt("id", getIntent().getIntExtra("id", 0));
 		
-		setupTab(DriverDetailsFragment.class, b, "Driver", R.drawable.ic_tab_trips, 0);
+		setupTab(DriverDetailsFragment.class, b, "Driver", R.drawable.ic_tab_driver, 0);
 		setupTab(TripsFragment.class, b, "Trips", R.drawable.ic_tab_trips, 3);
 		setupTab(ScoreFragment.class, b, "Score", R.drawable.ic_tab_score, 0);
 		setupTab(DiagnosticsFragment.class, b, "Diagnostics", R.drawable.ic_tab_diagnostics, 0);
