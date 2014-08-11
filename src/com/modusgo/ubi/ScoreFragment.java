@@ -54,24 +54,34 @@ public class ScoreFragment extends Fragment{
 		
 		tabHost = (FragmentTabHost) rootView.findViewById(android.R.id.tabhost);
         tabHost.setup(getActivity(), getChildFragmentManager(), R.id.realtabcontent);
-        setupTab(new TextView(getActivity()), "ROAD SETTING", R.id.tab1);
-		setupTab(new TextView(getActivity()), "ROAD TYPE", R.id.tab2);
-		setupTab(new TextView(getActivity()), "TIME OF DAY", R.id.tab3);
+        
+        Bundle b = new Bundle();
+	    b.putFloatArray(PieChartFragment.SAVED_VALUES, new float[]{57f,34f,9f});
+	    b.putStringArray(PieChartFragment.SAVED_TITLES, new String[]{"57%\nRURAL","34%\nSUBURBAN","9%\nURBAN"});
+	    
+        setupTab(new TextView(getActivity()), "ROAD SETTING", b);
+		
+        Bundle b2 = new Bundle();
+	    b2.putFloatArray(PieChartFragment.SAVED_VALUES, new float[]{41f,22f,19f,18f});
+	    b2.putStringArray(PieChartFragment.SAVED_TITLES, new String[]{"41%\nMAJOR ROAD","22%\nLOCAL ROAD","19%\nHIGHWAY","18%\nMINOR ROAD"});
+	    
+        setupTab(new TextView(getActivity()), "ROAD TYPE", b2);
+		
+		Bundle b3 = new Bundle();
+	    b3.putFloatArray(PieChartFragment.SAVED_VALUES, new float[]{35f,32f,15f,8f,7f,3f});
+	    b3.putStringArray(PieChartFragment.SAVED_TITLES, new String[]{"35% WEEKDAY","32% WEEKDAY","15% WEEKEND","8% WEEKDAY","7% WEEKDAY","3% WEEKDAY"});
+	    b3.putStringArray(PieChartFragment.SAVED_SUBTITLES, new String[]{"6:30 AM - 9:30 AM","4:00 PM - 7:00 PM","All day","9:30 AM - 4:00 PM","7:00 PM - 11:59 PM","12:00 AM - 6:30 AM"});
+	    
+		setupTab(new TextView(getActivity()), "TIME OF DAY", b3);
         tabHost.getTabWidget().setStripEnabled(false);
         tabHost.getTabWidget().setDividerDrawable(null);
 		
 		return rootView;
 	}
 	
-	private void setupTab(final View view, final String tag, int contentId) {
+	private void setupTab(final View view, final String tag, Bundle b) {
 		View tabview = createTabView(tabHost.getContext(), tag);
 	    TabSpec setContent = tabHost.newTabSpec(tag).setIndicator(tabview);
-	    
-	    Bundle b = new Bundle();
-	    b.putFloatArray(PieChartFragment.SAVED_VALUES, new float[]{35f,32f,15f,8f,7f,3f});
-	    b.putStringArray(PieChartFragment.SAVED_TITLES, new String[]{"6:30 AM - 9:30 AM","4:00 PM - 7:00 PM","All day","9:30 AM - 4:00 PM","7:00 PM - 11:59 PM","12:00 AM - 6:30 AM"});
-	    b.putStringArray(PieChartFragment.SAVED_SUBTITLES, new String[]{"35% WEEKDAY","32% WEEKDAY","15% WEEKEND","8% WEEKDAY","7% WEEKDAY","3% WEEKDAY"});
-	    
 	    tabHost.addTab(setContent, PieChartFragment.class , b);
 	}
 

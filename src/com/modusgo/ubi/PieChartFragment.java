@@ -4,15 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import android.annotation.SuppressLint;
-import android.graphics.PorterDuff;
-import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.AnimationSet;
 import android.view.animation.TranslateAnimation;
@@ -83,7 +78,10 @@ public class PieChartFragment extends TitledFragment{
 			tvMarkerTitle.setText(titles[i]);
 			TextView tvMarkerSubTitle = (TextView) llMarker.findViewById(R.id.tvSubTitle);
 			tvMarkerSubTitle.setTextColor(getResources().getColor(backgroundResources[i]));
-			tvMarkerSubTitle.setText(subTitles[i]);
+			if(subTitles!=null && subTitles[i]!=null)
+				tvMarkerSubTitle.setText(subTitles[i]);
+			else
+				tvMarkerSubTitle.setVisibility(View.GONE);
 		  	
 		    markersLayout.addView(llMarker);   	
 	    }
