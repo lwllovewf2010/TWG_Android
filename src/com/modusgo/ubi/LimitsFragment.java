@@ -37,6 +37,13 @@ public class LimitsFragment extends Fragment {
 		
 		((TextView)rootView.findViewById(R.id.tvName)).setText(driver.name);
 		((ImageView)rootView.findViewById(R.id.imagePhoto)).setImageResource(driver.imageId);
+		
+		rootView.findViewById(R.id.btnMenu).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				((DriverActivity)getActivity()).menu.toggle();
+			}
+		});
 
 		rootView.findViewById(R.id.btnTimePeriod).setVisibility(View.GONE);
 

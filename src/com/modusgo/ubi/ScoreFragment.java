@@ -13,6 +13,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -43,6 +44,13 @@ public class ScoreFragment extends Fragment{
 		
 		((TextView)rootView.findViewById(R.id.tvName)).setText(driver.name);
 		((ImageView)rootView.findViewById(R.id.imagePhoto)).setImageResource(driver.imageId);
+		
+		rootView.findViewById(R.id.btnMenu).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				((DriverActivity)getActivity()).menu.toggle();
+			}
+		});
 
 		rootView.findViewById(R.id.btnTimePeriod).setVisibility(View.GONE);
 		

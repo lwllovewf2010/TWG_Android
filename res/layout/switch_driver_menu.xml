@@ -1,0 +1,31 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ubi="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#e6e9ed"
+    android:orientation="vertical" >
+
+    <com.modusgo.ubi.customviews.TypefacedTextView
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:gravity="center"
+        android:text="Switch Driver"
+        android:textAllCaps="true"
+        android:textColor="#3c454f"
+        android:textSize="12.5sp"
+        ubi:typeface="EncodeSansNormal-500-Medium.ttf" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#00aeef" />
+
+    <ListView
+        android:id="@+id/listViewDrivers"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="#a1a6ad"
+        android:dividerHeight="1dp" >
+    </ListView>
+
+</LinearLayout>

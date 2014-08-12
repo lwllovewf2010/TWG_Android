@@ -40,6 +40,13 @@ public class TripsFragment extends Fragment{
 		((TextView)rootView.findViewById(R.id.tvName)).setText(d.name);
 		((ImageView)rootView.findViewById(R.id.imagePhoto)).setImageResource(d.imageId);
 		
+		rootView.findViewById(R.id.btnMenu).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				((DriverActivity)getActivity()).menu.toggle();
+			}
+		});
+		
 		rootView.findViewById(R.id.btnTimePeriod).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {

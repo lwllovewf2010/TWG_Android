@@ -36,7 +36,8 @@ public class MainActivity extends FragmentActivity {
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private int mDrawerSelectedItem = -1;
-    private ImageButton btnUp; 
+    private ImageButton btnUp;
+    private ImageButton btnNavigationDrawer; 
     
     public static enum MenuItems {HOME("HOME",1), COMPARE("COMPARE",2), SETTINGS("SETTINGS",3), 
     	CALLSUPPORT("CALL SUPPORT",4), AGENT("AGENT",5), LOGOUT("LOGOUT",6); 
@@ -78,7 +79,8 @@ public class MainActivity extends FragmentActivity {
 	    actionBar.setDisplayShowCustomEnabled(true);
 	    actionBar.setCustomView(R.layout.action_bar);
 	    
-	    actionBar.getCustomView().findViewById(R.id.btnMenu).setOnClickListener(new OnClickListener() {
+	    btnNavigationDrawer = (ImageButton)actionBar.getCustomView().findViewById(R.id.btnMenu);
+	    btnNavigationDrawer.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				 if (mDrawerLayout.isDrawerOpen(Gravity.RIGHT)) {
@@ -162,7 +164,7 @@ public class MainActivity extends FragmentActivity {
             public void onDrawerClosed(View view) {
             	getActionBar().getCustomView().findViewById(R.id.tvTitle).setVisibility(View.VISIBLE);
             	getActionBar().getCustomView().findViewById(R.id.imageLogo).setVisibility(View.GONE);
-            	((ImageView)getActionBar().getCustomView().findViewById(R.id.btnMenu)).setImageResource(R.drawable.ic_menu);
+            	btnNavigationDrawer.setImageResource(R.drawable.ic_menu);
                 //getActionBar().setTitle(mTitle);
                 //invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
@@ -170,7 +172,7 @@ public class MainActivity extends FragmentActivity {
             public void onDrawerOpened(View drawerView) {
             	getActionBar().getCustomView().findViewById(R.id.tvTitle).setVisibility(View.GONE);
             	getActionBar().getCustomView().findViewById(R.id.imageLogo).setVisibility(View.VISIBLE);
-            	((ImageView)getActionBar().getCustomView().findViewById(R.id.btnMenu)).setImageResource(R.drawable.ic_menu_close);
+            	btnNavigationDrawer.setImageResource(R.drawable.ic_menu_close);
                 //getActionBar().setTitle(mDrawerTitle);
                 //invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
@@ -188,7 +190,14 @@ public class MainActivity extends FragmentActivity {
     	else
     		btnUp.setVisibility(View.GONE);
     }
-
+    
+    public void setButtonNavigationDrawerVisibility(boolean visible){
+    	if(visible)
+    		btnNavigationDrawer.setVisibility(View.VISIBLE);
+    	else
+    		btnNavigationDrawer.setVisibility(View.GONE);
+    }
+    
     @Override
     protected void onResume() {
     	super.onResume();        
