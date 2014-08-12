@@ -184,6 +184,24 @@
                 android:id="@+id/realtabcontent"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#b8bcc1" />
+
+            <RadioGroup
+                android:id="@+id/radioGroupCircles"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+            </RadioGroup>
+
+            <FrameLayout
+                android:id="@+id/circlesContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+            </FrameLayout>
         </LinearLayout>
     </ScrollView>
 

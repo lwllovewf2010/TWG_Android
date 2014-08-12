@@ -6,6 +6,7 @@ import java.util.Map;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
@@ -14,8 +15,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.SimpleAdapter;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
@@ -75,6 +80,49 @@ public class ScoreFragment extends Fragment{
 		setupTab(new TextView(getActivity()), "TIME OF DAY", b3);
         tabHost.getTabWidget().setStripEnabled(false);
         tabHost.getTabWidget().setDividerDrawable(null);
+        
+        
+        RadioGroup rgCircles = (RadioGroup)rootView.findViewById(R.id.radioGroupCircles);
+        String circleTabs[] = new String[]{"Urban", "Suburban", "Rural"};
+        ArrayList<Fragment> circleFragments = new ArrayList<>();
+        
+        for (int i = 0; i < circleTabs.length; i++) {
+        	RadioButton rb = (RadioButton)inflater.inflate(R.layout.radio_tab, rgCircles, false);
+        	rb.setText(circleTabs[i]);
+            rb.setBackgroundResource(R.drawable.radio_tab_bg_selector);
+            Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "fonts/EncodeSansNormal-600-SemiBold.ttf");
+            rb.setTypeface(tf);
+            
+            final Fragment fragment = new CirclesFragment();
+            Bundle circleB = new Bundle();
+            circleB.putString(TitledFragment.SAVED_TITLE, circleTabs[i]);
+            fragment.setArguments(circleB);
+            circleFragments.add(fragment);
+            
+            rb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					if(isChecked){
+						getFragmentManager().beginTransaction()
+						.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+				        .replace(R.id.circlesContainer, fragment)
+				        .commit();
+					}
+				}
+			});
+            
+            rgCircles.addView(rb);
+            if(i==0){
+                rb.setId(R.id.radioButtonSelected);
+                rgCircles.check(rb.getId());
+                
+                getFragmentManager().beginTransaction()
+                .replace(R.id.circlesContainer, fragment)
+                .commit();
+            }
+		}
+        
+        
 		
 		return rootView;
 	}
