@@ -161,29 +161,18 @@
                 android:layout_height="1dp"
                 android:background="#b8bcc1" />
 
-            <android.support.v4.app.FragmentTabHost
-                android:id="@android:id/tabhost"
+            <RadioGroup
+                android:id="@+id/radioGroupPieCharts"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical" >
-
-                    <FrameLayout
-                        android:id="@+id/tabcontent"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1" >
-                    </FrameLayout>
-                </LinearLayout>
-            </android.support.v4.app.FragmentTabHost>
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+            </RadioGroup>
 
             <FrameLayout
-                android:id="@+id/realtabcontent"
+                android:id="@+id/pieChartsContainer"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content" >
+            </FrameLayout>
 
             <View
                 android:layout_width="match_parent"

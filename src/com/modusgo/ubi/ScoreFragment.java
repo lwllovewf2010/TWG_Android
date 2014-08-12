@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -22,7 +21,6 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SimpleAdapter;
-import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 
 import com.modusgo.ubi.customviews.ExpandableHeightGridView;
@@ -57,30 +55,61 @@ public class ScoreFragment extends Fragment{
 		
 		fillAdditionalInfo((LinearLayout)rootView.findViewById(R.id.llValue), inflater);
 		
-		tabHost = (FragmentTabHost) rootView.findViewById(android.R.id.tabhost);
-        tabHost.setup(getActivity(), getChildFragmentManager(), R.id.realtabcontent);
-        
-        Bundle b = new Bundle();
-	    b.putFloatArray(PieChartFragment.SAVED_VALUES, new float[]{57f,34f,9f});
-	    b.putStringArray(PieChartFragment.SAVED_TITLES, new String[]{"57%\nRURAL","34%\nSUBURBAN","9%\nURBAN"});
-	    
-        setupTab(new TextView(getActivity()), "ROAD SETTING", b);
+		/*----------------------------------------PIE CHARTS------------------------------------------*/
 		
-        Bundle b2 = new Bundle();
-	    b2.putFloatArray(PieChartFragment.SAVED_VALUES, new float[]{41f,22f,19f,18f});
-	    b2.putStringArray(PieChartFragment.SAVED_TITLES, new String[]{"41%\nMAJOR ROAD","22%\nLOCAL ROAD","19%\nHIGHWAY","18%\nMINOR ROAD"});
+		RadioGroup rgPieCharts = (RadioGroup)rootView.findViewById(R.id.radioGroupPieCharts);
+		String pieChartTabs[] = new String[]{"ROAD SETTING", "ROAD TYPE", "TIME OF DAY"};
+		Bundle bundles[] = new Bundle[3];
+		bundles[0] = new Bundle();
+		bundles[0].putFloatArray(PieChartFragment.SAVED_VALUES, new float[]{57f,34f,9f});
+		bundles[0].putStringArray(PieChartFragment.SAVED_TITLES, new String[]{"57%\nRURAL","34%\nSUBURBAN","9%\nURBAN"});
 	    
-        setupTab(new TextView(getActivity()), "ROAD TYPE", b2);
-		
-		Bundle b3 = new Bundle();
-	    b3.putFloatArray(PieChartFragment.SAVED_VALUES, new float[]{35f,32f,15f,8f,7f,3f});
-	    b3.putStringArray(PieChartFragment.SAVED_TITLES, new String[]{"35% WEEKDAY","32% WEEKDAY","15% WEEKEND","8% WEEKDAY","7% WEEKDAY","3% WEEKDAY"});
-	    b3.putStringArray(PieChartFragment.SAVED_SUBTITLES, new String[]{"6:30 AM - 9:30 AM","4:00 PM - 7:00 PM","All day","9:30 AM - 4:00 PM","7:00 PM - 11:59 PM","12:00 AM - 6:30 AM"});
+        bundles[1] = new Bundle();
+        bundles[1].putFloatArray(PieChartFragment.SAVED_VALUES, new float[]{41f,22f,19f,18f});
+        bundles[1].putStringArray(PieChartFragment.SAVED_TITLES, new String[]{"41%\nMAJOR ROAD","22%\nLOCAL ROAD","19%\nHIGHWAY","18%\nMINOR ROAD"});
 	    
-		setupTab(new TextView(getActivity()), "TIME OF DAY", b3);
-        tabHost.getTabWidget().setStripEnabled(false);
-        tabHost.getTabWidget().setDividerDrawable(null);
+        bundles[2] = new Bundle();
+        bundles[2].putFloatArray(PieChartFragment.SAVED_VALUES, new float[]{35f,32f,15f,8f,7f,3f});
+        bundles[2].putStringArray(PieChartFragment.SAVED_TITLES, new String[]{"35% WEEKDAY","32% WEEKDAY","15% WEEKEND","8% WEEKDAY","7% WEEKDAY","3% WEEKDAY"});
+        bundles[2].putStringArray(PieChartFragment.SAVED_SUBTITLES, new String[]{"6:30 AM - 9:30 AM","4:00 PM - 7:00 PM","All day","9:30 AM - 4:00 PM","7:00 PM - 11:59 PM","12:00 AM - 6:30 AM"});
+	    
+        ArrayList<Fragment> pieChartFragments = new ArrayList<>();
         
+		for (int i = 0; i < pieChartTabs.length; i++) {
+        	RadioButton rb = (RadioButton)inflater.inflate(R.layout.radio_tab, rgPieCharts, false);
+        	rb.setText(pieChartTabs[i]);
+            rb.setBackgroundResource(R.drawable.radio_tab_bg_selector);
+            Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "fonts/EncodeSansNormal-600-SemiBold.ttf");
+            rb.setTypeface(tf);
+            
+            final Fragment fragment = new PieChartFragment();
+            fragment.setArguments(bundles[i]);
+            pieChartFragments.add(fragment);
+            
+            rb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					if(isChecked){
+						getFragmentManager().beginTransaction()
+						.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+				        .replace(R.id.pieChartsContainer, fragment)
+				        .commit();
+					}
+				}
+			});
+            
+            rgPieCharts.addView(rb);
+            if(i==0){
+                rb.setId(R.id.radioButtonSelected);
+                rgPieCharts.check(rb.getId());
+                
+                getFragmentManager().beginTransaction()
+                .replace(R.id.pieChartsContainer, fragment)
+                .commit();
+            }
+		}
+
+		/*----------------------------------------CIRCLES INFO------------------------------------------*/
         
         RadioGroup rgCircles = (RadioGroup)rootView.findViewById(R.id.radioGroupCircles);
         String circleTabs[] = new String[]{"Urban", "Suburban", "Rural"};
@@ -125,18 +154,6 @@ public class ScoreFragment extends Fragment{
         
 		
 		return rootView;
-	}
-	
-	private void setupTab(final View view, final String tag, Bundle b) {
-		View tabview = createTabView(tabHost.getContext(), tag);
-	    TabSpec setContent = tabHost.newTabSpec(tag).setIndicator(tabview);
-	    tabHost.addTab(setContent, PieChartFragment.class , b);
-	}
-
-	private static View createTabView(final Context context, final String text) {
-		TextView tv = (TextView) LayoutInflater.from(context).inflate(R.layout.compare_tabs_bg, null);
-		tv.setText(text);
-		return tv;
 	}
 	
 	private SimpleAdapter getPercentInfoAdapter(){
