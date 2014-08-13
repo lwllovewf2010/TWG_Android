@@ -27,7 +27,7 @@ public class TripActivity extends MainActivity {
 		((TextView)findViewById(R.id.tvName)).setText(driver.name);
 		((ImageView)findViewById(R.id.imagePhoto)).setImageResource(driver.imageId);
 		
-		findViewById(R.id.btnMenu).setVisibility(View.GONE);
+		findViewById(R.id.btnSwitchDriverMenu).setVisibility(View.GONE);
 		findViewById(R.id.btnTimePeriod).setVisibility(View.GONE);
 		
 		LinearLayout llContent = (LinearLayout)findViewById(R.id.llContent);

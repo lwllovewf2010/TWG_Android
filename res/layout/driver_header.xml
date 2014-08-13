@@ -13,7 +13,7 @@
         android:orientation="horizontal" >
 
         <ImageButton
-            android:id="@+id/btnMenu"
+            android:id="@+id/btnSwitchDriverMenu"
             android:layout_width="25dp"
             android:layout_height="match_parent"
             android:background="@color/btn_orange"
