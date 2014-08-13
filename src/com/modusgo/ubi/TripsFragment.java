@@ -163,6 +163,22 @@ public class TripsFragment extends Fragment{
 			((TextView)view.findViewById(R.id.tvEndTime)).setText(t.getEndDateString());
 			((TextView)view.findViewById(R.id.tvDistance)).setText(new DecimalFormat("0.00").format(t.getDistanceMiles())+" MI");
 			
+			view.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Fragment fragment = new TripFragment();
+					Bundle b = new Bundle();
+					b.putInt(TripFragment.SAVED_TRIP_ID, 0);
+					fragment.setArguments(b);
+					
+					getFragmentManager().beginTransaction()
+					.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
+					.addToBackStack(null)
+			        .replace(R.id.realtabcontent, fragment)
+			        .commit();
+				}
+			});
+			
 			return view;
 		}
 		

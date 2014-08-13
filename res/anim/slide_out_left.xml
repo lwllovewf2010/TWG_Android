@@ -17,12 +17,9 @@
 ** limitations under the License.
 */
 -->
+<translate xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="@android:integer/config_mediumAnimTime"
+    android:fromXDelta="0%"
+    android:toXDelta="-100%" >
 
-<set xmlns:android="http://schemas.android.com/apk/res/android">
-	<objectAnimator
-        android:duration="@android:integer/config_mediumAnimTime"
-        android:propertyName="x"
-        android:valueFrom="0"
-        android:valueTo="-1000"
-        android:valueType="floatType" />
-</set>
+</translate>

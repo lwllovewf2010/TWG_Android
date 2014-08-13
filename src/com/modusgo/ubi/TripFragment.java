@@ -1,14 +1,14 @@
 package com.modusgo.ubi;
 
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.modusgo.ubi.MainActivity.MenuItems;
-
 public class TripFragment extends Fragment {
+	
+	public static final String SAVED_TRIP_ID = "tripId";
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
