@@ -14,6 +14,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -140,7 +141,7 @@ public class TripsFragment extends Fragment{
 				position -= size;
 			}
 			
-	        return null;  
+	        return null;
 		}
 		
 		private View getHeaderView(String text, ViewGroup parent){
@@ -166,16 +167,9 @@ public class TripsFragment extends Fragment{
 			view.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					Fragment fragment = new TripFragment();
-					Bundle b = new Bundle();
-					b.putInt(TripFragment.SAVED_TRIP_ID, 0);
-					fragment.setArguments(b);
-					
-					getFragmentManager().beginTransaction()
-					.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
-					.addToBackStack(null)
-			        .replace(R.id.realtabcontent, fragment)
-			        .commit();
+					Intent intent = new Intent(getActivity(), TripActivity.class);
+					intent.putExtra(TripActivity.EXTRA_TRIP_ID, 0);
+					startActivity(intent);
 				}
 			});
 			
