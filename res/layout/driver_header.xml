@@ -2,46 +2,58 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ubi="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="45dp"
-    android:gravity="center_vertical"
-    android:orientation="horizontal" >
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
 
-    <ImageButton
-        android:id="@+id/btnMenu"
-        android:layout_width="25dp"
-        android:layout_height="match_parent"
-        android:background="@color/btn_orange"
-        android:paddingBottom="17dp"
-        android:paddingTop="17dp"
-        android:scaleType="fitStart"
-        android:src="@drawable/ic_menu_left" />
-
-    <ImageView
-        android:id="@+id/imagePhoto"
-        android:layout_width="45dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="45dp"
-        android:src="@drawable/person_test3" />
+        android:background="#FFF"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
 
-    <com.modusgo.ubi.customviews.TypefacedTextView
-        android:id="@+id/tvName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="17.5dp"
-        android:text="Richard Lancaster"
-        android:textColor="#697078"
-        android:textSize="17.5sp"
-        ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+        <ImageButton
+            android:id="@+id/btnMenu"
+            android:layout_width="25dp"
+            android:layout_height="match_parent"
+            android:background="@color/btn_orange"
+            android:paddingBottom="17dp"
+            android:paddingTop="17dp"
+            android:scaleType="fitStart"
+            android:src="@drawable/ic_menu_left" />
 
-    <Space
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1" />
+        <ImageView
+            android:id="@+id/imagePhoto"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:src="@drawable/person_test3" />
 
-    <ImageButton
-        android:id="@+id/btnTimePeriod"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:background="@color/btn_transparent_orange"
-        android:src="@drawable/ic_clock" />
+        <com.modusgo.ubi.customviews.TypefacedTextView
+            android:id="@+id/tvName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="17.5dp"
+            android:text="Richard Lancaster"
+            android:textColor="#697078"
+            android:textSize="17.5sp"
+            ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:id="@+id/btnTimePeriod"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:background="@color/btn_transparent_orange"
+            android:src="@drawable/ic_clock" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#00aeef" />
 
 </LinearLayout>
