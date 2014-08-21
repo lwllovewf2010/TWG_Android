@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class Driver implements Serializable{
 	
 	private static final long serialVersionUID = 1315237349232671000L;
+	public long id;
 	public String name;
 	public int imageId;
 	public String vehicle;
@@ -22,7 +23,8 @@ public class Driver implements Serializable{
 		this.score = score;
 	}
 	
-	public Driver(String name, int imageId, String vehicle, String phone, String email, String lastTripDate, boolean diagnosticsOK, boolean alertsOK, int tripsCount, int harshEvents, String score){
+	public Driver(long id, String name, int imageId, String vehicle, String phone, String email, String lastTripDate, boolean diagnosticsOK, boolean alertsOK, int tripsCount, int harshEvents, String score){
+		this.id = id;
 		this.name = name;
 		this.imageId = imageId;
 		this.vehicle = vehicle;
@@ -41,7 +43,13 @@ public class Driver implements Serializable{
 	}
 	
 	public String getLastName(){
-		return name.split(" ")[1];
+		String lastName ="";
+		try {
+			lastName = name.split(" ")[1];
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return lastName;
 	}	
 	
 	public int getScoreAsNumber(){

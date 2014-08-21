@@ -4,6 +4,8 @@ public class Constants {
 	
 	public static final String HOCKEY_APP_ID = "caca040742c8345b8594ac0bd7a71418";
 	
+	public static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZZZ";
+	
 	public static final String PREF_CURRENT_DRIVER = "currentDriver";
 	public static final String PREF_AUTH_KEY = "auth_key";
 

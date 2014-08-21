@@ -1,10 +1,22 @@
 package com.modusgo.ubi;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
@@ -15,8 +27,17 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.modusgo.ubi.utils.RequestGet;
+import com.modusgo.ubi.utils.Utils;
 
 public class HomeActivity extends MainActivity{
+	
+	private static final String SAVED_DRIVERS = "drivers";
+	
+	ArrayList<Driver> drivers;
+	DriversAdapter driversAdapter;
 	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,9 +48,17 @@ public class HomeActivity extends MainActivity{
 		
 		ListView lvDrivers = (ListView)findViewById(R.id.listViewDrivers);
 		
-		DriversAdapter driversAdapter = new DriversAdapter(this, DbHelper.getDrivers());
+		if(savedInstanceState!=null){
+			drivers = (ArrayList<Driver>) savedInstanceState.getSerializable(SAVED_DRIVERS);
+		}
+		else
+			drivers = new ArrayList<Driver>();
+		
+		driversAdapter = new DriversAdapter(this, drivers);
 		
 		lvDrivers.setAdapter(driversAdapter);
+		
+		new GetDriversTask().execute();
 		
 	}
 	
@@ -38,6 +67,9 @@ public class HomeActivity extends MainActivity{
 		Context ctx;
 		LayoutInflater lInflater;
 		ArrayList<Driver> objects;
+		
+		SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
+		SimpleDateFormat sdfTo = new SimpleDateFormat("MM/dd/yyyy KK:mm aa z", Locale.getDefault());
 		
 		DriversAdapter(Context context, ArrayList<Driver> drivers) {
 		    ctx = context;
@@ -73,7 +105,12 @@ public class HomeActivity extends MainActivity{
 
 		    ((TextView) view.findViewById(R.id.tvName)).setText(d.name);
 		    ((TextView) view.findViewById(R.id.tvVehicle)).setText(d.vehicle);
-		    ((TextView) view.findViewById(R.id.tvDate)).setText(d.lastTripDate);
+		    try {
+				((TextView) view.findViewById(R.id.tvDate)).setText(sdfTo.format(sdfFrom.parse(d.lastTripDate)));
+			} catch (ParseException e) {
+				((TextView) view.findViewById(R.id.tvDate)).setText(d.lastTripDate);
+				e.printStackTrace();
+			}
 		    
 		    ((ImageView)view.findViewById(R.id.imagePhoto)).setImageResource(d.imageId);
 		    
@@ -127,6 +164,70 @@ public class HomeActivity extends MainActivity{
 		setNavigationDrawerItemSelected(MenuItems.HOME);
 		setButtonUpVisibility(false);
 		super.onResume();
+	}
+	
+	class GetDriversTask extends AsyncTask<Void, Void, HttpResponse>{
+
+		@Override
+		protected HttpResponse doInBackground(Void... params) {
+			List<NameValuePair> requestParams = new ArrayList<NameValuePair>(2);
+	        requestParams.add(new BasicNameValuePair("auth_key", prefs.getString(Constants.PREF_AUTH_KEY, "")));
+	        requestParams.add(new BasicNameValuePair("page", "1"));
+	        requestParams.add(new BasicNameValuePair("per_page", "1000"));
+			
+			return new RequestGet(Constants.API_BASE_URL+"drivers.json", requestParams).execute();
+		}
+		
+		@Override
+		protected void onPostExecute(HttpResponse result) {
+			int status = result.getStatusLine().getStatusCode();
+			if(status>=200 && status<300){
+				try {
+					JSONObject responseJSON = Utils.getJSONObjectFromHttpResponse(result);
+					JSONArray driversJSON = responseJSON.getJSONArray("drivers");
+					
+					drivers.clear();
+					for (int i = 0; i < driversJSON.length(); i++) {
+						JSONObject driverJSON = driversJSON.getJSONObject(i);
+						drivers.add(new Driver(driverJSON.getLong("id"), 
+								driverJSON.getString("name"), 
+								R.drawable.person_placeholder, 
+								driverJSON.getString("year")+" "+driverJSON.getString("make")+" "+driverJSON.getString("model"), 
+								"", 
+								"", 
+								driverJSON.getString("last_trip"), 
+								driverJSON.getInt("count_new_diags") == 0 ? true : false, 
+								driverJSON.getInt("count_new_alerts") == 0 ? true : false, 
+								0, 
+								0, 
+								""));
+					}
+					
+					driversAdapter.notifyDataSetChanged();
+					
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+			else if(status==401){
+				prefs.edit().putString(Constants.PREF_AUTH_KEY, "").commit();
+				startActivity(new Intent(HomeActivity.this, SignInActivity.class));
+				finish();
+				Toast.makeText(HomeActivity.this, "Your session has expired.", Toast.LENGTH_SHORT).show();
+			}
+			else{
+				Toast.makeText(HomeActivity.this, "Error "+result.getStatusLine().getStatusCode()+": "+result.getStatusLine().getReasonPhrase(), Toast.LENGTH_SHORT).show();
+			}
+
+			super.onPostExecute(result);
+		}
+		
+	}
+	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		outState.putSerializable(SAVED_DRIVERS, drivers);
+		super.onSaveInstanceState(outState);
 	}
 
 }
