@@ -13,10 +13,16 @@ public class Driver implements Serializable{
 	public String score;
 	public String phone;
 	public String email;
+	public int diags;
+	public int alerts;
 	public boolean diagnosticsOK;
 	public boolean alertsOK;
 	public int tripsCount;
 	public int harshEvents;
+	public double latitude;
+	public double longitude;
+	public String address;
+	
 	
 	public Driver(String name, String score){
 		this.name = name;
@@ -36,6 +42,7 @@ public class Driver implements Serializable{
 		this.tripsCount = tripsCount;
 		this.harshEvents = harshEvents;
 		this.score = score;
+		this.address = "";
 	}
 	
 	public String getFirstName(){

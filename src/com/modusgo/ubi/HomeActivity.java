@@ -92,8 +92,8 @@ public class HomeActivity extends MainActivity{
 
 		@Override
 		public View getView(final int position, View convertView, ViewGroup parent) {
-			// используем созданные, но не используемые view
-		    View view = convertView;
+			
+			View view = convertView;
 		    if (view == null) {
 		      view = lInflater.inflate(R.layout.driver_item, parent, false);
 		    }
@@ -132,18 +132,8 @@ public class HomeActivity extends MainActivity{
 					
 					Intent i = new Intent(HomeActivity.this, DriverActivity.class);
 					i.putExtra("id", position);
+					i.putExtra(DriverActivity.SAVED_DRIVER, drivers.get(position));
 					startActivity(i);
-					
-//					DriverDetailsFragment driverDetailsFragment = new DriverDetailsFragment();
-//					Bundle b = new Bundle();
-//					b.putInt("id", position);
-//					driverDetailsFragment.setArguments(b);
-//					getFragmentManager()
-//					.beginTransaction()
-//					.addToBackStack(null)
-//					.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
-//					.replace(R.id.content_frame, driverDetailsFragment,"DriverDetails")
-//					.commit();
 				}
 			});
 		    
@@ -163,7 +153,7 @@ public class HomeActivity extends MainActivity{
 		super.onResume();
 	}
 	
-	class GetDriversTask extends BaseAsyncRequestTask{
+	class GetDriversTask extends BaseRequestAsyncTask{
 
 		public GetDriversTask(Context context) {
 			super(context);
