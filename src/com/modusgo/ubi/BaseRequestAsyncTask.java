@@ -44,7 +44,7 @@ public class BaseRequestAsyncTask extends AsyncTask<Void, Void, HttpResponse>{
 		else if(status==401){
 			prefs.edit().putString(Constants.PREF_AUTH_KEY, "").commit();
 			Intent intent = new Intent(context, SignInActivity.class);
-			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
 			context.startActivity(intent);
 			Toast.makeText(context, "Your session has expired.", Toast.LENGTH_SHORT).show();
 		}
