@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
@@ -102,7 +103,7 @@ public class MainActivity extends FragmentActivity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         
-        prefs = getSharedPreferences(getPackageName(), MODE_MULTI_PROCESS);
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
         
         final MenuItems[] menuItemsArray = MenuItems.values();
         //final String[] menuItems = new String[]{"Score","Dashboard","Trips","Comparsion","Alerts","Distraction","Limits","Engine"};
@@ -273,6 +274,8 @@ public class MainActivity extends FragmentActivity {
 		        	break;
 		        case 5:
 		        	//Logout
+		        	prefs.edit().putString(Constants.PREF_AUTH_KEY, "").commit();
+		        	finish();
 		            break;
 	        	}
 	        	
