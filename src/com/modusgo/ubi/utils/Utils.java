@@ -1,8 +1,16 @@
 package com.modusgo.ubi.utils;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
+
+import org.apache.http.HttpResponse;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import android.content.Context;
 import android.telephony.TelephonyManager;
@@ -51,6 +59,19 @@ public class Utils {
 	    UUID deviceUuid = new UUID(androidId.hashCode(), ((long)tmDevice.hashCode() << 32) | tmSerial.hashCode());
 	    String deviceId = deviceUuid.toString();
 	    return md5(deviceId);
+	}
+	
+	public static JSONObject getJSONObjectFromHttpResponse(HttpResponse response){
+		try {
+			BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
+			String json = reader.readLine();
+			JSONTokener tokener = new JSONTokener(json);
+			return new JSONObject(tokener);
+		}
+		catch (IOException | JSONException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 }

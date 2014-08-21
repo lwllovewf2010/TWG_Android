@@ -1,8 +1,5 @@
 package com.modusgo.ubi;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +8,6 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -222,21 +218,14 @@ public class SignInActivity extends FragmentActivity {
 		@Override
 		protected void onPostExecute(HttpResponse result) {
 			if(result.getStatusLine().getStatusCode()>=200 && result.getStatusLine().getStatusCode()<300){
+				
 				try {
-					BufferedReader reader = new BufferedReader(new InputStreamReader(result.getEntity().getContent(), "UTF-8"));
-					String json = reader.readLine();
-					JSONTokener tokener = new JSONTokener(json);
-					JSONObject finalResult = new JSONObject(tokener);
-					
-					SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(SignInActivity.this);
-					prefs.edit().putString(Constants.PREF_AUTH_KEY, finalResult.getString("auth_key")).commit();
-					
-					System.out.println(finalResult);
-				} catch (IOException | JSONException e) {
+					JSONObject responseJSON = Utils.getJSONObjectFromHttpResponse(result);
+					prefs.edit().putString(Constants.PREF_AUTH_KEY, responseJSON.getString("auth_key")).commit();
+				} catch (JSONException e) {
 					e.printStackTrace();
 				}
-				
-				
+					
 				startActivity(new Intent(SignInActivity.this, HomeActivity.class));
 				finish();
 			}
