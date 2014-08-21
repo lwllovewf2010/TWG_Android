@@ -16,7 +16,6 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
@@ -27,10 +26,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.modusgo.ubi.utils.RequestGet;
-import com.modusgo.ubi.utils.Utils;
 
 public class HomeActivity extends MainActivity{
 	
@@ -58,7 +55,7 @@ public class HomeActivity extends MainActivity{
 		
 		lvDrivers.setAdapter(driversAdapter);
 		
-		new GetDriversTask().execute();
+		new GetDriversTask(this).execute();
 		
 	}
 	
@@ -166,12 +163,14 @@ public class HomeActivity extends MainActivity{
 		super.onResume();
 	}
 	
-	class GetDriversTask extends AsyncTask<Void, Void, HttpResponse>{
+	class GetDriversTask extends BaseAsyncRequestTask{
+
+		public GetDriversTask(Context context) {
+			super(context);
+		}
 
 		@Override
 		protected HttpResponse doInBackground(Void... params) {
-			List<NameValuePair> requestParams = new ArrayList<NameValuePair>(2);
-	        requestParams.add(new BasicNameValuePair("auth_key", prefs.getString(Constants.PREF_AUTH_KEY, "")));
 	        requestParams.add(new BasicNameValuePair("page", "1"));
 	        requestParams.add(new BasicNameValuePair("per_page", "1000"));
 			
@@ -179,47 +178,33 @@ public class HomeActivity extends MainActivity{
 		}
 		
 		@Override
-		protected void onPostExecute(HttpResponse result) {
-			int status = result.getStatusLine().getStatusCode();
-			if(status>=200 && status<300){
-				try {
-					JSONObject responseJSON = Utils.getJSONObjectFromHttpResponse(result);
-					JSONArray driversJSON = responseJSON.getJSONArray("drivers");
-					
-					drivers.clear();
-					for (int i = 0; i < driversJSON.length(); i++) {
-						JSONObject driverJSON = driversJSON.getJSONObject(i);
-						drivers.add(new Driver(driverJSON.getLong("id"), 
-								driverJSON.getString("name"), 
-								R.drawable.person_placeholder, 
-								driverJSON.getString("year")+" "+driverJSON.getString("make")+" "+driverJSON.getString("model"), 
-								"", 
-								"", 
-								driverJSON.getString("last_trip"), 
-								driverJSON.getInt("count_new_diags") == 0 ? true : false, 
-								driverJSON.getInt("count_new_alerts") == 0 ? true : false, 
-								0, 
-								0, 
-								""));
-					}
-					
-					driversAdapter.notifyDataSetChanged();
-					
-				} catch (JSONException e) {
-					e.printStackTrace();
+		protected void onSuccess(JSONObject responseJSON) {
+			try {
+				JSONArray driversJSON = responseJSON.getJSONArray("drivers");
+				
+				drivers.clear();
+				for (int i = 0; i < driversJSON.length(); i++) {
+					JSONObject driverJSON = driversJSON.getJSONObject(i);
+					drivers.add(new Driver(driverJSON.getLong("id"), 
+							driverJSON.getString("name"), 
+							R.drawable.person_placeholder, 
+							driverJSON.getString("year")+" "+driverJSON.getString("make")+" "+driverJSON.getString("model"), 
+							"", 
+							"", 
+							driverJSON.getString("last_trip"), 
+							driverJSON.getInt("count_new_diags") == 0 ? true : false, 
+							driverJSON.getInt("count_new_alerts") == 0 ? true : false, 
+							0, 
+							0, 
+							""));
 				}
+				
+				driversAdapter.notifyDataSetChanged();
+				
+			} catch (JSONException e) {
+				e.printStackTrace();
 			}
-			else if(status==401){
-				prefs.edit().putString(Constants.PREF_AUTH_KEY, "").commit();
-				startActivity(new Intent(HomeActivity.this, SignInActivity.class));
-				finish();
-				Toast.makeText(HomeActivity.this, "Your session has expired.", Toast.LENGTH_SHORT).show();
-			}
-			else{
-				Toast.makeText(HomeActivity.this, "Error "+result.getStatusLine().getStatusCode()+": "+result.getStatusLine().getReasonPhrase(), Toast.LENGTH_SHORT).show();
-			}
-
-			super.onPostExecute(result);
+			super.onSuccess(responseJSON);
 		}
 		
 	}
