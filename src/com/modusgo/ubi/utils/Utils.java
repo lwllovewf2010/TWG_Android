@@ -74,4 +74,8 @@ public class Utils {
 		}
 	}
 	
+	public static String fixTimezoneZ(String datetime){
+		return datetime.replace("Z", "-00:00");
+	}
+	
 }

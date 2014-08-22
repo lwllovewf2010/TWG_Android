@@ -29,6 +29,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.modusgo.ubi.utils.RequestGet;
+import com.modusgo.ubi.utils.Utils;
 
 public class DriverDetailsFragment extends Fragment {
 	
@@ -173,11 +174,10 @@ public class DriverDetailsFragment extends Fragment {
 		@Override
 		protected void onSuccess(JSONObject responseJSON) {
 			try {
-				System.out.println(responseJSON);
 				
 				driver.name = responseJSON.getString("name");
 				driver.vehicle = responseJSON.getString("year")+" "+responseJSON.getString("make")+" "+responseJSON.getString("model");
-				driver.lastTripDate = responseJSON.getString("last_trip");
+				driver.lastTripDate = Utils.fixTimezoneZ(responseJSON.getString("last_trip"));
 				driver.alerts = responseJSON.getInt("count_new_alerts");
 				driver.diags = responseJSON.getInt("count_new_diags");
 				driver.diagnosticsOK = responseJSON.getInt("count_new_diags") == 0 ? true : false;

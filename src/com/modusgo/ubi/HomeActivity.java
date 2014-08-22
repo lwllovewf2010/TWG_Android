@@ -28,6 +28,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.modusgo.ubi.utils.RequestGet;
+import com.modusgo.ubi.utils.Utils;
 
 public class HomeActivity extends MainActivity{
 	
@@ -181,7 +182,7 @@ public class HomeActivity extends MainActivity{
 							driverJSON.getString("year")+" "+driverJSON.getString("make")+" "+driverJSON.getString("model"), 
 							"", 
 							"", 
-							driverJSON.getString("last_trip"), 
+							Utils.fixTimezoneZ(driverJSON.getString("last_trip")), 
 							driverJSON.getInt("count_new_diags") == 0 ? true : false, 
 							driverJSON.getInt("count_new_alerts") == 0 ? true : false, 
 							0, 
