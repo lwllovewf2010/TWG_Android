@@ -95,7 +95,7 @@ public class HomeActivity extends MainActivity{
 			
 			View view = convertView;
 		    if (view == null) {
-		      view = lInflater.inflate(R.layout.driver_item, parent, false);
+		      view = lInflater.inflate(R.layout.home_drivers_list_item, parent, false);
 		    }
 
 		    Driver d = getDriver(position);

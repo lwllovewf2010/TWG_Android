@@ -40,7 +40,7 @@ public class DriverDetailsFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		
-		View rootView = inflater.inflate(R.layout.driver_info_fragment, container, false);
+		View rootView = inflater.inflate(R.layout.driver_details_fragment, container, false);
 
 		((MainActivity)getActivity()).setActionBarTitle("DRIVER DETAIL");
 
