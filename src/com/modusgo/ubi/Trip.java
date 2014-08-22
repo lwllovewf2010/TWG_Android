@@ -1,41 +1,49 @@
 package com.modusgo.ubi;
 
+import java.io.Serializable;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
-public class Trip {
+public class Trip implements Serializable{
 	
-	private static final float METERS_TO_MILES = 0.00062137f; 
-	
+	private static final long serialVersionUID = 2355015935997524870L;
+	long id;
 	int eventsCount;
-	long startDate;
-	long endDate;
-	float distance;
-	private SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+	private Date startDate;
+	private Date endDate;
+	double distance;
 	
-	public Trip(int eventsCount, long startDate, long endDate, float distance) {
+	private static SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
+	private static SimpleDateFormat sdfTo = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+	
+	
+	public Trip(long id, int eventsCount, String startDate, String endDate, double distance) {
 		super();
+		this.id = id;
 		this.eventsCount = eventsCount;
-		this.startDate = startDate;
-		this.endDate = endDate;
+		
+		try {
+			this.startDate = sdfFrom.parse(startDate);
+			this.endDate = sdfFrom.parse(endDate);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
 		this.distance = distance;
 	}
 	
 	public String getStartDateString() {
-		Calendar c = Calendar.getInstance();
-		c.setTimeInMillis(startDate);
-		return sdf.format(c.getTime());
+		return sdfTo.format(startDate);
+	}
+	
+	public Date getStartDate() {
+		return startDate;
 	}
 	
 	public String getEndDateString() {
-		Calendar c = Calendar.getInstance();
-		c.setTimeInMillis(endDate);
-		return sdf.format(c.getTime());
-	}
-	
-	public float getDistanceMiles() {
-		return distance*METERS_TO_MILES;
+		return sdfTo.format(endDate);
 	}
 	
 }

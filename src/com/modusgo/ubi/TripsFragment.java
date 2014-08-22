@@ -8,13 +8,19 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Random;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -27,7 +33,18 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.modusgo.ubi.utils.RequestGet;
+import com.modusgo.ubi.utils.Utils;
+
 public class TripsFragment extends Fragment{
+
+	private final static String SAVED_TRIPS = "trips";
+	
+	Driver driver;
+	SharedPreferences prefs;
+	
+	LinkedHashMap<String, ArrayList<Trip>> tripsMap = new LinkedHashMap<>();
+	TripsAdapter adapter;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -36,10 +53,17 @@ public class TripsFragment extends Fragment{
 		
 		((MainActivity)getActivity()).setActionBarTitle("TRIPS");
 
-		Driver d = DbHelper.getDrivers().get(getArguments().getInt("id", 0));
+		if(savedInstanceState!=null){
+			driver = (Driver) savedInstanceState.getSerializable(DriverActivity.SAVED_DRIVER);
+			tripsMap = (LinkedHashMap<String, ArrayList<Trip>>) savedInstanceState.getSerializable(SAVED_TRIPS);
+		}
+		else if(getArguments()!=null){
+			driver = (Driver) getArguments().getSerializable(DriverActivity.SAVED_DRIVER);
+			tripsMap = new LinkedHashMap<>();
+		}
 		
-		((TextView)rootView.findViewById(R.id.tvName)).setText(d.name);
-		((ImageView)rootView.findViewById(R.id.imagePhoto)).setImageResource(d.imageId);
+		((TextView)rootView.findViewById(R.id.tvName)).setText(driver.name);
+		((ImageView)rootView.findViewById(R.id.imagePhoto)).setImageResource(driver.imageId);
 		
 		rootView.findViewById(R.id.btnSwitchDriverMenu).setOnClickListener(new OnClickListener() {
 			@Override
@@ -55,30 +79,12 @@ public class TripsFragment extends Fragment{
 			}
 		});
 		
-		
 		ListView lv = (ListView)rootView.findViewById(R.id.listView);
 		
-		LinkedHashMap<String, ArrayList<Trip>> tripsMap = new LinkedHashMap<>();
-		Calendar c = Calendar.getInstance();
-		SimpleDateFormat sdfDate = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
-		
-		for (int i = 0; i < 5; i++) {
-			ArrayList<Trip> trips = new ArrayList<Trip>();
-			
-			int tripsCount = 1 + new Random().nextInt(4);
-			
-			for (int j = 0; j < tripsCount; j++) {
-				trips.add(new Trip(new Random().nextInt(4), 
-						c.getTimeInMillis() + j * new Random().nextInt(400000), 
-						c.getTimeInMillis() + 400000 + j * new Random().nextInt(400000), 
-						new Random().nextInt(40000)));
-			}
-			tripsMap.put(sdfDate.format(c.getTime()), trips);
-			c.add(Calendar.DAY_OF_YEAR, -1);
-		}
-		
-		TripsAdapter adapter = new TripsAdapter(getActivity(), tripsMap);
+		adapter = new TripsAdapter();
 		lv.setAdapter(adapter);
+		
+		new GetTripsTask(getActivity()).execute();
 		
 		return rootView;
 	}
@@ -97,14 +103,83 @@ public class TripsFragment extends Fragment{
 	    return builder.create();
 	}
 	
-	class TripsAdapter extends BaseAdapter{
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		outState.putSerializable(DriverActivity.SAVED_DRIVER, driver);
+		outState.putSerializable(SAVED_TRIPS, tripsMap);
+		super.onSaveInstanceState(outState);
+	}
+	
+	class GetTripsTask extends BaseRequestAsyncTask{
+
+		public GetTripsTask(Context context) {
+			super(context);
+		}
+
+		@Override
+		protected HttpResponse doInBackground(Void... params) {
+	        requestParams.add(new BasicNameValuePair("page", "1"));
+	        requestParams.add(new BasicNameValuePair("per_page", "1000"));
+			return new RequestGet(Constants.API_BASE_URL+"drivers/"+driver.id+"/trips.json", requestParams).execute();
+		}
 		
-		LinkedHashMap<String, ArrayList<Trip>> tripsMap;
+		@Override
+		protected void onSuccess(JSONObject responseJSON) {
+			try {
+				System.out.println(responseJSON);
+				
+				JSONArray tripsJSON = responseJSON.getJSONArray("trips");
+				
+				
+				SimpleDateFormat sdfDate = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
+				
+				ArrayList<Trip> trips = new ArrayList<Trip>();
+				Calendar cPrev = Calendar.getInstance();
+				Calendar cNow = Calendar.getInstance();
+				int j = 0;
+				for (int i = 0; i < tripsJSON.length(); i++) {
+					JSONObject tipJSON = tripsJSON.getJSONObject(i);
+					
+					System.out.println("i = "+i);
+					Trip t = new Trip(
+							tipJSON.getLong("id"), 
+							tipJSON.getInt("total_harsh_events"), 
+							Utils.fixTimezoneZ(tipJSON.getString("start_time")), 
+							Utils.fixTimezoneZ(tipJSON.getString("end_time")), 
+							tipJSON.getDouble("mileage"));
+					
+					
+					if(j>0){
+						cPrev.setTime(trips.get(j-1).getStartDate());
+						cNow.setTime(t.getStartDate());
+						if(cNow.get(Calendar.YEAR) != cPrev.get(Calendar.YEAR) || 
+								(cNow.get(Calendar.YEAR) == cPrev.get(Calendar.YEAR) && cNow.get(Calendar.DAY_OF_YEAR) != cPrev.get(Calendar.DAY_OF_YEAR))){
+							tripsMap.put(sdfDate.format(trips.get(j-1).getStartDate()), trips);
+							trips = new ArrayList<Trip>();
+							j = 0;
+						}
+					}
+					j++;
+					trips.add(t);
+				}
+				adapter.notifyDataSetChanged();
+				
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			
+			
+			
+			super.onSuccess(responseJSON);
+		}
+	}
+	
+	class TripsAdapter extends BaseAdapter{
+
 		LayoutInflater lInflater;
 		
-		public TripsAdapter(Context context, LinkedHashMap<String, ArrayList<Trip>> tripsMap) {
-		    lInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		    this.tripsMap = tripsMap;
+		public TripsAdapter() {
+		    lInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		}
 		
 		@Override
@@ -162,7 +237,7 @@ public class TripsFragment extends Fragment{
 			}
 			((TextView)view.findViewById(R.id.tvStartTime)).setText(t.getStartDateString());
 			((TextView)view.findViewById(R.id.tvEndTime)).setText(t.getEndDateString());
-			((TextView)view.findViewById(R.id.tvDistance)).setText(new DecimalFormat("0.00").format(t.getDistanceMiles())+" MI");
+			((TextView)view.findViewById(R.id.tvDistance)).setText(new DecimalFormat("0.00").format(t.distance)+" MI");
 			
 			view.setOnClickListener(new OnClickListener() {
 				@Override
