@@ -20,7 +20,14 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.modusgo.ubi.utils.RequestGet;
 
 public class DriverDetailsFragment extends Fragment {
@@ -35,6 +42,8 @@ public class DriverDetailsFragment extends Fragment {
 	ImageView imagePhoto;
 	ImageView imageDiagnostics;
 	ImageView imageAlerts;
+
+    private GoogleMap mMap;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -103,7 +112,46 @@ public class DriverDetailsFragment extends Fragment {
 	    }else{
 	    	imageAlerts.setImageResource(R.drawable.ic_alerts_red);		    	
 	    }
+        setUpMapIfNeeded();
 	}
+	
+	private void setUpMapIfNeeded() {
+		// Do a null check to confirm that we have not already instantiated the map.
+	    if (mMap == null) {
+	        // Try to obtain the map from the SupportMapFragment.
+	        mMap = ((SupportMapFragment) getActivity().getSupportFragmentManager()
+	                .findFragmentById(R.id.map)).getMap();
+	        // Check if we were successful in obtaining the map.
+	        if (mMap != null)
+	            setUpMap();
+	    }
+    }
+
+    private void setUpMap() {
+    	if(driver.latitude!=0 && driver.longitude!=0){
+    		mMap.addMarker(new MarkerOptions().position(new LatLng(driver.latitude, driver.longitude)).icon(BitmapDescriptorFactory.fromResource(R.drawable.map_car_marker)));
+    		final float density = getResources().getDisplayMetrics().density;			
+			mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(driver.latitude-0.016f/density, driver.longitude), 14.0f));
+    	}
+    }
+    
+    /**** The mapfragment's id must be removed from the FragmentManager
+     **** or else if the same it is passed on the next time then 
+     **** app will crash ****/
+    @Override
+    public void onDestroyView() {
+        if (mMap != null) {
+        	try{
+	            getActivity().getSupportFragmentManager().beginTransaction()
+	                .remove(getActivity().getSupportFragmentManager().findFragmentById(R.id.map)).commitAllowingStateLoss();
+        	}
+        	catch(IllegalStateException e){
+        		e.printStackTrace();
+        	}
+            mMap = null;
+        }
+        super.onDestroyView();
+    }
 	
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
@@ -138,6 +186,10 @@ public class DriverDetailsFragment extends Fragment {
 				driver.latitude = Double.parseDouble(responseJSON.getJSONObject("location").getJSONObject("map").getString("latitude"));
 				driver.longitude = Double.parseDouble(responseJSON.getJSONObject("location").getJSONObject("map").getString("longitude"));
 				
+				if(mMap!=null){
+					mMap.clear();
+					setUpMap();
+				}
 				updateFragment();
 			} catch (JSONException e) {
 				e.printStackTrace();
