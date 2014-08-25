@@ -12,8 +12,8 @@ import android.support.v4.app.FragmentTabHost;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -158,15 +158,12 @@ public class ScoreFragment extends Fragment{
                 .commit();
             }
 		}
-        
-        
-		
 		return rootView;
 	}
 	
 	private SimpleAdapter getPercentInfoAdapter(){
 		int[] percents = new int[]{35,55,35,15,65,35,35};
-		String[] titles = new String[]{"Use of speed", "Anticipation", "Aggression", "Smoothness", "Completeness", "Consistency", "Time on\nfamiliar road"};
+		String[] titles = new String[]{"Use of speed", "Anticipation", "Calmness", "Smoothness", "Completeness", "Consistency", "Time on\nfamiliar road"};
 		
 		ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>(titles.length);
 		Map<String, Object> m;
