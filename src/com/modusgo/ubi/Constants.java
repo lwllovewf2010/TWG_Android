@@ -8,6 +8,7 @@ public class Constants {
 	
 	public static final String PREF_CURRENT_DRIVER = "currentDriver";
 	public static final String PREF_AUTH_KEY = "auth_key";
+	public static final String PREF_SHOW_TIP_POPUP = "showTipPopup";
 
 	public static final String API_BASE_URL = "https://api.modusgo.com/api/mobile/v1/";
 	public static final String API_PLATFORM = "android";

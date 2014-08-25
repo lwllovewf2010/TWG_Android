@@ -2,23 +2,34 @@ package com.modusgo.ubi;
 
 import java.util.Random;
 
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.text.Html;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.modusgo.ubi.customviews.ExpandablePanel;
 import com.modusgo.ubi.customviews.ExpandablePanel.OnExpandListener;
 
 public class CirclesFragment extends TitledFragment{
+	
+	SharedPreferences prefs;
+	
+	static TextView tvPopup;
+	boolean showTipPopup = true;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,7 +54,68 @@ public class CirclesFragment extends TitledFragment{
 	    rootView.addView(createNewRow("Intersection Braking", getRandomMarks(), inflater));
 	    rootView.addView(createNewRow("Road Braking", getRandomMarks(), inflater));		
 		
+	    prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+	    showTipPopup = prefs.getBoolean(Constants.PREF_SHOW_TIP_POPUP, true);
+	    
 		return rootView;
+	}
+	
+	private void disableTipPopup(){
+		prefs.edit().putBoolean(Constants.PREF_SHOW_TIP_POPUP, false).commit();
+	    if(tvPopup!=null){
+	    	((ViewGroup)tvPopup.getParent()).removeView(tvPopup);
+	    	tvPopup = null;
+	    }
+	}
+	
+	@Override
+	public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+		if(showTipPopup){
+			FrameLayout fl = (FrameLayout) getView().getParent();
+	        
+			if(tvPopup==null){
+		        tvPopup = new TextView(getActivity()){
+		        	@Override
+		        	protected void onLayout(boolean changed, int left, int top,
+		        			int right, int bottom) {
+		        		setX(getResources().getDisplayMetrics().widthPixels*5/8-getMeasuredWidth()/2);
+		        		setY(getHeight()*0.55f);
+		        		
+		        		super.onLayout(changed, left, top, right, bottom);
+		        	}
+		        };
+		        
+		        Typeface typeface = Typeface.createFromAsset(getActivity().getAssets(), "fonts/EncodeSansNormal-600-SemiBold.ttf");
+	
+		        tvPopup.setTypeface(typeface);
+		        tvPopup.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
+		        tvPopup.setText("Touch the dots for\nmore information");
+		    	tvPopup.setBackgroundResource(R.drawable.score_circles_info_popup);
+		    	tvPopup.setTextColor(Color.parseColor("#FFFFFF"));
+		    	FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
+		    	tvPopup.setLayoutParams(params);
+		    	int dp20 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
+		        int dp15 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 15, getResources().getDisplayMetrics());
+		        tvPopup.setPadding(
+		        		dp20, 
+		        		dp15, 
+		        		dp15, 
+		        		dp15);
+		    	
+		        tvPopup.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						disableTipPopup();
+					}
+				});
+		        if(fl!=null){
+		        	fl.addView(tvPopup);
+		        }
+			}
+    		tvPopup.bringToFront();
+	        
+		}
+		super.onViewCreated(view, savedInstanceState);
 	}
 	
 	private int[] getRandomMarks(){
@@ -82,8 +154,9 @@ public class CirclesFragment extends TitledFragment{
         final TextView tv2 = new TextView(getActivity());
         
         LinearLayout llCircles = (LinearLayout) circlesRow.findViewById(R.id.llCircles);
+        
         for (int i = 0; i < marks.length; i++) {
-            LinearLayout circleItem = (LinearLayout) inflater.inflate(R.layout.score_circle_item, llCircles, false);
+            RelativeLayout circleItem = (RelativeLayout) inflater.inflate(R.layout.score_circle_item, llCircles, false);
             int circleBgResId = R.drawable.circle_gray;
             
             String circlesInfo = "";
@@ -119,6 +192,10 @@ public class CirclesFragment extends TitledFragment{
 				
 				@Override
 				public void onClick(View v) {
+					if(showTipPopup){
+						disableTipPopup();
+					}
+					
 					if(!panel.isExpanded()){
 						tv2.setText(Html.fromHtml(circleInfo));
 						panel.expand();
