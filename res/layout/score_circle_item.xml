@@ -4,22 +4,25 @@
     android:layout_width="0dp"
     android:layout_height="wrap_content"
     android:layout_weight="1"
+    android:background="@color/btn_transparent_orange_light"
+    android:clickable="true"
     android:gravity="center"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:paddingTop="7dp" >
 
-    <View 
+    <View
         android:id="@+id/circle"
         android:layout_width="18dp"
         android:layout_height="18dp"
-        android:background="@drawable/circle_gray"
-        android:layout_marginBottom="3dp"/>
+        android:layout_marginBottom="3dp"
+        android:background="@drawable/circle_gray" />
 
     <com.modusgo.ubi.customviews.TypefacedTextView
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minHeight="25dp"
         android:gravity="center|top"
+        android:minHeight="25dp"
         android:text="Use of speed"
         android:textColor="#697078"
         android:textSize="10sp"

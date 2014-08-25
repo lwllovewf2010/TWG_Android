@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.view.animation.Transformation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -70,11 +71,11 @@ public class ExpandablePanel extends LinearLayout {
         int handleId = a.getResourceId(
                     R.styleable.ExpandablePanel_handle, 0);
  
-        if (handleId == 0) {
-            throw new IllegalArgumentException(
-                "The handle attribute is required and must refer "
-                    + "to a valid child.");
-        }
+//        if (handleId == 0) {
+//            throw new IllegalArgumentException(
+//                "The handle attribute is required and must refer "
+//                    + "to a valid child.");
+//        }
  
         int contentId = a.getResourceId(
                         R.styleable.ExpandablePanel_content, 0);
@@ -125,11 +126,11 @@ public class ExpandablePanel extends LinearLayout {
         super.onFinishInflate();
  
         mHandle = findViewById(mHandleId);
-        if (mHandle == null) {
-            throw new IllegalArgumentException(
-                "The handle attribute is must refer to an"
-                    + " existing child.");
-        }
+//        if (mHandle == null) {
+//            throw new IllegalArgumentException(
+//                "The handle attribute is must refer to an"
+//                    + " existing child.");
+//        }
  
         mContent = findViewById(mContentId);
         if (mContent == null) {
@@ -150,7 +151,8 @@ public class ExpandablePanel extends LinearLayout {
         mContent.setLayoutParams(lp);
  
         // Set the OnClickListener of the handle view
-        mHandle.setOnClickListener(new PanelToggler());
+        if(mHandle!=null)
+        	mHandle.setOnClickListener(new PanelToggler());
     }
  
     /**
@@ -167,14 +169,86 @@ public class ExpandablePanel extends LinearLayout {
         Log.v("cHeight", mContentHeight+"");
         Log.v("cCollapseHeight", mCollapsedHeight+"");
  
-        if (mContentHeight < mCollapsedHeight) {
-            mHandle.setVisibility(View.GONE);
-        } else {
-            mHandle.setVisibility(View.VISIBLE);
+        if(mHandle!=null){
+	        if (mContentHeight < mCollapsedHeight) {
+	            mHandle.setVisibility(View.GONE);
+	        } else {
+	            mHandle.setVisibility(View.VISIBLE);
+	        }
         }
  
         // Then let the usual thing happen
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+    
+    private boolean animInProcess = false;
+    
+    public void expand(){
+    	Animation a;
+        if (!mExpanded && !animInProcess) {
+        	if(mIndicator!=null && mIndicatorDrawableOpened!=null){
+        		mIndicator.setImageDrawable(mIndicatorDrawableOpened);
+        	}
+        	if(mTitle!=null && mTitleOpened!=null)
+        		mTitle.setText(mTitleOpened);
+           a = new ExpandAnimation(mCollapsedHeight, mContentHeight);
+           a.setDuration(mAnimationDuration);
+           a.setAnimationListener(new AnimationListener() {
+				@Override
+				public void onAnimationStart(Animation animation) {
+					animInProcess = true;
+				}
+				
+				@Override
+				public void onAnimationRepeat(Animation animation) {				
+				}
+				
+				@Override
+				public void onAnimationEnd(Animation animation) {
+					animInProcess = false;
+					mExpanded = true;
+					if(mListener!=null)
+						mListener.onExpand(mHandle, mContent);
+				}
+			});
+           mContent.startAnimation(a);
+        }
+    }
+    
+    public void collapse(){
+    	Animation a;
+        if (mExpanded && !animInProcess) {
+        	if(mIndicator!=null && mIndicatorDrawableClosed!=null){
+        		mIndicator.setImageDrawable(mIndicatorDrawableClosed);
+        	}
+        	if(mTitle!=null && mTitleClosed!=null)
+        		mTitle.setText(mTitleClosed);
+           a = new ExpandAnimation(mContentHeight, mCollapsedHeight);
+           a.setDuration(mAnimationDuration);
+           a.setAnimationListener(new AnimationListener() {
+				@Override
+				public void onAnimationStart(Animation animation) {
+					animInProcess = true;
+				}
+				
+				@Override
+				public void onAnimationRepeat(Animation animation) {				
+				}
+				
+				@Override
+				public void onAnimationEnd(Animation animation) {
+					animInProcess = false;
+					mExpanded = false;
+					if(mListener!=null)
+						mListener.onCollapse(mHandle, mContent);
+				}
+			});
+           mContent.startAnimation(a);
+        }
+    }
+    
+    public boolean isExpanded(){
+    	return mExpanded;
     }
  
     /**
@@ -184,27 +258,11 @@ public class ExpandablePanel extends LinearLayout {
      */
     private class PanelToggler implements OnClickListener {
         public void onClick(View v) {
-            Animation a;
-            if (mExpanded) {
-            	if(mIndicator!=null && mIndicatorDrawableClosed!=null){
-            		mIndicator.setImageDrawable(mIndicatorDrawableClosed);
-            	}
-            	if(mTitle!=null && mTitleClosed!=null)
-            		mTitle.setText(mTitleClosed);
-               a = new ExpandAnimation(mContentHeight, mCollapsedHeight);
-               mListener.onCollapse(mHandle, mContent);
+            if (!mExpanded) {
+            	expand();
             } else {
-            	if(mIndicator!=null && mIndicatorDrawableOpened!=null){
-            		mIndicator.setImageDrawable(mIndicatorDrawableOpened);
-            	}
-            	if(mTitle!=null && mTitleOpened!=null)
-            		mTitle.setText(mTitleOpened);
-               a = new ExpandAnimation(mCollapsedHeight, mContentHeight);
-               mListener.onExpand(mHandle, mContent);
+            	collapse();
             }
-            a.setDuration(mAnimationDuration);
-            mContent.startAnimation(a);
-            mExpanded = !mExpanded;
         }
     }
  

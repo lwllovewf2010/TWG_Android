@@ -16,14 +16,13 @@
         ubi:typeface="EncodeSansNormal-500-Medium.ttf" />
 
     <com.modusgo.ubi.customviews.ExpandablePanel
-        android:id="@+id/foo"
+        android:id="@+id/panelExpandable"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         ubi:animationDuration="500"
         ubi:collapsedHeight="0dp"
         ubi:content="@+id/llValue"
-        ubi:handle="@+id/btnExpand"
         ubi:indicatorDrawableClosed="@drawable/score_expand_panel_plus"
         ubi:indicatorDrawableOpened="@drawable/score_expand_panel_minus"
         ubi:indicatorImageView="@+id/imageExpandIndicator" >
@@ -33,38 +32,27 @@
             android:layout_height="match_parent"
             android:orientation="vertical" >
 
-            <LinearLayout
-                android:id="@id/llValue"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="6dp"
-                android:background="@drawable/score_circles_info_bg"
-                android:paddingLeft="20dp"
-                android:paddingBottom="13dp"
-                android:paddingTop="13dp" >
-            </LinearLayout>
-
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:clickable="true" >
-
-                <Button
-                    android:id="@id/btnExpand"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/btn_transparent_orange_light" />
 
                 <LinearLayout
                     android:id="@+id/llCircles"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingTop="7dp"
                     android:orientation="horizontal" >
                 </LinearLayout>
             </RelativeLayout>
+
+            <LinearLayout
+                android:id="@id/llValue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/score_circles_info_bg"
+                android:orientation="vertical"
+                android:paddingBottom="13dp" >
+            </LinearLayout>
         </LinearLayout>
     </com.modusgo.ubi.customviews.ExpandablePanel>
 
