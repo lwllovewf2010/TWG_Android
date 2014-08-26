@@ -3,11 +3,8 @@ package com.modusgo.ubi;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,7 +24,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.modusgo.ubi.utils.RequestGet;
 import com.modusgo.ubi.utils.Utils;
 
 public class HomeActivity extends MainActivity{
@@ -56,7 +52,7 @@ public class HomeActivity extends MainActivity{
 		
 		lvDrivers.setAdapter(driversAdapter);
 		
-		new GetDriversTask(this).execute();
+		new GetDriversTask(this).execute("drivers.json");
 		
 	}
 	
@@ -161,11 +157,11 @@ public class HomeActivity extends MainActivity{
 		}
 
 		@Override
-		protected HttpResponse doInBackground(Void... params) {
+		protected JSONObject doInBackground(String... params) {
 	        requestParams.add(new BasicNameValuePair("page", "1"));
 	        requestParams.add(new BasicNameValuePair("per_page", "1000"));
 			
-			return new RequestGet(Constants.API_BASE_URL+"drivers.json", requestParams).execute();
+	        return super.doInBackground(params);
 		}
 		
 		@Override

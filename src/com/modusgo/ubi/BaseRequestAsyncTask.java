@@ -15,12 +15,15 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
+import com.modusgo.ubi.utils.RequestGet;
 import com.modusgo.ubi.utils.Utils;
 
-public class BaseRequestAsyncTask extends AsyncTask<Void, Void, HttpResponse>{
+public class BaseRequestAsyncTask extends AsyncTask<String, Void, JSONObject>{
 
 	Context context;
 	SharedPreferences prefs;
+	int status;
+	String message;
 	protected List<NameValuePair> requestParams = new ArrayList<NameValuePair>();
 	
 	public BaseRequestAsyncTask(Context context) {
@@ -31,15 +34,18 @@ public class BaseRequestAsyncTask extends AsyncTask<Void, Void, HttpResponse>{
 	}
 	
 	@Override
-	protected HttpResponse doInBackground(Void... params) {
-		return null;
+	protected JSONObject doInBackground(String... params) {
+		HttpResponse result = new RequestGet(Constants.API_BASE_URL+params[0], requestParams).execute();
+		status = result.getStatusLine().getStatusCode();
+		message = "Error "+result.getStatusLine().getStatusCode()+": "+result.getStatusLine().getReasonPhrase();
+		
+		return Utils.getJSONObjectFromHttpResponse(result);
 	}
 	
 	@Override
-	protected void onPostExecute(HttpResponse result) {
-		int status = result.getStatusLine().getStatusCode();
+	protected void onPostExecute(JSONObject result) {
 		if(status>=200 && status<300){
-			onSuccess(Utils.getJSONObjectFromHttpResponse(result));
+			onSuccess(result);
 		}
 		else if(status==401){
 			prefs.edit().putString(Constants.PREF_AUTH_KEY, "").commit();
@@ -49,7 +55,7 @@ public class BaseRequestAsyncTask extends AsyncTask<Void, Void, HttpResponse>{
 			Toast.makeText(context, "Your session has expired.", Toast.LENGTH_SHORT).show();
 		}
 		else{
-			Toast.makeText(context, "Error "+result.getStatusLine().getStatusCode()+": "+result.getStatusLine().getReasonPhrase(), Toast.LENGTH_SHORT).show();
+			Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
 		}
 
 		super.onPostExecute(result);

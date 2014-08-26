@@ -9,7 +9,6 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,7 +32,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.modusgo.ubi.utils.RequestGet;
 import com.modusgo.ubi.utils.Utils;
 
 public class TripsFragment extends Fragment{
@@ -84,7 +82,7 @@ public class TripsFragment extends Fragment{
 		adapter = new TripsAdapter();
 		lv.setAdapter(adapter);
 		
-		new GetTripsTask(getActivity()).execute();
+		new GetTripsTask(getActivity()).execute("drivers/"+driver.id+"/trips.json");
 		
 		return rootView;
 	}
@@ -117,10 +115,10 @@ public class TripsFragment extends Fragment{
 		}
 
 		@Override
-		protected HttpResponse doInBackground(Void... params) {
+		protected JSONObject doInBackground(String... params) {
 	        requestParams.add(new BasicNameValuePair("page", "1"));
 	        requestParams.add(new BasicNameValuePair("per_page", "1000"));
-			return new RequestGet(Constants.API_BASE_URL+"drivers/"+driver.id+"/trips.json", requestParams).execute();
+			return super.doInBackground(params);
 		}
 		
 		@Override
@@ -167,9 +165,6 @@ public class TripsFragment extends Fragment{
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-			
-			
-			
 			super.onSuccess(responseJSON);
 		}
 	}

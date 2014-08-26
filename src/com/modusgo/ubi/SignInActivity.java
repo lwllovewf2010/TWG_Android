@@ -181,10 +181,12 @@ public class SignInActivity extends FragmentActivity {
         }
     }
 	
-	class LoginTask extends AsyncTask<Void, Void, HttpResponse>{
+	class LoginTask extends AsyncTask<Void, Void, JSONObject>{
 
 		Animation fadeIn;
 		Animation fadeOut;
+		int status;
+		String message = "";
 		
 		public LoginTask() {			
 			fadeOut = AnimationUtils.loadAnimation(SignInActivity.this,android.R.anim.fade_out);
@@ -203,7 +205,7 @@ public class SignInActivity extends FragmentActivity {
 		}
 		
 		@Override
-		protected HttpResponse doInBackground(Void... params) {
+		protected JSONObject doInBackground(Void... params) {
 			
 			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 	        nameValuePairs.add(new BasicNameValuePair("username", editUsername.getText().toString()));
@@ -211,28 +213,32 @@ public class SignInActivity extends FragmentActivity {
 	        nameValuePairs.add(new BasicNameValuePair("platform", Constants.API_PLATFORM));
 	        nameValuePairs.add(new BasicNameValuePair("mobile_id", Utils.getUUID(SignInActivity.this)));
 			
-			return new RequestPost(Constants.API_BASE_URL+"login.json", nameValuePairs).execute();
-			
+	        HttpResponse result = new RequestPost(Constants.API_BASE_URL+"login.json", nameValuePairs).execute();
+	        
+	        status = 0;
+	        message = "Error "+result.getStatusLine().getStatusCode()+": "+result.getStatusLine().getReasonPhrase();
+	        
+	        try {
+				JSONObject responseJSON = Utils.getJSONObjectFromHttpResponse(result);
+				prefs.edit().putString(Constants.PREF_AUTH_KEY, responseJSON.getString("auth_key")).commit();
+				return responseJSON;
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+	        
+			return null;
 		}
 		
 		@Override
-		protected void onPostExecute(HttpResponse result) {
-			if(result.getStatusLine().getStatusCode()>=200 && result.getStatusLine().getStatusCode()<300){
-				
-				try {
-					JSONObject responseJSON = Utils.getJSONObjectFromHttpResponse(result);
-					prefs.edit().putString(Constants.PREF_AUTH_KEY, responseJSON.getString("auth_key")).commit();
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-					
+		protected void onPostExecute(JSONObject result) {
+			if(status>=200 && status<300){
 				startActivity(new Intent(SignInActivity.this, HomeActivity.class));
 				finish();
 			}
 			else{
 				layoutProgress.startAnimation(fadeOut);
 				layoutFields.startAnimation(fadeIn);
-				Toast.makeText(SignInActivity.this, "Error "+result.getStatusLine().getStatusCode()+": "+result.getStatusLine().getReasonPhrase(), Toast.LENGTH_SHORT).show();
+				Toast.makeText(SignInActivity.this, message, Toast.LENGTH_SHORT).show();
 			}
 			
 			super.onPostExecute(result);

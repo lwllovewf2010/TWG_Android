@@ -4,7 +4,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-import org.apache.http.HttpResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -27,7 +26,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.modusgo.ubi.utils.RequestGet;
 import com.modusgo.ubi.utils.Utils;
 
 public class DriverDetailsFragment extends Fragment {
@@ -80,7 +78,7 @@ public class DriverDetailsFragment extends Fragment {
 			}
 		});
 	    
-	    new GetDriverTask(getActivity()).execute();
+	    new GetDriverTask(getActivity()).execute("drivers/"+driver.id+".json");
 		
 		return rootView;
 	}
@@ -170,8 +168,8 @@ public class DriverDetailsFragment extends Fragment {
 		}
 
 		@Override
-		protected HttpResponse doInBackground(Void... params) {			
-			return new RequestGet(Constants.API_BASE_URL+"drivers/"+driver.id+".json", requestParams).execute();
+		protected JSONObject doInBackground(String... params) {			
+			return super.doInBackground(params);
 		}
 		
 		@Override
