@@ -156,7 +156,7 @@ public class CirclesFragment extends TitledFragment{
         LinearLayout llCircles = (LinearLayout) circlesRow.findViewById(R.id.llCircles);
         
         for (int i = 0; i < marks.length; i++) {
-            RelativeLayout circleItem = (RelativeLayout) inflater.inflate(R.layout.score_circle_item, llCircles, false);
+            View circleItem = inflater.inflate(R.layout.score_circle_item, llCircles, false);
             int circleBgResId = R.drawable.circle_gray;
             
             String circlesInfo = "";
