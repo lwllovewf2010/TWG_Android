@@ -47,6 +47,9 @@ public class TripsFragment extends Fragment{
 	LinearLayout llProgress;
 	ListView lv;
 	
+	Calendar cStart;
+	Calendar cEnd;
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -88,6 +91,11 @@ public class TripsFragment extends Fragment{
 		adapter = new TripsAdapter();
 		lv.setAdapter(adapter);
 		
+		cStart = Calendar.getInstance();
+		cStart.set(2000, Calendar.JANUARY, 1);
+		
+		cEnd = Calendar.getInstance();
+		
 		new GetTripsTask(getActivity()).execute("drivers/"+driver.id+"/trips.json");
 		
 		return rootView;
@@ -96,15 +104,36 @@ public class TripsFragment extends Fragment{
 	String[] timePeriods = new String[]{"Last Month", "This Month", "All"};
 	
 	private Dialog createDialog() {
-	    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-	    builder.setTitle("Change time period")
-	           .setItems(timePeriods, new DialogInterface.OnClickListener() {
-	               public void onClick(DialogInterface dialog, int which) {
-	               // The 'which' argument contains the index position
-	               // of the selected item
-	           }
-	    });
-	    return builder.create();
+		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		builder.setTitle("Change time period").setItems(timePeriods,
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						tripsMap.clear();
+						switch (which) {
+						case 0:
+							new GetTripsTask(getActivity()).execute("drivers/"+driver.id+"/trips.json");
+							cStart.setTimeInMillis(System.currentTimeMillis());
+							cStart.set(cStart.get(Calendar.YEAR), cStart.get(Calendar.MONTH)-1, 1, 0, 0);
+							cEnd.set(cStart.get(Calendar.YEAR), cStart.get(Calendar.MONTH)+1,1,23,59);
+							break;
+						case 1:
+							new GetTripsTask(getActivity()).execute("drivers/"+driver.id+"/trips.json");
+							cStart.setTimeInMillis(System.currentTimeMillis());
+							cStart.set(cStart.get(Calendar.YEAR), cStart.get(Calendar.MONTH), 1, 0, 0);
+							cEnd.setTimeInMillis(System.currentTimeMillis());
+							break;
+						case 2:
+							new GetTripsTask(getActivity()).execute("drivers/"+driver.id+"/trips.json");
+							cStart.set(2000, Calendar.JANUARY, 1, 0, 0);
+							cEnd.setTimeInMillis(System.currentTimeMillis());
+							break;
+
+						default:
+							break;
+						}
+					}
+				});
+		return builder.create();
 	}
 	
 	@Override
@@ -130,8 +159,12 @@ public class TripsFragment extends Fragment{
 
 		@Override
 		protected JSONObject doInBackground(String... params) {
+			SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);
+			
 	        requestParams.add(new BasicNameValuePair("page", "1"));
 	        requestParams.add(new BasicNameValuePair("per_page", "1000"));
+	        requestParams.add(new BasicNameValuePair("start_time", sdf.format(cStart.getTime())));
+	        requestParams.add(new BasicNameValuePair("end_time", sdf.format(cEnd.getTime())));
 			return super.doInBackground(params);
 		}
 		
