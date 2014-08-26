@@ -28,10 +28,8 @@ import com.modusgo.ubi.utils.Utils;
 
 public class HomeActivity extends MainActivity{
 	
-	private static final String SAVED_DRIVERS = "drivers";
-	
-	ArrayList<Driver> drivers;
 	DriversAdapter driversAdapter;
+	DriversHelper dHelper;
 	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,13 +40,9 @@ public class HomeActivity extends MainActivity{
 		
 		ListView lvDrivers = (ListView)findViewById(R.id.listViewDrivers);
 		
-		if(savedInstanceState!=null){
-			drivers = (ArrayList<Driver>) savedInstanceState.getSerializable(SAVED_DRIVERS);
-		}
-		else
-			drivers = new ArrayList<Driver>();
+		dHelper = DriversHelper.getInstance();
 		
-		driversAdapter = new DriversAdapter(this, drivers);
+		driversAdapter = new DriversAdapter(this, dHelper.drivers);
 		
 		lvDrivers.setAdapter(driversAdapter);
 		
@@ -129,7 +123,7 @@ public class HomeActivity extends MainActivity{
 					
 					Intent i = new Intent(HomeActivity.this, DriverActivity.class);
 					i.putExtra("id", position);
-					i.putExtra(DriverActivity.SAVED_DRIVER, drivers.get(position));
+					//i.putExtra(DriverActivity.SAVED_DRIVER, drivers.get(position));
 					startActivity(i);
 				}
 			});
@@ -169,10 +163,10 @@ public class HomeActivity extends MainActivity{
 			try {
 				JSONArray driversJSON = responseJSON.getJSONArray("drivers");
 				
-				drivers.clear();
+				dHelper.drivers.clear();
 				for (int i = 0; i < driversJSON.length(); i++) {
 					JSONObject driverJSON = driversJSON.getJSONObject(i);
-					drivers.add(new Driver(driverJSON.getLong("id"), 
+					dHelper.drivers.add(new Driver(driverJSON.getLong("id"), 
 							driverJSON.getString("name"), 
 							R.drawable.person_placeholder, 
 							driverJSON.getString("year")+" "+driverJSON.getString("make")+" "+driverJSON.getString("model"), 
@@ -198,7 +192,7 @@ public class HomeActivity extends MainActivity{
 	
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-		outState.putSerializable(SAVED_DRIVERS, drivers);
+		//outState.putSerializable(SAVED_DRIVERS, drivers);
 		super.onSaveInstanceState(outState);
 	}
 

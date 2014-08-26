@@ -1,6 +1,6 @@
 package com.modusgo.ubi;
 
-import java.util.Random;
+import java.text.DecimalFormat;
 
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -18,7 +18,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.modusgo.ubi.customviews.ExpandablePanel;
@@ -26,10 +25,25 @@ import com.modusgo.ubi.customviews.ExpandablePanel.OnExpandListener;
 
 public class CirclesFragment extends TitledFragment{
 	
+	public static final String SAVED_USE_OF_SPEED = "useofspeed";
+	public static final String SAVED_CORNERING = "cornering";
+	public static final String SAVED_INTERSECTION_ACCEL = "intaccel";
+	public static final String SAVED_ROAD_ACCEL = "roadaccel";
+	public static final String SAVED_INTERSECTION_BRAKING = "intbraking";
+	public static final String SAVED_ROAD_BRAKING = "roadbraking";
+	
 	SharedPreferences prefs;
 	
 	static TextView tvPopup;
 	boolean showTipPopup = true;
+	
+	Bundle useOfSpeed;
+	Bundle cornering;
+	Bundle intersectionAccel;
+	Bundle roadAccel;
+	Bundle intersectionBraking;
+	Bundle roadBraking;
+	
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -37,9 +51,21 @@ public class CirclesFragment extends TitledFragment{
 		
 		if(savedInstanceState!=null){
 			title = savedInstanceState.getString(SAVED_TITLE);
+			useOfSpeed = savedInstanceState.getBundle(SAVED_USE_OF_SPEED);
+			cornering = savedInstanceState.getBundle(SAVED_CORNERING);
+			intersectionAccel = savedInstanceState.getBundle(SAVED_INTERSECTION_ACCEL);
+			roadAccel = savedInstanceState.getBundle(SAVED_ROAD_ACCEL);
+			intersectionBraking = savedInstanceState.getBundle(SAVED_INTERSECTION_BRAKING);
+			roadBraking = savedInstanceState.getBundle(SAVED_ROAD_BRAKING);
 	    }
 	    else if(getArguments()!=null){  
-			title = getArguments().getString(SAVED_TITLE);  
+			title = getArguments().getString(SAVED_TITLE);
+			useOfSpeed = getArguments().getBundle(SAVED_USE_OF_SPEED);
+			cornering = getArguments().getBundle(SAVED_CORNERING);
+			intersectionAccel = getArguments().getBundle(SAVED_INTERSECTION_ACCEL);
+			roadAccel = getArguments().getBundle(SAVED_ROAD_ACCEL);
+			intersectionBraking = getArguments().getBundle(SAVED_INTERSECTION_BRAKING);
+			roadBraking = getArguments().getBundle(SAVED_ROAD_BRAKING);  
 	    }
 		
 		LinearLayout rootView = new LinearLayout(getActivity());
@@ -47,12 +73,15 @@ public class CirclesFragment extends TitledFragment{
 	    LayoutParams rootParams = new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT);
 	    rootView.setLayoutParams(rootParams);
 		
-	    rootView.addView(createNewRow("Use of Speed", getRandomMarks(), inflater));
-	    rootView.addView(createNewRow("Cornering", getRandomMarks(), inflater));
-	    rootView.addView(createNewRow("Intersection Acceleration", getRandomMarks(), inflater));
-	    rootView.addView(createNewRow("Road Acceleration", getRandomMarks(), inflater));
-	    rootView.addView(createNewRow("Intersection Braking", getRandomMarks(), inflater));
-	    rootView.addView(createNewRow("Road Braking", getRandomMarks(), inflater));		
+	    rootView.addView(createNewRow("Use of Speed", useOfSpeed, inflater));
+	    
+	    System.out.println(useOfSpeed);
+	    
+	    rootView.addView(createNewRow("Cornering", cornering, inflater));
+	    rootView.addView(createNewRow("Intersection Acceleration", intersectionAccel, inflater));
+	    rootView.addView(createNewRow("Road Acceleration", roadAccel, inflater));
+	    rootView.addView(createNewRow("Intersection Braking", intersectionBraking, inflater));
+	    rootView.addView(createNewRow("Road Braking", roadBraking, inflater));		
 		
 	    prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 	    showTipPopup = prefs.getBoolean(Constants.PREF_SHOW_TIP_POPUP, true);
@@ -118,16 +147,14 @@ public class CirclesFragment extends TitledFragment{
 		super.onViewCreated(view, savedInstanceState);
 	}
 	
-	private int[] getRandomMarks(){
-		Random r = new Random();
-		return new int[]{r.nextInt(4),r.nextInt(4),r.nextInt(4),r.nextInt(4)};
-	}
-	
-	private View createNewRow(String rowTitle, int[] marks, LayoutInflater inflater){
+	private View createNewRow(String rowTitle, Bundle marksAndStats, LayoutInflater inflater){
 		LinearLayout rootView = new LinearLayout(getActivity());
 		rootView.setOrientation(LinearLayout.VERTICAL);
 	    LayoutParams rootParams = new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT);
 	    rootView.setLayoutParams(rootParams);
+	    
+	    int[] marks = marksAndStats.getIntArray("marks");
+	    double[] distances = marksAndStats.getDoubleArray("distances");
 	    
 	    final RowData rData = new RowData();
 		
@@ -152,8 +179,11 @@ public class CirclesFragment extends TitledFragment{
         final ExpandablePanel panel = (ExpandablePanel) circlesRow.findViewById(R.id.panelExpandable);
         
         final TextView tv2 = new TextView(getActivity());
+        final TextView tv3 = new TextView(getActivity());
         
         LinearLayout llCircles = (LinearLayout) circlesRow.findViewById(R.id.llCircles);
+        
+        DecimalFormat df = new DecimalFormat("0.0");
         
         for (int i = 0; i < marks.length; i++) {
             View circleItem = inflater.inflate(R.layout.score_circle_item, llCircles, false);
@@ -187,6 +217,7 @@ public class CirclesFragment extends TitledFragment{
             
             
             final String circleInfo = circlesInfo;
+            final String distanceInfo = "We have collected <font face=\"fonts/EncodeSansNormal-500-Medium.ttf\">"+df.format(distances[i])+" miles</font> of data for this scoring metric.";
             final int index = i;
             circleItem.setOnClickListener(new OnClickListener() {
 				
@@ -198,6 +229,7 @@ public class CirclesFragment extends TitledFragment{
 					
 					if(!panel.isExpanded()){
 						tv2.setText(Html.fromHtml(circleInfo));
+				        tv3.setText(Html.fromHtml(distanceInfo));
 						panel.expand();
 						rData.arrows[rData.expandedItemIndex].setVisibility(View.INVISIBLE);
 						rData.expandedItemIndex = index;
@@ -220,6 +252,7 @@ public class CirclesFragment extends TitledFragment{
 								rData.expandedItemIndex = index;
 								rData.arrows[rData.expandedItemIndex].setVisibility(View.VISIBLE);
 								tv2.setText(Html.fromHtml(circleInfo));
+						        tv3.setText(Html.fromHtml(distanceInfo));
 								panel.expand();
 							}
 						});
@@ -230,9 +263,6 @@ public class CirclesFragment extends TitledFragment{
             llCircles.addView(circleItem);
 		}
         rootView.addView(circlesRow);
-       
-        TextView tv3 = new TextView(getActivity());
-        tv3.setText(Html.fromHtml("We have collected <font face=\"fonts/EncodeSansNormal-500-Medium.ttf\">500 miles</font> of data for this scoring metric."));
 
         tv2.setTypeface(typeface);
         tv2.setTextSize(TypedValue.COMPLEX_UNIT_SP, 8.5f);
@@ -266,6 +296,12 @@ public class CirclesFragment extends TitledFragment{
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		outState.putString(SAVED_TITLE, title);
+		outState.putBundle(SAVED_USE_OF_SPEED, useOfSpeed);
+		outState.putBundle(SAVED_CORNERING, cornering);
+		outState.putBundle(SAVED_INTERSECTION_ACCEL, intersectionAccel);
+		outState.putBundle(SAVED_ROAD_ACCEL, roadAccel);
+		outState.putBundle(SAVED_INTERSECTION_BRAKING, intersectionBraking);
+		outState.putBundle(SAVED_ROAD_BRAKING, roadBraking);
 	}
 	
 	class RowData{

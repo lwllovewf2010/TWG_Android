@@ -31,6 +31,8 @@ import com.modusgo.ubi.utils.Utils;
 public class DriverDetailsFragment extends Fragment {
 	
 	Driver driver;
+	DriversHelper dHelper;
+	int driverIndex = 0;
 	SharedPreferences prefs;
 	
 	TextView tvName;
@@ -50,16 +52,19 @@ public class DriverDetailsFragment extends Fragment {
 		View rootView = inflater.inflate(R.layout.driver_details_fragment, container, false);
 
 		((MainActivity)getActivity()).setActionBarTitle("DRIVER DETAIL");
-
+		
 		prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		
 		if(savedInstanceState!=null){
-			driver = (Driver) savedInstanceState.getSerializable(DriverActivity.SAVED_DRIVER);
+			driverIndex = savedInstanceState.getInt("id");
 		}
 		else if(getArguments()!=null){
-			driver = (Driver) getArguments().getSerializable(DriverActivity.SAVED_DRIVER);
+			driverIndex = getArguments().getInt("id");
 		}
 
+		dHelper = DriversHelper.getInstance();
+		driver = dHelper.getDriverByIndex(driverIndex);
+		
 	    tvName = (TextView) rootView.findViewById(R.id.tvName);
 	    tvVehicle = (TextView) rootView.findViewById(R.id.tvVehicle);
 	    tvLocation = (TextView) rootView.findViewById(R.id.tvLocation);
@@ -157,7 +162,7 @@ public class DriverDetailsFragment extends Fragment {
 	
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
-		outState.putSerializable(DriverActivity.SAVED_DRIVER, driver);
+		outState.putInt("id", driverIndex);
 		super.onSaveInstanceState(outState);
 	}
 	
@@ -178,7 +183,9 @@ public class DriverDetailsFragment extends Fragment {
 				
 				driver.name = responseJSON.getString("name");
 				driver.vehicle = responseJSON.getString("year")+" "+responseJSON.getString("make")+" "+responseJSON.getString("model");
+				driver.VIN = responseJSON.getString("vin");
 				driver.lastTripDate = Utils.fixTimezoneZ(responseJSON.getString("last_trip"));
+				driver.profileDate = Utils.fixTimezoneZ(responseJSON.getString("profile_date"));
 				driver.alerts = responseJSON.getInt("count_new_alerts");
 				driver.diags = responseJSON.getInt("count_new_diags");
 				driver.diagnosticsOK = responseJSON.getInt("count_new_diags") == 0 ? true : false;
@@ -186,6 +193,8 @@ public class DriverDetailsFragment extends Fragment {
 				driver.address = responseJSON.getJSONObject("location").getString("address");
 				driver.latitude = Double.parseDouble(responseJSON.getJSONObject("location").getJSONObject("map").getString("latitude"));
 				driver.longitude = Double.parseDouble(responseJSON.getJSONObject("location").getJSONObject("map").getString("longitude"));
+				
+				dHelper.setDriver(driverIndex, driver);
 				
 				if(mMap!=null){
 					mMap.clear();

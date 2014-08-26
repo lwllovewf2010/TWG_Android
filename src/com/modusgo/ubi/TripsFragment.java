@@ -35,13 +35,13 @@ import android.widget.TextView;
 import com.modusgo.ubi.utils.Utils;
 
 public class TripsFragment extends Fragment{
-
-	private final static String SAVED_TRIPS = "trips";
 	
 	Driver driver;
+	DriversHelper dHelper;
+	int driverIndex = 0;
 	SharedPreferences prefs;
 	
-	LinkedHashMap<String, ArrayList<Trip>> tripsMap = new LinkedHashMap<>();
+	LinkedHashMap<String, ArrayList<Trip>> tripsMap;
 	TripsAdapter adapter;
 	
 	@Override
@@ -52,13 +52,15 @@ public class TripsFragment extends Fragment{
 		((MainActivity)getActivity()).setActionBarTitle("TRIPS");
 
 		if(savedInstanceState!=null){
-			driver = (Driver) savedInstanceState.getSerializable(DriverActivity.SAVED_DRIVER);
-			tripsMap = (LinkedHashMap<String, ArrayList<Trip>>) savedInstanceState.getSerializable(SAVED_TRIPS);
+			driverIndex = savedInstanceState.getInt("id");
 		}
 		else if(getArguments()!=null){
-			driver = (Driver) getArguments().getSerializable(DriverActivity.SAVED_DRIVER);
-			tripsMap = new LinkedHashMap<>();
+			driverIndex = getArguments().getInt("id");
 		}
+
+		dHelper = DriversHelper.getInstance();
+		driver = dHelper.getDriverByIndex(driverIndex);
+		tripsMap = driver.tripsMap;
 		
 		((TextView)rootView.findViewById(R.id.tvName)).setText(driver.name);
 		((ImageView)rootView.findViewById(R.id.imagePhoto)).setImageResource(driver.imageId);
@@ -103,8 +105,7 @@ public class TripsFragment extends Fragment{
 	
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
-		outState.putSerializable(DriverActivity.SAVED_DRIVER, driver);
-		outState.putSerializable(SAVED_TRIPS, tripsMap);
+		outState.putInt("id", driverIndex);
 		super.onSaveInstanceState(outState);
 	}
 	
@@ -135,6 +136,7 @@ public class TripsFragment extends Fragment{
 				Calendar cPrev = Calendar.getInstance();
 				Calendar cNow = Calendar.getInstance();
 				int j = 0;
+				tripsMap.clear();
 				for (int i = 0; i < tripsJSON.length(); i++) {
 					JSONObject tipJSON = tripsJSON.getJSONObject(i);
 					
@@ -160,6 +162,9 @@ public class TripsFragment extends Fragment{
 					j++;
 					trips.add(t);
 				}
+				
+				driver.tripsMap = tripsMap;
+				
 				adapter.notifyDataSetChanged();
 				
 			} catch (JSONException e) {

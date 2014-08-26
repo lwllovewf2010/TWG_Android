@@ -120,10 +120,12 @@ public class PieChartFragment extends TitledFragment{
 	private void updateChart(PieChartView pieChart, boolean animate){
 		ArrayList<PieSector> pieSectors = new ArrayList<PieChartView.PieSector>();
 		for (int i = 0; i < chartValues.length; i++) {
-			if(isVisible[i])
-		    	pieSectors.add(pieChart.new PieSector(chartValues[i],backgroundResources[i]));
-			else
-		    	pieSectors.add(pieChart.new PieSector(0,backgroundResources[i]));
+			if(chartValues[i]>=0.5){
+				if(isVisible[i])
+			    	pieSectors.add(pieChart.new PieSector(chartValues[i],backgroundResources[i]));
+				else
+			    	pieSectors.add(pieChart.new PieSector(0,backgroundResources[i]));
+			}
 		}
 		PieSector pieSectorsArr[] = new PieSector[pieSectors.size()];
 		

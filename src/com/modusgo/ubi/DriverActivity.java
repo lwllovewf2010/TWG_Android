@@ -50,8 +50,8 @@ public class DriverActivity extends MainActivity{
 		Bundle bDriver = new Bundle();
 		bDriver.putSerializable(SAVED_DRIVER, getIntent().getSerializableExtra(SAVED_DRIVER));
 		
-		setupTab(DriverDetailsFragment.class, bDriver, "Driver", R.drawable.ic_tab_driver, 0);
-		setupTab(TripsFragment.class, bDriver, "Trips", R.drawable.ic_tab_trips, 3);
+		setupTab(DriverDetailsFragment.class, b, "Driver", R.drawable.ic_tab_driver, 0);
+		setupTab(TripsFragment.class, b, "Trips", R.drawable.ic_tab_trips, 3);
 		setupTab(ScoreFragment.class, b, "Score", R.drawable.ic_tab_score, 0);
 		setupTab(DiagnosticsFragment.class, b, "Diagnostics", R.drawable.ic_tab_diagnostics, 0);
 		setupTab(LimitsFragment.class, b, "Limits", R.drawable.ic_tab_limits, 0);

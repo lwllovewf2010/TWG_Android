@@ -5,12 +5,17 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 import java.util.UUID;
 
 import org.apache.http.HttpResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+
+import com.modusgo.ubi.Constants;
 
 import android.content.Context;
 import android.telephony.TelephonyManager;
@@ -76,6 +81,16 @@ public class Utils {
 	
 	public static String fixTimezoneZ(String datetime){
 		return datetime.replace("Z", "-00:00");
+	}
+	
+	public static String convertTime(String date, SimpleDateFormat sdfTo){
+		SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
+		try {
+			return sdfTo.format(sdfFrom.parse(date));
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return date;
+		}
 	}
 	
 }

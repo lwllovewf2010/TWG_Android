@@ -1,6 +1,8 @@
 package com.modusgo.ubi;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 public class Driver implements Serializable{
 	
@@ -9,7 +11,9 @@ public class Driver implements Serializable{
 	public String name;
 	public int imageId;
 	public String vehicle;
+	public String VIN;
 	public String lastTripDate;
+	public String profileDate;
 	public String score;
 	public String phone;
 	public String email;
@@ -23,6 +27,7 @@ public class Driver implements Serializable{
 	public double longitude;
 	public String address;
 	
+	public LinkedHashMap<String, ArrayList<Trip>> tripsMap = new LinkedHashMap<>();
 	
 	public Driver(String name, String score){
 		this.name = name;
