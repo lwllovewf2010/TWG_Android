@@ -44,6 +44,9 @@ public class TripsFragment extends Fragment{
 	LinkedHashMap<String, ArrayList<Trip>> tripsMap;
 	TripsAdapter adapter;
 	
+	LinearLayout llProgress;
+	ListView lv;
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -79,7 +82,8 @@ public class TripsFragment extends Fragment{
 			}
 		});
 		
-		ListView lv = (ListView)rootView.findViewById(R.id.listView);
+		llProgress = (LinearLayout)rootView.findViewById(R.id.llProgress);
+		lv = (ListView)rootView.findViewById(R.id.listView);
 		
 		adapter = new TripsAdapter();
 		lv.setAdapter(adapter);
@@ -110,9 +114,18 @@ public class TripsFragment extends Fragment{
 	}
 	
 	class GetTripsTask extends BaseRequestAsyncTask{
-
+		
 		public GetTripsTask(Context context) {
 			super(context);
+		}
+		
+		@Override
+		protected void onPreExecute() {
+			if(tripsMap.size()==0){
+				llProgress.setVisibility(View.VISIBLE);
+				lv.setVisibility(View.GONE);
+			}
+			super.onPreExecute();
 		}
 
 		@Override
@@ -125,10 +138,7 @@ public class TripsFragment extends Fragment{
 		@Override
 		protected void onSuccess(JSONObject responseJSON) {
 			try {
-				System.out.println(responseJSON);
-				
 				JSONArray tripsJSON = responseJSON.getJSONArray("trips");
-				
 				
 				SimpleDateFormat sdfDate = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
 				
@@ -170,6 +180,10 @@ public class TripsFragment extends Fragment{
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
+
+			llProgress.setVisibility(View.GONE);
+			lv.setVisibility(View.VISIBLE);
+			
 			super.onSuccess(responseJSON);
 		}
 	}
