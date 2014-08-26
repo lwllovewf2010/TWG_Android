@@ -80,7 +80,7 @@ public class DriverActivity extends MainActivity{
         
         ListView lvDrivers = (ListView)menu.findViewById(R.id.listViewDrivers);
 		
-		DriversAdapter driversAdapter = new DriversAdapter(this, DbHelper.getDrivers());
+		DriversAdapter driversAdapter = new DriversAdapter(this, DriversHelper.getInstance().drivers);
 		
 		lvDrivers.setAdapter(driversAdapter);
 		
@@ -140,13 +140,18 @@ public class DriverActivity extends MainActivity{
 				
 				@Override
 				public void onClick(View arg0) {
-					prefs.edit().putInt(Constants.PREF_CURRENT_DRIVER, position).commit();
-					menu.toggle();
-					finish();
-					
-					Intent i = new Intent(DriverActivity.this, DriverActivity.class);
-					i.putExtra("id", position);
-					startActivity(i);
+					if(prefs.getInt(Constants.PREF_CURRENT_DRIVER, 0)!=position){
+						prefs.edit().putInt(Constants.PREF_CURRENT_DRIVER, position).commit();
+						menu.toggle();
+						finish();
+						
+						Intent i = new Intent(DriverActivity.this, DriverActivity.class);
+						i.putExtra("id", position);
+						startActivity(i);
+					}
+					else{
+						menu.toggle();
+					}
 					
 				}
 			});
