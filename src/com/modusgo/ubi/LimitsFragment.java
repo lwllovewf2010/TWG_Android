@@ -1,12 +1,22 @@
 package com.modusgo.ubi;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
+
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -19,11 +29,22 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 import android.widget.ToggleButton;
+
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class LimitsFragment extends Fragment {
 
 	Driver driver;
+	DriversHelper dHelper;
+	int driverIndex = 0;
+	
+	LinearLayout content;
+	LayoutInflater inflater;
+	
+	ArrayList<LimitsListGroup> groups;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -31,12 +52,36 @@ public class LimitsFragment extends Fragment {
 		LinearLayout rootView = (LinearLayout) inflater.inflate(
 				R.layout.fragment_limits, container, false);
 
+		this.inflater = inflater; 
+		
 		((MainActivity) getActivity()).setActionBarTitle("LIMITS");
 		
-		driver = DbHelper.getDrivers().get(getArguments().getInt("id", 0));
+		if(savedInstanceState!=null){
+			driverIndex = savedInstanceState.getInt("id");
+		}
+		else if(getArguments()!=null){
+			driverIndex = getArguments().getInt("id");
+		}
+		
+		dHelper = DriversHelper.getInstance();
+		driver = dHelper.getDriverByIndex(driverIndex);
 		
 		((TextView)rootView.findViewById(R.id.tvName)).setText(driver.name);
-		((ImageView)rootView.findViewById(R.id.imagePhoto)).setImageResource(driver.imageId);
+		
+		ImageView imagePhoto = (ImageView)rootView.findViewById(R.id.imagePhoto);
+	    if(driver.imageUrl == null || driver.imageUrl.equals(""))
+	    	imagePhoto.setImageResource(driver.imageId);
+	    else{
+	    	DisplayImageOptions options = new DisplayImageOptions.Builder()
+	        .showImageOnLoading(R.drawable.person_placeholder)
+	        .showImageForEmptyUri(R.drawable.person_placeholder)
+	        .showImageOnFail(R.drawable.person_placeholder)
+	        .cacheInMemory(true)
+	        .cacheOnDisk(true)
+	        .build();
+	    	
+	    	ImageLoader.getInstance().displayImage(driver.imageUrl, imagePhoto, options);
+	    }
 		
 		rootView.findViewById(R.id.btnSwitchDriverMenu).setOnClickListener(new OnClickListener() {
 			@Override
@@ -47,26 +92,19 @@ public class LimitsFragment extends Fragment {
 
 		rootView.findViewById(R.id.btnTimePeriod).setVisibility(View.GONE);
 
-		LinearLayout content = (LinearLayout)rootView.findViewById(R.id.llContent);
+		content = (LinearLayout)rootView.findViewById(R.id.llContent);
 		
-		ArrayList<LimitsListChild> dailyMileageLimitsChildren = new ArrayList<LimitsListChild>();
-		ArrayList<LimitsListChild> timeOfDayLimitsChildren = new ArrayList<LimitsListChild>();
-		ArrayList<LimitsListChild> geofenceChildren = new ArrayList<LimitsListChild>();
-		dailyMileageLimitsChildren.add(new LimitsListChild(R.layout.limits_edittext_item, "Set max to"));
-		timeOfDayLimitsChildren.add(new LimitsListChild(R.layout.limits_edittext_double_item, "Between", "and"));
-		geofenceChildren.add(new LimitsListChild(R.layout.limits_link_item, "Set geofence"));
+		new GetLimitsTask(getActivity()).execute("drivers/"+driver.id+"/limits.json");
 		
-		ArrayList<LimitsListGroup> groups = new ArrayList<LimitsListGroup>();
-		groups.add(new LimitsListGroup("Max speed limit"));
-		groups.add(new LimitsListGroup("Daily mileage limit",dailyMileageLimitsChildren));
-		groups.add(new LimitsListGroup("Harsh braking alerts"));
-		groups.add(new LimitsListGroup("Time of day limits", timeOfDayLimitsChildren));
-		groups.add(new LimitsListGroup("Geofence", geofenceChildren));
-		groups.add(new LimitsListGroup("Low fuel"));		
+		return rootView;
+	}
+	
+	private void updateLimits(){	
 		
-		
-		for (LimitsListGroup limitsListGroup : groups) {
+		for (final LimitsListGroup limitsListGroup : groups) {
 			View groupView = inflater.inflate(R.layout.limits_toggle_button_item, content, false);
+			
+			ToggleButton btnToggle = (ToggleButton)groupView.findViewById(R.id.btnToggle);
 			
 			if(limitsListGroup.childs.size()>0){
 				final LinearLayout groupChilds = (LinearLayout)groupView.findViewById(R.id.llChilds);
@@ -76,9 +114,11 @@ public class LimitsFragment extends Fragment {
 					TextView textChild = (TextView) childView.findViewById(R.id.tvTitle);
 					textChild.setText(child.text[0]);
 					
-					switch(child.layoutId){
-					case R.layout.limits_edittext_item :
+					if(child instanceof LimitsSingleValueChild){
+						final LimitsSingleValueChild c = (LimitsSingleValueChild)child;
+						
 						final TextView tvSingleValue = (TextView)childView.findViewById(R.id.tvValue);
+						tvSingleValue.setText(c.value+" "+c.measurePoint);
 						tvSingleValue.setOnClickListener(new OnClickListener() {		
 							@Override
 							public void onClick(View v) {
@@ -89,14 +129,16 @@ public class LimitsFragment extends Fragment {
 							    // Inflate and set the layout for the dialog
 							    // Pass null as the parent view because its going in the dialog layout
 							    final View dialogContentView = inflater.inflate(R.layout.dialog_numbers, null);
-							    ((TextView)dialogContentView.findViewById(R.id.editValue)).setText("80");
+							    ((TextView)dialogContentView.findViewById(R.id.editValue)).setText(""+c.value);
 							    builder.setView(dialogContentView)
 							    // Add action buttons
 							    .setTitle(((TextView)childView.findViewById(R.id.tvValue)).getText())
 							    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
 							    	@Override
 							        public void onClick(DialogInterface dialog, int id) {
-							    		tvSingleValue.setText(((TextView)dialogContentView.findViewById(R.id.editValue)).getText()+" MI");
+							    		int value = Integer.valueOf(((TextView)dialogContentView.findViewById(R.id.editValue)).getText().toString());
+							    		tvSingleValue.setText(value+" "+c.measurePoint);
+							    		c.value = value;
 							        }
 							    })
 							    .setNegativeButton("Calcel", new DialogInterface.OnClickListener() {
@@ -107,56 +149,98 @@ public class LimitsFragment extends Fragment {
 							    builder.create().show();
 							}
 						});
-						break;
-					case R.layout.limits_edittext_double_item :
+					}
+					else if(child instanceof LimitsTimePeriodChild){
+						final LimitsTimePeriodChild c = (LimitsTimePeriodChild)child;
+						
+						SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa", Locale.US);
+						final Calendar startCalendar = Calendar.getInstance();
+						final Calendar endCalendar = Calendar.getInstance();
+						try {
+							startCalendar.setTime(sdf.parse(c.startTime));
+							endCalendar.setTime(sdf.parse(c.endTime));
+						} catch (ParseException e) {
+							e.printStackTrace();
+							startCalendar.set(2014, 0, 1, 10, 0);
+							endCalendar.set(2014, 0, 1, 20, 0);
+						}
+						
 						if(child.text[1]!=null){
 							((TextView) childView.findViewById(R.id.tvTitle2)).setText(child.text[1]);
 						}
 						
 						final TextView tvValue = (TextView)childView.findViewById(R.id.tvValue);
-						tvValue.setText(getTimeString(10, 0));
+						tvValue.setText(c.startTime);
 						tvValue.setOnClickListener(new OnClickListener() {		
 							@Override
 							public void onClick(View v) {
 								TimePickerDialog tpd = new TimePickerDialog(getActivity(), new OnTimeSetListener(){
 									@Override
 									public void onTimeSet(TimePicker arg0, int hourOfDay, int minutes) {
+										startCalendar.set(2014, 0, 1, hourOfDay, minutes);
 										tvValue.setText(getTimeString(hourOfDay, minutes));
+										c.startTime = getTimeString(hourOfDay, minutes);
 									}
-								}, 10, 0, false);
+								}, startCalendar.get(Calendar.HOUR_OF_DAY), startCalendar.get(Calendar.MINUTE), false);
 								tpd.show();
 							}
 						});
 						
 						final TextView tvValue2 = (TextView)childView.findViewById(R.id.tvValue2);
-						tvValue2.setText(getTimeString(11, 0));
+						tvValue2.setText(c.endTime);
 						tvValue2.setOnClickListener(new OnClickListener() {
 							@Override
 							public void onClick(View v) {
 								TimePickerDialog tpd = new TimePickerDialog(getActivity(), new OnTimeSetListener(){
 									@Override
 									public void onTimeSet(TimePicker arg0, int hourOfDay, int minutes) {
-										tvValue2.setText(getTimeString(hourOfDay, minutes));								
+										endCalendar.set(2014, 0, 1, hourOfDay, minutes);
+										tvValue2.setText(getTimeString(hourOfDay, minutes));
+										c.endTime = getTimeString(hourOfDay, minutes);
 									}
-								}, 11, 0, false);
+								}, endCalendar.get(Calendar.HOUR_OF_DAY), endCalendar.get(Calendar.MINUTE), false);
 								tpd.show();
 							}
 						});
+					}
+					else if(child instanceof LimitsLinkChild){
 						
-						break;
+					}
+					
+					switch(child.layoutId){
 					case R.layout.limits_link_item :
 						break;
 					}
 					
 					groupChilds.addView(childView);
 				}
-				((ToggleButton)groupView.findViewById(R.id.btnToggle)).setOnCheckedChangeListener(new OnCheckedChangeListener() {
+				
+				if(limitsListGroup.enabled){
+					btnToggle.setChecked(true);
+					groupChilds.setVisibility(View.VISIBLE);
+				}
+				
+				btnToggle.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 					@Override
 					public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 						if(isChecked)
 							groupChilds.setVisibility(View.VISIBLE);
 						else
 							groupChilds.setVisibility(View.GONE);
+						
+						limitsListGroup.enabled = isChecked;
+					}
+				});
+			}
+			else{
+				if(limitsListGroup.enabled){
+					btnToggle.setChecked(true);
+				}
+				
+				btnToggle.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+					@Override
+					public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {						
+						limitsListGroup.enabled = isChecked;
 					}
 				});
 			}
@@ -165,11 +249,6 @@ public class LimitsFragment extends Fragment {
 			
 			content.addView(groupView);
 		}
-		
-		
-		
-
-		return rootView;
 	}
 	
 	private String getTimeString(int hourOfDay, int minutes){
@@ -188,21 +267,35 @@ public class LimitsFragment extends Fragment {
 
 	    return strHrsToShow+":"+strMntToShow+" "+am_pm;
 	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		outState.putInt("id", driverIndex);
+		super.onSaveInstanceState(outState);
+	}
+	
+	@Override
+	public void onPause() {
+		new SetLimitsTask(getActivity()).execute("drivers/"+driver.id+"/limits.json");
+		super.onPause();
+	}
 
 	class LimitsListGroup{
 		String groupTitle;
 		boolean enabled = false;
 		ArrayList<LimitsListChild> childs;
 		
-		public LimitsListGroup(String groupTitle,
+		public LimitsListGroup(String groupTitle, boolean enabled,
 				ArrayList<LimitsListChild> childs) {
 			super();
 			this.groupTitle = groupTitle;
+			this.enabled = enabled;
 			this.childs = childs;
 		}
-		public LimitsListGroup(String groupTitle) {
+		public LimitsListGroup(String groupTitle, boolean enabled) {
 			super();
 			this.groupTitle = groupTitle;
+			this.enabled = enabled;
 			this.childs = new ArrayList<LimitsListChild>();
 		}
 	}
@@ -215,6 +308,136 @@ public class LimitsFragment extends Fragment {
 			super();
 			this.layoutId = layoutId;
 			this.text = text;
+		}
+	}
+	
+	class LimitsSingleValueChild extends LimitsListChild{
+		
+		int value;
+		String measurePoint;
+		
+		public LimitsSingleValueChild(int value, String meausrePoint, String text) {
+			super(R.layout.limits_edittext_item, text);
+			this.value = value;
+			this.measurePoint = meausrePoint;
+		}
+	}
+	
+	class LimitsTimePeriodChild extends LimitsListChild{
+		
+		String startTime;
+		String endTime;
+		
+		public LimitsTimePeriodChild(String startTime, String endTime, String... text) {
+			super(R.layout.limits_edittext_double_item, text);
+			this.startTime = startTime;
+			this.endTime = endTime;
+		}
+	}
+	
+	class LimitsLinkChild extends LimitsListChild{
+		
+		Intent intent;
+		
+		public LimitsLinkChild(Intent i, String... text) {
+			super(R.layout.limits_link_item, text);
+			intent = i;
+		}
+	}
+	
+	class GetLimitsTask extends BaseRequestAsyncTask{
+		
+		public GetLimitsTask(Context context) {
+			super(context);
+		}
+
+		@Override
+		protected JSONObject doInBackground(String... params) {
+	        requestParams.add(new BasicNameValuePair("driver_id", ""+driver.id));
+			return super.doInBackground(params);
+		}
+		
+		@Override
+		protected void onSuccess(JSONObject responseJSON) {
+			try {
+				ArrayList<LimitsListChild> maxSpeedLimitsChildren = new ArrayList<LimitsListChild>();
+				ArrayList<LimitsListChild> dailyMileageLimitsChildren = new ArrayList<LimitsListChild>();
+				ArrayList<LimitsListChild> timeOfDayLimitsChildren = new ArrayList<LimitsListChild>();
+				ArrayList<LimitsListChild> geofenceChildren = new ArrayList<LimitsListChild>();
+				maxSpeedLimitsChildren.add(new LimitsSingleValueChild(responseJSON.getInt("max_speed"), "MPH", "Set max to"));
+				dailyMileageLimitsChildren.add(new LimitsSingleValueChild(responseJSON.getInt("daily_mileage"), "MI", "Set max to"));
+				timeOfDayLimitsChildren.add(new LimitsTimePeriodChild(responseJSON.getString("driving_after"), responseJSON.getString("driving_before"), "Between", "and"));
+				
+				Intent i = new Intent();
+				
+				JSONArray geofence = responseJSON.getJSONArray("geofence");
+				double[] longitude = new double[geofence.length()];
+				double[] latitude = new double[geofence.length()];
+				
+				for (int j = 0; j < geofence.length(); j++) {
+					JSONArray point = geofence.getJSONArray(j);
+					longitude[j] = point.getDouble(0);
+					latitude[j] = point.getDouble(1);
+				}
+				i.putExtra("longitude", longitude);
+				i.putExtra("latitude", latitude);
+				
+				geofenceChildren.add(new LimitsLinkChild(i, "Set geofence"));
+				
+				groups = new ArrayList<LimitsListGroup>();
+				groups.add(new LimitsListGroup("Max speed limit", responseJSON.getBoolean("max_speed_limit"), maxSpeedLimitsChildren));
+				groups.add(new LimitsListGroup("Daily mileage limit", responseJSON.getBoolean("daily_mileage_limit"), dailyMileageLimitsChildren));
+				groups.add(new LimitsListGroup("Harsh braking alerts", responseJSON.getBoolean("harsh_way")));
+				groups.add(new LimitsListGroup("Time of day limits", responseJSON.getBoolean("is_driving_between"), timeOfDayLimitsChildren));
+				groups.add(new LimitsListGroup("Geofence", responseJSON.getBoolean("is_geofence"), geofenceChildren));
+				groups.add(new LimitsListGroup("Low fuel", responseJSON.getBoolean("low_fuel")));
+				groups.add(new LimitsListGroup("Distracted Driving Events", responseJSON.getBoolean("safe_driving")));
+				groups.add(new LimitsListGroup("Tow Alerts", false));
+				
+				updateLimits();
+				
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			
+			super.onSuccess(responseJSON);
+		}
+	}
+	
+	class SetLimitsTask extends BasePostRequestAsyncTask{
+		
+		public SetLimitsTask(Context context) {
+			super(context);
+		}
+
+		@Override
+		protected JSONObject doInBackground(String... params) {
+	        requestParams.add(new BasicNameValuePair("driver_id", ""+driver.id));
+	        
+
+	        requestParams.add(new BasicNameValuePair("max_speed_limit", ""+groups.get(0).enabled));
+	        requestParams.add(new BasicNameValuePair("daily_mileage_limit", ""+groups.get(1).enabled));
+	        requestParams.add(new BasicNameValuePair("harsh_way", ""+groups.get(2).enabled));
+	        requestParams.add(new BasicNameValuePair("is_driving_between", ""+groups.get(3).enabled));
+	        requestParams.add(new BasicNameValuePair("is_geofence", ""+groups.get(4).enabled));
+	        requestParams.add(new BasicNameValuePair("driver_id", ""+groups.get(5).enabled));
+	        requestParams.add(new BasicNameValuePair("safe_driving", ""+groups.get(6).enabled));
+	        
+	        requestParams.add(new BasicNameValuePair("max_speed", ""+((LimitsSingleValueChild)groups.get(0).childs.get(0)).value));
+	        requestParams.add(new BasicNameValuePair("daily_mileage", ""+((LimitsSingleValueChild)groups.get(1).childs.get(0)).value));
+
+	        requestParams.add(new BasicNameValuePair("driving_after", ""+((LimitsTimePeriodChild)groups.get(3).childs.get(0)).startTime));
+	        requestParams.add(new BasicNameValuePair("driving_before", ""+((LimitsTimePeriodChild)groups.get(3).childs.get(0)).endTime));
+	        
+	        System.out.println(requestParams);
+	        
+			return super.doInBackground(params);
+		}
+		
+		@Override
+		protected void onSuccess(JSONObject responseJSON) {
+			Toast.makeText(getActivity(), "Limits saved", Toast.LENGTH_SHORT).show();
+			super.onSuccess(responseJSON);
 		}
 	}
 }

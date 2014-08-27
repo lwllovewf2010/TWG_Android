@@ -1,0 +1,26 @@
+package com.modusgo.ubi;
+
+import org.apache.http.HttpResponse;
+import org.json.JSONObject;
+
+import android.content.Context;
+
+import com.modusgo.ubi.utils.RequestPost;
+import com.modusgo.ubi.utils.Utils;
+
+public class BasePostRequestAsyncTask extends BaseRequestAsyncTask{
+	
+	public BasePostRequestAsyncTask(Context context) {
+		super(context);
+	}
+
+	@Override
+	protected JSONObject doInBackground(String... params) {
+		HttpResponse result = new RequestPost(Constants.API_BASE_URL+params[0], requestParams).execute();
+		status = result.getStatusLine().getStatusCode();
+		message = "Error "+result.getStatusLine().getStatusCode()+": "+result.getStatusLine().getReasonPhrase();
+		
+		return Utils.getJSONObjectFromHttpResponse(result);
+	}
+
+}
