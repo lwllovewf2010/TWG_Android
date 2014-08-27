@@ -283,7 +283,7 @@ public class ScoreFragment extends Fragment{
 			try {
 				System.out.println(json);
 				
-				tvScore.setText(json.getInt("score_expert")+"% "+json.getString("grade"));
+				tvScore.setText(json.getString("grade"));
 				SimpleDateFormat sdf = new SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault());
 				DecimalFormat df = new DecimalFormat("0.000");
 				

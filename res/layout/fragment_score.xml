@@ -33,18 +33,9 @@
                     android:id="@+id/tvScore"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="76% C+"
+                    android:text="Loading..."
                     android:textColor="#FFF"
-                    android:textSize="24sp"
-                    ubi:typeface="arialbd.ttf" />
-                <com.modusgo.ubi.customviews.TypefacedTextView
-                    android:id="@+id/tvScore"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="-8dp"
-                    android:text="Your Score"
-                    android:textColor="#FFF"
-                    android:textSize="12sp"
+                    android:textSize="25sp"
                     ubi:typeface="arialbd.ttf" />
             </LinearLayout>
 
