@@ -26,6 +26,7 @@
             android:id="@+id/imagePhoto"
             android:layout_width="45dp"
             android:layout_height="45dp"
+            android:scaleType="centerCrop"
             android:src="@drawable/person_test3" />
 
         <com.modusgo.ubi.customviews.TypefacedTextView

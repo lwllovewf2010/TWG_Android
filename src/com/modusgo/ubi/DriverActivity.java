@@ -28,6 +28,8 @@ import android.widget.TextView;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnCloseListener;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnOpenListener;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class DriverActivity extends MainActivity{
 
@@ -50,8 +52,8 @@ public class DriverActivity extends MainActivity{
 		Bundle bDriver = new Bundle();
 		bDriver.putSerializable(SAVED_DRIVER, getIntent().getSerializableExtra(SAVED_DRIVER));
 		
-		setupTab(DriverDetailsFragment.class, b, "Driver", R.drawable.ic_tab_driver, 0);
-		setupTab(TripsFragment.class, b, "Trips", R.drawable.ic_tab_trips, 3);
+		setupTab(DriverDetailsFragment.class, b, "Driver Detail", R.drawable.ic_tab_driver, 0);
+		setupTab(TripsFragment.class, b, "Trips", R.drawable.ic_tab_trips, 0);
 		setupTab(ScoreFragment.class, b, "Score", R.drawable.ic_tab_score, 0);
 		setupTab(DiagnosticsFragment.class, b, "Diagnostics", R.drawable.ic_tab_diagnostics, 0);
 		setupTab(LimitsFragment.class, b, "Limits", R.drawable.ic_tab_limits, 0);
@@ -84,6 +86,10 @@ public class DriverActivity extends MainActivity{
 		
 		lvDrivers.setAdapter(driversAdapter);
 		
+	}
+	
+	public void switchTab(int index){
+		tabHost.setCurrentTab(index);
 	}
 	
 	class DriversAdapter extends BaseAdapter{
@@ -134,7 +140,20 @@ public class DriverActivity extends MainActivity{
 		    }else
 		    	((TextView) view.findViewById(R.id.tvName)).setText(d.name);
 		    
-		    ((ImageView)view.findViewById(R.id.imagePhoto)).setImageResource(d.imageId);
+		    ImageView imagePhoto = (ImageView)view.findViewById(R.id.imagePhoto);
+		    if(d.imageUrl == null || d.imageUrl.equals(""))
+		    	imagePhoto.setImageResource(d.imageId);
+		    else{
+		    	DisplayImageOptions options = new DisplayImageOptions.Builder()
+		        .showImageOnLoading(R.drawable.person_placeholder)
+		        .showImageForEmptyUri(R.drawable.person_placeholder)
+		        .showImageOnFail(R.drawable.person_placeholder)
+		        .cacheInMemory(true)
+		        .cacheOnDisk(true)
+		        .build();
+		    	
+		    	ImageLoader.getInstance().displayImage(d.imageUrl, imagePhoto, options);
+		    }
 		    
 		    view.setOnClickListener(new OnClickListener() {
 				

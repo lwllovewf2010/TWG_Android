@@ -10,6 +10,7 @@ public class Driver implements Serializable{
 	public long id;
 	public String name;
 	public int imageId;
+	public String imageUrl;
 	public String vehicle;
 	public String VIN;
 	public String lastTripDate;
@@ -25,6 +26,7 @@ public class Driver implements Serializable{
 	public int harshEvents;
 	public double latitude;
 	public double longitude;
+	public int fuelLeft;
 	public String address;
 	
 	public LinkedHashMap<String, ArrayList<Trip>> tripsMap = new LinkedHashMap<>();

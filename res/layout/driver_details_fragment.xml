@@ -22,37 +22,146 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight=".7" >
+            android:layout_weight=".6" >
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="75dp"
-                android:background="#ccFFFFFF"
+                android:layout_marginTop="56dp"
+                android:background="#e6FFFFFF"
                 android:orientation="vertical"
                 android:paddingLeft="25dp"
                 android:paddingRight="12dp"
-                android:paddingTop="40dp" >
+                android:paddingTop="60dp" >
 
-                <com.modusgo.ubi.customviews.TypefacedTextView
-                    android:id="@+id/tvName"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Melissa Hasalonglastname"
-                    android:textColor="#697078"
-                    android:textSize="20sp"
-                    ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="12dp" >
 
-                <com.modusgo.ubi.customviews.TypefacedTextView
-                    android:id="@+id/tvVehicle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginTop="4dp"
-                    android:text="2012 Ford Edge"
-                    android:textColor="#00aeef"
-                    android:textSize="12.5sp"
-                    ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:background="@color/btn_transparent_orange_light" >
+
+                        <com.modusgo.ubi.customviews.TypefacedTextView
+                            android:id="@+id/tvDistanceToCar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:drawableLeft="@drawable/ic_man"
+                            android:drawablePadding="3dp"
+                            android:text="2.8"
+                            android:textColor="#00AEEF"
+                            android:textSize="24sp"
+                            ubi:typeface="arialbd.ttf" />
+
+                        <com.modusgo.ubi.customviews.TypefacedTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/tvDistanceToCar"
+                            android:layout_marginTop="-3dp"
+                            android:gravity="center"
+                            android:text="Miles to Car"
+                            android:textColor="#697078"
+                            android:textSize="10sp"
+                            ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+                    </RelativeLayout>
+                    
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" >
+
+                        <com.modusgo.ubi.customviews.TypefacedTextView
+                            android:id="@+id/tvFuel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:drawableLeft="@drawable/ic_fuel_green"
+                            android:drawablePadding="3dp"
+                            android:text="22%"
+                            android:textColor="#A5CF42"
+                            android:textSize="24sp"
+                            ubi:typeface="arialbd.ttf" />
+
+                        <com.modusgo.ubi.customviews.TypefacedTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/tvFuel"
+                            android:layout_marginTop="-3dp"
+                            android:gravity="center"
+                            android:text="Fuel left"
+                            android:textColor="#697078"
+                            android:textSize="10sp"
+                            ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+                    </RelativeLayout>
+                    
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:background="@color/btn_transparent_orange_light" >
+
+                        <com.modusgo.ubi.customviews.TypefacedTextView
+                            android:id="@+id/tvDiagnosticsCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:drawableLeft="@drawable/ic_diagnostics_green"
+                            android:drawablePadding="3dp"
+                            android:text="2"
+                            android:textColor="#EF4136"
+                            android:textSize="24sp"
+                            ubi:typeface="arialbd.ttf" />
+
+                        <com.modusgo.ubi.customviews.TypefacedTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/tvDiagnosticsCount"
+                            android:layout_marginTop="-3dp"
+                            android:gravity="center"
+                            android:text="Check Engine"
+                            android:textColor="#697078"
+                            android:textSize="10sp"
+                            ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+                    </RelativeLayout>
+                    
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:background="@color/btn_transparent_orange_light" >
+
+                        <com.modusgo.ubi.customviews.TypefacedTextView
+                            android:id="@+id/tvAlertsCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:drawableLeft="@drawable/ic_alerts_green"
+                            android:drawablePadding="3dp"
+                            android:text="2"
+                            android:textColor="#EF4136"
+                            android:textSize="24sp"
+                            ubi:typeface="arialbd.ttf" />
+
+                        <com.modusgo.ubi.customviews.TypefacedTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/tvAlertsCount"
+                            android:layout_marginTop="-3dp"
+                            android:gravity="center"
+                            android:text="Alerts"
+                            android:textColor="#697078"
+                            android:textSize="10sp"
+                            ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+                    </RelativeLayout>
+                </LinearLayout>
 
                 <com.modusgo.ubi.customviews.TypefacedTextView
                     android:layout_width="match_parent"
@@ -95,25 +204,31 @@
                 android:layout_width="102dp"
                 android:layout_height="102dp"
                 android:layout_marginLeft="25dp"
+                android:scaleType="centerCrop"
                 android:src="@drawable/person_test3" />
 
-            <ImageView
-                android:id="@+id/imageDiagnostics"
+            <com.modusgo.ubi.customviews.TypefacedTextView
+                android:id="@+id/tvName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toLeftOf="@+id/imageAlerts"
-                android:layout_marginRight="12dp"
-                android:layout_marginTop="87dp"
-                android:src="@drawable/ic_diagnostics_green" />
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="65dp"
+                android:layout_toRightOf="@+id/imagePhoto"
+                android:text="Melissa&apos;s"
+                android:textColor="#697078"
+                android:textSize="20sp"
+                ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
-            <ImageView
-                android:id="@+id/imageAlerts"
+            <com.modusgo.ubi.customviews.TypefacedTextView
+                android:id="@+id/tvVehicle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="12dp"
-                android:layout_marginTop="87dp"
-                android:src="@drawable/ic_alerts_green" />
+                android:layout_alignLeft="@+id/tvName"
+                android:layout_below="@+id/tvName"
+                android:text="2012 Ford Edge"
+                android:textColor="#00aeef"
+                android:textSize="12.5sp"
+                ubi:typeface="EncodeSansNormal-300-Light.ttf" />
         </RelativeLayout>
     </LinearLayout>
 

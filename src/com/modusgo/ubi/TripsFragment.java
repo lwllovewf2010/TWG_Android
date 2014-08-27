@@ -33,6 +33,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.modusgo.ubi.utils.Utils;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class TripsFragment extends Fragment{
 	
@@ -69,7 +71,21 @@ public class TripsFragment extends Fragment{
 		tripsMap = driver.tripsMap;
 		
 		((TextView)rootView.findViewById(R.id.tvName)).setText(driver.name);
-		((ImageView)rootView.findViewById(R.id.imagePhoto)).setImageResource(driver.imageId);
+		
+		ImageView imagePhoto = (ImageView)rootView.findViewById(R.id.imagePhoto);
+	    if(driver.imageUrl == null || driver.imageUrl.equals(""))
+	    	imagePhoto.setImageResource(driver.imageId);
+	    else{
+	    	DisplayImageOptions options = new DisplayImageOptions.Builder()
+	        .showImageOnLoading(R.drawable.person_placeholder)
+	        .showImageForEmptyUri(R.drawable.person_placeholder)
+	        .showImageOnFail(R.drawable.person_placeholder)
+	        .cacheInMemory(true)
+	        .cacheOnDisk(true)
+	        .build();
+	    	
+	    	ImageLoader.getInstance().displayImage(driver.imageUrl, imagePhoto, options);
+	    }
 		
 		rootView.findViewById(R.id.btnSwitchDriverMenu).setOnClickListener(new OnClickListener() {
 			@Override
@@ -169,6 +185,13 @@ public class TripsFragment extends Fragment{
 		}
 		
 		@Override
+		protected void onPostExecute(JSONObject result) {
+			super.onPostExecute(result);
+			llProgress.setVisibility(View.GONE);
+			lv.setVisibility(View.VISIBLE);
+		}
+		
+		@Override
 		protected void onSuccess(JSONObject responseJSON) {
 			try {
 				JSONArray tripsJSON = responseJSON.getJSONArray("trips");
@@ -213,9 +236,6 @@ public class TripsFragment extends Fragment{
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-
-			llProgress.setVisibility(View.GONE);
-			lv.setVisibility(View.VISIBLE);
 			
 			super.onSuccess(responseJSON);
 		}

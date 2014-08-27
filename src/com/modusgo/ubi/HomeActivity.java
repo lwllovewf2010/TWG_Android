@@ -25,6 +25,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.modusgo.ubi.utils.Utils;
+import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 public class HomeActivity extends MainActivity{
 	
@@ -37,6 +41,14 @@ public class HomeActivity extends MainActivity{
 		super.onCreate(savedInstanceState);
 		
 		setActionBarTitle("HOME");
+		
+		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
+        .memoryCache(new LruMemoryCache(2 * 1024 * 1024))
+        .memoryCacheSize(2 * 1024 * 1024)
+        .diskCacheSize(50 * 1024 * 1024)
+        .diskCacheFileCount(100)
+        .build();
+		ImageLoader.getInstance().init(config);
 		
 		ListView lvDrivers = (ListView)findViewById(R.id.listViewDrivers);
 		
@@ -100,7 +112,20 @@ public class HomeActivity extends MainActivity{
 				e.printStackTrace();
 			}
 		    
-		    ((ImageView)view.findViewById(R.id.imagePhoto)).setImageResource(d.imageId);
+		    ImageView imagePhoto = (ImageView)view.findViewById(R.id.imagePhoto);
+		    if(d.imageUrl == null || d.imageUrl.equals(""))
+		    	imagePhoto.setImageResource(d.imageId);
+		    else{
+		    	DisplayImageOptions options = new DisplayImageOptions.Builder()
+		        .showImageOnLoading(R.drawable.person_placeholder)
+		        .showImageForEmptyUri(R.drawable.person_placeholder)
+		        .showImageOnFail(R.drawable.person_placeholder)
+		        .cacheInMemory(true)
+		        .cacheOnDisk(true)
+		        .build();
+		    	
+		    	ImageLoader.getInstance().displayImage(d.imageUrl, imagePhoto, options);
+		    }
 		    
 		    if(d.diagnosticsOK){
 		    	((ImageView)view.findViewById(R.id.imageDiagnostics)).setImageResource(R.drawable.ic_diagnostics_green);
@@ -166,7 +191,7 @@ public class HomeActivity extends MainActivity{
 				dHelper.drivers.clear();
 				for (int i = 0; i < driversJSON.length(); i++) {
 					JSONObject driverJSON = driversJSON.getJSONObject(i);
-					dHelper.drivers.add(new Driver(driverJSON.getLong("id"), 
+					Driver d = new Driver(driverJSON.getLong("id"), 
 							driverJSON.getString("name"), 
 							R.drawable.person_placeholder, 
 							driverJSON.getString("year")+" "+driverJSON.getString("make")+" "+driverJSON.getString("model"), 
@@ -177,7 +202,11 @@ public class HomeActivity extends MainActivity{
 							driverJSON.getInt("count_new_alerts") == 0 ? true : false, 
 							0, 
 							0, 
-							""));
+							"");
+					d.imageUrl = driverJSON.getString("photo");
+					d.fuelLeft = driverJSON.getInt("fuel_left");
+							
+					dHelper.drivers.add(d);
 				}
 				
 				driversAdapter.notifyDataSetChanged();

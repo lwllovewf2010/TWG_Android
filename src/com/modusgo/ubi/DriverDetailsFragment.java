@@ -27,6 +27,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.modusgo.ubi.utils.Utils;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class DriverDetailsFragment extends Fragment {
 	
@@ -40,8 +42,9 @@ public class DriverDetailsFragment extends Fragment {
 	TextView tvLocation;
 	TextView tvDate;
 	ImageView imagePhoto;
-	ImageView imageDiagnostics;
-	ImageView imageAlerts;
+	TextView tvFuel;
+	TextView tvDiagnostics;
+	TextView tvAlerts;
 
     private GoogleMap mMap;
 	
@@ -70,16 +73,25 @@ public class DriverDetailsFragment extends Fragment {
 	    tvLocation = (TextView) rootView.findViewById(R.id.tvLocation);
 	    tvDate = (TextView) rootView.findViewById(R.id.tvDate);
 	    imagePhoto = (ImageView)rootView.findViewById(R.id.imagePhoto);
-	    imageDiagnostics = (ImageView)rootView.findViewById(R.id.imageDiagnostics);
-	    imageAlerts = (ImageView)rootView.findViewById(R.id.imageAlerts);
+	    tvFuel = (TextView)rootView.findViewById(R.id.tvFuel);
+	    tvDiagnostics = (TextView)rootView.findViewById(R.id.tvDiagnosticsCount);
+	    tvAlerts = (TextView)rootView.findViewById(R.id.tvAlertsCount);
 	    
 	    updateFragment();
 	    
-	    imageAlerts.setOnClickListener(new OnClickListener() {
+	    ((View)tvAlerts.getParent()).setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				startActivity(new Intent(getActivity(), AlertsActivity.class));			
+			}
+		});
+	    
+	    ((View)tvDiagnostics.getParent()).setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				((DriverActivity)getActivity()).switchTab(3);
 			}
 		});
 	    
@@ -89,7 +101,7 @@ public class DriverDetailsFragment extends Fragment {
 	}
 	
 	private void updateFragment(){
-		tvName.setText(driver.name);
+		tvName.setText(driver.name+"'s");
 	    tvVehicle.setText(driver.vehicle);
 	    tvLocation.setText(driver.address);
 	    
@@ -102,18 +114,36 @@ public class DriverDetailsFragment extends Fragment {
 			e.printStackTrace();
 		}
 	    
-	    imagePhoto.setImageResource(driver.imageId);
+		if(driver.imageUrl == null || driver.imageUrl.equals(""))
+	    	imagePhoto.setImageResource(driver.imageId);
+	    else{
+	    	DisplayImageOptions options = new DisplayImageOptions.Builder()
+	        .showImageOnLoading(R.drawable.person_placeholder)
+	        .showImageForEmptyUri(R.drawable.person_placeholder)
+	        .showImageOnFail(R.drawable.person_placeholder)
+	        .cacheInMemory(true)
+	        .cacheOnDisk(true)
+	        .build();
+	    	
+	    	ImageLoader.getInstance().displayImage(driver.imageUrl, imagePhoto, options);
+	    }
+	    
+	    tvFuel.setText(driver.fuelLeft+"%");
 	    
 	    if(driver.diagnosticsOK){
-	    	imageDiagnostics.setImageResource(R.drawable.ic_diagnostics_green);
+	    	tvDiagnostics.setText("");
+	    	tvDiagnostics.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_diagnostics_green, 0, 0, 0);
 	    }else{
-	    	imageDiagnostics.setImageResource(R.drawable.ic_diagnostics_red);		    	
+	    	tvDiagnostics.setText(""/*+driver.diags*/);
+	    	tvDiagnostics.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_diagnostics_red, 0, 0, 0);		    	
 	    }
 	    
 	    if(driver.alertsOK){
-	    	imageAlerts.setImageResource(R.drawable.ic_alerts_green);
+	    	tvAlerts.setText("");
+	    	tvAlerts.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_alerts_green, 0, 0, 0);
 	    }else{
-	    	imageAlerts.setImageResource(R.drawable.ic_alerts_red);		    	
+	    	tvAlerts.setText(""+driver.alerts);
+	    	tvAlerts.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_alerts_red, 0, 0, 0);		    	
 	    }
         setUpMapIfNeeded();
 	}

@@ -34,6 +34,8 @@ import android.widget.TextView;
 
 import com.modusgo.ubi.customviews.ExpandableHeightGridView;
 import com.modusgo.ubi.utils.Utils;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class ScoreFragment extends Fragment{
 	
@@ -77,7 +79,21 @@ public class ScoreFragment extends Fragment{
 		driver = dHelper.getDriverByIndex(driverIndex);
 		
 		((TextView)rootView.findViewById(R.id.tvName)).setText(driver.name);
-		((ImageView)rootView.findViewById(R.id.imagePhoto)).setImageResource(driver.imageId);
+		
+		ImageView imagePhoto = (ImageView)rootView.findViewById(R.id.imagePhoto);
+	    if(driver.imageUrl == null || driver.imageUrl.equals(""))
+	    	imagePhoto.setImageResource(driver.imageId);
+	    else{
+	    	DisplayImageOptions options = new DisplayImageOptions.Builder()
+	        .showImageOnLoading(R.drawable.person_placeholder)
+	        .showImageForEmptyUri(R.drawable.person_placeholder)
+	        .showImageOnFail(R.drawable.person_placeholder)
+	        .cacheInMemory(true)
+	        .cacheOnDisk(true)
+	        .build();
+	    	
+	    	ImageLoader.getInstance().displayImage(driver.imageUrl, imagePhoto, options);
+	    }
 		
 		rootView.findViewById(R.id.btnSwitchDriverMenu).setOnClickListener(new OnClickListener() {
 			@Override
