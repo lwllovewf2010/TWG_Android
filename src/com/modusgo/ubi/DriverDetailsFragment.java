@@ -13,6 +13,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.SuperscriptSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -128,7 +132,11 @@ public class DriverDetailsFragment extends Fragment {
 	    	ImageLoader.getInstance().displayImage(driver.imageUrl, imagePhoto, options);
 	    }
 	    
-	    tvFuel.setText(driver.fuelLeft+"%");
+		String fuelLestString = driver.fuelLeft+"%";
+	    SpannableStringBuilder cs = new SpannableStringBuilder(fuelLestString);
+	    cs.setSpan(new SuperscriptSpan(), fuelLestString.length()-1, fuelLestString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+	    cs.setSpan(new RelativeSizeSpan(0.5f), fuelLestString.length()-1, fuelLestString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+	    tvFuel.setText(cs);
 	    
 	    if(driver.diagnosticsOK){
 	    	tvDiagnostics.setText("");
