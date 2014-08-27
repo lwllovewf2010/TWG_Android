@@ -103,14 +103,28 @@ public class LimitsFragment extends Fragment {
 		
 		for (final LimitsListGroup limitsListGroup : groups) {
 			View groupView = inflater.inflate(R.layout.limits_toggle_button_item, content, false);
+			final ToggleButton btnToggle = (ToggleButton)groupView.findViewById(R.id.btnToggle);
 			
-			ToggleButton btnToggle = (ToggleButton)groupView.findViewById(R.id.btnToggle);
+			groupView.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					btnToggle.performClick();
+				}
+			});
+			
 			
 			if(limitsListGroup.childs.size()>0){
 				final LinearLayout groupChilds = (LinearLayout)groupView.findViewById(R.id.llChilds);
 				for (LimitsListChild child : limitsListGroup.childs) {
 					final View childView = inflater.inflate(child.layoutId, groupChilds, false);
 
+					//Block parent click listener
+					childView.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+						}
+					});
+					
 					TextView textChild = (TextView) childView.findViewById(R.id.tvTitle);
 					textChild.setText(child.text[0]);
 					
