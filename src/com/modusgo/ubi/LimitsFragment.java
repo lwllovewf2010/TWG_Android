@@ -96,7 +96,7 @@ public class LimitsFragment extends Fragment {
 							    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
 							    	@Override
 							        public void onClick(DialogInterface dialog, int id) {
-							    		tvSingleValue.setText(((TextView)dialogContentView.findViewById(R.id.editValue)).getText()+" MPG");
+							    		tvSingleValue.setText(((TextView)dialogContentView.findViewById(R.id.editValue)).getText()+" MI");
 							        }
 							    })
 							    .setNegativeButton("Calcel", new DialogInterface.OnClickListener() {

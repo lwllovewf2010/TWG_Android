@@ -27,7 +27,7 @@
         android:layout_height="33dp"
         android:background="@drawable/textview_border"
         android:gravity="center"
-        android:text="80 MPG"
+        android:text="80 MI"
         android:textColor="#697078"
         android:textSize="12.5sp"
         ubi:typeface="EncodeSansNormal-500-Medium.ttf" />
