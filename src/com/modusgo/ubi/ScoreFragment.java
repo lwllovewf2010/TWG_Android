@@ -170,34 +170,35 @@ public class ScoreFragment extends Fragment{
 	
 	private void udpatePieCharts(float[] roadSetting, float[] roadType, float[] timeOfDay){
 		
-		String pieChartTabs[] = new String[]{"ROAD SETTING", "ROAD TYPE", "TIME OF DAY"};
+		String pieChartTabs[] = new String[]{"TIME OF DAY", "ROAD SETTING", "ROAD TYPE"};
+		
 		Bundle bundles[] = new Bundle[3];
 		bundles[0] = new Bundle();
-		bundles[0].putFloatArray(PieChartFragment.SAVED_VALUES, roadSetting);
-		bundles[0].putStringArray(PieChartFragment.SAVED_TITLES, new String[]{
+	    bundles[0].putFloatArray(PieChartFragment.SAVED_VALUES, timeOfDay);
+	    bundles[0].putStringArray(PieChartFragment.SAVED_TITLES, new String[]{
+	    		Math.round(timeOfDay[0])+"% WEEKDAY",
+	        	Math.round(timeOfDay[1])+"% WEEKDAY",
+	        	Math.round(timeOfDay[2])+"% WEEKEND",
+	        	Math.round(timeOfDay[3])+"% WEEKDAY",
+	        	Math.round(timeOfDay[4])+"% WEEKDAY",
+	        	Math.round(timeOfDay[5])+"% WEEKDAY"});
+	    bundles[0].putStringArray(PieChartFragment.SAVED_SUBTITLES, new String[]{"6:30 AM - 9:30 AM","4:00 PM - 7:00 PM","All day","9:30 AM - 4:00 PM","7:00 PM - 11:59 PM","12:00 AM - 6:30 AM"});
+		    
+		bundles[1] = new Bundle();
+		bundles[1].putFloatArray(PieChartFragment.SAVED_VALUES, roadSetting);
+		bundles[1].putStringArray(PieChartFragment.SAVED_TITLES, new String[]{
 				Math.round(roadSetting[0])+"%\nRURAL",
 				Math.round(roadSetting[1])+"%\nSUBURBAN",
 				Math.round(roadSetting[2])+"%\nURBAN"});
 	    
-        bundles[1] = new Bundle();
-        bundles[1].putFloatArray(PieChartFragment.SAVED_VALUES, roadType);
-        bundles[1].putStringArray(PieChartFragment.SAVED_TITLES, new String[]{
+        bundles[2] = new Bundle();
+        bundles[2].putFloatArray(PieChartFragment.SAVED_VALUES, roadType);
+        bundles[2].putStringArray(PieChartFragment.SAVED_TITLES, new String[]{
         		Math.round(roadType[0])+"%\nMAJOR ROAD",
         		Math.round(roadType[1])+"%\nLOCAL ROAD",
         		Math.round(roadType[2])+"%\nHIGHWAY",
         		Math.round(roadType[3])+"%\nMINOR ROAD"});
-	    
-        bundles[2] = new Bundle();
-        bundles[2].putFloatArray(PieChartFragment.SAVED_VALUES, timeOfDay);
-        bundles[2].putStringArray(PieChartFragment.SAVED_TITLES, new String[]{
-        		Math.round(timeOfDay[0])+"% WEEKDAY",
-        		Math.round(timeOfDay[1])+"% WEEKDAY",
-        		Math.round(timeOfDay[2])+"% WEEKEND",
-        		Math.round(timeOfDay[3])+"% WEEKDAY",
-        		Math.round(timeOfDay[4])+"% WEEKDAY",
-        		Math.round(timeOfDay[5])+"% WEEKDAY"});
-        bundles[2].putStringArray(PieChartFragment.SAVED_SUBTITLES, new String[]{"6:30 AM - 9:30 AM","4:00 PM - 7:00 PM","All day","9:30 AM - 4:00 PM","7:00 PM - 11:59 PM","12:00 AM - 6:30 AM"});
-	    
+	   
         ArrayList<Fragment> pieChartFragments = new ArrayList<>();
         
 		for (int i = 0; i < pieChartTabs.length; i++) {
@@ -236,7 +237,7 @@ public class ScoreFragment extends Fragment{
 	}
 	
 	private void updateCircles(Bundle bundles[]) {
-		String circleTabs[] = new String[]{"Urban", "Suburban", "Rural"};
+		String circleTabs[] = new String[]{"Suburban", "Urban", "Rural"};
         ArrayList<Fragment> circleFragments = new ArrayList<>();
         
         for (int i = 0; i < circleTabs.length; i++) {
@@ -347,8 +348,8 @@ public class ScoreFragment extends Fragment{
 				JSONObject jsonStats = json.getJSONObject("road_env_stats");
 				
 				Bundle b[] = new Bundle[]{
-					getPageBundle("urban", jsonMarks, jsonStats),
 					getPageBundle("suburban", jsonMarks, jsonStats),
+					getPageBundle("urban", jsonMarks, jsonStats),
 					getPageBundle("rural", jsonMarks, jsonStats)
 				};
 				
