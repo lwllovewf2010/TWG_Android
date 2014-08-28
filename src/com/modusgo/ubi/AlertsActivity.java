@@ -1,26 +1,44 @@
 package com.modusgo.ubi;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+
 
 public class AlertsActivity extends MainActivity {
+	
+	Driver driver;
+	DriversHelper dHelper;
+	int driverIndex = 0;
+	
+    ListView lvAlerts;
+    LinearLayout llProgress;
+    
+    ArrayList<Alert> alerts;
+    AlertsAdapter adapter;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -29,63 +47,75 @@ public class AlertsActivity extends MainActivity {
 
 		setActionBarTitle("ALERTS");
 		
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		
-		Driver driver = DbHelper.getDrivers().get(prefs.getInt(Constants.PREF_CURRENT_DRIVER, 0));
+		if(savedInstanceState!=null){
+			driverIndex = savedInstanceState.getInt("id");
+		}
+		else if(getIntent()!=null){
+			driverIndex = getIntent().getIntExtra("id",0);
+		}
+
+		dHelper = DriversHelper.getInstance();
+		driver = dHelper.getDriverByIndex(driverIndex);
 		
 		((TextView)findViewById(R.id.tvName)).setText(driver.name);
-		((ImageView)findViewById(R.id.imagePhoto)).setImageResource(driver.imageId);
+		
+		ImageView imagePhoto = (ImageView)findViewById(R.id.imagePhoto);
+	    if(driver.imageUrl == null || driver.imageUrl.equals(""))
+	    	imagePhoto.setImageResource(driver.imageId);
+	    else{
+	    	DisplayImageOptions options = new DisplayImageOptions.Builder()
+	        .showImageOnLoading(R.drawable.person_placeholder)
+	        .showImageForEmptyUri(R.drawable.person_placeholder)
+	        .showImageOnFail(R.drawable.person_placeholder)
+	        .cacheInMemory(true)
+	        .cacheOnDisk(true)
+	        .build();
+	    	
+	    	ImageLoader.getInstance().displayImage(driver.imageUrl, imagePhoto, options);
+	    }
 		
 		findViewById(R.id.btnSwitchDriverMenu).setVisibility(View.GONE);
+		findViewById(R.id.btnTimePeriod).setVisibility(View.GONE);
 		
-		findViewById(R.id.btnTimePeriod).setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				createDialog().show();
-			}
-		});
+		llProgress = (LinearLayout) findViewById(R.id.llProgress);
 		
+		alerts = new ArrayList<Alert>();
 		
-		ArrayList<Alert> alerts = new ArrayList<Alert>();
-		alerts.add(new Alert(0,"Hard Braking", "07/05/2014 11:27 AM PST"));
-		alerts.add(new Alert(1,"Oil Level Low", "07/01/2014 05:00 PM PST"));
+		adapter = new AlertsAdapter(this, R.layout.alerts_item, alerts);
 		
-		AlertsAdapter adapter = new AlertsAdapter(this, R.layout.alerts_item, alerts);
-		
-		ListView lvAlerts = (ListView)findViewById(R.id.listViewAlerts);
+		lvAlerts = (ListView)findViewById(R.id.listViewAlerts);
 		lvAlerts.setAdapter(adapter);
+		
+		new GetAlertsTask(this).execute("drivers/"+driver.id+"/alerts.json");
 	}
 	
-	String[] timePeriods = new String[]{"Last Month", "This Month", "All"};
-	
-	private Dialog createDialog() {
-	    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-	    builder.setTitle("Change time period")
-	           .setItems(timePeriods, new DialogInterface.OnClickListener() {
-	               public void onClick(DialogInterface dialog, int which) {
-	               // The 'which' argument contains the index position
-	               // of the selected item
-	           }
-	    });
-	    return builder.create();
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		outState.putInt("id", driverIndex);
+		super.onSaveInstanceState(outState);
 	}
 	
 	class Alert{
 		
 		int type;
-		String eventName;
+		String eventTitle;
 		String date;
+		long tripId;
 		
-		public Alert(int type, String eventName, String date) {
+		public Alert(int type, String eventTitle, String date, long tripId) {
 			super();
 			this.type = type;
-			this.eventName = eventName;
+			this.eventTitle = eventTitle;
 			this.date = date;
+			this.tripId = tripId;
 		}
 		
 	}
 	
 	class AlertsAdapter extends ArrayAdapter<Alert>{
+		
+		SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
+		SimpleDateFormat sdfTo = new SimpleDateFormat("MM/dd/yyyy KK:mm aa z", Locale.getDefault());
 		
 		public AlertsAdapter(Context context, int resource, List<Alert> objects) {
 			super(context, resource, objects);
@@ -94,16 +124,23 @@ public class AlertsActivity extends MainActivity {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			
+			final Alert alert = getItem(position);
+			
 			View view = convertView;
 		    if (view == null) {
 		    	LayoutInflater lInflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				view = lInflater.inflate(R.layout.alerts_item, parent, false);
 		    }
 
-		    ((TextView)view.findViewById(R.id.tvEvent)).setText(getItem(position).eventName);		    
-		    ((TextView)view.findViewById(R.id.tvDate)).setText(getItem(position).date);
+		    ((TextView)view.findViewById(R.id.tvEvent)).setText(alert.eventTitle);	
+		    try {
+				((TextView) view.findViewById(R.id.tvDate)).setText(sdfTo.format(sdfFrom.parse(alert.date)));
+			} catch (ParseException e) {
+				((TextView) view.findViewById(R.id.tvDate)).setText(alert.date);
+				e.printStackTrace();
+			}
 		    
-		    switch (getItem(position).type) {
+		    switch (alert.type) {
 			case 0:
 				((ImageView)view.findViewById(R.id.imageIcon)).setImageResource(R.drawable.ic_alerts_red);
 				break;
@@ -113,10 +150,70 @@ public class AlertsActivity extends MainActivity {
 			default:
 				break;
 			}
+		    
+		    view.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent(AlertsActivity.this, TripActivity.class);
+					intent.putExtra("id", driverIndex);
+					intent.putExtra(TripActivity.EXTRA_TRIP_ID, alert.tripId);
+					startActivity(intent);		
+				}
+			});
 			
 			return view;
 		}
 		
+	}
+	
+	class GetAlertsTask extends BaseRequestAsyncTask{
+		
+		public GetAlertsTask(Context context) {
+			super(context);
+		}
+		
+		@Override
+		protected void onPreExecute() {
+			llProgress.setVisibility(View.VISIBLE);
+			lvAlerts.setVisibility(View.GONE);
+			super.onPreExecute();
+		}
+		
+		@Override
+		protected void onPostExecute(JSONObject result) {
+			super.onPostExecute(result);
+			llProgress.setVisibility(View.GONE);
+			lvAlerts.setVisibility(View.VISIBLE);
+		}
+
+		@Override
+		protected JSONObject doInBackground(String... params) {
+	        requestParams.add(new BasicNameValuePair("driver_id", ""+driver.id));
+	        requestParams.add(new BasicNameValuePair("page", "1"));
+	        requestParams.add(new BasicNameValuePair("per_page", "1000"));
+	        
+			return super.doInBackground(params);
+		}
+		
+		@Override
+		protected void onSuccess(JSONObject responseJSON) {
+			try {
+				JSONArray alertsJSON = responseJSON.getJSONArray("alerts");
+				alerts.clear();
+				for (int i = 0; i < alertsJSON.length(); i++) {
+					JSONObject alertJSON = alertsJSON.getJSONObject(i);
+					alerts.add(new Alert(0, alertJSON.getString("title"), alertJSON.getString("created_at"), alertJSON.getLong("trip_id")));
+				}
+				
+				adapter.notifyDataSetChanged();
+				
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			
+			super.onSuccess(responseJSON);
+		}
 	}
 	
 }

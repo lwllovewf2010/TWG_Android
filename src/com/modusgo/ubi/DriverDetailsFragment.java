@@ -87,7 +87,9 @@ public class DriverDetailsFragment extends Fragment {
 			
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(getActivity(), AlertsActivity.class));			
+				Intent intent = new Intent(getActivity(), AlertsActivity.class);
+				intent.putExtra("id", driverIndex);
+				startActivity(intent);			
 			}
 		});
 	    
