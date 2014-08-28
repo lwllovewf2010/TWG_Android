@@ -120,7 +120,7 @@
                 android:id="@+id/gvPercentData"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
+                android:layout_marginBottom="5dp"
                 android:layout_marginLeft="22.5dp"
                 android:layout_marginRight="22.5dp"
                 android:layout_marginTop="15dp"

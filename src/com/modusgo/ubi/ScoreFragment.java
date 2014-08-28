@@ -110,7 +110,7 @@ public class ScoreFragment extends Fragment{
 		//gvPercentData.setColumnWidth(100);
 		gvPercentData.setNumColumns(3);
 		percentInfoData = new ArrayList<Map<String, Object>>();
-		updatePercentInfoAdapter(new int[]{0,0,0,0,0,0,0});
+		updatePercentInfoAdapter(new int[]{0,0,0,0,0,0});
 		gvPercentData.setAdapter(percentInfoAdapter);
 		gvPercentData.setAdditionalTextExpand(1, 12.5f);
 		gvPercentData.setExpanded(true);
@@ -131,7 +131,7 @@ public class ScoreFragment extends Fragment{
 	}
 	
 	private void updatePercentInfoAdapter(int[] values){
-		String[] titles = new String[]{"Use of speed", "Anticipation", "Calmness", "Smoothness", "Completeness", "Consistency", "Time on\nfamiliar road"};
+		String[] titles = new String[]{"Use of speed", "Anticipation", "Calmness", "Smoothness", "Completeness", "Consistency"};
 		
 		percentInfoData.clear();
 		Map<String, Object> m;
@@ -319,27 +319,26 @@ public class ScoreFragment extends Fragment{
 						json.getInt("score_aggression"),
 						json.getInt("score_smoothness"),
 						json.getInt("score_completeness"),
-						json.getInt("score_consistency"),
-						json.getInt("summary_familiar_percentage"),
+						json.getInt("score_consistency")
 				});
 				
 				udpatePieCharts(
 						new float[]{
 								(float)json.getDouble("roadsettings_rural"),
 								(float)json.getDouble("roadsettings_suburban"),
-								(float)json.getDouble("roadsettings_urban"),
+								(float)json.getDouble("roadsettings_urban")
 						},new float[]{
 								(float)json.getDouble("roadtype_major"),
 								(float)json.getDouble("roadtype_local"),
 								(float)json.getDouble("roadtype_trunk"),
-								(float)json.getDouble("roadtype_minor"),
+								(float)json.getDouble("roadtype_minor")
 						},new float[]{
 								(float)json.getDouble("timeofday0"),
 								(float)json.getDouble("timeofday1"),
 								(float)json.getDouble("timeofday2"),
 								(float)json.getDouble("timeofday3"),
 								(float)json.getDouble("timeofday4"),
-								(float)json.getDouble("timeofday5"),
+								(float)json.getDouble("timeofday5")
 						}
 						);
 				
