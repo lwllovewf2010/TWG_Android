@@ -174,7 +174,7 @@ public class DriverDetailsFragment extends Fragment {
 
     private void setUpMap() {
     	if(driver.latitude!=0 && driver.longitude!=0){
-    		mMap.addMarker(new MarkerOptions().position(new LatLng(driver.latitude, driver.longitude)).icon(BitmapDescriptorFactory.fromResource(R.drawable.map_car_marker)));
+    		mMap.addMarker(new MarkerOptions().position(new LatLng(driver.latitude, driver.longitude)).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_car)));
     		final float density = getResources().getDisplayMetrics().density;			
 			mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(driver.latitude-0.016f/density, driver.longitude), 14.0f));
     	}
