@@ -401,7 +401,7 @@ public class LimitsFragment extends Fragment {
 				groups = new ArrayList<LimitsListGroup>();
 				groups.add(new LimitsListGroup("Max speed limit", responseJSON.getBoolean("max_speed_limit"), maxSpeedLimitsChildren));
 				groups.add(new LimitsListGroup("Daily mileage limit", responseJSON.getBoolean("daily_mileage_limit"), dailyMileageLimitsChildren));
-				groups.add(new LimitsListGroup("Harsh braking alerts", responseJSON.getBoolean("harsh_way")));
+				groups.add(new LimitsListGroup("Harsh event alerts", responseJSON.getBoolean("harsh_way")));
 				groups.add(new LimitsListGroup("Time of day limits", responseJSON.getBoolean("is_driving_between"), timeOfDayLimitsChildren));
 				groups.add(new LimitsListGroup("Geofence", responseJSON.getBoolean("is_geofence"), geofenceChildren));
 				groups.add(new LimitsListGroup("Low fuel", responseJSON.getBoolean("low_fuel")));
