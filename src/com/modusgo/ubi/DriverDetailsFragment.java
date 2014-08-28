@@ -109,7 +109,10 @@ public class DriverDetailsFragment extends Fragment {
 	private void updateFragment(){
 		tvName.setText(driver.name+"'s");
 	    tvVehicle.setText(driver.vehicle);
-	    tvLocation.setText(driver.address);
+	    if(driver.address == null || driver.address.equals(""))
+	    	tvLocation.setText("Unknown address");
+	    else
+	    	tvLocation.setText(driver.address);
 	    
 	    SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
 		SimpleDateFormat sdfTo = new SimpleDateFormat("MM/dd/yyyy KK:mm aa z", Locale.getDefault());
@@ -152,7 +155,10 @@ public class DriverDetailsFragment extends Fragment {
 	    	tvAlerts.setText("");
 	    	tvAlerts.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_alerts_green, 0, 0, 0);
 	    }else{
-	    	tvAlerts.setText(""+driver.alerts);
+	    	if(driver.alerts==0)
+	    		tvAlerts.setText("…");
+	    	else
+	    		tvAlerts.setText(""+driver.alerts);
 	    	tvAlerts.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_alerts_red, 0, 0, 0);		    	
 	    }
         setUpMapIfNeeded();
