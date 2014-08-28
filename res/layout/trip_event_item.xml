@@ -11,14 +11,15 @@
 
     <ImageView
         android:id="@+id/imageIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:src="@drawable/ic_alerts_red" />
+        android:scaleType="fitCenter"
+        android:src="@drawable/marker_accel" />
 
     <com.modusgo.ubi.customviews.TypefacedTextView
-        android:id="@+id/tvEvent"
+        android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"

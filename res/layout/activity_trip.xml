@@ -240,6 +240,13 @@
                             ubi:typeface="EncodeSansNormal-300-Light.ttf" />
                     </LinearLayout>
                 </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llEventsList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+                </LinearLayout>
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
