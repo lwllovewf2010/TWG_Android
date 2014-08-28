@@ -1,17 +1,62 @@
 package com.modusgo.ubi;
 
-import android.content.SharedPreferences;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
+
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.LatLngBounds.Builder;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.modusgo.ubi.utils.Utils;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class TripActivity extends MainActivity {
 	
 	public static final String EXTRA_TRIP_ID = "tripId";
+	
+	Driver driver;
+	DriversHelper dHelper;
+	int driverIndex = 0;
+	
+	MapView mapView;
+    GoogleMap map;
+    
+    long tripId;
+    Trip trip;
+    
+    TextView tvDate;
+    TextView tvStartTime;
+    TextView tvEndTime;
+    TextView tvAvgSpeed;
+    TextView tvMaxSpeed;
+    TextView tvDistance;
+    LinearLayout llContent;
+    LinearLayout llProgress;
+    ScrollView scrollView;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -20,29 +65,178 @@ public class TripActivity extends MainActivity {
 		
 		setActionBarTitle("TRIP DETAILS");
 		
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		
-		Driver driver = DbHelper.getDrivers().get(prefs.getInt(Constants.PREF_CURRENT_DRIVER, 0));
+		if(savedInstanceState!=null){
+			driverIndex = savedInstanceState.getInt("id");
+			tripId = savedInstanceState.getLong(EXTRA_TRIP_ID);
+		}
+		else if(getIntent()!=null){
+			driverIndex = getIntent().getIntExtra("id",0);
+			tripId = getIntent().getLongExtra(EXTRA_TRIP_ID,0);
+		}
+
+		dHelper = DriversHelper.getInstance();
+		driver = dHelper.getDriverByIndex(driverIndex);
 		
 		((TextView)findViewById(R.id.tvName)).setText(driver.name);
-		((ImageView)findViewById(R.id.imagePhoto)).setImageResource(driver.imageId);
 		
+		ImageView imagePhoto = (ImageView)findViewById(R.id.imagePhoto);
+	    if(driver.imageUrl == null || driver.imageUrl.equals(""))
+	    	imagePhoto.setImageResource(driver.imageId);
+	    else{
+	    	DisplayImageOptions options = new DisplayImageOptions.Builder()
+	        .showImageOnLoading(R.drawable.person_placeholder)
+	        .showImageForEmptyUri(R.drawable.person_placeholder)
+	        .showImageOnFail(R.drawable.person_placeholder)
+	        .cacheInMemory(true)
+	        .cacheOnDisk(true)
+	        .build();
+	    	
+	    	ImageLoader.getInstance().displayImage(driver.imageUrl, imagePhoto, options);
+	    }
+	    
 		findViewById(R.id.btnSwitchDriverMenu).setVisibility(View.GONE);
 		findViewById(R.id.btnTimePeriod).setVisibility(View.GONE);
-		
-		LinearLayout llContent = (LinearLayout)findViewById(R.id.llContent);
+
+		tvDate = (TextView) findViewById(R.id.tvDate);
+		tvStartTime = (TextView) findViewById(R.id.tvStartTime);
+		tvEndTime = (TextView) findViewById(R.id.tvEndTime);
+		tvAvgSpeed = (TextView) findViewById(R.id.tvAvgSpeed);
+		tvMaxSpeed = (TextView) findViewById(R.id.tvMaxSpeed);
+		tvDistance = (TextView) findViewById(R.id.tvDistance);
+		llContent = (LinearLayout)findViewById(R.id.llContent);
+		llProgress = (LinearLayout)findViewById(R.id.llProgress);
+		scrollView = (ScrollView)findViewById(R.id.scrollView);
 		
 		for (int i = 0; i < 3; i++) {
 			RelativeLayout eventItem = (RelativeLayout) getLayoutInflater().inflate(R.layout.trip_event_item, llContent, false);
 			llContent.addView(eventItem);
 		}
 		
-		/*try{
-			((MainActivity)getActivity()).setNavigationDrawerItemSelected(MenuItems.SETTINGS.toInt());
-		}
-		catch(ClassCastException e){
-			e.printStackTrace();
-		}*/
 		
+		// Gets the MapView from the XML layout and creates it
+        mapView = (MapView) findViewById(R.id.mapview);
+        mapView.onCreate(savedInstanceState);
+
+        // Gets to GoogleMap from the MapView and does initialization stuff
+        map = mapView.getMap();
+        map.getUiSettings().setMyLocationButtonEnabled(false);
+
+        MapsInitializer.initialize(this);
+
+        // Updates the location and zoom of the MapView
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(driver.latitude, driver.longitude), 10);
+        map.animateCamera(cameraUpdate);
+        
+		new GetTripTask(this).execute("drivers/"+driver.id+"/trips/"+tripId+".json");
+	}
+	
+	private void updateActivity(){
+		SimpleDateFormat sdfDate = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
+		
+		tvDate.setText(sdfDate.format(trip.getStartDate()));
+		tvStartTime.setText(trip.getStartDateString());
+		tvEndTime.setText(trip.getEndDateString());
+		
+		DecimalFormat df = new DecimalFormat("0.0");
+		tvAvgSpeed.setText(df.format(trip.averageSpeed));
+		tvMaxSpeed.setText(df.format(trip.maxSpeed));
+		tvDistance.setText(df.format(trip.distance));
+		
+		map.clear();
+		
+		PolylineOptions options = new PolylineOptions();
+		
+		final Builder builder = LatLngBounds.builder();
+		
+		for (LatLng point : trip.route) {
+			options.add(point);
+			builder.include(point);
+		}
+
+		int color = Color.parseColor("#009900");
+		map.addPolyline(options.color(color).width(8));
+		
+		map.addMarker(new MarkerOptions().position(trip.route.get(0)).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_start)));
+		map.addMarker(new MarkerOptions().position(trip.route.get(trip.route.size()-1)).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_finish)));
+		
+		CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(builder.build(), 150);
+        map.animateCamera(cameraUpdate);
+
+	}
+	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		outState.putInt("id", driverIndex);
+		outState.putLong(EXTRA_TRIP_ID, tripId);
+		super.onSaveInstanceState(outState);
+	}
+	
+	@Override
+    public void onResume() {
+        mapView.onResume();
+        super.onResume();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mapView.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
+    }
+    
+    class GetTripTask extends BaseRequestAsyncTask{
+		
+		public GetTripTask(Context context) {
+			super(context);
+		}
+		
+		@Override
+		protected void onPreExecute() {
+			llProgress.setVisibility(View.VISIBLE);
+			scrollView.setVisibility(View.GONE);
+			super.onPreExecute();
+		}
+		
+		@Override
+		protected void onPostExecute(JSONObject result) {
+			super.onPostExecute(result);
+			llProgress.setVisibility(View.GONE);
+			scrollView.setVisibility(View.VISIBLE);
+		}
+
+		@Override
+		protected JSONObject doInBackground(String... params) {
+	        requestParams.add(new BasicNameValuePair("driver_id", ""+driver.id));
+	        requestParams.add(new BasicNameValuePair("trip_id", ""+tripId));
+	        
+			return super.doInBackground(params);
+		}
+		
+		@Override
+		protected void onSuccess(JSONObject responseJSON) {
+			try {
+				trip = new Trip(tripId, 0, Utils.fixTimezoneZ(responseJSON.getString("start_time")), Utils.fixTimezoneZ(responseJSON.getString("end_time")), responseJSON.getDouble("mileage"));
+				trip.averageSpeed = responseJSON.getDouble("avg_speed");
+				trip.maxSpeed = responseJSON.getDouble("max_speed");
+				
+				JSONArray routeJSON = responseJSON.getJSONArray("route");
+				for (int i = 0; i < routeJSON.length(); i++) {
+					JSONArray pointJSON = routeJSON.getJSONArray(i);
+					trip.route.add(new LatLng(pointJSON.getDouble(0), pointJSON.getDouble(1)));					
+				}
+				
+				updateActivity();
+				
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			
+			super.onSuccess(responseJSON);
+		}
 	}
 }

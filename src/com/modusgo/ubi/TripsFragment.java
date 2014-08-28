@@ -294,7 +294,7 @@ public class TripsFragment extends Fragment{
 			return view;
 		}
 		
-		private View getTripView(Trip t, ViewGroup parent){
+		private View getTripView(final Trip t, ViewGroup parent){
 			View view = lInflater.inflate(R.layout.trips_list_item, parent, false);
 
 			if(t.eventsCount>0){
@@ -310,7 +310,8 @@ public class TripsFragment extends Fragment{
 				@Override
 				public void onClick(View v) {
 					Intent intent = new Intent(getActivity(), TripActivity.class);
-					intent.putExtra(TripActivity.EXTRA_TRIP_ID, 0);
+					intent.putExtra("id", driverIndex);
+					intent.putExtra(TripActivity.EXTRA_TRIP_ID, t.id);
 					startActivity(intent);
 				}
 			});

@@ -3,8 +3,11 @@ package com.modusgo.ubi;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+
+import com.google.android.gms.maps.model.LatLng;
 
 public class Trip implements Serializable{
 	
@@ -14,6 +17,9 @@ public class Trip implements Serializable{
 	private Date startDate;
 	private Date endDate;
 	double distance;
+	double averageSpeed;
+	double maxSpeed;
+	ArrayList<LatLng> route;
 	
 	private static SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
 	private static SimpleDateFormat sdfTo = new SimpleDateFormat("hh:mm a", Locale.getDefault());
@@ -23,6 +29,7 @@ public class Trip implements Serializable{
 		super();
 		this.id = id;
 		this.eventsCount = eventsCount;
+		route = new ArrayList<LatLng>();
 		
 		try {
 			this.startDate = sdfFrom.parse(startDate);
