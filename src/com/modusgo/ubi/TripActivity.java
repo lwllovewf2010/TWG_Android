@@ -191,7 +191,12 @@ public class TripActivity extends MainActivity {
         for (Event e : trip.events) {
 			RelativeLayout eventItem = (RelativeLayout) getLayoutInflater().inflate(R.layout.trip_event_item, llContent, false);
 			((TextView)eventItem.findViewById(R.id.tvTitle)).setText(e.title);
-			((TextView)eventItem.findViewById(R.id.tvAddress)).setText(e.address);
+			
+			if(!e.address.equals("null"))
+				((TextView)eventItem.findViewById(R.id.tvAddress)).setText(e.address);
+			else
+				((TextView)eventItem.findViewById(R.id.tvAddress)).setText("");
+			
 			ImageView icon = (ImageView) eventItem.findViewById(R.id.imageIcon);
 			switch (e.type) {
 			case START:
