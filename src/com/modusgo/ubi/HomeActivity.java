@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -128,16 +129,27 @@ public class HomeActivity extends MainActivity{
 		    }
 		    
 		    if(d.diagnosticsOK){
-		    	((ImageView)view.findViewById(R.id.imageDiagnostics)).setImageResource(R.drawable.ic_diagnostics_green);
+		    	((ImageButton)view.findViewById(R.id.imageDiagnostics)).setImageResource(R.drawable.ic_diagnostics_green);
 		    }else{
-		    	((ImageView)view.findViewById(R.id.imageDiagnostics)).setImageResource(R.drawable.ic_diagnostics_red);		    	
+		    	((ImageButton)view.findViewById(R.id.imageDiagnostics)).setImageResource(R.drawable.ic_diagnostics_red);		    	
 		    }
 		    
+		    ImageButton btnAlerts = (ImageButton) view.findViewById(R.id.imageAlerts);
+		    
 		    if(d.alertsOK){
-		    	((ImageView)view.findViewById(R.id.imageAlerts)).setImageResource(R.drawable.ic_alerts_green);
+		    	btnAlerts.setImageResource(R.drawable.ic_alerts_green);
 		    }else{
-		    	((ImageView)view.findViewById(R.id.imageAlerts)).setImageResource(R.drawable.ic_alerts_red);		    	
+		    	btnAlerts.setImageResource(R.drawable.ic_alerts_red);
 		    }
+		    
+		    btnAlerts.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Intent i = new Intent(HomeActivity.this, AlertsActivity.class);
+					i.putExtra("id", position);
+					startActivity(i);
+				}
+			});
 		    
 		    view.setOnClickListener(new OnClickListener() {
 				
