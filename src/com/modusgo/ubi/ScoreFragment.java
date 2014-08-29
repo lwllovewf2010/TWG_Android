@@ -131,7 +131,7 @@ public class ScoreFragment extends Fragment{
 	}
 	
 	private void updatePercentInfoAdapter(int[] values){
-		String[] titles = new String[]{"Use of speed", "Anticipation", "Calmness", "Smoothness", "Completeness", "Consistency"};
+		String[] titles = new String[]{"Use of speed", "Anticipation", "Aggression", "Smoothness", "Completeness", "Consistency"};
 		
 		percentInfoData.clear();
 		Map<String, Object> m;
