@@ -275,48 +275,44 @@ public class TripActivity extends MainActivity {
 		}
 		
 		@Override
-		protected void onSuccess(JSONObject responseJSON) {
-			try {
-				trip = new Trip(tripId, 0, Utils.fixTimezoneZ(responseJSON.getString("start_time")), Utils.fixTimezoneZ(responseJSON.getString("end_time")), responseJSON.getDouble("mileage"));
-				trip.averageSpeed = responseJSON.getDouble("avg_speed");
-				trip.maxSpeed = responseJSON.getDouble("max_speed");
+		protected void onSuccess(JSONObject responseJSON) throws JSONException {
+			
+			trip = new Trip(tripId, 0, Utils.fixTimezoneZ(responseJSON.getString("start_time")), Utils.fixTimezoneZ(responseJSON.getString("end_time")), responseJSON.getDouble("mileage"));
+			trip.averageSpeed = responseJSON.getDouble("avg_speed");
+			trip.maxSpeed = responseJSON.getDouble("max_speed");
 				
-				JSONArray routeJSON = responseJSON.getJSONArray("route");
-				for (int i = 0; i < routeJSON.length(); i++) {
-					JSONArray pointJSON = routeJSON.getJSONArray(i);
-					trip.route.add(new LatLng(pointJSON.getDouble(0), pointJSON.getDouble(1)));					
-				}
-				
-				JSONArray pointsJSON = responseJSON.getJSONArray("points");
-				for (int i = 0; i < pointsJSON.length(); i++) {
-					JSONObject pointJSON = pointsJSON.getJSONObject(i);
-					JSONObject locationJSON = pointJSON.getJSONObject("location");
-					JSONArray eventsJSON = pointJSON.getJSONArray("events");
-					
-					ArrayList<EventType> events = new ArrayList<EventType>();
-					for (int j = 0; j < eventsJSON.length(); j++) {
-						EventType type = getEventType(eventsJSON.getString(j));
-						if(type!=null)
-							events.add(type);
-					}
-					
-					trip.points.add(new Point(new LatLng(locationJSON.getDouble("latitude"), locationJSON.getDouble("longitude")), events));
-				}
-				
-				JSONArray eventsJSON = responseJSON.getJSONArray("events");
-				for (int i = 0; i < eventsJSON.length(); i++) {
-					JSONObject eventJSON = eventsJSON.getJSONObject(i);
-					
-					EventType type = getEventType(eventJSON.getString("type"));
-					if(type!=null)
-						trip.events.add(new Event(type, eventJSON.getString("title"), eventJSON.getString("address")));					
-				}
-				
-				updateActivity();
-				
-			} catch (JSONException e) {
-				e.printStackTrace();
+			JSONArray routeJSON = responseJSON.getJSONArray("route");
+			for (int i = 0; i < routeJSON.length(); i++) {
+				JSONArray pointJSON = routeJSON.getJSONArray(i);
+				trip.route.add(new LatLng(pointJSON.getDouble(0), pointJSON.getDouble(1)));					
 			}
+				
+			JSONArray pointsJSON = responseJSON.getJSONArray("points");
+			for (int i = 0; i < pointsJSON.length(); i++) {
+				JSONObject pointJSON = pointsJSON.getJSONObject(i);
+				JSONObject locationJSON = pointJSON.getJSONObject("location");
+				JSONArray eventsJSON = pointJSON.getJSONArray("events");
+					
+				ArrayList<EventType> events = new ArrayList<EventType>();
+				for (int j = 0; j < eventsJSON.length(); j++) {
+					EventType type = getEventType(eventsJSON.getString(j));
+					if(type!=null)
+						events.add(type);
+				}
+				
+				trip.points.add(new Point(new LatLng(locationJSON.getDouble("latitude"), locationJSON.getDouble("longitude")), events));
+			}
+			
+			JSONArray eventsJSON = responseJSON.getJSONArray("events");
+			for (int i = 0; i < eventsJSON.length(); i++) {
+				JSONObject eventJSON = eventsJSON.getJSONObject(i);
+				
+				EventType type = getEventType(eventJSON.getString("type"));
+				if(type!=null)
+					trip.events.add(new Event(type, eventJSON.getString("title"), eventJSON.getString("address")));					
+			}
+				
+			updateActivity();
 			
 			super.onSuccess(responseJSON);
 		}

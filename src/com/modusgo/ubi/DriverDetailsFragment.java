@@ -224,30 +224,27 @@ public class DriverDetailsFragment extends Fragment {
 		}
 		
 		@Override
-		protected void onSuccess(JSONObject responseJSON) {
-			try {
+		protected void onSuccess(JSONObject responseJSON) throws JSONException {
+			
+			driver.name = responseJSON.getString("name");
+			driver.vehicle = responseJSON.getString("year")+" "+responseJSON.getString("make")+" "+responseJSON.getString("model");
+			driver.VIN = responseJSON.getString("vin");
+			driver.lastTripDate = Utils.fixTimezoneZ(responseJSON.getString("last_trip"));
+			driver.profileDate = Utils.fixTimezoneZ(responseJSON.getString("profile_date"));
+			driver.alerts = responseJSON.getInt("count_alerts");
+			driver.diags = responseJSON.getInt("count_diags");
+			driver.address = responseJSON.getJSONObject("location").getString("address");
+			driver.latitude = Double.parseDouble(responseJSON.getJSONObject("location").getJSONObject("map").getString("latitude"));
+			driver.longitude = Double.parseDouble(responseJSON.getJSONObject("location").getJSONObject("map").getString("longitude"));
 				
-				driver.name = responseJSON.getString("name");
-				driver.vehicle = responseJSON.getString("year")+" "+responseJSON.getString("make")+" "+responseJSON.getString("model");
-				driver.VIN = responseJSON.getString("vin");
-				driver.lastTripDate = Utils.fixTimezoneZ(responseJSON.getString("last_trip"));
-				driver.profileDate = Utils.fixTimezoneZ(responseJSON.getString("profile_date"));
-				driver.alerts = responseJSON.getInt("count_alerts");
-				driver.diags = responseJSON.getInt("count_diags");
-				driver.address = responseJSON.getJSONObject("location").getString("address");
-				driver.latitude = Double.parseDouble(responseJSON.getJSONObject("location").getJSONObject("map").getString("latitude"));
-				driver.longitude = Double.parseDouble(responseJSON.getJSONObject("location").getJSONObject("map").getString("longitude"));
+			dHelper.setDriver(driverIndex, driver);
 				
-				dHelper.setDriver(driverIndex, driver);
-				
-				if(mMap!=null){
-					mMap.clear();
-					setUpMap();
-				}
-				updateFragment();
-			} catch (JSONException e) {
-				e.printStackTrace();
+			if(mMap!=null){
+				mMap.clear();
+				setUpMap();
 			}
+			updateFragment();
+			
 			super.onSuccess(responseJSON);
 		}
 	}

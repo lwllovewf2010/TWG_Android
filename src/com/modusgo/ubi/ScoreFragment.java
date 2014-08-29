@@ -296,68 +296,64 @@ public class ScoreFragment extends Fragment{
 		}
 		
 		@Override
-		protected void onSuccess(JSONObject json) {
-			try {
-				System.out.println(json);
-				
-				tvScore.setText(json.getString("grade"));
-				SimpleDateFormat sdf = new SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault());
-				DecimalFormat df = new DecimalFormat("0.000");
-				
-				String[] values = new String[]{
-						Utils.convertTime(driver.lastTripDate, sdf), 
-						"1GXEK4538960L23", 
-						Utils.convertTime(json.getString("created"), sdf), 
-						Utils.convertTime(json.getString("startdate"), sdf), 
-						df.format(json.getDouble("summary_distance"))+" Miles", 
-						df.format(json.getDouble("summary_ead"))+" Miles"};
-				fillAdditionalInfo(values);
-				
-				
-				updatePercentInfoAdapter(new int[]{
-						json.getInt("score_pace"),
-						json.getInt("score_anticipation"),
-						json.getInt("score_aggression"),
-						json.getInt("score_smoothness"),
-						json.getInt("score_completeness"),
-						json.getInt("score_consistency")
-				});
-				
-				udpatePieCharts(
-						new float[]{
-								(float)json.getDouble("roadsettings_rural"),
-								(float)json.getDouble("roadsettings_suburban"),
-								(float)json.getDouble("roadsettings_urban")
-						},new float[]{
-								(float)json.getDouble("roadtype_major"),
-								(float)json.getDouble("roadtype_local"),
-								(float)json.getDouble("roadtype_trunk"),
-								(float)json.getDouble("roadtype_minor")
-						},new float[]{
-								(float)json.getDouble("timeofday0"),
-								(float)json.getDouble("timeofday1"),
-								(float)json.getDouble("timeofday2"),
-								(float)json.getDouble("timeofday3"),
-								(float)json.getDouble("timeofday4"),
-								(float)json.getDouble("timeofday5")
-						}
-						);
-				
-				JSONObject jsonMarks = json.getJSONObject("road_env_analysis");
-				
-				JSONObject jsonStats = json.getJSONObject("road_env_stats");
-				
-				Bundle b[] = new Bundle[]{
+		protected void onSuccess(JSONObject json) throws JSONException {
+			System.out.println(json);
+			
+			tvScore.setText(json.getString("grade"));
+			SimpleDateFormat sdf = new SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault());
+			DecimalFormat df = new DecimalFormat("0.000");
+			
+			String[] values = new String[]{
+					Utils.convertTime(driver.lastTripDate, sdf), 
+					"1GXEK4538960L23", 
+					Utils.convertTime(json.getString("created"), sdf), 
+					Utils.convertTime(json.getString("startdate"), sdf), 
+					df.format(json.getDouble("summary_distance"))+" Miles", 
+					df.format(json.getDouble("summary_ead"))+" Miles"};
+			fillAdditionalInfo(values);
+			
+			
+			updatePercentInfoAdapter(new int[]{
+					json.getInt("score_pace"),
+					json.getInt("score_anticipation"),
+					json.getInt("score_aggression"),
+					json.getInt("score_smoothness"),
+					json.getInt("score_completeness"),
+					json.getInt("score_consistency")
+			});
+			
+			udpatePieCharts(
+					new float[]{
+							(float)json.getDouble("roadsettings_rural"),
+							(float)json.getDouble("roadsettings_suburban"),
+							(float)json.getDouble("roadsettings_urban")
+					},new float[]{
+							(float)json.getDouble("roadtype_major"),
+							(float)json.getDouble("roadtype_local"),
+							(float)json.getDouble("roadtype_trunk"),
+							(float)json.getDouble("roadtype_minor")
+					},new float[]{
+							(float)json.getDouble("timeofday0"),
+							(float)json.getDouble("timeofday1"),
+							(float)json.getDouble("timeofday2"),
+							(float)json.getDouble("timeofday3"),
+							(float)json.getDouble("timeofday4"),
+							(float)json.getDouble("timeofday5")
+					}
+					);
+			
+			JSONObject jsonMarks = json.getJSONObject("road_env_analysis");
+			
+			JSONObject jsonStats = json.getJSONObject("road_env_stats");
+			
+			Bundle b[] = new Bundle[]{
 					getPageBundle("suburban", jsonMarks, jsonStats),
 					getPageBundle("urban", jsonMarks, jsonStats),
 					getPageBundle("rural", jsonMarks, jsonStats)
-				};
-				
-				updateCircles(b);
-				
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
+			};
+			
+			updateCircles(b);
+			
 			super.onSuccess(json);
 		}
 		

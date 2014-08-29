@@ -197,20 +197,15 @@ public class AlertsActivity extends MainActivity {
 		}
 		
 		@Override
-		protected void onSuccess(JSONObject responseJSON) {
-			try {
-				JSONArray alertsJSON = responseJSON.getJSONArray("alerts");
-				alerts.clear();
-				for (int i = 0; i < alertsJSON.length(); i++) {
-					JSONObject alertJSON = alertsJSON.getJSONObject(i);
-					alerts.add(new Alert(0, alertJSON.getString("title"), alertJSON.getString("created_at"), alertJSON.getLong("trip_id")));
-				}
-				
-				adapter.notifyDataSetChanged();
-				
-			} catch (JSONException e) {
-				e.printStackTrace();
+		protected void onSuccess(JSONObject responseJSON) throws JSONException {
+			JSONArray alertsJSON = responseJSON.getJSONArray("alerts");
+			alerts.clear();
+			for (int i = 0; i < alertsJSON.length(); i++) {
+				JSONObject alertJSON = alertsJSON.getJSONObject(i);
+				alerts.add(new Alert(0, alertJSON.getString("title"), alertJSON.getString("created_at"), alertJSON.getLong("trip_id")));
 			}
+			
+			adapter.notifyDataSetChanged();			
 			
 			super.onSuccess(responseJSON);
 		}

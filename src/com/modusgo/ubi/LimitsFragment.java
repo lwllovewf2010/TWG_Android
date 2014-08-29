@@ -372,47 +372,43 @@ public class LimitsFragment extends Fragment {
 		}
 		
 		@Override
-		protected void onSuccess(JSONObject responseJSON) {
-			try {
-				ArrayList<LimitsListChild> maxSpeedLimitsChildren = new ArrayList<LimitsListChild>();
-				ArrayList<LimitsListChild> dailyMileageLimitsChildren = new ArrayList<LimitsListChild>();
-				ArrayList<LimitsListChild> timeOfDayLimitsChildren = new ArrayList<LimitsListChild>();
-				ArrayList<LimitsListChild> geofenceChildren = new ArrayList<LimitsListChild>();
-				maxSpeedLimitsChildren.add(new LimitsSingleValueChild(responseJSON.getInt("max_speed"), "MPH", "Set max to"));
-				dailyMileageLimitsChildren.add(new LimitsSingleValueChild(responseJSON.getInt("daily_mileage"), "MI", "Set max to"));
-				timeOfDayLimitsChildren.add(new LimitsTimePeriodChild(responseJSON.getString("driving_after"), responseJSON.getString("driving_before"), "Between", "and"));
+		protected void onSuccess(JSONObject responseJSON) throws JSONException {
+			
+			ArrayList<LimitsListChild> maxSpeedLimitsChildren = new ArrayList<LimitsListChild>();
+			ArrayList<LimitsListChild> dailyMileageLimitsChildren = new ArrayList<LimitsListChild>();
+			ArrayList<LimitsListChild> timeOfDayLimitsChildren = new ArrayList<LimitsListChild>();
+			ArrayList<LimitsListChild> geofenceChildren = new ArrayList<LimitsListChild>();
+			maxSpeedLimitsChildren.add(new LimitsSingleValueChild(responseJSON.getInt("max_speed"), "MPH", "Set max to"));
+			dailyMileageLimitsChildren.add(new LimitsSingleValueChild(responseJSON.getInt("daily_mileage"), "MI", "Set max to"));
+			timeOfDayLimitsChildren.add(new LimitsTimePeriodChild(responseJSON.getString("driving_after"), responseJSON.getString("driving_before"), "Between", "and"));
+			
+			Intent i = new Intent();
 				
-				Intent i = new Intent();
+			JSONArray geofence = responseJSON.getJSONArray("geofence");
+			double[] longitude = new double[geofence.length()];
+			double[] latitude = new double[geofence.length()];
 				
-				JSONArray geofence = responseJSON.getJSONArray("geofence");
-				double[] longitude = new double[geofence.length()];
-				double[] latitude = new double[geofence.length()];
-				
-				for (int j = 0; j < geofence.length(); j++) {
-					JSONArray point = geofence.getJSONArray(j);
-					longitude[j] = point.getDouble(0);
-					latitude[j] = point.getDouble(1);
-				}
-				i.putExtra("longitude", longitude);
-				i.putExtra("latitude", latitude);
-				
-				geofenceChildren.add(new LimitsLinkChild(i, "Set geofence"));
-				
-				groups = new ArrayList<LimitsListGroup>();
-				groups.add(new LimitsListGroup("Max speed limit", responseJSON.getBoolean("max_speed_limit"), maxSpeedLimitsChildren));
-				groups.add(new LimitsListGroup("Daily mileage limit", responseJSON.getBoolean("daily_mileage_limit"), dailyMileageLimitsChildren));
-				groups.add(new LimitsListGroup("Harsh event alerts", responseJSON.getBoolean("harsh_way")));
-				groups.add(new LimitsListGroup("Time of day limits", responseJSON.getBoolean("is_driving_between"), timeOfDayLimitsChildren));
-				groups.add(new LimitsListGroup("Geofence", responseJSON.getBoolean("is_geofence"), geofenceChildren));
-				groups.add(new LimitsListGroup("Low fuel", responseJSON.getBoolean("low_fuel")));
-				groups.add(new LimitsListGroup("Distracted Driving Events", responseJSON.getBoolean("safe_driving")));
-				groups.add(new LimitsListGroup("Tow Alerts", false));
-				
-				updateLimits();
-				
-			} catch (JSONException e) {
-				e.printStackTrace();
+			for (int j = 0; j < geofence.length(); j++) {
+				JSONArray point = geofence.getJSONArray(j);
+				longitude[j] = point.getDouble(0);
+				latitude[j] = point.getDouble(1);
 			}
+			i.putExtra("latitude", latitude);
+			i.putExtra("longitude", longitude);
+			
+			geofenceChildren.add(new LimitsLinkChild(i, "Set geofence"));
+			
+			groups = new ArrayList<LimitsListGroup>();
+			groups.add(new LimitsListGroup("Max speed limit", responseJSON.getBoolean("max_speed_limit"), maxSpeedLimitsChildren));
+			groups.add(new LimitsListGroup("Daily mileage limit", responseJSON.getBoolean("daily_mileage_limit"), dailyMileageLimitsChildren));
+			groups.add(new LimitsListGroup("Harsh event alerts", responseJSON.getBoolean("harsh_way")));
+			groups.add(new LimitsListGroup("Time of day limits", responseJSON.getBoolean("is_driving_between"), timeOfDayLimitsChildren));
+			groups.add(new LimitsListGroup("Geofence", responseJSON.getBoolean("is_geofence"), geofenceChildren));
+			groups.add(new LimitsListGroup("Low fuel", responseJSON.getBoolean("low_fuel")));
+			groups.add(new LimitsListGroup("Distracted Driving Events", responseJSON.getBoolean("safe_driving")));
+			groups.add(new LimitsListGroup("Tow Alerts", false));
+			
+			updateLimits();
 			
 			super.onSuccess(responseJSON);
 		}
@@ -449,7 +445,7 @@ public class LimitsFragment extends Fragment {
 		}
 		
 		@Override
-		protected void onSuccess(JSONObject responseJSON) {
+		protected void onSuccess(JSONObject responseJSON) throws JSONException {
 			Toast.makeText(getActivity(), "Limits saved", Toast.LENGTH_SHORT).show();
 			super.onSuccess(responseJSON);
 		}

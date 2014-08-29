@@ -192,50 +192,45 @@ public class TripsFragment extends Fragment{
 		}
 		
 		@Override
-		protected void onSuccess(JSONObject responseJSON) {
-			try {
-				JSONArray tripsJSON = responseJSON.getJSONArray("trips");
+		protected void onSuccess(JSONObject responseJSON) throws JSONException {
+			JSONArray tripsJSON = responseJSON.getJSONArray("trips");
+			
+			SimpleDateFormat sdfDate = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
+			
+			ArrayList<Trip> trips = new ArrayList<Trip>();
+			Calendar cPrev = Calendar.getInstance();
+			Calendar cNow = Calendar.getInstance();
+			int j = 0;
+			tripsMap.clear();
+			for (int i = 0; i < tripsJSON.length(); i++) {
+				JSONObject tipJSON = tripsJSON.getJSONObject(i);
 				
-				SimpleDateFormat sdfDate = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
+				System.out.println("i = "+i);
+				Trip t = new Trip(
+						tipJSON.getLong("id"), 
+						tipJSON.getInt("total_harsh_events"), 
+						Utils.fixTimezoneZ(tipJSON.getString("start_time")), 
+						Utils.fixTimezoneZ(tipJSON.getString("end_time")), 
+						tipJSON.getDouble("mileage"));
 				
-				ArrayList<Trip> trips = new ArrayList<Trip>();
-				Calendar cPrev = Calendar.getInstance();
-				Calendar cNow = Calendar.getInstance();
-				int j = 0;
-				tripsMap.clear();
-				for (int i = 0; i < tripsJSON.length(); i++) {
-					JSONObject tipJSON = tripsJSON.getJSONObject(i);
-					
-					System.out.println("i = "+i);
-					Trip t = new Trip(
-							tipJSON.getLong("id"), 
-							tipJSON.getInt("total_harsh_events"), 
-							Utils.fixTimezoneZ(tipJSON.getString("start_time")), 
-							Utils.fixTimezoneZ(tipJSON.getString("end_time")), 
-							tipJSON.getDouble("mileage"));
-					
-					
-					if(j>0){
-						cPrev.setTime(trips.get(j-1).getStartDate());
-						cNow.setTime(t.getStartDate());
-						if(cNow.get(Calendar.YEAR) != cPrev.get(Calendar.YEAR) || 
-								(cNow.get(Calendar.YEAR) == cPrev.get(Calendar.YEAR) && cNow.get(Calendar.DAY_OF_YEAR) != cPrev.get(Calendar.DAY_OF_YEAR))){
-							tripsMap.put(sdfDate.format(trips.get(j-1).getStartDate()), trips);
-							trips = new ArrayList<Trip>();
-							j = 0;
-						}
+				
+				if(j>0){
+					cPrev.setTime(trips.get(j-1).getStartDate());
+					cNow.setTime(t.getStartDate());
+					if(cNow.get(Calendar.YEAR) != cPrev.get(Calendar.YEAR) || 
+							(cNow.get(Calendar.YEAR) == cPrev.get(Calendar.YEAR) && cNow.get(Calendar.DAY_OF_YEAR) != cPrev.get(Calendar.DAY_OF_YEAR))){
+						tripsMap.put(sdfDate.format(trips.get(j-1).getStartDate()), trips);
+						trips = new ArrayList<Trip>();
+						j = 0;
 					}
-					j++;
-					trips.add(t);
 				}
-				
-				driver.tripsMap = tripsMap;
-				
-				adapter.notifyDataSetChanged();
-				
-			} catch (JSONException e) {
-				e.printStackTrace();
+				j++;
+				trips.add(t);
 			}
+			
+			driver.tripsMap = tripsMap;
+			
+			adapter.notifyDataSetChanged();
 			
 			super.onSuccess(responseJSON);
 		}

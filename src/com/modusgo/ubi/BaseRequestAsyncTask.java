@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
@@ -45,7 +46,12 @@ public class BaseRequestAsyncTask extends AsyncTask<String, Void, JSONObject>{
 	@Override
 	protected void onPostExecute(JSONObject result) {
 		if(status>=200 && status<300){
-			onSuccess(result);
+			try {
+				onSuccess(result);
+			} catch (JSONException e) {
+				e.printStackTrace();
+				Toast.makeText(context, "Error parsing data", Toast.LENGTH_SHORT).show();
+			}
 		}
 		else if(status==401){
 			prefs.edit().putString(Constants.PREF_AUTH_KEY, "").commit();
@@ -61,7 +67,7 @@ public class BaseRequestAsyncTask extends AsyncTask<String, Void, JSONObject>{
 		super.onPostExecute(result);
 	}
 	
-	protected void onSuccess(JSONObject responseJSON){
+	protected void onSuccess(JSONObject responseJSON) throws JSONException {
 	}
 
 }

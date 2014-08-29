@@ -215,41 +215,35 @@ public class HomeActivity extends MainActivity{
 		}
 		
 		@Override
-		protected void onSuccess(JSONObject responseJSON) {
-			try {
-				JSONArray driversJSON = responseJSON.getJSONArray("drivers");
-				
-				dHelper.drivers.clear();
-				for (int i = 0; i < driversJSON.length(); i++) {
-					JSONObject driverJSON = driversJSON.getJSONObject(i);
-					
-					Driver d = new Driver(driverJSON.getLong("id"), 
-							driverJSON.getString("name"), 
-							R.drawable.person_placeholder, 
-							driverJSON.getString("year")+" "+driverJSON.getString("make")+" "+driverJSON.getString("model"), 
-							"", 
-							"", 
-							Utils.fixTimezoneZ(driverJSON.getString("last_trip")),
-							0,
-							0, 
-							"");
+		protected void onSuccess(JSONObject responseJSON) throws JSONException {
 
-					d.alerts = driverJSON.getInt("count_alerts");
-					d.diags = driverJSON.getInt("count_diags");
-					d.imageUrl = driverJSON.getString("photo");
-					d.fuelLeft = driverJSON.getInt("fuel_left");
-							
-					dHelper.drivers.add(d);
-				}
-				
-				driversAdapter.notifyDataSetChanged();
-				
-			} catch (JSONException e) {
-				e.printStackTrace();
+			JSONArray driversJSON = responseJSON.getJSONArray("drivers");
+
+			dHelper.drivers.clear();
+			for (int i = 0; i < driversJSON.length(); i++) {
+				JSONObject driverJSON = driversJSON.getJSONObject(i);
+
+				Driver d = new Driver(driverJSON.getLong("id"),
+						driverJSON.getString("name"),
+						R.drawable.person_placeholder,
+						driverJSON.getString("year") + " "
+								+ driverJSON.getString("make") + " "
+								+ driverJSON.getString("model"), "", "",
+						Utils.fixTimezoneZ(driverJSON.getString("last_trip")),
+						0, 0, "");
+
+				d.alerts = driverJSON.getInt("count_alerts");
+				d.diags = driverJSON.getInt("count_diags");
+				d.imageUrl = driverJSON.getString("photo");
+				d.fuelLeft = driverJSON.getInt("fuel_left");
+
+				dHelper.drivers.add(d);
 			}
+
+			driversAdapter.notifyDataSetChanged();
+
 			super.onSuccess(responseJSON);
 		}
-		
 	}
 	
 	@Override
