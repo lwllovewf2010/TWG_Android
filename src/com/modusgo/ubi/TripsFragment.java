@@ -108,7 +108,7 @@ public class TripsFragment extends Fragment{
 		lv.setAdapter(adapter);
 		
 		cStart = Calendar.getInstance();
-		cStart.set(2000, Calendar.JANUARY, 1);
+		cStart.add(Calendar.DAY_OF_YEAR, -7);
 		
 		cEnd = Calendar.getInstance();
 		
@@ -117,7 +117,7 @@ public class TripsFragment extends Fragment{
 		return rootView;
 	}
 	
-	String[] timePeriods = new String[]{"Last Month", "This Month", "All"};
+	String[] timePeriods = new String[]{"Last 7 Days", "This Month", "Last Month", "All"};
 	
 	private Dialog createDialog() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -129,8 +129,8 @@ public class TripsFragment extends Fragment{
 						case 0:
 							new GetTripsTask(getActivity()).execute("drivers/"+driver.id+"/trips.json");
 							cStart.setTimeInMillis(System.currentTimeMillis());
-							cStart.set(cStart.get(Calendar.YEAR), cStart.get(Calendar.MONTH)-1, 1, 0, 0);
-							cEnd.set(cStart.get(Calendar.YEAR), cStart.get(Calendar.MONTH)+1,1,23,59);
+							cStart.add(Calendar.DAY_OF_YEAR, -7);
+							cEnd.setTimeInMillis(System.currentTimeMillis());
 							break;
 						case 1:
 							new GetTripsTask(getActivity()).execute("drivers/"+driver.id+"/trips.json");
@@ -139,6 +139,12 @@ public class TripsFragment extends Fragment{
 							cEnd.setTimeInMillis(System.currentTimeMillis());
 							break;
 						case 2:
+							new GetTripsTask(getActivity()).execute("drivers/"+driver.id+"/trips.json");
+							cStart.setTimeInMillis(System.currentTimeMillis());
+							cStart.set(cStart.get(Calendar.YEAR), cStart.get(Calendar.MONTH)-1, 1, 0, 0);
+							cEnd.set(cStart.get(Calendar.YEAR), cStart.get(Calendar.MONTH)+1,1,23,59);
+							break;
+						case 3:
 							new GetTripsTask(getActivity()).execute("drivers/"+driver.id+"/trips.json");
 							cStart.set(2000, Calendar.JANUARY, 1, 0, 0);
 							cEnd.setTimeInMillis(System.currentTimeMillis());
