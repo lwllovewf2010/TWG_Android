@@ -124,7 +124,7 @@ public class TripActivity extends MainActivity {
         MapsInitializer.initialize(this);
 
         // Updates the location and zoom of the MapView
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(driver.latitude, driver.longitude), 10);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(37.8430094,-95.0098992), 1);
         map.animateCamera(cameraUpdate);
         
 		new GetTripTask(this).execute("drivers/"+driver.id+"/trips/"+tripId+".json");
