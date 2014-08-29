@@ -37,9 +37,17 @@ public class BaseRequestAsyncTask extends AsyncTask<String, Void, JSONObject>{
 	@Override
 	protected JSONObject doInBackground(String... params) {
 		HttpResponse result = new RequestGet(Constants.API_BASE_URL+params[0], requestParams).execute();
-		status = result.getStatusLine().getStatusCode();
-		message = "Error "+result.getStatusLine().getStatusCode()+": "+result.getStatusLine().getReasonPhrase();
 		
+		try{
+			status = result.getStatusLine().getStatusCode();
+			message = "Error "+result.getStatusLine().getStatusCode()+": "+result.getStatusLine().getReasonPhrase();
+		}
+		catch(NullPointerException e){
+			e.printStackTrace();
+			status = 0;
+			message = "Connection error";
+			return null;
+		}
 		return Utils.getJSONObjectFromHttpResponse(result);
 	}
 	

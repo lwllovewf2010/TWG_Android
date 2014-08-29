@@ -213,10 +213,16 @@ public class SignInActivity extends FragmentActivity {
 	        nameValuePairs.add(new BasicNameValuePair("mobile_id", Utils.getUUID(SignInActivity.this)));
 			
 	        HttpResponse result = new RequestPost(Constants.API_BASE_URL+"login.json", nameValuePairs).execute();
-	        
-	        status = result.getStatusLine().getStatusCode();
-	        message = "Error "+result.getStatusLine().getStatusCode()+": "+result.getStatusLine().getReasonPhrase();
-	        
+	        try{
+		        status = result.getStatusLine().getStatusCode();
+		        message = "Error "+result.getStatusLine().getStatusCode()+": "+result.getStatusLine().getReasonPhrase();
+	        }
+	        catch(NullPointerException e){
+	        	e.printStackTrace();
+				status = 0;
+				message = "Connection error";
+				return null;
+	        }
 	        
 	        try {
 				JSONObject responseJSON = Utils.getJSONObjectFromHttpResponse(result);
