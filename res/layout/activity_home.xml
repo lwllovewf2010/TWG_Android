@@ -10,12 +10,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#fff"
+        android:gravity="center"
         android:orientation="vertical" >
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
 
         <ListView
             android:id="@+id/listViewDrivers"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:divider="@drawable/listview_home_divider"
             android:dividerHeight="2dp" >
         </ListView>

@@ -23,6 +23,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.modusgo.ubi.utils.Utils;
@@ -35,6 +36,9 @@ public class HomeActivity extends MainActivity{
 	
 	DriversAdapter driversAdapter;
 	DriversHelper dHelper;
+	
+	ListView lvDrivers;
+	ProgressBar progressBar;
 	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +54,9 @@ public class HomeActivity extends MainActivity{
         .diskCacheFileCount(100)
         .build();
 		ImageLoader.getInstance().init(config);
-		
-		ListView lvDrivers = (ListView)findViewById(R.id.listViewDrivers);
+
+		progressBar = (ProgressBar)findViewById(R.id.progressBar);
+		lvDrivers = (ListView)findViewById(R.id.listViewDrivers);
 		
 		dHelper = DriversHelper.getInstance();
 		
@@ -185,6 +190,20 @@ public class HomeActivity extends MainActivity{
 
 		public GetDriversTask(Context context) {
 			super(context);
+		}
+		
+		@Override
+		protected void onPreExecute() {
+			progressBar.setVisibility(View.VISIBLE);
+			lvDrivers.setVisibility(View.GONE);
+			super.onPreExecute();
+		}
+		
+		@Override
+		protected void onPostExecute(JSONObject result) {
+			super.onPostExecute(result);
+			progressBar.setVisibility(View.GONE);
+			lvDrivers.setVisibility(View.VISIBLE);
 		}
 
 		@Override
