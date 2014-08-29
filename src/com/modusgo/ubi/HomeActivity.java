@@ -128,7 +128,7 @@ public class HomeActivity extends MainActivity{
 		    	ImageLoader.getInstance().displayImage(d.imageUrl, imagePhoto, options);
 		    }
 		    
-		    if(d.diagnosticsOK){
+		    if(d.diags<=0){
 		    	((ImageButton)view.findViewById(R.id.imageDiagnostics)).setImageResource(R.drawable.ic_diagnostics_green);
 		    }else{
 		    	((ImageButton)view.findViewById(R.id.imageDiagnostics)).setImageResource(R.drawable.ic_diagnostics_red);		    	
@@ -136,7 +136,7 @@ public class HomeActivity extends MainActivity{
 		    
 		    ImageButton btnAlerts = (ImageButton) view.findViewById(R.id.imageAlerts);
 		    
-		    if(d.alertsOK){
+		    if(d.alerts<=0){
 		    	btnAlerts.setImageResource(R.drawable.ic_alerts_green);
 		    }else{
 		    	btnAlerts.setImageResource(R.drawable.ic_alerts_red);
@@ -203,18 +203,20 @@ public class HomeActivity extends MainActivity{
 				dHelper.drivers.clear();
 				for (int i = 0; i < driversJSON.length(); i++) {
 					JSONObject driverJSON = driversJSON.getJSONObject(i);
+					
 					Driver d = new Driver(driverJSON.getLong("id"), 
 							driverJSON.getString("name"), 
 							R.drawable.person_placeholder, 
 							driverJSON.getString("year")+" "+driverJSON.getString("make")+" "+driverJSON.getString("model"), 
 							"", 
 							"", 
-							Utils.fixTimezoneZ(driverJSON.getString("last_trip")), 
-							driverJSON.getInt("count_new_diags") == 0 ? true : false, 
-							driverJSON.getInt("count_new_alerts") == 0 ? true : false, 
-							0, 
+							Utils.fixTimezoneZ(driverJSON.getString("last_trip")),
+							0,
 							0, 
 							"");
+
+					d.alerts = driverJSON.getInt("count_alerts");
+					d.diags = driverJSON.getInt("count_diags");
 					d.imageUrl = driverJSON.getString("photo");
 					d.fuelLeft = driverJSON.getInt("fuel_left");
 							

@@ -20,8 +20,6 @@ public class Driver implements Serializable{
 	public String email;
 	public int diags;
 	public int alerts;
-	public boolean diagnosticsOK;
-	public boolean alertsOK;
 	public int tripsCount;
 	public int harshEvents;
 	public double latitude;
@@ -36,7 +34,7 @@ public class Driver implements Serializable{
 		this.score = score;
 	}
 	
-	public Driver(long id, String name, int imageId, String vehicle, String phone, String email, String lastTripDate, boolean diagnosticsOK, boolean alertsOK, int tripsCount, int harshEvents, String score){
+	public Driver(long id, String name, int imageId, String vehicle, String phone, String email, String lastTripDate, int tripsCount, int harshEvents, String score){
 		this.id = id;
 		this.name = name;
 		this.imageId = imageId;
@@ -44,8 +42,6 @@ public class Driver implements Serializable{
 		this.phone = phone;
 		this.email = email;
 		this.lastTripDate = lastTripDate;
-		this.diagnosticsOK = diagnosticsOK;
-		this.alertsOK = alertsOK;
 		this.tripsCount = tripsCount;
 		this.harshEvents = harshEvents;
 		this.score = score;

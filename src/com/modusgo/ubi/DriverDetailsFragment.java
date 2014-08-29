@@ -143,7 +143,7 @@ public class DriverDetailsFragment extends Fragment {
 	    cs.setSpan(new RelativeSizeSpan(0.5f), fuelLestString.length()-1, fuelLestString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 	    tvFuel.setText(cs);
 	    
-	    if(driver.diagnosticsOK){
+	    if(driver.diags<=0){
 	    	tvDiagnostics.setText("");
 	    	tvDiagnostics.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_diagnostics_green, 0, 0, 0);
 	    }else{
@@ -151,7 +151,7 @@ public class DriverDetailsFragment extends Fragment {
 	    	tvDiagnostics.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_diagnostics_red, 0, 0, 0);		    	
 	    }
 	    
-	    if(driver.alertsOK){
+	    if(driver.alerts<=0){
 	    	tvAlerts.setText("");
 	    	tvAlerts.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_alerts_green, 0, 0, 0);
 	    }else{
@@ -232,10 +232,8 @@ public class DriverDetailsFragment extends Fragment {
 				driver.VIN = responseJSON.getString("vin");
 				driver.lastTripDate = Utils.fixTimezoneZ(responseJSON.getString("last_trip"));
 				driver.profileDate = Utils.fixTimezoneZ(responseJSON.getString("profile_date"));
-				driver.alerts = responseJSON.getInt("count_new_alerts");
-				driver.diags = responseJSON.getInt("count_new_diags");
-				driver.diagnosticsOK = responseJSON.getInt("count_new_diags") == 0 ? true : false;
-				driver.alertsOK = responseJSON.getInt("count_new_alerts") == 0 ? true : false;
+				driver.alerts = responseJSON.getInt("count_alerts");
+				driver.diags = responseJSON.getInt("count_diags");
 				driver.address = responseJSON.getJSONObject("location").getString("address");
 				driver.latitude = Double.parseDouble(responseJSON.getJSONObject("location").getJSONObject("map").getString("latitude"));
 				driver.longitude = Double.parseDouble(responseJSON.getJSONObject("location").getJSONObject("map").getString("longitude"));
