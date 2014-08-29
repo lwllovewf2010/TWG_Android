@@ -290,7 +290,8 @@ public class LimitsFragment extends Fragment {
 	
 	@Override
 	public void onPause() {
-		new SetLimitsTask(getActivity()).execute("drivers/"+driver.id+"/limits.json");
+		if(groups!=null)
+			new SetLimitsTask(getActivity()).execute("drivers/"+driver.id+"/limits.json");
 		super.onPause();
 	}
 
@@ -414,6 +415,8 @@ public class LimitsFragment extends Fragment {
 		}
 	}
 	
+	private boolean limitsChanged = true;
+	
 	class SetLimitsTask extends BasePostRequestAsyncTask{
 		
 		public SetLimitsTask(Context context) {
@@ -425,28 +428,33 @@ public class LimitsFragment extends Fragment {
 	        requestParams.add(new BasicNameValuePair("driver_id", ""+driver.id));
 	        
 
-	        requestParams.add(new BasicNameValuePair("max_speed_limit", ""+groups.get(0).enabled));
-	        requestParams.add(new BasicNameValuePair("daily_mileage_limit", ""+groups.get(1).enabled));
-	        requestParams.add(new BasicNameValuePair("harsh_way", ""+groups.get(2).enabled));
-	        requestParams.add(new BasicNameValuePair("is_driving_between", ""+groups.get(3).enabled));
-	        requestParams.add(new BasicNameValuePair("is_geofence", ""+groups.get(4).enabled));
-	        requestParams.add(new BasicNameValuePair("driver_id", ""+groups.get(5).enabled));
-	        requestParams.add(new BasicNameValuePair("safe_driving", ""+groups.get(6).enabled));
-	        
-	        requestParams.add(new BasicNameValuePair("max_speed", ""+((LimitsSingleValueChild)groups.get(0).childs.get(0)).value));
-	        requestParams.add(new BasicNameValuePair("daily_mileage", ""+((LimitsSingleValueChild)groups.get(1).childs.get(0)).value));
-
-	        requestParams.add(new BasicNameValuePair("driving_after", ""+((LimitsTimePeriodChild)groups.get(3).childs.get(0)).startTime));
-	        requestParams.add(new BasicNameValuePair("driving_before", ""+((LimitsTimePeriodChild)groups.get(3).childs.get(0)).endTime));
-	        
-	        System.out.println(requestParams);
+	        try{
+		        requestParams.add(new BasicNameValuePair("max_speed_limit", ""+groups.get(0).enabled));
+		        requestParams.add(new BasicNameValuePair("daily_mileage_limit", ""+groups.get(1).enabled));
+		        requestParams.add(new BasicNameValuePair("harsh_way", ""+groups.get(2).enabled));
+		        requestParams.add(new BasicNameValuePair("is_driving_between", ""+groups.get(3).enabled));
+		        requestParams.add(new BasicNameValuePair("is_geofence", ""+groups.get(4).enabled));
+		        requestParams.add(new BasicNameValuePair("driver_id", ""+groups.get(5).enabled));
+		        requestParams.add(new BasicNameValuePair("safe_driving", ""+groups.get(6).enabled));
+		        
+		        requestParams.add(new BasicNameValuePair("max_speed", ""+((LimitsSingleValueChild)groups.get(0).childs.get(0)).value));
+		        requestParams.add(new BasicNameValuePair("daily_mileage", ""+((LimitsSingleValueChild)groups.get(1).childs.get(0)).value));
+	
+		        requestParams.add(new BasicNameValuePair("driving_after", ""+((LimitsTimePeriodChild)groups.get(3).childs.get(0)).startTime));
+		        requestParams.add(new BasicNameValuePair("driving_before", ""+((LimitsTimePeriodChild)groups.get(3).childs.get(0)).endTime));
+	        }
+	        catch(NullPointerException e){
+	        	e.printStackTrace();
+	        	limitsChanged = false;
+	        }
 	        
 			return super.doInBackground(params);
 		}
 		
 		@Override
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
-			Toast.makeText(getActivity(), "Limits saved", Toast.LENGTH_SHORT).show();
+			if(limitsChanged)
+				Toast.makeText(getActivity(), "Limits saved", Toast.LENGTH_SHORT).show();
 			super.onSuccess(responseJSON);
 		}
 	}
