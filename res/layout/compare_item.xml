@@ -10,6 +10,7 @@
         android:id="@+id/imagePhoto"
         android:layout_width="57dp"
         android:layout_height="57dp"
+        android:scaleType="centerCrop"
         android:src="@drawable/person_test" />
 
     <RelativeLayout
@@ -33,18 +34,6 @@
             android:orientation="vertical" >
 
             <com.modusgo.ubi.customviews.TypefacedTextView
-                android:id="@+id/tvCurrent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="18dp"
-                android:layout_marginRight="40dp"
-                android:text="CURRENT"
-                android:textColor="#3C454F"
-                android:textSize="10sp"
-                android:visibility="gone"
-                ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
-
-            <com.modusgo.ubi.customviews.TypefacedTextView
                 android:id="@+id/tvName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -57,35 +46,36 @@
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />
         </LinearLayout>
 
-        <RelativeLayout 
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="20dp">
+            android:layout_marginRight="20dp" >
+
             <TextView
-	            android:id="@+id/tvParameter"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:layout_alignParentLeft="true"
-	            android:text="A"
-	            android:textStyle="bold"
-	            android:textColor="#00aeef"
-	            android:textSize="24sp" />
-	        <TextView
-	            android:id="@+id/tvParameterSign"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:paddingTop="1dp"
-	            android:paddingLeft="1dp"
-	            android:layout_toRightOf="@+id/tvParameter"
-	            android:text="+"
-	            android:textStyle="bold"
-	            android:textColor="#00aeef"
-	            android:textSize="15sp"
-	            android:visibility="gone" />
+                android:id="@+id/tvParameter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:text="A"
+                android:textColor="#00aeef"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvParameterSign"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/tvParameter"
+                android:paddingLeft="1dp"
+                android:paddingTop="1dp"
+                android:text="+"
+                android:textColor="#00aeef"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
         </RelativeLayout>
-        
     </RelativeLayout>
 
 </LinearLayout>

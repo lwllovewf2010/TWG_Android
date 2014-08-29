@@ -42,4 +42,13 @@ public class DriversHelper {
 	public void setDriver(int i, Driver d){
 		drivers.set(i, d);
 	}
+	
+	public void setDriverById(long id, Driver d){
+		for (int j = 0; j < drivers.size(); j++) {
+			if(drivers.get(j).id == id){
+				drivers.set(j, d);
+				break;
+			}
+		}
+	}
 }

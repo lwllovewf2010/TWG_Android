@@ -1,11 +1,18 @@
 package com.modusgo.ubi;
 
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
+
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +24,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -25,18 +33,37 @@ import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+
 public class CompareActivity extends MainActivity{
 	
-	private static enum Paramater { TRIPS_COUNT, HARSH_EVENTS, SCORE};
+	private static enum Paramater { TRIPS_COUNT, TIME, SCORE, DISTANCE};
 	
 	TabHost tabHost;
+    LinearLayout llProgress;
 	View previousTab;
+	
+	ArrayList<Driver> drivers;
+	DriversHelper dHelper;
+	
+	DriversAdapter driverTripsAdapter;
+	DriversAdapter driverTimeAdapter;
+	DriversAdapter driverScoreAdapter;
+	DriversAdapter driverDistanceAdapter;
+	
+	Calendar cStart;
+	Calendar cEnd;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_compare);
 		super.onCreate(savedInstanceState);
 		
 		setActionBarTitle("COMPARE");
+		
+		dHelper = DriversHelper.getInstance();
+		drivers = dHelper.getDrivers();
 		
 		//ListView lvDrivers = (ListView)rootView.findViewById(R.id.listViewDrivers);
 		Spinner spinnerTimePerion = (Spinner)findViewById(R.id.spinnerTimePeriod);
@@ -51,6 +78,26 @@ public class CompareActivity extends MainActivity{
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 				//Toast.makeText(getActivity(), "Position = " + position, Toast.LENGTH_SHORT).show();
 				//TODO update listViews with data for selected time period
+				switch (position) {
+				case 0:
+					cStart.setTimeInMillis(System.currentTimeMillis());
+					cStart.set(cStart.get(Calendar.YEAR), cStart.get(Calendar.MONTH), 1, 0, 0);
+					cEnd.setTimeInMillis(System.currentTimeMillis());
+					break;
+				case 1:
+					cStart.setTimeInMillis(System.currentTimeMillis());
+					cStart.set(cStart.get(Calendar.YEAR), cStart.get(Calendar.MONTH)-1, 1, 0, 0);
+					cEnd.set(cStart.get(Calendar.YEAR), cStart.get(Calendar.MONTH)+1,1,23,59);
+					break;
+				case 2:
+					cStart.set(2000, Calendar.JANUARY, 1, 0, 0);
+					cEnd.setTimeInMillis(System.currentTimeMillis());
+					break;
+
+				default:
+					break;
+				}
+				new GetCompareInfoTask(CompareActivity.this).execute("compare.json");
 			}
 
 			@Override
@@ -58,11 +105,14 @@ public class CompareActivity extends MainActivity{
 			}
 		});
 		
+		llProgress = (LinearLayout) findViewById(R.id.llProgress);
+		
 		tabHost = (TabHost) findViewById(android.R.id.tabhost);
         tabHost.setup();
-        setupTab(new TextView(this), "Trips", R.id.tab1);
-		setupTab(new TextView(this), "Harsh events", R.id.tab2);
-		setupTab(new TextView(this), "Score", R.id.tab3);
+        setupTab(new TextView(this), "Score", R.id.tab1);
+		setupTab(new TextView(this), "Trips", R.id.tab2);
+		setupTab(new TextView(this), "Time", R.id.tab3);
+		setupTab(new TextView(this), "Distance", R.id.tab4);
 		
 		previousTab = tabHost.getCurrentView();
 		
@@ -75,18 +125,30 @@ public class CompareActivity extends MainActivity{
         	}
         });
 		
-        ListView lvTrips = (ListView)findViewById(R.id.tab1);
-        DriversAdapter driverTripsAdapter = new DriversAdapter(this, DbHelper.getDrivers(), Paramater.TRIPS_COUNT);
-		lvTrips.setAdapter(driverTripsAdapter);
-		
-		ListView lvHarshEvents = (ListView)findViewById(R.id.tab2);
-        DriversAdapter driverHarshEventsAdapter = new DriversAdapter(this, DbHelper.getDrivers(), Paramater.HARSH_EVENTS);
-        lvHarshEvents.setAdapter(driverHarshEventsAdapter);
-        
-		ListView lvScore = (ListView)findViewById(R.id.tab3);
-        DriversAdapter driverScoreAdapter = new DriversAdapter(this, DbHelper.getDrivers(), Paramater.SCORE);
+        ListView lvScore = (ListView)findViewById(R.id.tab1);
+        driverScoreAdapter = new DriversAdapter(this, Paramater.SCORE);
         lvScore.setAdapter(driverScoreAdapter);
         
+        ListView lvTrips = (ListView)findViewById(R.id.tab2);
+        driverTripsAdapter = new DriversAdapter(this, Paramater.TRIPS_COUNT);
+		lvTrips.setAdapter(driverTripsAdapter);
+		
+		ListView lvTime = (ListView)findViewById(R.id.tab3);
+        driverTimeAdapter = new DriversAdapter(this, Paramater.TIME);
+        lvTime.setAdapter(driverTimeAdapter);
+        
+        ListView lvDistance = (ListView)findViewById(R.id.tab4);
+        driverDistanceAdapter = new DriversAdapter(this, Paramater.DISTANCE);
+        lvDistance.setAdapter(driverDistanceAdapter);        
+		
+        
+        cStart = Calendar.getInstance();
+		cStart.set(cStart.get(Calendar.YEAR), cStart.get(Calendar.MONTH), 1, 0, 0);
+		
+		cEnd = Calendar.getInstance();
+		cEnd.setTimeInMillis(System.currentTimeMillis());
+        
+		new GetCompareInfoTask(this).execute("compare.json");
 	}
 	
 	private void setupTab(final View view, final String tag, int contentId) {
@@ -128,42 +190,54 @@ public class CompareActivity extends MainActivity{
 		
 		Context ctx;
 		LayoutInflater lInflater;
-		ArrayList<Driver> objects;
 		int maxProgress = 0;
 		Paramater param;
 		
-		DriversAdapter(Context context, ArrayList<Driver> drivers, Paramater param) {
+		DriversAdapter(Context context, Paramater param) {
 		    ctx = context;
-		    objects = drivers;
 		    this.param = param;
 		    lInflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		    
-		    for (Driver driver : drivers) {
+		    updateMaxValue();
+		}
+		
+		public void updateMaxValue(){
+			for (Driver driver : drivers) {
 		    	switch (param) {
 				case TRIPS_COUNT:
 					if(driver.tripsCount>maxProgress)
 						maxProgress = driver.tripsCount;
 					break;
-				case HARSH_EVENTS:
-					if(driver.harshEvents>maxProgress)
-						maxProgress = driver.harshEvents;
+				case TIME:
+					if(driver.drivingTime>maxProgress)
+						maxProgress = driver.drivingTime;
 					break;
 				case SCORE:
-					if(driver.getScoreAsNumber()>maxProgress)
-						maxProgress = driver.getScoreAsNumber();		
+					if(driver.scoreInt>maxProgress)
+						maxProgress = driver.scoreInt;
+					break;
+				case DISTANCE:
+					if(driver.distance>maxProgress)
+						maxProgress = (int)driver.distance;
 					break;
 				}
 			}
 		}
 		
 		@Override
+		public void notifyDataSetChanged() {
+			updateMaxValue();
+			super.notifyDataSetChanged();
+		}
+		
+		@Override
 		public int getCount() {
-		    return objects.size();
+		    return drivers.size();
 		}
 
 		@Override
 		public Object getItem(int position) {
-		    return objects.get(position);
+		    return drivers.get(position);
 		}
 
 		@Override
@@ -181,11 +255,20 @@ public class CompareActivity extends MainActivity{
 		    Driver d = getDriver(position);
 
 		    ((TextView) view.findViewById(R.id.tvName)).setText(d.name);
-		    ((ImageView)view.findViewById(R.id.imagePhoto)).setImageResource(d.imageId);
-		    
-		    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(CompareActivity.this);
-		    if(prefs.getInt(Constants.PREF_CURRENT_DRIVER, -1)>0 && prefs.getInt(Constants.PREF_CURRENT_DRIVER, -1)==position)
-			    ((TextView) view.findViewById(R.id.tvCurrent)).setVisibility(View.VISIBLE);
+		    ImageView imagePhoto = (ImageView)view.findViewById(R.id.imagePhoto);
+		    if(d.imageUrl == null || d.imageUrl.equals(""))
+		    	imagePhoto.setImageResource(d.imageId);
+		    else{
+		    	DisplayImageOptions options = new DisplayImageOptions.Builder()
+		        .showImageOnLoading(R.drawable.person_placeholder)
+		        .showImageForEmptyUri(R.drawable.person_placeholder)
+		        .showImageOnFail(R.drawable.person_placeholder)
+		        .cacheInMemory(true)
+		        .cacheOnDisk(true)
+		        .build();
+		    	
+		    	ImageLoader.getInstance().displayImage(d.imageUrl, imagePhoto, options);
+		    }
 		    
 		    ProgressBar progress = (ProgressBar)view.findViewById(R.id.progressBar);
 		    progress.setMax(maxProgress);
@@ -195,21 +278,18 @@ public class CompareActivity extends MainActivity{
 			    ((TextView) view.findViewById(R.id.tvParameter)).setText(""+d.tripsCount);
 			    progress.setProgress(d.tripsCount);
 				break;
-			case HARSH_EVENTS:
-			    ((TextView) view.findViewById(R.id.tvParameter)).setText(""+d.harshEvents);
-			    progress.setProgress(d.harshEvents);
+			case TIME:
+			    ((TextView) view.findViewById(R.id.tvParameter)).setText(""+d.drivingTime);
+			    progress.setProgress(d.drivingTime);
 				break;
 			case SCORE:
-				if(d.score.length()>1){
-					((TextView) view.findViewById(R.id.tvParameter)).setText(d.score.substring(0, 1));
-					((TextView) view.findViewById(R.id.tvParameterSign)).setText(d.score.substring(1, 2));
-					view.findViewById(R.id.tvParameterSign).setVisibility(View.VISIBLE);
-				}
-				else{
-					((TextView) view.findViewById(R.id.tvParameter)).setText(""+d.score);
-					view.findViewById(R.id.tvParameterSign).setVisibility(View.INVISIBLE);
-				}
-			    progress.setProgress(d.getScoreAsNumber());		
+				((TextView) view.findViewById(R.id.tvParameter)).setText(""+d.scoreInt);
+			    progress.setProgress(d.scoreInt);		
+				break;
+			case DISTANCE:
+				DecimalFormat df = new DecimalFormat("0.0");
+				((TextView) view.findViewById(R.id.tvParameter)).setText(""+df.format(d.distance));
+			    progress.setProgress((int)d.distance);		
 				break;
 			}
 		    	    
@@ -220,6 +300,65 @@ public class CompareActivity extends MainActivity{
 			return ((Driver) getItem(position));
 		}
 		
+	}
+	
+	class GetCompareInfoTask extends BaseRequestAsyncTask{
+
+		public GetCompareInfoTask(Context context) {
+			super(context);
+		}
+		
+		@Override
+		protected void onPreExecute() {
+			llProgress.setVisibility(View.VISIBLE);
+			tabHost.setVisibility(View.GONE);
+			super.onPreExecute();
+		}
+		
+		@Override
+		protected void onPostExecute(JSONObject result) {
+			super.onPostExecute(result);
+			llProgress.setVisibility(View.GONE);
+			tabHost.setVisibility(View.VISIBLE);
+		}
+
+		@Override
+		protected JSONObject doInBackground(String... params) {
+			SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);
+			
+	        requestParams.add(new BasicNameValuePair("page", "1"));
+	        requestParams.add(new BasicNameValuePair("per_page", "1000"));
+	        requestParams.add(new BasicNameValuePair("start_time", sdf.format(cStart.getTime())));
+	        requestParams.add(new BasicNameValuePair("end_time", sdf.format(cEnd.getTime())));
+			
+	        return super.doInBackground(params);
+		}
+		
+		@Override
+		protected void onSuccess(JSONObject responseJSON) throws JSONException {
+
+			JSONArray compareJSON = responseJSON.getJSONArray("compare");
+			
+			for (int i = 0; i < compareJSON.length(); i++) {
+				JSONObject driverJSON = compareJSON.getJSONObject(i);
+				Driver d = dHelper.getDriverById(driverJSON.getLong("id"));
+				d.distance = driverJSON.getDouble("mileage");
+				d.tripsCount = driverJSON.getInt("number_of_trips");
+				d.scoreInt = driverJSON.getInt("drive_score");
+				d.drivingTime = driverJSON.getInt("driving_time");
+				
+				dHelper.setDriverById(d.id, d);
+			}
+			
+			drivers = dHelper.getDrivers();
+			
+			driverScoreAdapter.notifyDataSetChanged();
+			driverTripsAdapter.notifyDataSetChanged();
+			driverTimeAdapter.notifyDataSetChanged();
+			driverDistanceAdapter.notifyDataSetChanged();
+
+			super.onSuccess(responseJSON);
+		}
 	}
 
 }
