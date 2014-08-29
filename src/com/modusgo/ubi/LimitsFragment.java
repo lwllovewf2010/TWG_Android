@@ -42,6 +42,7 @@ public class LimitsFragment extends Fragment {
 	int driverIndex = 0;
 	
 	LinearLayout content;
+	LinearLayout llProgress;
 	LayoutInflater inflater;
 	
 	ArrayList<LimitsListGroup> groups;
@@ -92,6 +93,7 @@ public class LimitsFragment extends Fragment {
 
 		rootView.findViewById(R.id.btnTimePeriod).setVisibility(View.GONE);
 
+		llProgress = (LinearLayout)rootView.findViewById(R.id.llProgress);
 		content = (LinearLayout)rootView.findViewById(R.id.llContent);
 		
 		new GetLimitsTask(getActivity()).execute("drivers/"+driver.id+"/limits.json");
@@ -364,6 +366,20 @@ public class LimitsFragment extends Fragment {
 		
 		public GetLimitsTask(Context context) {
 			super(context);
+		}
+		
+		@Override
+		protected void onPreExecute() {
+			llProgress.setVisibility(View.VISIBLE);
+			content.setVisibility(View.GONE);
+			super.onPreExecute();
+		}
+		
+		@Override
+		protected void onPostExecute(JSONObject result) {
+			super.onPostExecute(result);
+			llProgress.setVisibility(View.GONE);
+			content.setVisibility(View.VISIBLE);
 		}
 
 		@Override
