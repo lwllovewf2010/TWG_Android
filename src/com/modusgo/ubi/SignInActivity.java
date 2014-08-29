@@ -6,7 +6,6 @@ import java.util.List;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Intent;
@@ -215,14 +214,17 @@ public class SignInActivity extends FragmentActivity {
 			
 	        HttpResponse result = new RequestPost(Constants.API_BASE_URL+"login.json", nameValuePairs).execute();
 	        
-	        status = 0;
+	        status = result.getStatusLine().getStatusCode();
 	        message = "Error "+result.getStatusLine().getStatusCode()+": "+result.getStatusLine().getReasonPhrase();
+	        
 	        
 	        try {
 				JSONObject responseJSON = Utils.getJSONObjectFromHttpResponse(result);
 				prefs.edit().putString(Constants.PREF_AUTH_KEY, responseJSON.getString("auth_key")).commit();
 				return responseJSON;
-			} catch (JSONException e) {
+			} catch (Exception e) {
+				status = 0;
+				message = "Something went wrong, please try again later";
 				e.printStackTrace();
 			}
 	        
