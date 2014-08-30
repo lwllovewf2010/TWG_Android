@@ -32,11 +32,12 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class LimitsFragment extends Fragment {
-
+	
 	Driver driver;
 	DriversHelper dHelper;
 	int driverIndex = 0;
@@ -120,6 +121,7 @@ public class LimitsFragment extends Fragment {
 				for (LimitsListChild child : limitsListGroup.childs) {
 					final View childView = inflater.inflate(child.layoutId, groupChilds, false);
 
+					childView.setClickable(true);
 					//Block parent click listener
 					childView.setOnClickListener(new OnClickListener() {
 						@Override
@@ -220,12 +222,17 @@ public class LimitsFragment extends Fragment {
 						});
 					}
 					else if(child instanceof LimitsLinkChild){
+						final LimitsLinkChild c = (LimitsLinkChild)child;
 						
-					}
-					
-					switch(child.layoutId){
-					case R.layout.limits_link_item :
-						break;
+						LinearLayout llContent = (LinearLayout) childView.findViewById(R.id.llContent);
+						
+						llContent.setOnClickListener(new OnClickListener() {
+							@Override
+							public void onClick(View v) {
+								showSavedToast = false;
+								startActivity(c.intent);
+							}
+						});
 					}
 					
 					groupChilds.addView(childView);
@@ -288,6 +295,12 @@ public class LimitsFragment extends Fragment {
 	public void onSaveInstanceState(Bundle outState) {
 		outState.putInt("id", driverIndex);
 		super.onSaveInstanceState(outState);
+	}
+	
+	@Override
+	public void onResume() {
+		showSavedToast = true;
+		super.onResume();
 	}
 	
 	@Override
@@ -399,19 +412,19 @@ public class LimitsFragment extends Fragment {
 			dailyMileageLimitsChildren.add(new LimitsSingleValueChild(responseJSON.getInt("daily_mileage"), "MI", "Set max to"));
 			timeOfDayLimitsChildren.add(new LimitsTimePeriodChild(responseJSON.getString("driving_after"), responseJSON.getString("driving_before"), "Between", "and"));
 			
-			Intent i = new Intent();
+			Intent i = new Intent(getActivity(), GeofenceActivity.class);
 				
 			JSONArray geofence = responseJSON.getJSONArray("geofence");
-			double[] longitude = new double[geofence.length()];
-			double[] latitude = new double[geofence.length()];
 				
+			ArrayList<LatLng> points = new ArrayList<LatLng>();
+			
 			for (int j = 0; j < geofence.length(); j++) {
 				JSONArray point = geofence.getJSONArray(j);
-				longitude[j] = point.getDouble(0);
-				latitude[j] = point.getDouble(1);
+				points.add(new LatLng(point.getDouble(0), point.getDouble(1)));
 			}
-			i.putExtra("latitude", latitude);
-			i.putExtra("longitude", longitude);
+			
+			i.putExtra(GeofenceActivity.EXTRA_POINTS, points);
+			i.putExtra("id", driverIndex);
 			
 			geofenceChildren.add(new LimitsLinkChild(i, "Set geofence"));
 			
@@ -431,7 +444,7 @@ public class LimitsFragment extends Fragment {
 		}
 	}
 	
-	private boolean limitsChanged = true;
+	private boolean showSavedToast = true;
 	
 	class SetLimitsTask extends BasePostRequestAsyncTask{
 		
@@ -461,7 +474,7 @@ public class LimitsFragment extends Fragment {
 	        }
 	        catch(NullPointerException e){
 	        	e.printStackTrace();
-	        	limitsChanged = false;
+	        	showSavedToast = false;
 	        }
 	        
 			return super.doInBackground(params);
@@ -469,7 +482,7 @@ public class LimitsFragment extends Fragment {
 		
 		@Override
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
-			if(limitsChanged)
+			if(showSavedToast && getActivity()!=null)
 				Toast.makeText(getActivity(), "Limits saved", Toast.LENGTH_SHORT).show();
 			super.onSuccess(responseJSON);
 		}
