@@ -233,6 +233,10 @@ public class TripsFragment extends Fragment{
 				j++;
 				trips.add(t);
 			}
+			if(tripsMap.size()==0 && trips.size()>0){
+				tripsMap.put(sdfDate.format(trips.get(0).getStartDate()), trips);
+			}
+			System.out.println("trips count = "+tripsMap.size());
 			
 			driver.tripsMap = tripsMap;
 			
