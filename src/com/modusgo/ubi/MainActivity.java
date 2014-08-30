@@ -96,7 +96,7 @@ public class MainActivity extends FragmentActivity {
 	    btnUp.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				NavUtils.navigateUpFromSameTask(MainActivity.this);
+				up();
 			}
 		});
 	    
@@ -190,6 +190,10 @@ public class MainActivity extends FragmentActivity {
     		btnUp.setVisibility(View.VISIBLE);
     	else
     		btnUp.setVisibility(View.GONE);
+    }
+    
+    public void up(){
+    	NavUtils.navigateUpFromSameTask(this);
     }
     
     public void setButtonNavigationDrawerVisibility(boolean visible){

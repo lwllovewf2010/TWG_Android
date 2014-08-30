@@ -17,4 +17,10 @@ public class SettingsActivity extends MainActivity {
 		getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, svf).commit();
 	}
 	
+	@Override
+	public void up() {
+		prefs.edit().putBoolean(SettingsEditFragment.PREF_JUSTSAVED, false).commit();
+		super.up();
+	}
+	
 }
