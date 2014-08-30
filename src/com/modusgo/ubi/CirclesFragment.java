@@ -198,15 +198,15 @@ public class CirclesFragment extends TitledFragment{
 				break;
 			case 1:
 				circleBgResId = R.drawable.circle_red;
-				circlesInfo+="<font face=\"fonts/EncodeSansNormal-500-Medium.ttf\">"+circleTitles[i]+"</font> in an <font face=\"fonts/EncodeSansNormal-500-Medium.ttf\">"+title+"</font> area is <font color=\"#EF4036\" face=\"fonts/EncodeSansNormal-500-Medium.ttf\">NOT GOOD</font>.";
+				circlesInfo+="<font face=\"fonts/EncodeSansNormal-500-Medium.ttf\">"+circleTitles[i]+"</font> in an <font face=\"fonts/EncodeSansNormal-500-Medium.ttf\">"+title+"</font> area is <font color=\"#f14036\" face=\"fonts/EncodeSansNormal-500-Medium.ttf\">NOT GOOD</font>.";
 				break;
 			case 2:
 				circleBgResId = R.drawable.circle_yellow;
-				circlesInfo+="<font face=\"fonts/EncodeSansNormal-500-Medium.ttf\">"+circleTitles[i]+"</font> in an <font face=\"fonts/EncodeSansNormal-500-Medium.ttf\">"+title+"</font> area is <font color=\"#FBC740\" face=\"fonts/EncodeSansNormal-500-Medium.ttf\">AVERAGE</font>.";
+				circlesInfo+="<font face=\"fonts/EncodeSansNormal-500-Medium.ttf\">"+circleTitles[i]+"</font> in an <font face=\"fonts/EncodeSansNormal-500-Medium.ttf\">"+title+"</font> area is <font color=\"#f4bf3d\" face=\"fonts/EncodeSansNormal-500-Medium.ttf\">AVERAGE</font>.";
 				break;
 			case 3:
 				circleBgResId = R.drawable.circle_green;
-				circlesInfo+="<font face=\"fonts/EncodeSansNormal-500-Medium.ttf\">"+circleTitles[i]+"</font> in an <font face=\"fonts/EncodeSansNormal-500-Medium.ttf\">"+title+"</font> area is <font color=\"#A5CE41\" face=\"fonts/EncodeSansNormal-500-Medium.ttf\">GOOD</font>.";
+				circlesInfo+="<font face=\"fonts/EncodeSansNormal-500-Medium.ttf\">"+circleTitles[i]+"</font> in an <font face=\"fonts/EncodeSansNormal-500-Medium.ttf\">"+title+"</font> area is <font color=\"#8da460\" face=\"fonts/EncodeSansNormal-500-Medium.ttf\">GOOD</font>.";
 				break;
 
 			default:

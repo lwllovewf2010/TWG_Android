@@ -414,9 +414,9 @@ public class ScoreFragment extends Fragment{
 			switch (score) {
 			case "ideal":
 				return 3;
-			case "high":
-				return 2;
 			case "average":
+				return 2;
+			case "high":
 				return 1;
 			case "unknown":
 				return 0;
