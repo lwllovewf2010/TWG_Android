@@ -472,7 +472,7 @@ public class LimitsFragment extends Fragment {
 		        requestParams.add(new BasicNameValuePair("driving_after", ""+((LimitsTimePeriodChild)groups.get(3).childs.get(0)).startTime));
 		        requestParams.add(new BasicNameValuePair("driving_before", ""+((LimitsTimePeriodChild)groups.get(3).childs.get(0)).endTime));
 	        }
-	        catch(NullPointerException e){
+	        catch(NullPointerException | IndexOutOfBoundsException e){
 	        	e.printStackTrace();
 	        	showSavedToast = false;
 	        }
