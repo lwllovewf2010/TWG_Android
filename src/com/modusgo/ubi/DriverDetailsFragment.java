@@ -334,16 +334,20 @@ OnConnectionFailedListener, LocationListener{
 			driver.longitude = Double.parseDouble(responseJSON.getJSONObject("location").getJSONObject("map").getString("longitude"));
 				
 			dHelper.setDriver(driverIndex, driver);
+			
+			try{
+				if(mMap!=null){
+					mMap.clear();
+					setUpMap();
+				}
+				updateFragment();
 				
-			if(mMap!=null){
-				mMap.clear();
-				setUpMap();
+		        setUpLocationClientIfNeeded();
+		        mLocationClient.connect();
 			}
-			updateFragment();
-			
-	        setUpLocationClientIfNeeded();
-	        mLocationClient.connect();
-			
+			catch(NullPointerException e){
+				e.printStackTrace();
+			}
 			super.onSuccess(responseJSON);
 		}
 	}
