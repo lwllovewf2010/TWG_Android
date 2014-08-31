@@ -147,7 +147,7 @@ OnConnectionFailedListener, LocationListener {
 			options.add(points.get(i));
 		}
 		
-		int color = Color.parseColor("#FFFFFF");
+		int color = Color.parseColor("#00AEEF");
 		map.addPolyline(options.color(color).width(8));
 		
 	}
