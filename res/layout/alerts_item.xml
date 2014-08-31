@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:paddingRight="20dp"
     android:paddingLeft="14dp"
-    android:background="@color/btn_transparent_orange" >
+    android:background="@color/btn_transparent_orange_light" >
 
     <ImageView
         android:id="@+id/imageIcon"
