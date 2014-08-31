@@ -11,9 +11,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -198,6 +200,7 @@ public class TripActivity extends MainActivity {
 				((TextView)eventItem.findViewById(R.id.tvAddress)).setText("");
 			
 			ImageView icon = (ImageView) eventItem.findViewById(R.id.imageIcon);
+			int infoStringResource = 0;
 			switch (e.type) {
 			case START:
 				icon.setImageResource(R.drawable.marker_start);
@@ -207,19 +210,33 @@ public class TripActivity extends MainActivity {
 				break;
 			case HARSH_BRAKING:
 				icon.setImageResource(R.drawable.marker_brake);
+				infoStringResource = R.string.harsh_braking;
 				break;
 			case HARSH_ACCELERATION:
 				icon.setImageResource(R.drawable.marker_accel);
+				infoStringResource = R.string.harsh_accel;
 				break;
 			case PHONE_USAGE:
 				icon.setImageResource(R.drawable.marker_phone);
+				infoStringResource = R.string.distracted_driving;
 				break;
 			case APP_USAGE:
 				icon.setImageResource(R.drawable.marker_app);
+				infoStringResource = R.string.distracted_driving;
 				break;
 			default:
 				break;
 			}
+			
+			final int isr = infoStringResource;
+			eventItem.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Intent i = new Intent(TripActivity.this, EducationActivity.class);
+					i.putExtra(EducationActivity.SAVED_STRING_RESOURCE, isr);
+					startActivity(i);
+				}
+			});
 			
 			llEventsList.addView(eventItem);
 		}
