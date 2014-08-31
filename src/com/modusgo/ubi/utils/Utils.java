@@ -69,7 +69,13 @@ public class Utils {
 	public static JSONObject getJSONObjectFromHttpResponse(HttpResponse response){
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"));
-			String json = reader.readLine();
+			
+			StringBuilder builder = new StringBuilder();
+			String aux = "";
+			while ((aux = reader.readLine()) != null) {
+			    builder.append(aux);
+			}
+			String json = builder.toString();
 			JSONTokener tokener = new JSONTokener(json);
 			return new JSONObject(tokener);
 		}
