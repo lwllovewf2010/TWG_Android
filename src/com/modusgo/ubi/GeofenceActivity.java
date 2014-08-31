@@ -118,6 +118,7 @@ public class GeofenceActivity extends MainActivity {
 					if(points.size()>0){
 						map.clear();
 						points.clear();
+						tvRadius.setText("n/a");
 					}
 					else{
 						points.add(point);
@@ -171,6 +172,7 @@ public class GeofenceActivity extends MainActivity {
 		map.clear();
 		
 		PolylineOptions options = new PolylineOptions();
+		final Builder builder = LatLngBounds.builder();
 		
 		for (int i = 0; i < points.size(); i++) {
 			options.add(points.get(i));
@@ -178,11 +180,14 @@ public class GeofenceActivity extends MainActivity {
 				map.addMarker(new MarkerOptions().position(points.get(i)).anchor(0.5f, 0.5f).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_geofence_point)));
 			else
 				map.addMarker(new MarkerOptions().position(points.get(i)).anchor(0.5f, 0.5f).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_geofence_start)));
+			builder.include(points.get(i));
 		}
 		
 		int color = Color.parseColor("#FFFFFF");
 		map.addPolyline(options.color(color).width(8));
 		
+		LatLngBounds llb = builder.build();
+		updateRadius(llb);
 	}
 	
 	private void drawClosedPolyline(){
@@ -202,7 +207,7 @@ public class GeofenceActivity extends MainActivity {
 		map.addPolyline(options.color(color).width(8));
 		
 		LatLngBounds llb = builder.build();
-		tvRadius.setText(getRadiusString(llb));
+		updateRadius(llb);
 		
 	}
 	
@@ -221,7 +226,7 @@ public class GeofenceActivity extends MainActivity {
 			
 			LatLngBounds llb = builder.build();
 			
-			tvRadius.setText(getRadiusString(llb));
+			updateRadius(llb);
 			
 			int color = Color.parseColor("#FFFFFF");
 			map.addPolyline(options.color(color).width(8));
@@ -241,14 +246,14 @@ public class GeofenceActivity extends MainActivity {
 		btnSave.setEnabled(true);
 	}
 	
-	private String getRadiusString(LatLngBounds llb){
+	private void updateRadius(LatLngBounds llb){
 		float[] distance = new float[3];
 		Location.distanceBetween(llb.northeast.latitude, llb.northeast.longitude, llb.southwest.latitude, llb.southwest.longitude, distance);
 		
 		DecimalFormat df = new DecimalFormat("0.0");
 		
-		//half meters to miles
-		return df.format(Utils.metersToMiles((distance[0]/2f)));
+		//half meters to miles		
+		tvRadius.setText(df.format(Utils.metersToMiles((distance[0]/2f))));
 	}
 	
 	@Override
