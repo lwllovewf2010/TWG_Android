@@ -25,18 +25,21 @@ public class BaseRequestAsyncTask extends AsyncTask<String, Void, JSONObject>{
 	SharedPreferences prefs;
 	int status;
 	String message;
+	String baseUrl;
+	
 	protected List<NameValuePair> requestParams = new ArrayList<NameValuePair>();
 	
 	public BaseRequestAsyncTask(Context context) {
 		this.context = context;
 		prefs = PreferenceManager.getDefaultSharedPreferences(context);
+		baseUrl = Constants.API_BASE_URL;
 
         requestParams.add(new BasicNameValuePair("auth_key", prefs.getString(Constants.PREF_AUTH_KEY, "")));
 	}
 	
 	@Override
 	protected JSONObject doInBackground(String... params) {
-		HttpResponse result = new RequestGet(Constants.API_BASE_URL+params[0], requestParams).execute();
+		HttpResponse result = new RequestGet(baseUrl+(params!=null && params.length>0 ? params[0] : ""), requestParams).execute();
 		
 		try{
 			status = result.getStatusLine().getStatusCode();
