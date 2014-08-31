@@ -54,7 +54,7 @@
                             android:layout_centerHorizontal="true"
                             android:drawableLeft="@drawable/ic_man"
                             android:drawablePadding="3dp"
-                            android:text="2.8"
+                            android:text="…"
                             android:textColor="#00AEEF"
                             android:textSize="24sp"
                             ubi:typeface="arialbd.ttf" />

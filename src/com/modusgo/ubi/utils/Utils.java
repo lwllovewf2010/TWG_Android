@@ -99,4 +99,8 @@ public class Utils {
 		}
 	}
 	
+	public static float metersToMiles(float meters){
+		return meters*0.00062137f;
+	}
+	
 }

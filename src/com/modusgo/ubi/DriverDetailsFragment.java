@@ -1,5 +1,6 @@
 package com.modusgo.ubi;
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -10,6 +11,7 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -24,6 +26,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
+import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
+import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -34,7 +42,8 @@ import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-public class DriverDetailsFragment extends Fragment {
+public class DriverDetailsFragment extends Fragment  implements ConnectionCallbacks,
+OnConnectionFailedListener, LocationListener{
 	
 	Driver driver;
 	DriversHelper dHelper;
@@ -46,11 +55,23 @@ public class DriverDetailsFragment extends Fragment {
 	TextView tvLocation;
 	TextView tvDate;
 	ImageView imagePhoto;
+	TextView tvDistanceToCar;
 	TextView tvFuel;
 	TextView tvDiagnostics;
 	TextView tvAlerts;
+	
+	View btnDistanceToCar;
 
     private GoogleMap mMap;
+    
+    private LocationClient mLocationClient;
+
+    // These settings are the same as the settings for the map. They will in fact give you updates
+    // at the maximal rates currently possible.
+    private static final LocationRequest REQUEST = LocationRequest.create()
+            .setInterval(5000)         // 5 seconds
+            .setFastestInterval(3000)    // every 3 seconds
+            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -77,11 +98,24 @@ public class DriverDetailsFragment extends Fragment {
 	    tvLocation = (TextView) rootView.findViewById(R.id.tvLocation);
 	    tvDate = (TextView) rootView.findViewById(R.id.tvDate);
 	    imagePhoto = (ImageView)rootView.findViewById(R.id.imagePhoto);
+	    tvDistanceToCar = (TextView)rootView.findViewById(R.id.tvDistanceToCar);
 	    tvFuel = (TextView)rootView.findViewById(R.id.tvFuel);
 	    tvDiagnostics = (TextView)rootView.findViewById(R.id.tvDiagnosticsCount);
 	    tvAlerts = (TextView)rootView.findViewById(R.id.tvAlertsCount);
 	    
 	    updateFragment();
+	    
+	    btnDistanceToCar = (View)tvDistanceToCar.getParent();
+	    btnDistanceToCar.setEnabled(false);
+	    btnDistanceToCar.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(getActivity(), FindMyCarActivity.class);
+				intent.putExtra("id", driverIndex);
+				startActivity(intent);			
+			}
+		});
 	    
 	    ((View)tvAlerts.getParent()).setOnClickListener(new OnClickListener() {
 			
@@ -206,11 +240,73 @@ public class DriverDetailsFragment extends Fragment {
         super.onDestroyView();
     }
 	
+    private void setUpLocationClientIfNeeded() {
+        if (mLocationClient == null) {
+            mLocationClient = new LocationClient(
+                    getActivity().getApplicationContext(),
+                    this,  // ConnectionCallbacks
+                    this); // OnConnectionFailedListener
+        }
+    }
+    
+    float distanceToCar[] = new float[3];
+    DecimalFormat dsitanceFormat = new DecimalFormat("0.0");
+    
+    @Override
+    public void onLocationChanged(Location location) {
+		btnDistanceToCar.setEnabled(true);
+		
+		Location.distanceBetween(driver.latitude, driver.longitude, location.getLatitude(), location.getLongitude(), distanceToCar);
+		tvDistanceToCar.setText(dsitanceFormat.format(Utils.metersToMiles(distanceToCar[0])));
+
+        if (mLocationClient != null) {
+            mLocationClient.disconnect();
+        }
+    }
+	
+	@Override
+    public void onConnected(Bundle connectionHint) {
+        mLocationClient.requestLocationUpdates(
+                REQUEST,
+                this);  // LocationListener
+    }
+	
+	/**
+     * Callback called when disconnected from GCore. Implementation of {@link ConnectionCallbacks}.
+     */
+    @Override
+    public void onDisconnected() {
+        // Do nothing
+    }
+
+    /**
+     * Implementation of {@link OnConnectionFailedListener}.
+     */
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+    	//Do nothing
+    }
+    
+    @Override
+	public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mLocationClient != null) {
+            mLocationClient.disconnect();
+        }
+    }
+    
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		outState.putInt("id", driverIndex);
 		super.onSaveInstanceState(outState);
 	}
+	
+	
 	
 	class GetDriverTask extends BaseRequestAsyncTask{
 
@@ -244,6 +340,9 @@ public class DriverDetailsFragment extends Fragment {
 				setUpMap();
 			}
 			updateFragment();
+			
+	        setUpLocationClientIfNeeded();
+	        mLocationClient.connect();
 			
 			super.onSuccess(responseJSON);
 		}

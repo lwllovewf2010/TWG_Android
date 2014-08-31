@@ -12,6 +12,8 @@
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+  	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 	
 	<!-- Maps API needs OpenGL ES 2.0. -->
 	<uses-feature
@@ -99,6 +101,14 @@
         
         <activity
             android:name="com.modusgo.ubi.GeofenceActivity"
+        	android:parentActivityName="com.modusgo.ubi.DriverActivity" >
+	        <meta-data
+	            android:name="android.support.PARENT_ACTIVITY"
+	            android:value="com.modusgo.ubi.DriverActivity" />
+        </activity>
+        
+        <activity
+            android:name="com.modusgo.ubi.FindMyCarActivity"
         	android:parentActivityName="com.modusgo.ubi.DriverActivity" >
 	        <meta-data
 	            android:name="android.support.PARENT_ACTIVITY"
