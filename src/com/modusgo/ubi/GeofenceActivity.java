@@ -32,6 +32,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.LatLngBounds.Builder;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -247,7 +248,7 @@ public class GeofenceActivity extends MainActivity {
 		DecimalFormat df = new DecimalFormat("0.0");
 		
 		//half meters to miles
-		return df.format((distance[0]/2f)*0.00062137f);
+		return df.format(Utils.metersToMiles((distance[0]/2f)));
 	}
 	
 	@Override
