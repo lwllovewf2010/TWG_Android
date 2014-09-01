@@ -12,245 +12,98 @@
         android:layout_height="wrap_content"
         layout="@layout/driver_header" />
 
-    <com.modusgo.ubi.customviews.TypefacedTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="12.5dp"
-        android:layout_marginTop="20dp"
-        android:text="FUEL"
-        android:textColor="#000"
-        android:textSize="12.5sp"
-        ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
-
     <LinearLayout
+        android:id="@+id/llProgress"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone" >
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical" >
-
-            <com.modusgo.ubi.customviews.TypefacedTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="CAPACITY"
-                android:textColor="#697078"
-                android:textSize="10sp"
-                ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
-
-            <com.modusgo.ubi.customviews.TypefacedTextView
-                android:id="@+id/tvCapacity"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="9.3"
-                android:textColor="#00AEEF"
-                android:textSize="31sp"
-                ubi:typeface="arialbd.ttf" />
-
-            <com.modusgo.ubi.customviews.TypefacedTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="GALLONS"
-                android:textColor="#00AEEF"
-                android:textSize="10sp"
-                ubi:typeface="EncodeSansNormal-300-Light.ttf" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical" >
-
-            <com.modusgo.ubi.customviews.TypefacedTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="LEVEL"
-                android:textColor="#697078"
-                android:textSize="10sp"
-                ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
-
-            <com.modusgo.ubi.customviews.TypefacedTextView
-                android:id="@+id/tvLevel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="7.96"
-                android:textColor="#00AEEF"
-                android:textSize="31sp"
-                ubi:typeface="arialbd.ttf" />
-
-            <com.modusgo.ubi.customviews.TypefacedTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="GALLONS"
-                android:textColor="#00AEEF"
-                android:textSize="10sp"
-                ubi:typeface="EncodeSansNormal-300-Light.ttf" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center|top"
-            android:orientation="vertical" >
-
-            <com.modusgo.ubi.customviews.TypefacedTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="CAPACITY"
-                android:textColor="#697078"
-                android:textSize="10sp"
-                ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
-
-            <com.modusgo.ubi.customviews.TypefacedTextView
-                android:id="@+id/tvPercentage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="85%"
-                android:textColor="#00AEEF"
-                android:textSize="31sp"
-                ubi:typeface="arialbd.ttf" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <com.modusgo.ubi.customviews.TypefacedTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="12.5dp"
-        android:layout_marginTop="17dp"
-        android:text="MPG"
-        android:textColor="#000"
-        android:textSize="12.5sp"
-        ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="12.5dp"
-        android:layout_marginRight="12.5dp"
-        android:layout_marginBottom="8dp"
-        android:orientation="horizontal" >
-
-        <com.modusgo.ubi.customviews.TypefacedTextView
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="LAST TRIP FUEL ECONOMY"
-            android:textColor="#143358"
-            android:textSize="10sp"
-            ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
-
-        <com.modusgo.ubi.customviews.TypefacedTextView
-            android:id="@+id/tvLastTripFuelEconomy"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="right"
-            android:text="250.97 MPG"
-            android:textColor="#00AEEF"
-            android:textSize="12.5sp"
-            ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+            android:layout_height="wrap_content" />
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="12.5dp"
-        android:layout_marginRight="12.5dp"
-        android:layout_marginBottom="8dp"
-        android:orientation="horizontal" >
-
-        <com.modusgo.ubi.customviews.TypefacedTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="LIFE TIME FUEL ECONOMY"
-            android:textColor="#143358"
-            android:textSize="10sp"
-            ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
-
-        <com.modusgo.ubi.customviews.TypefacedTextView
-            android:id="@+id/tvLifeTimeFuelEconomy"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="right"
-            android:text="446.9 MPG"
-            android:textColor="#00AEEF"
-            android:textSize="12.5sp"
-            ubi:typeface="EncodeSansNormal-300-Light.ttf" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="12.5dp"
-        android:layout_marginRight="12.5dp"
-        android:layout_marginBottom="8dp"
-        android:orientation="horizontal" >
-
-        <com.modusgo.ubi.customviews.TypefacedTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="LIFE TIME FUEL USED"
-            android:textColor="#143358"
-            android:textSize="10sp"
-            ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
-
-        <com.modusgo.ubi.customviews.TypefacedTextView
-            android:id="@+id/tvLifeTimeFuelUsed"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="right"
-            android:text="158.02 Gallons"
-            android:textColor="#00AEEF"
-            android:textSize="12.5sp"
-            ubi:typeface="EncodeSansNormal-300-Light.ttf" />
-    </LinearLayout>
-
-    <com.modusgo.ubi.customviews.TypefacedTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="6dp"
-        android:layout_marginLeft="12.5dp"
-        android:layout_marginTop="22dp"
-        android:text="STATS"
-        android:textColor="#000"
-        android:textSize="12.5sp"
-        ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
     
     <LinearLayout
+        android:id="@+id/llInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="12.5dp"
-        android:layout_marginRight="12.5dp"
+        android:layout_marginTop="18dp"
         android:orientation="horizontal" >
 
-        <com.modusgo.ubi.customviews.TypefacedTextView
-            android:layout_width="wrap_content"
+        <ImageView
+            android:id="@+id/imageAlerts"
+            android:layout_width="116dp"
             android:layout_height="wrap_content"
-            android:text="ODOMETER"
-            android:textColor="#143358"
-            android:textSize="10sp"
-            ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
+            android:src="@drawable/ic_alerts_red_big" />
 
-        <com.modusgo.ubi.customviews.TypefacedTextView
-            android:id="@+id/tvOdometer"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="right"
-            android:text="4035 Miles"
-            android:textColor="#00AEEF"
-            android:textSize="12.5sp"
-            ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+            android:orientation="vertical" >
+
+            <com.modusgo.ubi.customviews.TypefacedTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="YOUR VEHICLE HEALTH CHECK"
+                android:textColor="#3C454F"
+                android:textSize="10sp"
+                ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
+
+            <com.modusgo.ubi.customviews.TypefacedTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Last Checkup"
+                android:textColor="#697078"
+                android:textSize="12.5sp"
+                ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+
+            <com.modusgo.ubi.customviews.TypefacedTextView
+                android:id="@+id/tvLastCheckup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="09/03/2014 08:32AM PST"
+                android:textColor="#00AEEF"
+                android:textSize="12.5sp"
+                ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+
+            <com.modusgo.ubi.customviews.TypefacedTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                android:text="Status"
+                android:textColor="#697078"
+                android:textSize="12.5sp"
+                ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+
+            <com.modusgo.ubi.customviews.TypefacedTextView
+                android:id="@+id/tvStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Diagnostic Trouble Codes (DTC) Reported"
+                android:textColor="#00AEEF"
+                android:textSize="12.5sp"
+                ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+        </LinearLayout>
     </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/svContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true" >
+
+        <LinearLayout
+            android:id="@+id/llContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#e0e3e8"
+            android:orientation="vertical" >
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>
