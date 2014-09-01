@@ -12,6 +12,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -23,6 +24,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
@@ -105,6 +108,14 @@ public class ScoreFragment extends Fragment{
 		rootView.findViewById(R.id.btnTimePeriod).setVisibility(View.GONE);
 		
 		tvScore = (TextView)rootView.findViewById(R.id.tvScore);
+		((View)tvScore.getParent()).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(getActivity(), EducationActivity.class);
+				i.putExtra(EducationActivity.SAVED_STRING_RESOURCE, R.string.your_score);
+				startActivity(i);
+			}
+		});
 		
 		ExpandableHeightGridView gvPercentData = (ExpandableHeightGridView) rootView.findViewById(R.id.gvPercentData);
 		//gvPercentData.setColumnWidth(100);
@@ -114,6 +125,39 @@ public class ScoreFragment extends Fragment{
 		gvPercentData.setAdapter(percentInfoAdapter);
 		gvPercentData.setAdditionalTextExpand(1, 12.5f);
 		gvPercentData.setExpanded(true);
+		gvPercentData.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				int infoStringResource = -1;
+				switch (position) {
+				case 0:
+					infoStringResource = R.string.use_of_speed;
+					break;
+				case 1:
+					infoStringResource = R.string.anticipation;
+					break;
+				case 2:
+					infoStringResource = R.string.aggression;
+					break;
+				case 3:
+					infoStringResource = R.string.smoothness;
+					break;
+				case 4:
+					infoStringResource = R.string.completeness;
+					break;
+				case 5:
+					infoStringResource = R.string.consistency;
+					break;
+				}
+				if(infoStringResource != -1){
+					Intent i = new Intent(getActivity(), EducationActivity.class);
+					i.putExtra(EducationActivity.SAVED_STRING_RESOURCE, infoStringResource);
+					startActivity(i);
+				}
+			}
+		});
 		
 		llAdditionalData = (LinearLayout)rootView.findViewById(R.id.llValue);
 		

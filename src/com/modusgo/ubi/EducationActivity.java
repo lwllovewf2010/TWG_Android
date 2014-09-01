@@ -24,6 +24,8 @@ public class EducationActivity extends MainActivity {
 		setActionBarTitle("Driver Education");
 		getActionBar().getCustomView().setBackgroundColor(Color.parseColor("#00aeef"));
 		
+		setButtonUpVisibility(false);
+		
 		if(savedInstanceState!=null){
 			driverIndex = savedInstanceState.getInt("id");
 			infoStringResource = savedInstanceState.getInt(SAVED_STRING_RESOURCE);

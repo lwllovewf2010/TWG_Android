@@ -4,47 +4,48 @@
     <string name="app_name">UBI Native</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
-    
     <string name="frag1_text">Fragment 1</string>
-	<string name="frag2_text">Fragment 2</string>
+    <string name="frag2_text">Fragment 2</string>
+    <string name="add">Add</string>
+    <string name="remove">Remove</string>
+    <string name="replace">Replace</string>
+    <string name="stack">add to Back Stack</string>
+    <string name="checkbox1_title">CheckBox 1</string>
+    <string name="checkbox1_summary">Summary of CheckBox 1</string>
+    <string name="edittext1_title">EditText 1</string>
+    <string name="edittext1_summary">Summary of EditText 1</string>
+    <string name="list1_title">List 1</string>
+    <string name="list1_summary">Summary of List 1</string>
 
-	<string name="add">Add</string>
-	<string name="remove">Remove</string>
-	<string name="replace">Replace</string>
-	<string name="stack">add to Back Stack</string>
-	
-	<string name="checkbox1_title">CheckBox 1</string>
-	<string name="checkbox1_summary">Summary of CheckBox 1</string>
-	<string name="edittext1_title">EditText 1</string>
-	<string name="edittext1_summary">Summary of EditText 1</string>
-	<string name="list1_title">List 1</string>
-	<string name="list1_summary">Summary of List 1</string>
-	<string-array name="entries">
-		<item>one</item>
-		<item>two</item>
-		<item>three</item>
-	</string-array>
-	<string-array name="entry_values">
-		<item>1</item>
-		<item>2</item>
-		<item>3</item>
-	</string-array>
-	
-	<string name="harsh_accel"><![CDATA[ 
+    <string-array name="entries">
+        <item>one</item>
+        <item>two</item>
+        <item>three</item>
+    </string-array>
+    <string-array name="entry_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string name="harsh_accel">
+<![CDATA[ 
 	    <h5>Harsh Acceleration</h5>
 <h6>Pushing the pedal to the metal is not good for your car or safety!</h6>
 <p>Never stomp on the gas pedal when accelerating this can lead to tire spin and possible loss of control.  Accelerating at a smoother rate may get you to your desired speed a little more slowly, but it can save you at the gas pump.</p> 
 <p>Smooth acceleration is also much more important in more powerful cars as there is a greater likelihood of wheel-spin.</p>
-	      ]]></string>
-	      
-	<string name="distracted_driving"><![CDATA[ 
+	      ]]>
+    </string>
+    <string name="distracted_driving">
+<![CDATA[ 
 	    <h5>Distracted Driving</h5>
 <p><b>Driver distraction is a leading cause of traffic crashes,</b> responsible for about 80 percent of all collisions, according to the National Highway Traffic Safety Administration. Cell phones are the #1 driver distraction, contributing to thousands of crashes and deaths each year.</p> 
 <p>Talking on cell phones distracts our minds from driving.  Distraction does not simply involve where our eyes and hands are while driving.</p>
 <p>Cell phone conversations can take our minds off the task of driving.  This is called cognitive distraction, and this is why hands-free and handheld phones have a similar crash risk - hands-free devices are not safer! In fact, a University of Utah study found that drivers using a cell phone had a slower reaction time than drivers with a BAC of .08, the legal limit.</p>
-	      ]]></string>
-	      
-	<string name="speeding"><![CDATA[ 
+	      ]]>
+    </string>
+    <string name="speeding">
+<![CDATA[ 
 	    <h5>Speeding</h5>
 <p><b>Speeding is involved in about one out of three fatal crashes,</b> according to the National Highway Traffic Safety Administration.</p> 
 <p>While injuries and fatalities due to other dangerous behaviors, such as driving while impaired and not wearing seat-belts, have been significantly reduced, <b>speeding is still a challenge.</b></p>
@@ -55,14 +56,97 @@
 <p>•	Unsafe school zones - compliance with lower speed limits is poor.</p>
 <p>•	Economic costs - speeding-related crashes cost society over $40 billion annually, according to NHTSA.  Every minute "gained" by speeding to a destination costs U.S. society over $76,000.</p>
 	    
-	      ]]></string>
-	      
-	<string name="harsh_braking"><![CDATA[ 
+	      ]]>
+    </string>
+    <string name="harsh_braking">
+<![CDATA[ 
 	    <h5>Harsh Braking / Tailgating</h5>
 <p><b>Are you following other drivers to close?</b> Keeping a safe following distance is an easy way to help limit your harsh braking events.</p> 
 <p>This is an easy behavior to implement but still the most commonly broken rule of defensive driving.</p>
 <p>Even if you follow every other defensive driving technique, you can\'t possibly be a safe driver unless you follow this rule each time you drive. If you keep your distance from other drivers, you will almost always have an escape route, or will be able to take some sort of evasive action with ease.</p> 
 <p>At higher speeds this rule become more imperative to your safety.  You can greatly reduce your risk of collision by maintaining a large enough following distance.</p> 
 <p>At a <b>MINIMUM,</b> during dry weather conditions, you should have at least 2 seconds of space between you and the vehicle in front of you (3 seconds is better).  Do this by using a fixed object such as a bridge, tree, or even a crack or shadow in the roadway. Once the rear bumper of the vehicle in front of you crosses that object, begin to count... one-thousand one, one-thousand, two, one-thousand three, etc.  If you don\'t make it to 2 by the time your front bumper crosses the same object, you need to increase the following distance.  Of course, being further away than 3 seconds isn\'t only acceptable, it\'s recommended.</p>
-	      ]]></string>
+	      ]]>
+    </string>
+    <string name="use_of_speed">
+<![CDATA[ 
+	    <h3><u>Use of Speed</u></h3>
+<p><b>Higher scores are better.</b> A score of 100% means that the driver uses appropriate speed across all road conditions and times of day.</p> 
+<p>The pace score is a measure of how well the driver uses appropriate speed for the road being driven on.</p>
+<p>The score is generated by comparing the driver’s pace values to those of an advanced driver, across each road category.</p> 
+<p><b>What does this test mean?</b> Drivers who are observed to drive at a statistically signiﬁcantly diﬀerent speed than an advanced driver will receive a lower pace score.</p> 
+<p>Drivers who maintain an appropriate pace for the road and conditions will score more highly. The pace score will be reduced if a driver, on average, drives too quickly ‘or too slowly’. The road category, road geometry, general surroundings and distance driven on each road type are all considered when calculating the pace score.</p>
+<p>The pace score should not be used in isolation when identifying drivers in need of advice or training.</p>
+<p>Drivers with low pace scores might be driving too quickly, or be more cautious than necessary. You should cross-reference the pace score with the road category analysis, and identify road categories where they
+drive too quickly (high) or too slowly (low) in each of the pace elements.</p>
+	      ]]>
+    </string>
+    <string name="anticipation">
+<![CDATA[ 
+	    <h3><u>Anticipation</u></h3>
+<p><b>Higher scores are better:</b> A score of 100% means that the driver demonstrates high anticipation by altering their speed in a controlled and moderate way; they plan their changes in speed using advanced driving techniques.</p>
+<p>The anticipation score is a measure of the level of forward planning the driver exhibits. The score is generated by comparing the driver’s speed changes in response to road hazards and other vehicles with the speed changes of an advanced driver.</p>
+<p>If a driver anticipates the approaching road conditions and other road traﬃc there should never be a need to brake sharply. Braking while cornering puts the vehicle out of balance and can cause skidding due to reduced grip.</p>
+<p>Advanced drivers show the highest levels of anticipation on average. Young and inattentive drivers exhibit statistically lower levels of anticipation.</p>
+<p><b>What does this mean?</b> Moderate and timely braking ahead of junctions and corners increases the anticipation score. Braking while cornering, braking hard at junctions or braking hard while in traﬃc reduces the anticipation score.</p>
+	      ]]>
+    </string>
+    <string name="aggression">
+<![CDATA[ 
+	    <h3><u>Aggression</u></h3>
+<p><b>Higher scores are worse</b> (i.e. the driver is more aggressive), lower scores are better (i.e. the driver is less aggressive).</p>
+<p>The aggression score is a measure of the aggression observed in the driver proﬁle. The score is generated by comparing the driver’s speed, rate of acceleration, and overtaking behavior with those of an advanced
+driver, across each road category.</p>
+<p><b>What does this mean?</b> High speeds, heavy acceleration and frequent overtaking all contribute to a high aggression score.</p>
+<p>Aggressive drivers are statistically more likely to be involved in accidents. There is frequently an inverse correlation between the aggression score and the anticipation score (aggressive drivers are less likely to anticipate road and traﬃc conditions to a high standard).</p>
+
+	      ]]>
+    </string>
+    <string name="smoothness">
+<![CDATA[ 
+	    <h3><u>Smoothness</u></h3>
+<p><b>Higher scores are better,</b> indicating the driver handles changes in speed smoothly. Lower scores are worse, indicating the driver uses harsh acceleration or braking.</p>
+<p>The smoothness score is a measure of how smoothly the driver manouevres the vehicle. The score is generated by comparing the driver’s braking and accelerating statistics with those of an advanced driver.</p>
+<p><b>What does this mean?</b> Harsh acceleration and braking puts stress on the engine and drivetrain of a vehicle. It results in an uncomfortable ride for passengers, and can shorten the life of mechanical parts.</p>
+<p>Drivers who use moderate braking and acceleration at all times score higher in this category. Drivers who accelerate aggressively or brake heavily get lower scores.</p>
+<p>Vehicles that are driven smoothly tend to have lower maintenance costs than those that are placed under unnecessary mechanical stress.</p>
+
+	      ]]>
+    </string>
+    
+    <string name="completeness">
+<![CDATA[ 
+	    <h3><u>Completeness</u></h3>
+<p><b>A typical driver proﬁle will reach 70&#37; complete after approximately 250km of driving.</b> Proﬁles that have a completeness score greater than 70&#37; percent can be treated as reliable.</p>
+<p>The completeness score is a measure of how complete this driver proﬁle is. It is calculated by examining the amount of driving that the proﬁle comprises, across a range of road categories.</p>
+<p><b>What does this mean?</b> Each driver proﬁle is generated by monitoring driver behavior across many diﬀerent road types and surroundings.</p>
+<p>Drivers that cover many diﬀerent road types in their every day driving will populate diﬀerent sections of the proﬁle more quickly. The completeness score can be used as an measure of trust: the higher the completeness score the more the other proﬁle scores can be relied upon.</p>
+<p>Some drivers never reach 100% complete because they do not drive on particular road categories. e.g. a driver who never uses motorways would never populate some of the “Highway” road types.</p>
+
+	      ]]>
+    </string>
+    
+    <string name="consistency">
+<![CDATA[ 
+	    <h3><u>Consistency</u></h3>
+<p><b>A higher consistency score is better,</b> indicating the driver responds predictably to all road and traﬃc conditions. A lower consistency score is worse.</p>
+<p>The consistency score is a measure of how uniform the driver’s behaviour is across all road types and surroundings. It is calculated by examining the driver’s pace, acceleration, braking, and cornering behaviour
+across all road types and surroundings.</p>
+<p><b>What does this mean?</b> Drivers with high consistency scores drive using the same style on all road types and surroundings. Drivers with low consistency scores behave diﬀerently on diﬀerent road types.</p>
+
+	      ]]>
+    </string>
+    
+    <string name="your_score">
+<![CDATA[ 
+	    <h5>Your Score</h5>
+<p>The driver score is a measure of the skill level of the driver across all road types and conditions. It is calculated by comparing several diﬀerent measurements across diﬀerent road types with those of an advanced driver. The driver score is a composite score that takes into account vehicle handling, safety and fuel economy</p>
+
+<p><b>What does this mean?</b> Drivers who exhibit high levels of anticipation, smoothness, and appropriate pace will receive a high driver score.</p>
+
+<p><b>Drivers with high Driver Scores tend to be the safest drivers.</b></p>
+
+	      ]]>
+    </string>
+
 </resources>
