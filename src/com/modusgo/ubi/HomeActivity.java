@@ -230,7 +230,8 @@ public class HomeActivity extends MainActivity{
 								+ driverJSON.getString("make") + " "
 								+ driverJSON.getString("model"), "", "",
 						Utils.fixTimezoneZ(driverJSON.getString("last_trip")),
-						0, 0, "");
+						0, 0, 
+						driverJSON.getString("grade"));
 
 				d.alerts = driverJSON.getInt("count_alerts");
 				d.diags = driverJSON.getInt("count_diags");

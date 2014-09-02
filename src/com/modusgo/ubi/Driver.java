@@ -15,7 +15,7 @@ public class Driver implements Serializable{
 	public String VIN;
 	public String lastTripDate;
 	public String profileDate;
-	public String score;
+	public String grade;
 	public String phone;
 	public String email;
 	public int diags;
@@ -34,10 +34,10 @@ public class Driver implements Serializable{
 	
 	public Driver(String name, String score){
 		this.name = name;
-		this.score = score;
+		this.grade = score;
 	}
 	
-	public Driver(long id, String name, int imageId, String vehicle, String phone, String email, String lastTripDate, int tripsCount, int harshEvents, String score){
+	public Driver(long id, String name, int imageId, String vehicle, String phone, String email, String lastTripDate, int tripsCount, int harshEvents, String grade){
 		this.id = id;
 		this.name = name;
 		this.imageId = imageId;
@@ -47,7 +47,7 @@ public class Driver implements Serializable{
 		this.lastTripDate = lastTripDate;
 		this.tripsCount = tripsCount;
 		this.harshEvents = harshEvents;
-		this.score = score;
+		this.grade = grade;
 		this.address = "";
 	}
 	
@@ -64,31 +64,5 @@ public class Driver implements Serializable{
 		}
 		return lastName;
 	}	
-	
-	public int getScoreAsNumber(){
-		switch (score) {
-		case "A+":
-			return 9;
-		case "A":
-			return 8;
-		case "A-":
-			return 7;
-		case "B+":
-			return 6;
-		case "B":
-			return 5;
-		case "B-":
-			return 4;
-		case "C+":
-			return 3;
-		case "C":
-			return 2;
-		case "C-":
-			return 1;
-
-		default:
-			return 0;
-		}
-	}
 
 }
