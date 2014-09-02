@@ -24,8 +24,6 @@ public class EducationActivity extends MainActivity {
 		setActionBarTitle("Driver Education");
 		getActionBar().getCustomView().setBackgroundColor(Color.parseColor("#00aeef"));
 		
-		setButtonUpVisibility(false);
-		
 		if(savedInstanceState!=null){
 			driverIndex = savedInstanceState.getInt("id");
 			infoStringResource = savedInstanceState.getInt(SAVED_STRING_RESOURCE);
@@ -42,6 +40,11 @@ public class EducationActivity extends MainActivity {
 		tvContent.setText(Html.fromHtml(getResources().getString(infoStringResource)));
         
         
+	}
+	
+	@Override
+	public void up() {
+		finish();
 	}
     
 	@Override
