@@ -11,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -115,7 +116,7 @@ public class DiagnosticsFragment extends Fragment{
 			imageDTCAlert.setImageResource(R.drawable.ic_alerts_red_big);
 			llContent.addView(inflater.inflate(R.layout.diagnostics_header, llContent, false));
 			
-			for (DiagnosticsTroubleCode dtc : dtcs) {
+			for (final DiagnosticsTroubleCode dtc : dtcs) {
 				View rowView = inflater.inflate(R.layout.diagnostics_item, llContent, false);
 				TextView tvCode = (TextView) rowView.findViewById(R.id.tvCode);
 				TextView tvDescription = (TextView) rowView.findViewById(R.id.tvDescription);
@@ -136,6 +137,16 @@ public class DiagnosticsFragment extends Fragment{
 				default:
 					break;
 				}
+				
+				rowView.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						Intent i = new Intent(getActivity(), DiagnosticDetailActivity.class);
+						i.putExtra(DiagnosticDetailActivity.EXTRA_DTC, dtc);
+						startActivity(i);
+					}
+				});
+				
 				llContent.addView(rowView);
 			}
 		}
@@ -221,42 +232,6 @@ public class DiagnosticsFragment extends Fragment{
 	public void onSaveInstanceState(Bundle outState) {
 		outState.putInt("id", driverIndex);
 		super.onSaveInstanceState(outState);
-	}
-	
-	class DiagnosticsTroubleCode {
-		String code;
-		String conditions;
-		String created_at;
-		String description;
-		String details;
-		String full_description;
-		String importance;
-	    String labor_cost;
-		String labor_hours;
-		String parts;
-	    String parts_cost;
-		String total_cost;
-		
-		public DiagnosticsTroubleCode(String code, String conditions,
-				String created_at, String description, String details,
-				String full_description, String importance, String labor_cost,
-				String labor_hours, String parts, String parts_cost,
-				String total_cost) {
-			super();
-			this.code = code;
-			this.conditions = conditions;
-			this.created_at = created_at;
-			this.description = description;
-			this.details = details;
-			this.full_description = full_description;
-			this.importance = importance;
-			this.labor_cost = labor_cost;
-			this.labor_hours = labor_hours;
-			this.parts = parts;
-			this.parts_cost = parts_cost;
-			this.total_cost = total_cost;
-		}
-		
 	}
 	
 	class Recall {
