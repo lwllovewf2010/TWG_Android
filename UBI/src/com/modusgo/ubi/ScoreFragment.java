@@ -245,39 +245,39 @@ public class ScoreFragment extends Fragment{
 	   
         ArrayList<Fragment> pieChartFragments = new ArrayList<>();
         
-		for (int i = 0; i < pieChartTabs.length; i++) {
+        for (int i = 0; i < pieChartTabs.length; i++) {
         	RadioButton rb = (RadioButton)inflater.inflate(R.layout.radio_tab, rgPieCharts, false);
         	rb.setText(pieChartTabs[i]);
-            rb.setBackgroundResource(R.drawable.radio_tab_bg_selector);
-            Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "fonts/EncodeSansNormal-600-SemiBold.ttf");
-            rb.setTypeface(tf);
-            
-            final Fragment fragment = new PieChartFragment();
-            fragment.setArguments(bundles[i]);
-            pieChartFragments.add(fragment);
-            
-            rb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-				@Override
-				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-					if(isChecked){
-						getFragmentManager().beginTransaction()
-						.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-				        .replace(R.id.pieChartsContainer, fragment)
-				        .commit();
-					}
-				}
-			});
-            
-            rgPieCharts.addView(rb);
-            if(i==0){
-                rb.setId(R.id.radioButtonSelected);
-                rgPieCharts.check(rb.getId());
-                
-                getFragmentManager().beginTransaction()
-                .replace(R.id.pieChartsContainer, fragment)
-                .commit();
-            }
-		}
+        	rb.setBackgroundResource(R.drawable.radio_tab_bg_selector);
+        	Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "fonts/EncodeSansNormal-600-SemiBold.ttf");
+        	rb.setTypeface(tf);
+        	
+        	final Fragment fragment = new PieChartFragment();
+        	fragment.setArguments(bundles[i]);
+        	pieChartFragments.add(fragment);
+        	
+        	rb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+        		@Override
+        		public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        			if(isChecked){
+        				getChildFragmentManager().beginTransaction()
+        				.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+        				.replace(R.id.pieChartsContainer, fragment)
+        				.commit();
+        			}
+        		}
+        	});
+        	
+        	rgPieCharts.addView(rb);
+        	if(i==0){
+        		rb.setId(R.id.radioButtonSelected);
+        		rgPieCharts.check(rb.getId());
+        		
+        		getChildFragmentManager().beginTransaction()
+        		.replace(R.id.pieChartsContainer, fragment)
+        		.commitAllowingStateLoss();
+        	}
+        }
 	}
 	
 	private void updateCircles(Bundle bundles[]) {
@@ -300,7 +300,7 @@ public class ScoreFragment extends Fragment{
 				@Override
 				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 					if(isChecked){
-						getFragmentManager().beginTransaction()
+						getChildFragmentManager().beginTransaction()
 						.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
 				        .replace(R.id.circlesContainer, fragment)
 				        .commit();
@@ -313,9 +313,9 @@ public class ScoreFragment extends Fragment{
                 rb.setId(R.id.radioButtonSelected);
                 rgCircles.check(rb.getId());
                 
-                getFragmentManager().beginTransaction()
+                getChildFragmentManager().beginTransaction()
                 .replace(R.id.circlesContainer, fragment)
-                .commit();
+                .commitAllowingStateLoss();
             }
 		}
 	}
