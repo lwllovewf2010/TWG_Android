@@ -100,7 +100,7 @@ android.support.v4.app.Fragment:
     615:615:public final java.lang.CharSequence getText(int)
     625:625:public final java.lang.String getString(int)
     638:638:public final varargs java.lang.String getString(int,java.lang.Object[])
-    660:672:public final android.support.v4.app.FragmentManager getChildFragmentManager()
+    652:652:public final android.support.v4.app.FragmentManager getFragmentManager()
     680:680:public final android.support.v4.app.Fragment getParentFragment()
     705:705:public final boolean isRemoving()
     716:716:public final boolean isInLayout()

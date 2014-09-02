@@ -196,7 +196,7 @@ android.support.v4.app.Fragment -> android.support.v4.app.Fragment:
     542:542:android.os.Bundle getArguments() -> b
     595:595:android.support.v4.app.FragmentActivity getActivity() -> c
     602:605:android.content.res.Resources getResources() -> d
-    652:652:android.support.v4.app.FragmentManager getFragmentManager() -> e
+    660:672:android.support.v4.app.FragmentManager getChildFragmentManager() -> e
     687:687:boolean isAdded() -> f
     696:696:boolean isDetached() -> g
     745:745:boolean isHidden() -> h
@@ -12773,10 +12773,10 @@ com.modusgo.ubi.MapActivity -> com.modusgo.ubi.MapActivity:
     com.google.android.gms.maps.MapView mapView -> p
     com.google.android.gms.maps.GoogleMap map -> q
     35:76:void onCreate(android.os.Bundle) -> onCreate
-    79:117:void addDriversToMap() -> g
-    121:123:void onResume() -> onResume
-    127:129:void onDestroy() -> onDestroy
-    133:135:void onLowMemory() -> onLowMemory
+    79:114:void addDriversToMap() -> g
+    118:120:void onResume() -> onResume
+    124:126:void onDestroy() -> onDestroy
+    130:132:void onLowMemory() -> onLowMemory
     78:78:void access$0(com.modusgo.ubi.MapActivity) -> a
 com.modusgo.ubi.MapActivity$1 -> com.modusgo.ubi.ch:
     com.modusgo.ubi.MapActivity this$0 -> a
@@ -12785,10 +12785,10 @@ com.modusgo.ubi.MapActivity$2 -> com.modusgo.ubi.ci:
     com.modusgo.ubi.MapActivity this$0 -> a
     com.google.android.gms.maps.model.LatLng val$location -> b
     java.lang.String val$address -> c
-    98:98:void onLoadingStarted(java.lang.String,android.view.View) -> a
-    102:102:void onLoadingFailed(java.lang.String,android.view.View,com.nostra13.universalimageloader.core.assist.FailReason) -> a
-    106:107:void onLoadingComplete(java.lang.String,android.view.View,android.graphics.Bitmap) -> a
-    111:111:void onLoadingCancelled(java.lang.String,android.view.View) -> b
+    95:95:void onLoadingStarted(java.lang.String,android.view.View) -> a
+    99:99:void onLoadingFailed(java.lang.String,android.view.View,com.nostra13.universalimageloader.core.assist.FailReason) -> a
+    103:104:void onLoadingComplete(java.lang.String,android.view.View,android.graphics.Bitmap) -> a
+    108:108:void onLoadingCancelled(java.lang.String,android.view.View) -> b
 com.modusgo.ubi.PieChartFragment -> com.modusgo.ubi.cj:
     java.lang.String LOG_TAG -> P
     float[] chartValues -> Q
