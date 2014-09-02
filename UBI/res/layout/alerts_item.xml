@@ -36,6 +36,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="2dp"
         android:paddingBottom="7dp"
+        android:layout_marginRight="12dp"
         android:layout_below="@+id/tvEvent"
         android:layout_alignLeft="@+id/tvEvent"
         android:text="07/01/2014 05:00 PM PST"
