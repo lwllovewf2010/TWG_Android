@@ -207,7 +207,7 @@ public class TripActivity extends MainActivity {
 			if(!e.address.equals("null"))
 				((TextView)eventItem.findViewById(R.id.tvAddress)).setText(e.address);
 			else
-				((TextView)eventItem.findViewById(R.id.tvAddress)).setText("");
+				((TextView)eventItem.findViewById(R.id.tvAddress)).setText("Address processing in progress");
 			
 			ImageView icon = (ImageView) eventItem.findViewById(R.id.imageIcon);
 			int infoStringResource = 0;
