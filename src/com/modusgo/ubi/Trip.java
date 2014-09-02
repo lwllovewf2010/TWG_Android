@@ -21,9 +21,10 @@ public class Trip implements Serializable{
 	double maxSpeed;
 	ArrayList<LatLng> route;
 	ArrayList<Point> points;
+	ArrayList<ArrayList<LatLng>> speedingRoute;
 	ArrayList<Event> events;
 	
-	enum EventType {START, STOP, HARSH_BRAKING, HARSH_ACCELERATION, PHONE_USAGE, APP_USAGE};
+	enum EventType {START, STOP, HARSH_BRAKING, HARSH_ACCELERATION, SPEEDING, PHONE_USAGE, APP_USAGE};
 	
 	private static SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
 	private static SimpleDateFormat sdfTo = new SimpleDateFormat("hh:mm a", Locale.getDefault());
@@ -35,6 +36,7 @@ public class Trip implements Serializable{
 		this.eventsCount = eventsCount;
 		route = new ArrayList<LatLng>();
 		points = new ArrayList<Point>();
+		speedingRoute = new ArrayList<ArrayList<LatLng>>();
 		events = new ArrayList<Event>();
 		
 		try {

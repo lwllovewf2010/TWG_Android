@@ -147,16 +147,23 @@ public class TripActivity extends MainActivity {
 		map.clear();
 		
 		PolylineOptions options = new PolylineOptions();
-		
-		final Builder builder = LatLngBounds.builder();
-		
+		final Builder builder = LatLngBounds.builder();	
 		for (LatLng point : trip.route) {
 			options.add(point);
 			builder.include(point);
 		}
 
 		int color = Color.parseColor("#009900");
-		map.addPolyline(options.color(color).width(8));
+		map.addPolyline(options.color(color).width(8).zIndex(1));
+
+		int colorSpeeding = Color.parseColor("#ef4136");
+		for (ArrayList<LatLng> route : trip.speedingRoute) {
+			PolylineOptions optionsSpeeding = new PolylineOptions();
+			for (LatLng point : route) {
+				optionsSpeeding.add(point);
+			}
+			map.addPolyline(optionsSpeeding.color(colorSpeeding).width(8).zIndex(2));
+		}
 		
 		CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(builder.build(), 150);
         map.animateCamera(cameraUpdate);
@@ -181,6 +188,9 @@ public class TripActivity extends MainActivity {
 					break;
 				case APP_USAGE:
 					map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_app)));
+					break;
+				case SPEEDING:
+					map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_speeding)));
 					break;
 				default:
 					break;
@@ -223,6 +233,10 @@ public class TripActivity extends MainActivity {
 			case APP_USAGE:
 				icon.setImageResource(R.drawable.marker_app);
 				infoStringResource = R.string.distracted_driving;
+				break;
+			case SPEEDING:
+				icon.setImageResource(R.drawable.marker_speeding);
+				infoStringResource = R.string.speeding;
 				break;
 			default:
 				break;
@@ -308,6 +322,18 @@ public class TripActivity extends MainActivity {
 				JSONArray pointJSON = routeJSON.getJSONArray(i);
 				trip.route.add(new LatLng(pointJSON.getDouble(0), pointJSON.getDouble(1)));					
 			}
+			
+			JSONArray speedingJSON = responseJSON.getJSONArray("speeding");
+			for (int i = 0; i < speedingJSON.length(); i++) {
+				JSONArray speedingRouteJSON = speedingJSON.getJSONObject(i).getJSONArray("route");
+				ArrayList<LatLng> speedingRoute = new ArrayList<LatLng>();
+				
+				for (int j = 0; j < speedingRouteJSON.length(); j++) {
+					JSONArray pointJSON = speedingRouteJSON.getJSONArray(j);
+					speedingRoute.add(new LatLng(pointJSON.getDouble(0), pointJSON.getDouble(1)));	
+				}
+				trip.speedingRoute.add(speedingRoute);				
+			}
 				
 			JSONArray pointsJSON = responseJSON.getJSONArray("points");
 			for (int i = 0; i < pointsJSON.length(); i++) {
@@ -354,7 +380,7 @@ public class TripActivity extends MainActivity {
 			case "app_usage":
 				return EventType.APP_USAGE;
 			case "speeding":
-				break;
+				return EventType.SPEEDING;
 			default:
 				break;
 			}
