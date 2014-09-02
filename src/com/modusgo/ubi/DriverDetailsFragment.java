@@ -179,21 +179,21 @@ OnConnectionFailedListener, LocationListener{
 	    
 	    if(driver.diags<=0){
 	    	tvDiagnostics.setText("");
-	    	tvDiagnostics.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_diagnostics_green, 0, 0, 0);
+	    	tvDiagnostics.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_diagnostics_green_medium, 0, 0, 0);
 	    }else{
 	    	tvDiagnostics.setText(""/*+driver.diags*/);
-	    	tvDiagnostics.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_diagnostics_red, 0, 0, 0);		    	
+	    	tvDiagnostics.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_diagnostics_red_medium, 0, 0, 0);		    	
 	    }
 	    
 	    if(driver.alerts<=0){
 	    	tvAlerts.setText("");
-	    	tvAlerts.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_alerts_green, 0, 0, 0);
+	    	tvAlerts.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_alerts_green_medium, 0, 0, 0);
 	    }else{
 	    	if(driver.alerts==0)
 	    		tvAlerts.setText("…");
 	    	else
 	    		tvAlerts.setText(""+driver.alerts);
-	    	tvAlerts.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_alerts_red, 0, 0, 0);		    	
+	    	tvAlerts.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_alerts_red_medium, 0, 0, 0);		    	
 	    }
         setUpMapIfNeeded();
 	}
