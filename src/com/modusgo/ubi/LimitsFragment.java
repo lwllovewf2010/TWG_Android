@@ -436,7 +436,7 @@ public class LimitsFragment extends Fragment {
 			groups.add(new LimitsListGroup("Geofence", responseJSON.getBoolean("is_geofence"), geofenceChildren));
 			groups.add(new LimitsListGroup("Low fuel", responseJSON.getBoolean("low_fuel")));
 			groups.add(new LimitsListGroup("Distracted Driving Events", responseJSON.getBoolean("safe_driving")));
-			groups.add(new LimitsListGroup("Tow Alerts", false));
+			groups.add(new LimitsListGroup("Tow Alerts", responseJSON.has("tow_alerts") ? responseJSON.getBoolean("tow_alerts") : false));
 			
 			updateLimits();
 			
@@ -463,8 +463,9 @@ public class LimitsFragment extends Fragment {
 		        requestParams.add(new BasicNameValuePair("harsh_way", ""+groups.get(2).enabled));
 		        requestParams.add(new BasicNameValuePair("is_driving_between", ""+groups.get(3).enabled));
 		        requestParams.add(new BasicNameValuePair("is_geofence", ""+groups.get(4).enabled));
-		        requestParams.add(new BasicNameValuePair("driver_id", ""+groups.get(5).enabled));
+		        requestParams.add(new BasicNameValuePair("low_fuel", ""+groups.get(5).enabled));
 		        requestParams.add(new BasicNameValuePair("safe_driving", ""+groups.get(6).enabled));
+		        requestParams.add(new BasicNameValuePair("tow_alerts", ""+groups.get(7).enabled));
 		        
 		        requestParams.add(new BasicNameValuePair("max_speed", ""+((LimitsSingleValueChild)groups.get(0).childs.get(0)).value));
 		        requestParams.add(new BasicNameValuePair("daily_mileage", ""+((LimitsSingleValueChild)groups.get(1).childs.get(0)).value));
