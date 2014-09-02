@@ -24,6 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -202,7 +203,7 @@ public class AlertsActivity extends MainActivity {
 			alerts.clear();
 			for (int i = 0; i < alertsJSON.length(); i++) {
 				JSONObject alertJSON = alertsJSON.getJSONObject(i);
-				alerts.add(new Alert(0, alertJSON.getString("title"), alertJSON.getString("created_at"), alertJSON.getLong("trip_id")));
+				alerts.add(new Alert(0, alertJSON.getString("title"), Utils.fixTimezoneZ(alertJSON.getString("created_at")), alertJSON.getLong("trip_id")));
 			}
 			
 			adapter.notifyDataSetChanged();			
