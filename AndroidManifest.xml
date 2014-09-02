@@ -139,6 +139,14 @@
 	            android:value="com.modusgo.ubi.DriverActivity" />
         </activity>
         
+        <activity
+            android:name="com.modusgo.ubi.RecallActivity"
+        	android:parentActivityName="com.modusgo.ubi.DriverActivity" >
+	        <meta-data
+	            android:name="android.support.PARENT_ACTIVITY"
+	            android:value="com.modusgo.ubi.DriverActivity" />
+        </activity>
+        
         <activity android:name="net.hockeyapp.android.UpdateActivity" />
     </application>
 

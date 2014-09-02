@@ -159,7 +159,7 @@ public class DiagnosticsFragment extends Fragment{
 		if(recalls!=null && recalls.size()>0){
 			llContent.addView(inflater.inflate(R.layout.recall_header, llContent, false));
 			
-			for (Recall recall : recalls) {
+			for (final Recall recall : recalls) {
 				View rowView = inflater.inflate(R.layout.diagnostics_item, llContent, false);
 				TextView tvCode = (TextView) rowView.findViewById(R.id.tvCode);
 				TextView tvDescription = (TextView) rowView.findViewById(R.id.tvDescription);
@@ -168,6 +168,15 @@ public class DiagnosticsFragment extends Fragment{
 				tvDescription.setText(recall.description);
 				tvImportance.setVisibility(View.GONE);
 				llContent.addView(rowView);
+				
+				rowView.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						Intent i = new Intent(getActivity(), RecallActivity.class);
+						i.putExtra(RecallActivity.EXTRA_RECALL, recall);
+						startActivity(i);
+					}
+				});
 			}
 		}
 		
@@ -232,27 +241,6 @@ public class DiagnosticsFragment extends Fragment{
 	public void onSaveInstanceState(Bundle outState) {
 		outState.putInt("id", driverIndex);
 		super.onSaveInstanceState(outState);
-	}
-	
-	class Recall {
-		String consequence;
-		String corrective_action;
-		String created_at;
-		String defect_description;
-		String description;
-		String recall_id;
-		
-		public Recall(String consequence, String corrective_action,
-				String created_at, String defect_description,
-				String description, String recall_id) {
-			super();
-			this.consequence = consequence;
-			this.corrective_action = corrective_action;
-			this.created_at = created_at;
-			this.defect_description = defect_description;
-			this.description = description;
-			this.recall_id = recall_id;
-		}
 	}
 	
 	class Maintenance {
