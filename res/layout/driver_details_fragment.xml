@@ -214,7 +214,7 @@
                 android:layout_marginLeft="12dp"
                 android:layout_marginTop="65dp"
                 android:layout_toRightOf="@+id/imagePhoto"
-                android:text="Melissa&apos;s"
+                android:text="Melissa"
                 android:textColor="#697078"
                 android:textSize="20sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />

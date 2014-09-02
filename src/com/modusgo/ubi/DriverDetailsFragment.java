@@ -141,7 +141,7 @@ OnConnectionFailedListener, LocationListener{
 	}
 	
 	private void updateFragment(){
-		tvName.setText(driver.name+"'s");
+		tvName.setText(driver.name);
 	    tvVehicle.setText(driver.vehicle);
 	    if(driver.address == null || driver.address.equals(""))
 	    	tvLocation.setText("Unknown address");
