@@ -64,8 +64,17 @@ public class HomeActivity extends MainActivity{
 		
 		lvDrivers.setAdapter(driversAdapter);
 		
+		btnUp.setImageResource(R.drawable.ic_map);
+		
 		new GetDriversTask(this).execute("drivers.json");
 		
+		setButtonUpVisibility(false);
+		
+	}
+	
+	@Override
+	public void up() {
+		startActivity(new Intent(this, MapActivity.class));
 	}
 	
 	class DriversAdapter extends BaseAdapter{
@@ -182,7 +191,6 @@ public class HomeActivity extends MainActivity{
 	@Override
 	public void onResume() {
 		setNavigationDrawerItemSelected(MenuItems.HOME);
-		setButtonUpVisibility(false);
 		super.onResume();
 	}
 	
@@ -237,12 +245,16 @@ public class HomeActivity extends MainActivity{
 				d.diags = driverJSON.getInt("count_diags");
 				d.imageUrl = driverJSON.getString("photo");
 				d.fuelLeft = driverJSON.getInt("fuel_left");
+				d.address = driverJSON.getJSONObject("location").getString("address");
+				d.latitude = driverJSON.getJSONObject("location").getJSONObject("map").getDouble("latitude");
+				d.longitude = driverJSON.getJSONObject("location").getJSONObject("map").getDouble("longitude");
+				d.markerIcon = driverJSON.getString("icon");
 
 				dHelper.drivers.add(d);
 			}
 
 			driversAdapter.notifyDataSetChanged();
-
+			setButtonUpVisibility(true);
 			super.onSuccess(responseJSON);
 		}
 	}

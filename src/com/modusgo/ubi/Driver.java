@@ -29,6 +29,7 @@ public class Driver implements Serializable{
 	public double distance;
 	public int scoreInt;
 	public int drivingTime;
+	public String markerIcon;
 	
 	public LinkedHashMap<String, ArrayList<Trip>> tripsMap = new LinkedHashMap<>();
 	

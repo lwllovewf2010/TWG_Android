@@ -37,7 +37,7 @@ public class MainActivity extends FragmentActivity {
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private int mDrawerSelectedItem = -1;
-    private ImageButton btnUp;
+    protected ImageButton btnUp;
     private ImageButton btnNavigationDrawer; 
     
     public static enum MenuItems {HOME("HOME",1), COMPARE("COMPARE",2), SETTINGS("SETTINGS",3), 
