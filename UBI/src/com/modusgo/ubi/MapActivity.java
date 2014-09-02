@@ -35,7 +35,7 @@ public class MapActivity extends MainActivity {
 		setContentView(R.layout.activity_map);
 		super.onCreate(savedInstanceState);
 		
-		setActionBarTitle("TRIP DETAILS");
+		setActionBarTitle("Drivers Locations");
 
 		dHelper = DriversHelper.getInstance();
 		drivers = dHelper.getDrivers();
