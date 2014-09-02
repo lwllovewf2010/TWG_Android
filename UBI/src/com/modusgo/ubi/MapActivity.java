@@ -81,9 +81,6 @@ public class MapActivity extends MainActivity {
 		for (int i = 0; i < drivers.size(); i++) {
 			
 			DisplayImageOptions options = new DisplayImageOptions.Builder()
-	        .showImageOnLoading(R.drawable.person_placeholder)
-	        .showImageForEmptyUri(R.drawable.person_placeholder)
-	        .showImageOnFail(R.drawable.person_placeholder)
 	        .cacheInMemory(true)
 	        .cacheOnDisk(true)
 	        .build();
