@@ -228,7 +228,9 @@ public class LimitsFragment extends Fragment {
 							@Override
 							public void onClick(View v) {
 								showSavedToast = false;
-								startActivity(c.intent);
+								Intent i = new Intent(getActivity(), c.linkActivityClass);
+								i.putExtra("id", driverIndex);
+								startActivity(i);
 							}
 						});
 					}
@@ -365,11 +367,11 @@ public class LimitsFragment extends Fragment {
 	
 	class LimitsLinkChild extends LimitsListChild{
 		
-		Intent intent;
+		Class<?> linkActivityClass;
 		
-		public LimitsLinkChild(Intent i, String... text) {
+		public LimitsLinkChild(Class<?> linkActivityClass, String... text) {
 			super(R.layout.limits_link_item, text);
-			intent = i;
+			this.linkActivityClass = linkActivityClass;
 		}
 	}
 	
@@ -410,9 +412,7 @@ public class LimitsFragment extends Fragment {
 			dailyMileageLimitsChildren.add(new LimitsSingleValueChild(responseJSON.getInt("daily_mileage"), "MI", "Set max to"));
 			timeOfDayLimitsChildren.add(new LimitsTimePeriodChild(responseJSON.getString("driving_after"), responseJSON.getString("driving_before"), "Between", "and"));
 			
-			Intent i = new Intent(getActivity(), GeofenceActivity.class);
-			i.putExtra("id", driverIndex);
-			geofenceChildren.add(new LimitsLinkChild(i, "Set geofence"));
+			geofenceChildren.add(new LimitsLinkChild(GeofenceActivity.class, "Set geofence"));
 			
 			groups = new ArrayList<LimitsListGroup>();
 			groups.add(new LimitsListGroup("Max speed limit", responseJSON.getBoolean("max_speed_limit"), maxSpeedLimitsChildren));
