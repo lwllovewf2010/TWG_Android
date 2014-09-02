@@ -7,7 +7,6 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -32,7 +31,6 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -413,19 +411,7 @@ public class LimitsFragment extends Fragment {
 			timeOfDayLimitsChildren.add(new LimitsTimePeriodChild(responseJSON.getString("driving_after"), responseJSON.getString("driving_before"), "Between", "and"));
 			
 			Intent i = new Intent(getActivity(), GeofenceActivity.class);
-				
-			JSONArray geofence = responseJSON.getJSONArray("geofence");
-				
-			ArrayList<LatLng> points = new ArrayList<LatLng>();
-			
-			for (int j = 0; j < geofence.length(); j++) {
-				JSONArray point = geofence.getJSONArray(j);
-				points.add(new LatLng(point.getDouble(0), point.getDouble(1)));
-			}
-			
-			i.putExtra(GeofenceActivity.EXTRA_POINTS, points);
 			i.putExtra("id", driverIndex);
-			
 			geofenceChildren.add(new LimitsLinkChild(i, "Set geofence"));
 			
 			groups = new ArrayList<LimitsListGroup>();

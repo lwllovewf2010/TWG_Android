@@ -37,9 +37,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class GeofenceActivity extends MainActivity {
-	
-	public static final String EXTRA_POINTS = "points";
-	
+
 	Driver driver;
 	DriversHelper dHelper;
 	int driverIndex = 0;
@@ -93,9 +91,6 @@ public class GeofenceActivity extends MainActivity {
 		findViewById(R.id.btnTimePeriod).setVisibility(View.GONE);
 
 		points = new ArrayList<LatLng>();
-		if(getIntent()!=null){
-			points = (ArrayList<LatLng>) getIntent().getSerializableExtra(EXTRA_POINTS);
-		}
 		
 		// Gets the MapView from the XML layout and creates it
         mapView = (MapView) findViewById(R.id.mapview);
@@ -107,7 +102,9 @@ public class GeofenceActivity extends MainActivity {
         map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
 			@Override
 			public void onMapLoaded() {
-				updateActivity();				
+				CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(37.8430094,-95.0098992), 1);
+		        map.animateCamera(cameraUpdate);
+				new GetLimitsTask(GeofenceActivity.this).execute("drivers/"+driver.id+"/limits.json");
 			}
 		});
         map.setOnMapLongClickListener(new OnMapLongClickListener() {
@@ -119,13 +116,9 @@ public class GeofenceActivity extends MainActivity {
 						map.clear();
 						points.clear();
 						tvRadius.setText("n/a");
-					}
-					else{
-						points.add(point);
-						drawPolyline();
+						updateSaveBtn("Finsih");
+				        tvInstructions.setText("Tap anywhere on\nthe map to begin setting up\nyour geofence borders");
 						geofencingStarted = true;
-						btnSave.setText("Finish");
-						tvInstructions.setText("Tap anywhere on the map to set next point");
 					}
 				}
 			}
@@ -138,16 +131,23 @@ public class GeofenceActivity extends MainActivity {
 				if(mapEnabled && geofencingStarted){
 					points.add(point);
 					drawPolyline();
+					updateSaveBtn("Finish");
+				}
+				if(points.size()>0){
+					tvInstructions.setText("Tap anywhere on the map to set next point");
 				}
 			}
 		});
         
         MapsInitializer.initialize(this);     
-        
+
+		mapEnabled = false;
+		
         btnSave = (Button) findViewById(R.id.btnSave);
         tvInstructions = (TextView) findViewById(R.id.tvInstructions);
         tvRadius = (TextView) findViewById(R.id.tvRadius);
-        
+
+		btnSave.setText("Loading...");
         btnSave.setEnabled(false);
         
         tvInstructions.setText("");
@@ -211,6 +211,15 @@ public class GeofenceActivity extends MainActivity {
 		
 	}
 	
+	private void updateSaveBtn(String title){
+		btnSave.setText(title);
+		if(points.size()>=3){
+			btnSave.setEnabled(true);
+		}
+		else
+			btnSave.setEnabled(false);
+	}
+	
 	private void updateActivity(){
 		if(points!=null && points.size()>0){
 			PolylineOptions options = new PolylineOptions();
@@ -243,7 +252,8 @@ public class GeofenceActivity extends MainActivity {
 	        tvInstructions.setText("Press and hold anywhere on\nthe map to begin setting up\nyour geofence borders");
 		}
 
-		btnSave.setEnabled(true);
+		updateSaveBtn("Save");
+		mapEnabled = true;
 	}
 	
 	private void updateRadius(LatLngBounds llb){
@@ -279,6 +289,36 @@ public class GeofenceActivity extends MainActivity {
         super.onLowMemory();
         mapView.onLowMemory();
     }
+    
+    class GetLimitsTask extends BaseRequestAsyncTask{
+		
+		public GetLimitsTask(Context context) {
+			super(context);
+		}
+
+		@Override
+		protected JSONObject doInBackground(String... params) {
+	        requestParams.add(new BasicNameValuePair("driver_id", ""+driver.id));
+			return super.doInBackground(params);
+		}
+		
+		@Override
+		protected void onSuccess(JSONObject responseJSON) throws JSONException {
+			
+			JSONArray geofence = responseJSON.getJSONArray("geofence");
+				
+			points = new ArrayList<LatLng>();
+			
+			for (int j = 0; j < geofence.length(); j++) {
+				JSONArray point = geofence.getJSONArray(j);
+				points.add(new LatLng(point.getDouble(0), point.getDouble(1)));
+			}
+			
+			updateActivity();
+			
+			super.onSuccess(responseJSON);
+		}
+	}
     
     class SetLimitsTask extends BasePostRequestAsyncTask{
 		
