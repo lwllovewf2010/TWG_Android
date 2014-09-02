@@ -24,6 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -308,7 +309,7 @@ public class DiagnosticsFragment extends Fragment{
 		
 		@Override
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
-			String lastCheckup = responseJSON.getString("last_checkup");
+			String lastCheckup = Utils.fixTimezoneZ(responseJSON.getString("last_checkup"));
 			try {
 				tvLastCheckup.setText(sdfTo.format(sdfFrom.parse(lastCheckup)));
 			} catch (ParseException e) {
@@ -326,7 +327,7 @@ public class DiagnosticsFragment extends Fragment{
 				dtcs.add(new DiagnosticsTroubleCode(
 						dtc.getString("code"), 
 						dtc.getString("conditions"), 
-						dtc.getString("created_at"), 
+						Utils.fixTimezoneZ(dtc.getString("created_at")), 
 						dtc.getString("description"), 
 						dtc.getString("details"), 
 						dtc.getString("full_description"), 
@@ -347,7 +348,7 @@ public class DiagnosticsFragment extends Fragment{
 				recalls.add(new Recall(
 						recall.getString("consequence"), 
 						recall.getString("corrective_action"), 
-						recall.getString("created_at"), 
+						Utils.fixTimezoneZ(recall.getString("created_at")), 
 						recall.getString("defect_description"), 
 						recall.getString("description"), 
 						recall.getString("recall_id")));
@@ -360,7 +361,7 @@ public class DiagnosticsFragment extends Fragment{
 				JSONObject maintenance = maintenancesJSON.getJSONObject(i);
 				
 				maintenances.add(new Maintenance(
-						maintenance.getString("created_at"), 
+						Utils.fixTimezoneZ(maintenance.getString("created_at")), 
 						maintenance.getString("description"), 
 						maintenance.getString("importance"), 
 						maintenance.getString("mileage"), 
