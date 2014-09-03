@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.hockeyapp.android.CrashManager;
-import net.hockeyapp.android.CrashManagerListener;
 import net.hockeyapp.android.FeedbackManager;
 import net.hockeyapp.android.UpdateManager;
 import android.app.ActionBar;
@@ -121,19 +119,26 @@ public class MainActivity extends FragmentActivity {
 
         SimpleAdapter sAdapter = new SimpleAdapter(this, data, R.layout.drawer_list_item,
             from, to){
+        	ViewHolder holder = new ViewHolder();
+        	
         	@Override
         	public View getView(int position, View convertView,	ViewGroup parent) {
-        		View rowView = getLayoutInflater().inflate(R.layout.drawer_list_item, parent, false);
-        		TextView textView = ((TextView)rowView.findViewById(R.id.tvText));
-        		textView.setText(menuItemsArray[position].toString());
+        		
+        		View rowView = convertView;
+        		if(rowView==null){
+        			rowView = getLayoutInflater().inflate(R.layout.drawer_list_item, parent, false);
+        			holder.tvTitle = (TextView) rowView.findViewById(R.id.tvText);
+        			holder.imageIcon = (ImageView) rowView.findViewById(R.id.imageIcon);
+        		}
+        		holder.tvTitle.setText(menuItemsArray[position].toString());
         		
         		if(position==MenuItems.LOGOUT.num-1)
-        			textView.setTextColor(getResources().getColor(R.color.orange));
+        			holder.tvTitle.setTextColor(getResources().getColor(R.color.orange));
         		
         		if(position==MenuItems.AGENT.num-1)
-        			((ImageView)rowView.findViewById(R.id.imageIcon)).setImageResource(R.drawable.ic_external_link);
+        			holder.imageIcon.setImageResource(R.drawable.ic_external_link);
         		else
-        			((ImageView)rowView.findViewById(R.id.imageIcon)).setVisibility(View.GONE);
+        			holder.imageIcon.setVisibility(View.GONE);
         		
         		/*if( ((HashMap<?, ?>)getItem(position)).get("text").equals("Alerts") ){
         			rowView.findViewById(R.id.divider).setVisibility(View.VISIBLE);
@@ -179,6 +184,11 @@ public class MainActivity extends FragmentActivity {
             }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
+    }
+    
+    private class ViewHolder{
+    	public TextView tvTitle;
+    	public ImageView imageIcon;
     }
     
     public void setActionBarTitle(String title){
@@ -351,12 +361,12 @@ public class MainActivity extends FragmentActivity {
 	}
     
 	private void checkForCrashes() {
-		CrashManager.register(this, Constants.HOCKEY_APP_ID, new CrashManagerListener() {
-			@Override
-			public boolean shouldAutoUploadCrashes() {
-				return true;
-			}
-		});
+//		CrashManager.register(this, Constants.HOCKEY_APP_ID, new CrashManagerListener() {
+//			@Override
+//			public boolean shouldAutoUploadCrashes() {
+//				return true;
+//			}
+//		});
 	}
 
 	private void checkForUpdates() {
