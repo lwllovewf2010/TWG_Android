@@ -31,7 +31,7 @@
                 android:text="P10455 - RANDOM MISFIRE DETECTED"
                 android:textAllCaps="true"
                 android:textColor="#697078"
-                android:textSize="10sp"
+                android:textSize="12sp"
                 ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
 
             <com.modusgo.ubi.customviews.TypefacedTextView

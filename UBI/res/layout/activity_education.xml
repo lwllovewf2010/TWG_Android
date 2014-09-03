@@ -30,8 +30,8 @@
                 android:layout_marginRight="24dp"
                 android:layout_marginBottom="22dp"
                 android:textColor="#697078"
-                android:textSize="10sp"
-                ubi:typeface="EncodeSansNormal-500-Medium.ttf" />
+                android:textSize="12sp"
+                ubi:typeface="EncodeSansNormal-300-Light.ttf" />
         </ScrollView>
     </LinearLayout>
     <!-- The navigation drawer -->

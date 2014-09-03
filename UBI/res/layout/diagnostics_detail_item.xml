@@ -15,7 +15,7 @@
         android:text="Description"
         android:textAllCaps="true"
         android:textColor="#143358"
-        android:textSize="10sp"
+        android:textSize="12sp"
         ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
 
     <com.modusgo.ubi.customviews.TypefacedTextView
@@ -27,7 +27,7 @@
         android:layout_marginTop="4dp"
         android:text="Replace Exhaust Gas Recirculation (ECR) Valve and clean all EGR ports"
         android:textColor="#697078"
-        android:textSize="8.5sp"
-        ubi:typeface="EncodeSansNormal-500-Medium.ttf" />
+        android:textSize="11sp"
+        ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
 </LinearLayout>

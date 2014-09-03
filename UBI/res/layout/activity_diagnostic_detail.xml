@@ -47,7 +47,7 @@
                                 android:layout_marginTop="4dp"
                                 android:text="P10455 - RANDOM MISFIRE DETECTED"
                                 android:textColor="#697078"
-                                android:textSize="10sp"
+                                android:textSize="12sp"
                                 ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
 
                             <com.modusgo.ubi.customviews.TypefacedTextView
@@ -71,7 +71,7 @@
                         android:text="Description"
                         android:textAllCaps="true"
                         android:textColor="#143358"
-                        android:textSize="10sp"
+                        android:textSize="12sp"
                         ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
 
                     <com.modusgo.ubi.customviews.TypefacedTextView
@@ -83,8 +83,8 @@
                         android:layout_marginTop="2dp"
                         android:text="Replace Exhaust Gas Recirculation (ECR) Valve and clean all EGR ports"
                         android:textColor="#697078"
-                        android:textSize="8.5sp"
-                        ubi:typeface="EncodeSansNormal-500-Medium.ttf" />
+                        android:textSize="10.5sp"
+                        ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -100,7 +100,7 @@
                             android:text="Labor hours"
                             android:textAllCaps="true"
                             android:textColor="#143358"
-                            android:textSize="10sp"
+                            android:textSize="12sp"
                             ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
 
                         <com.modusgo.ubi.customviews.TypefacedTextView
@@ -129,7 +129,7 @@
                             android:text="Est. Labor cost"
                             android:textAllCaps="true"
                             android:textColor="#143358"
-                            android:textSize="10sp"
+                            android:textSize="12sp"
                             ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
 
                         <com.modusgo.ubi.customviews.TypefacedTextView
@@ -158,7 +158,7 @@
                             android:text="Est.Parts cost"
                             android:textAllCaps="true"
                             android:textColor="#143358"
-                            android:textSize="10sp"
+                            android:textSize="12sp"
                             ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
 
                         <com.modusgo.ubi.customviews.TypefacedTextView
@@ -188,7 +188,7 @@
                             android:text="Est. Total cost"
                             android:textAllCaps="true"
                             android:textColor="#143358"
-                            android:textSize="10sp"
+                            android:textSize="12sp"
                             ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
 
                         <com.modusgo.ubi.customviews.TypefacedTextView
