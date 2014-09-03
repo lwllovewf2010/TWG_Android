@@ -117,6 +117,7 @@ public class AlertsActivity extends MainActivity {
 		
 		SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
 		SimpleDateFormat sdfTo = new SimpleDateFormat("MM/dd/yyyy KK:mm aa z", Locale.getDefault());
+		ViewHolder holder = new ViewHolder();
 		
 		public AlertsAdapter(Context context, int resource, List<Alert> objects) {
 			super(context, resource, objects);
@@ -131,26 +132,32 @@ public class AlertsActivity extends MainActivity {
 		    if (view == null) {
 		    	LayoutInflater lInflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				view = lInflater.inflate(R.layout.alerts_item, parent, false);
+				holder.tvEvent = (TextView) view.findViewById(R.id.tvEvent);
+				holder.tvDate = (TextView) view.findViewById(R.id.tvDate);
+				view.setTag(holder);
+		    }
+		    else{
+		    	holder = (ViewHolder) view.getTag();
 		    }
 
-		    ((TextView)view.findViewById(R.id.tvEvent)).setText(alert.eventTitle);	
+		   holder.tvEvent.setText(alert.eventTitle);	
 		    try {
-				((TextView) view.findViewById(R.id.tvDate)).setText(sdfTo.format(sdfFrom.parse(alert.date)));
+		    	holder.tvDate.setText(sdfTo.format(sdfFrom.parse(alert.date)));
 			} catch (ParseException e) {
-				((TextView) view.findViewById(R.id.tvDate)).setText(alert.date);
+				holder.tvDate.setText(alert.date);
 				e.printStackTrace();
 			}
 		    
-		    switch (alert.type) {
-			case 0:
-				((ImageView)view.findViewById(R.id.imageIcon)).setImageResource(R.drawable.ic_alerts_red);
-				break;
-			case 1:
-				((ImageView)view.findViewById(R.id.imageIcon)).setImageResource(R.drawable.ic_diagnostics_red);
-				break;
-			default:
-				break;
-			}
+//		    switch (alert.type) {
+//			case 0:
+//				((ImageView)view.findViewById(R.id.imageIcon)).setImageResource(R.drawable.ic_alerts_red);
+//				break;
+//			case 1:
+//				((ImageView)view.findViewById(R.id.imageIcon)).setImageResource(R.drawable.ic_diagnostics_red);
+//				break;
+//			default:
+//				break;
+//			}
 		    
 		    view.setOnClickListener(new OnClickListener() {
 				
@@ -166,6 +173,11 @@ public class AlertsActivity extends MainActivity {
 			return view;
 		}
 		
+	}
+	
+	private class ViewHolder{
+		public TextView tvEvent;
+		public TextView tvDate;
 	}
 	
 	class GetAlertsTask extends BaseRequestAsyncTask{
