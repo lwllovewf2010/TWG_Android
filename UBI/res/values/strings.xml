@@ -28,19 +28,17 @@
         <item>3</item>
     </string-array>
 
-    
-
-<string name="harsh_accel">
+    <string name="harsh_accel">
 <![CDATA[ 
-	    <h5>Harsh Acceleration</h5>
-<h6>Pushing the pedal to the metal is not good for your car or safety!</h6>
+	    <h5><font color="#000000">Harsh Acceleration</font></h5>
+<h6><font color="#000000">Pushing the pedal to the metal is not good for your car or safety!</font></h6>
 <p><font color="#000000">Never stomp on the gas pedal when accelerating this can lead to tire spin and possible loss of control.  Accelerating at a smoother rate may get you to your desired speed a little more slowly, but it can save you at the gas pump.<p></font> 
 <p><font color="#000000">Smooth acceleration is also much more important in more powerful cars as there is a greater likelihood of wheel-spin.<p></font>
 	      ]]>
     </string>
     <string name="distracted_driving">
 <![CDATA[ 
-	    <h5>Distracted Driving</h5>
+	    <h5><font color="#000000">Distracted Driving</font></h5>
 <p><font color="#000000"><b>Driver distraction is a leading cause of traffic crashes,</b> responsible for about 80 percent of all collisions, according to the National Highway Traffic Safety Administration. Cell phones are the #1 driver distraction, contributing to thousands of crashes and deaths each year.<p></font> 
 <p><font color="#000000">Talking on cell phones distracts our minds from driving.  Distraction does not simply involve where our eyes and hands are while driving.<p></font>
 <p><font color="#000000">Cell phone conversations can take our minds off the task of driving.  This is called cognitive distraction, and this is why hands-free and handheld phones have a similar crash risk - hands-free devices are not safer! In fact, a University of Utah study found that drivers using a cell phone had a slower reaction time than drivers with a BAC of .08, the legal limit.<p></font>
@@ -48,7 +46,7 @@
     </string>
     <string name="speeding">
 <![CDATA[ 
-	    <h5>Speeding</h5>
+	    <h5><font color="#000000">Speeding</font></h5>
 <p><font color="#000000"><b>Speeding is involved in about one out of three fatal crashes,</b> according to the National Highway Traffic Safety Administration.<p></font> 
 <p><font color="#000000">While injuries and fatalities due to other dangerous behaviors, such as driving while impaired and not wearing seat-belts, have been significantly reduced, <b>speeding is still a challenge.</b><p></font>
 <p><font color="#000000">NHTSA defines a crash as speeding-related if the driver was charged with a speeding-related offense or if an officer indicated that racing, driving too fast for conditions, or exceeding the posted speed limit contributed to the crash.<p></font>
@@ -62,7 +60,7 @@
     </string>
     <string name="harsh_braking">
 <![CDATA[ 
-	    <h5>Harsh Braking / Tailgating</h5>
+	    <h5><font color="#000000">Harsh Braking / Tailgating</font></h5>
 <p><font color="#000000"><b>Are you following other drivers to close?</b> Keeping a safe following distance is an easy way to help limit your harsh braking events.<p></font> 
 <p><font color="#000000">This is an easy behavior to implement but still the most commonly broken rule of defensive driving.<p></font>
 <p><font color="#000000">Even if you follow every other defensive driving technique, you can\'t possibly be a safe driver unless you follow this rule each time you drive. If you keep your distance from other drivers, you will almost always have an escape route, or will be able to take some sort of evasive action with ease.<p></font> 
@@ -141,7 +139,7 @@ across all road types and surroundings.<p></font>
     
     <string name="your_score">
 <![CDATA[ 
-	    <h5>Your Score</h5>
+	    <h5><font color="#000000">Your Score</font></h5>
 <p><font color="#000000">The driver score is a measure of the skill level of the driver across all road types and conditions. It is calculated by comparing several diﬀerent measurements across diﬀerent road types with those of an advanced driver. The driver score is a composite score that takes into account vehicle handling, safety and fuel economy<p></font>
 
 <p><font color="#000000"><b>What does this mean?</b> Drivers who exhibit high levels of anticipation, smoothness, and appropriate pace will receive a high driver score.<p></font>
@@ -150,5 +148,5 @@ across all road types and surroundings.<p></font>
 
 	      ]]>
     </string>
-
+    
 </resources>
