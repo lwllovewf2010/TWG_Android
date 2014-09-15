@@ -6400,10 +6400,10 @@ com.modusgo.ubi.FindMyCarActivity:
 com.modusgo.ubi.FindMyCarActivity$ErrorDialogFragment
 com.modusgo.ubi.MainActivity:
     private static final java.lang.String ATTRIBUTE_NAME_TEXT
-    378:380:public void showFeedbackActivity()
+    386:388:public void showFeedbackActivity()
 com.modusgo.ubi.MainActivity$MenuItems:
-    57:57:public int toInt()
-    61:61:public java.lang.String[] valuesString()
+    59:59:public int toInt()
+    63:63:public java.lang.String[] valuesString()
 com.modusgo.ubi.PieChartFragment:
     public static final java.lang.String SAVED_VISIBILITIES
     public static final java.lang.String SAVED_VALUES
@@ -6907,13 +6907,11 @@ net.hockeyapp.android.Constants:
     public static final java.lang.String SDK_NAME
     public static final java.lang.String SDK_VERSION
     51:51:public Constants()
-net.hockeyapp.android.CrashManager
-net.hockeyapp.android.CrashManager$1
-net.hockeyapp.android.CrashManager$2
-net.hockeyapp.android.CrashManager$3
-net.hockeyapp.android.CrashManager$4
-net.hockeyapp.android.CrashManagerListener
-net.hockeyapp.android.ExceptionHandler
+net.hockeyapp.android.CrashManager:
+    71:71:public CrashManager()
+    89:90:public static void register(android.content.Context,java.lang.String)
+    127:128:public static void initialize(android.content.Context,java.lang.String,net.hockeyapp.android.CrashManagerListener)
+    142:143:public static void initialize(android.content.Context,java.lang.String,java.lang.String,net.hockeyapp.android.CrashManagerListener)
 net.hockeyapp.android.FeedbackActivity
 net.hockeyapp.android.FeedbackActivity$1
 net.hockeyapp.android.FeedbackActivity$2
@@ -6986,8 +6984,8 @@ net.hockeyapp.android.tasks.CheckUpdateTaskWithUI:
     79:81:public void detach()
 net.hockeyapp.android.tasks.ParseFeedbackTask
 net.hockeyapp.android.tasks.SendFeedbackTask
-net.hockeyapp.android.utils.ConnectionManager
-net.hockeyapp.android.utils.ConnectionManager$ConnectionManagerHolder
+net.hockeyapp.android.utils.ConnectionManager$ConnectionManagerHolder:
+    48:48:private ConnectionManager$ConnectionManagerHolder()
 net.hockeyapp.android.utils.DeviceUtils
 net.hockeyapp.android.utils.DeviceUtils$DeviceUtilsHolder
 net.hockeyapp.android.utils.FeedbackParser
