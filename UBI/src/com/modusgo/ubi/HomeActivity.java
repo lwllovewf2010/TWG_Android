@@ -191,6 +191,7 @@ public class HomeActivity extends MainActivity{
 	@Override
 	public void onResume() {
 		setNavigationDrawerItemSelected(MenuItems.HOME);
+		driversAdapter.notifyDataSetChanged();
 		super.onResume();
 	}
 	

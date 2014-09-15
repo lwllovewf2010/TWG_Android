@@ -88,7 +88,12 @@ public class AlertsActivity extends MainActivity {
 		lvAlerts = (ListView)findViewById(R.id.listViewAlerts);
 		lvAlerts.setAdapter(adapter);
 		
+	}
+	
+	@Override
+	protected void onResume() {
 		new GetAlertsTask(this).execute("drivers/"+driver.id+"/alerts.json");
+		super.onResume();
 	}
 	
 	@Override
@@ -99,14 +104,16 @@ public class AlertsActivity extends MainActivity {
 	
 	class Alert{
 		
+		int id;
 		int type;
 		String eventTitle;
 		String date;
 		long tripId;
 		boolean notViewed;
 		
-		public Alert(int type, String eventTitle, String date, boolean viewed, long tripId) {
+		public Alert(int id, int type, String eventTitle, String date, boolean viewed, long tripId) {
 			super();
+			this.id = id;
 			this.type = type;
 			this.eventTitle = eventTitle;
 			this.date = date;
@@ -179,10 +186,11 @@ public class AlertsActivity extends MainActivity {
 				
 				@Override
 				public void onClick(View v) {
+					new MarkAlertViewedTask(AlertsActivity.this, alert.id).execute("drivers/"+driver.id+"/alerts/"+alert.id+"/hide.json");
 					Intent intent = new Intent(AlertsActivity.this, TripActivity.class);
 					intent.putExtra("id", driverIndex);
 					intent.putExtra(TripActivity.EXTRA_TRIP_ID, alert.tripId);
-					startActivity(intent);		
+					startActivity(intent);	
 				}
 			});
 			
@@ -231,12 +239,29 @@ public class AlertsActivity extends MainActivity {
 			alerts.clear();
 			for (int i = 0; i < alertsJSON.length(); i++) {
 				JSONObject alertJSON = alertsJSON.getJSONObject(i);
-				alerts.add(new Alert(0, alertJSON.optString("title"), Utils.fixTimezoneZ(alertJSON.optString("created_at")), alertJSON.optBoolean("show_on_mobile"), alertJSON.optLong("trip_id")));
+				alerts.add(new Alert(alertJSON.optInt("id"), 0, alertJSON.optString("title"), Utils.fixTimezoneZ(alertJSON.optString("created_at")), alertJSON.optBoolean("show_on_mobile"), alertJSON.optLong("trip_id")));
 			}
 			
 			adapter.notifyDataSetChanged();			
 			
 			super.onSuccess(responseJSON);
+		}
+	}
+	
+	class MarkAlertViewedTask extends BaseRequestAsyncTask{
+		
+		int alertId;
+		
+		public MarkAlertViewedTask(Context context, int alertId) {
+			super(context);
+			this.alertId = alertId;
+		}
+
+		@Override
+		protected JSONObject doInBackground(String... params) {
+	        requestParams.add(new BasicNameValuePair("driver_id", ""+driver.id));
+	        requestParams.add(new BasicNameValuePair("alert_id", ""+alertId));
+			return super.doInBackground(params);
 		}
 	}
 	

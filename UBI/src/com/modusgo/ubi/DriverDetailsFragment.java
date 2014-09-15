@@ -134,8 +134,6 @@ OnConnectionFailedListener, LocationListener{
 				((DriverActivity)getActivity()).switchTab(3);
 			}
 		});
-	    
-	    new GetDriverTask(getActivity()).execute("drivers/"+driver.id+".json");
 		
 		return rootView;
 	}
@@ -294,6 +292,7 @@ OnConnectionFailedListener, LocationListener{
     
     @Override
 	public void onResume() {
+	    new GetDriverTask(getActivity()).execute("drivers/"+driver.id+".json");
         super.onResume();
     }
 
