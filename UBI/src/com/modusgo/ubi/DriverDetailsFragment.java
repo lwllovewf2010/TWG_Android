@@ -171,11 +171,16 @@ OnConnectionFailedListener, LocationListener{
 	    	ImageLoader.getInstance().displayImage(driver.imageUrl, imagePhoto, options);
 	    }
 	    
-		String fuelLestString = driver.fuelLeft+"%";
-	    SpannableStringBuilder cs = new SpannableStringBuilder(fuelLestString);
-	    cs.setSpan(new SuperscriptSpan(), fuelLestString.length()-1, fuelLestString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-	    cs.setSpan(new RelativeSizeSpan(0.5f), fuelLestString.length()-1, fuelLestString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-	    tvFuel.setText(cs);
+		if(driver.fuelLeft>=0){
+			String fuelLestString = driver.fuelLeft+"%";
+		    SpannableStringBuilder cs = new SpannableStringBuilder(fuelLestString);
+		    cs.setSpan(new SuperscriptSpan(), fuelLestString.length()-1, fuelLestString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		    cs.setSpan(new RelativeSizeSpan(0.5f), fuelLestString.length()-1, fuelLestString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		    tvFuel.setText(cs);
+		}
+		else{
+			tvFuel.setText("N/A");
+		}
 	    
 	    if(driver.diags<=0){
 	    	tvDiagnostics.setText("");

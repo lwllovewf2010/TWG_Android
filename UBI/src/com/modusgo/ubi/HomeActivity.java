@@ -244,7 +244,7 @@ public class HomeActivity extends MainActivity{
 				d.alerts = driverJSON.getInt("count_alerts");
 				d.diags = driverJSON.getInt("count_diags");
 				d.imageUrl = driverJSON.getString("photo");
-				d.fuelLeft = driverJSON.getInt("fuel_left");
+				d.fuelLeft = driverJSON.optInt("fuel_left",-1);
 				d.address = driverJSON.getJSONObject("location").getString("address");
 				d.latitude = driverJSON.getJSONObject("location").getJSONObject("map").getDouble("latitude");
 				d.longitude = driverJSON.getJSONObject("location").getJSONObject("map").getDouble("longitude");
