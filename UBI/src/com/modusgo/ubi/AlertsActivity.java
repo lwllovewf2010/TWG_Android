@@ -13,6 +13,7 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -102,12 +103,14 @@ public class AlertsActivity extends MainActivity {
 		String eventTitle;
 		String date;
 		long tripId;
+		boolean notViewed;
 		
-		public Alert(int type, String eventTitle, String date, long tripId) {
+		public Alert(int type, String eventTitle, String date, boolean viewed, long tripId) {
 			super();
 			this.type = type;
 			this.eventTitle = eventTitle;
 			this.date = date;
+			this.notViewed = viewed;
 			this.tripId = tripId;
 		}
 		
@@ -117,6 +120,11 @@ public class AlertsActivity extends MainActivity {
 		
 		SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
 		SimpleDateFormat sdfTo = new SimpleDateFormat("MM/dd/yyyy KK:mm aa z", Locale.getDefault());
+		
+		
+		Typeface typefaceBold = Typeface.createFromAsset(getAssets(), "fonts/EncodeSansNormal-600-SemiBold.ttf");
+		Typeface typefaceLight = Typeface.createFromAsset(getAssets(), "fonts/EncodeSansNormal-300-Light.ttf");
+        
 		
 		public AlertsAdapter(Context context, int resource, List<Alert> objects) {
 			super(context, resource, objects);
@@ -141,13 +149,20 @@ public class AlertsActivity extends MainActivity {
 		    	holder = (ViewHolder) view.getTag();
 		    }
 
-		   holder.tvEvent.setText(alert.eventTitle);	
+		    holder.tvEvent.setText(alert.eventTitle);	
 		    try {
 		    	holder.tvDate.setText(sdfTo.format(sdfFrom.parse(alert.date)));
 			} catch (ParseException e) {
 				holder.tvDate.setText(alert.date);
 				e.printStackTrace();
 			}
+		    
+		    if(alert.notViewed){
+		    	holder.tvEvent.setTypeface(typefaceBold);
+		    }
+		    else{
+		    	holder.tvEvent.setTypeface(typefaceLight);    	
+		    }
 		    
 //		    switch (alert.type) {
 //			case 0:
@@ -216,7 +231,7 @@ public class AlertsActivity extends MainActivity {
 			alerts.clear();
 			for (int i = 0; i < alertsJSON.length(); i++) {
 				JSONObject alertJSON = alertsJSON.getJSONObject(i);
-				alerts.add(new Alert(0, alertJSON.getString("title"), Utils.fixTimezoneZ(alertJSON.getString("created_at")), alertJSON.getLong("trip_id")));
+				alerts.add(new Alert(0, alertJSON.optString("title"), Utils.fixTimezoneZ(alertJSON.optString("created_at")), alertJSON.optBoolean("show_on_mobile"), alertJSON.optLong("trip_id")));
 			}
 			
 			adapter.notifyDataSetChanged();			
