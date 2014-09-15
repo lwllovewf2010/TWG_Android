@@ -117,7 +117,6 @@ public class AlertsActivity extends MainActivity {
 		
 		SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
 		SimpleDateFormat sdfTo = new SimpleDateFormat("MM/dd/yyyy KK:mm aa z", Locale.getDefault());
-		ViewHolder holder = new ViewHolder();
 		
 		public AlertsAdapter(Context context, int resource, List<Alert> objects) {
 			super(context, resource, objects);
@@ -127,11 +126,13 @@ public class AlertsActivity extends MainActivity {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			
 			final Alert alert = getItem(position);
+			ViewHolder holder;
 			
 			View view = convertView;
 		    if (view == null) {
 		    	LayoutInflater lInflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				view = lInflater.inflate(R.layout.alerts_item, parent, false);
+				holder = new ViewHolder();
 				holder.tvEvent = (TextView) view.findViewById(R.id.tvEvent);
 				holder.tvDate = (TextView) view.findViewById(R.id.tvDate);
 				view.setTag(holder);
