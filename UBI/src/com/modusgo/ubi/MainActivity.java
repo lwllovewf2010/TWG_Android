@@ -121,16 +121,22 @@ public class MainActivity extends FragmentActivity {
 
         SimpleAdapter sAdapter = new SimpleAdapter(this, data, R.layout.drawer_list_item,
             from, to){
-        	ViewHolder holder = new ViewHolder();
         	
         	@Override
         	public View getView(int position, View convertView,	ViewGroup parent) {
-        		
+
+            	ViewHolder holder;
+            	
         		View rowView = convertView;
         		if(rowView==null){
         			rowView = getLayoutInflater().inflate(R.layout.drawer_list_item, parent, false);
+        			holder = new ViewHolder();
         			holder.tvTitle = (TextView) rowView.findViewById(R.id.tvText);
         			holder.imageIcon = (ImageView) rowView.findViewById(R.id.imageIcon);
+        			rowView.setTag(holder);
+        		}
+        		else{
+        			holder = (ViewHolder) rowView.getTag();
         		}
         		holder.tvTitle.setText(menuItemsArray[position].toString());
         		
