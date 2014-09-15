@@ -232,23 +232,23 @@ public class HomeActivity extends MainActivity{
 				JSONObject driverJSON = driversJSON.getJSONObject(i);
 
 				Driver d = new Driver(driverJSON.getLong("id"),
-						driverJSON.getString("name"),
+						driverJSON.optString("name"),
 						R.drawable.person_placeholder,
-						driverJSON.getString("year") + " "
-								+ driverJSON.getString("make") + " "
-								+ driverJSON.getString("model"), "", "",
-						Utils.fixTimezoneZ(driverJSON.getString("last_trip")),
+						driverJSON.optString("year") + " "
+								+ driverJSON.optString("make") + " "
+								+ driverJSON.optString("model"), "", "",
+						Utils.fixTimezoneZ(driverJSON.optString("last_trip")),
 						0, 0, 
-						driverJSON.getString("grade"));
+						driverJSON.optString("grade"));
 
-				d.alerts = driverJSON.getInt("count_alerts");
-				d.diags = driverJSON.getInt("count_diags");
-				d.imageUrl = driverJSON.getString("photo");
+				d.alerts = driverJSON.optInt("count_alerts");
+				d.diags = driverJSON.optInt("count_diags");
+				d.imageUrl = driverJSON.optString("photo");
 				d.fuelLeft = driverJSON.optInt("fuel_left",-1);
-				d.address = driverJSON.getJSONObject("location").getString("address");
-				d.latitude = driverJSON.getJSONObject("location").getJSONObject("map").getDouble("latitude");
-				d.longitude = driverJSON.getJSONObject("location").getJSONObject("map").getDouble("longitude");
-				d.markerIcon = driverJSON.getString("icon");
+				d.address = driverJSON.getJSONObject("location").optString("address");
+				d.latitude = driverJSON.getJSONObject("location").getJSONObject("map").optDouble("latitude");
+				d.longitude = driverJSON.getJSONObject("location").getJSONObject("map").optDouble("longitude");
+				d.markerIcon = driverJSON.optString("icon");
 
 				dHelper.drivers.add(d);
 			}
