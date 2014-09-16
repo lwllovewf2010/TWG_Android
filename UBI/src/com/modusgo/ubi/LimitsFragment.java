@@ -408,21 +408,21 @@ public class LimitsFragment extends Fragment {
 			ArrayList<LimitsListChild> dailyMileageLimitsChildren = new ArrayList<LimitsListChild>();
 			ArrayList<LimitsListChild> timeOfDayLimitsChildren = new ArrayList<LimitsListChild>();
 			ArrayList<LimitsListChild> geofenceChildren = new ArrayList<LimitsListChild>();
-			maxSpeedLimitsChildren.add(new LimitsSingleValueChild(responseJSON.getInt("max_speed"), "MPH", "Set max to"));
-			dailyMileageLimitsChildren.add(new LimitsSingleValueChild(responseJSON.getInt("daily_mileage"), "MI", "Set max to"));
-			timeOfDayLimitsChildren.add(new LimitsTimePeriodChild(responseJSON.getString("driving_after"), responseJSON.getString("driving_before"), "Between", "and"));
+			maxSpeedLimitsChildren.add(new LimitsSingleValueChild(responseJSON.optInt("max_speed"), "MPH", "Set max to"));
+			dailyMileageLimitsChildren.add(new LimitsSingleValueChild(responseJSON.optInt("daily_mileage"), "MI", "Set max to"));
+			timeOfDayLimitsChildren.add(new LimitsTimePeriodChild(responseJSON.optString("driving_after", "08:00 AM"), responseJSON.optString("driving_before", "09:00 PM"), "Between", "and"));
 			
 			geofenceChildren.add(new LimitsLinkChild(GeofenceActivity.class, "Set geofence"));
 			
 			groups = new ArrayList<LimitsListGroup>();
-			groups.add(new LimitsListGroup("Max speed limit", responseJSON.getBoolean("max_speed_limit"), maxSpeedLimitsChildren));
-			groups.add(new LimitsListGroup("Daily mileage limit", responseJSON.getBoolean("daily_mileage_limit"), dailyMileageLimitsChildren));
-			groups.add(new LimitsListGroup("Harsh event alerts", responseJSON.getBoolean("harsh_way")));
-			groups.add(new LimitsListGroup("Time of day limits", responseJSON.getBoolean("is_driving_between"), timeOfDayLimitsChildren));
-			groups.add(new LimitsListGroup("Geofence", responseJSON.getBoolean("is_geofence"), geofenceChildren));
-			groups.add(new LimitsListGroup("Low fuel", responseJSON.getBoolean("low_fuel")));
-			groups.add(new LimitsListGroup("Distracted Driving Events", responseJSON.getBoolean("safe_driving")));
-			groups.add(new LimitsListGroup("Tow Alerts", responseJSON.has("tow_alerts") ? responseJSON.getBoolean("tow_alerts") : false));
+			groups.add(new LimitsListGroup("Max speed limit", responseJSON.optBoolean("max_speed_limit"), maxSpeedLimitsChildren));
+			groups.add(new LimitsListGroup("Daily mileage limit", responseJSON.optBoolean("daily_mileage_limit"), dailyMileageLimitsChildren));
+			groups.add(new LimitsListGroup("Harsh event alerts", responseJSON.optBoolean("harsh_way")));
+			groups.add(new LimitsListGroup("Time of day limits", responseJSON.optBoolean("is_driving_between"), timeOfDayLimitsChildren));
+			groups.add(new LimitsListGroup("Geofence", responseJSON.optBoolean("is_geofence"), geofenceChildren));
+			groups.add(new LimitsListGroup("Low fuel", responseJSON.optBoolean("low_fuel")));
+			groups.add(new LimitsListGroup("Distracted Driving Events", responseJSON.optBoolean("safe_driving")));
+			groups.add(new LimitsListGroup("Tow Alerts", responseJSON.optBoolean("tow_alerts")));
 			
 			updateLimits();
 			
