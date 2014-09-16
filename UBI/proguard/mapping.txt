@@ -12794,10 +12794,10 @@ com.modusgo.ubi.MapActivity -> com.modusgo.ubi.MapActivity:
     com.google.android.gms.maps.MapView mapView -> p
     com.google.android.gms.maps.GoogleMap map -> q
     35:76:void onCreate(android.os.Bundle) -> onCreate
-    79:114:void addDriversToMap() -> g
-    118:120:void onResume() -> onResume
-    124:126:void onDestroy() -> onDestroy
-    130:132:void onLowMemory() -> onLowMemory
+    79:115:void addDriversToMap() -> g
+    119:121:void onResume() -> onResume
+    125:127:void onDestroy() -> onDestroy
+    131:133:void onLowMemory() -> onLowMemory
     78:78:void access$0(com.modusgo.ubi.MapActivity) -> a
 com.modusgo.ubi.MapActivity$1 -> com.modusgo.ubi.ck:
     com.modusgo.ubi.MapActivity this$0 -> a
@@ -12807,9 +12807,9 @@ com.modusgo.ubi.MapActivity$2 -> com.modusgo.ubi.cl:
     com.google.android.gms.maps.model.LatLng val$location -> b
     java.lang.String val$address -> c
     95:95:void onLoadingStarted(java.lang.String,android.view.View) -> a
-    99:99:void onLoadingFailed(java.lang.String,android.view.View,com.nostra13.universalimageloader.core.assist.FailReason) -> a
-    103:104:void onLoadingComplete(java.lang.String,android.view.View,android.graphics.Bitmap) -> a
-    108:108:void onLoadingCancelled(java.lang.String,android.view.View) -> b
+    99:100:void onLoadingFailed(java.lang.String,android.view.View,com.nostra13.universalimageloader.core.assist.FailReason) -> a
+    104:105:void onLoadingComplete(java.lang.String,android.view.View,android.graphics.Bitmap) -> a
+    109:109:void onLoadingCancelled(java.lang.String,android.view.View) -> b
 com.modusgo.ubi.PieChartFragment -> com.modusgo.ubi.cm:
     java.lang.String LOG_TAG -> P
     float[] chartValues -> Q
