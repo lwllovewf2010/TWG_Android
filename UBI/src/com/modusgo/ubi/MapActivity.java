@@ -96,6 +96,7 @@ public class MapActivity extends MainActivity {
 				
 				@Override
 				public void onLoadingFailed(String arg0, View arg1, FailReason arg2) {
+					map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_car)).title(address));
 				}
 				
 				@Override
