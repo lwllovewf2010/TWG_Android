@@ -22,7 +22,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
-public class MapActivity extends MainActivity {
+public class DriversLocationsActivity extends MainActivity {
 
 	ArrayList<Driver> drivers;
 	DriversHelper dHelper;

@@ -148,7 +148,7 @@
         </activity>
         
         <activity
-            android:name="com.modusgo.ubi.MapActivity"
+            android:name="com.modusgo.ubi.DriversLocationsActivity"
         	android:parentActivityName="com.modusgo.ubi.HomeActivity" >
 	        <meta-data
 	            android:name="android.support.PARENT_ACTIVITY"

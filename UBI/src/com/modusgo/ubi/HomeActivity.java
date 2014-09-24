@@ -74,7 +74,7 @@ public class HomeActivity extends MainActivity{
 	
 	@Override
 	public void up() {
-		startActivity(new Intent(this, MapActivity.class));
+		startActivity(new Intent(this, DriversLocationsActivity.class));
 	}
 	
 	class DriversAdapter extends BaseAdapter{
