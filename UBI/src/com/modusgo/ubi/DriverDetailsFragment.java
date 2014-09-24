@@ -269,7 +269,13 @@ OnConnectionFailedListener, LocationListener{
 		btnDistanceToCar.setEnabled(true);
 		
 		Location.distanceBetween(driver.latitude, driver.longitude, location.getLatitude(), location.getLongitude(), distanceToCar);
-		tvDistanceToCar.setText(dsitanceFormat.format(Utils.metersToMiles(distanceToCar[0])));
+		float distance = Utils.metersToMiles(distanceToCar[0]);
+		if(distance>=10000)
+			tvDistanceToCar.setText(">9999");
+		else if(distance>1000)
+			tvDistanceToCar.setText(""+Math.round(distance));
+		else
+			tvDistanceToCar.setText(dsitanceFormat.format(distance));
 
         if (mLocationClient != null) {
             mLocationClient.disconnect();

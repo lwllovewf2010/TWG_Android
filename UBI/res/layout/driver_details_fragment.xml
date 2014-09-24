@@ -37,14 +37,16 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="9dp"
                     android:orientation="horizontal"
-                    android:paddingLeft="25dp"
-                    android:paddingRight="12dp" >
+                    android:paddingLeft="17dp"
+                    android:paddingRight="17dp" >
 
                     <RelativeLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
                         android:layout_weight="1"
-                        android:background="@color/btn_transparent_orange_light"
+                        android:background="@color/btn_border_orange_light"
                         android:clickable="true" >
 
                         <com.modusgo.ubi.customviews.TypefacedTextView
@@ -70,11 +72,19 @@
                             android:textSize="10sp"
                             ubi:typeface="EncodeSansNormal-300-Light.ttf" />
                     </RelativeLayout>
+                    
+                    <Space 
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight=".1"/>
 
                     <RelativeLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1" >
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:layout_weight="1"
+                        android:background="@color/btn_border_orange_light" >
 
                         <com.modusgo.ubi.customviews.TypefacedTextView
                             android:id="@+id/tvFuel"
@@ -99,12 +109,19 @@
                             android:textSize="10sp"
                             ubi:typeface="EncodeSansNormal-300-Light.ttf" />
                     </RelativeLayout>
+                    
+                    <Space 
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight=".1"/>
 
                     <RelativeLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
                         android:layout_weight="1"
-                        android:background="@color/btn_transparent_orange_light"
+                        android:background="@color/btn_border_orange_light"
                         android:clickable="true" >
 
                         <com.modusgo.ubi.customviews.TypefacedTextView
@@ -130,12 +147,19 @@
                             android:textSize="10sp"
                             ubi:typeface="EncodeSansNormal-300-Light.ttf" />
                     </RelativeLayout>
+                    
+                    <Space 
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight=".1"/>
 
                     <RelativeLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
                         android:layout_weight="1"
-                        android:background="@color/btn_transparent_orange_light"
+                        android:background="@color/btn_border_orange_light"
                         android:clickable="true" >
 
                         <com.modusgo.ubi.customviews.TypefacedTextView
@@ -169,8 +193,8 @@
                     android:layout_height="wrap_content"
                     android:paddingTop="3dp"
                     android:paddingBottom="3dp"
-                    android:paddingLeft="25dp"
-                    android:paddingRight="12dp"
+                    android:paddingLeft="17dp"
+                    android:paddingRight="17dp"
                     android:background="@color/btn_transparent_orange_light" >
 
                     <com.modusgo.ubi.customviews.TypefacedTextView
@@ -206,8 +230,8 @@
                     android:layout_height="wrap_content"
                     android:paddingTop="3dp"
                     android:paddingBottom="3dp"
-                    android:paddingLeft="25dp"
-                    android:paddingRight="12dp"
+                    android:paddingLeft="17dp"
+                    android:paddingRight="17dp"
                     android:background="@color/btn_transparent_orange_light" >
 
                     <com.modusgo.ubi.customviews.TypefacedTextView
