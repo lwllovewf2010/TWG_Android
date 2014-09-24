@@ -1899,6 +1899,8 @@ com.modusgo.ubi.DiagnosticDetailActivity
 com.modusgo.ubi.DiagnosticDetailActivity: DiagnosticDetailActivity()
 com.modusgo.ubi.DriverActivity
 com.modusgo.ubi.DriverActivity: DriverActivity()
+com.modusgo.ubi.DriversLocationsActivity
+com.modusgo.ubi.DriversLocationsActivity: DriversLocationsActivity()
 com.modusgo.ubi.EducationActivity
 com.modusgo.ubi.EducationActivity: EducationActivity()
 com.modusgo.ubi.FindMechanicActivity
@@ -2156,6 +2158,7 @@ com.modusgo.ubi.R$color: int abc_search_url_text_pressed
 com.modusgo.ubi.R$color: int abc_search_url_text_selected
 com.modusgo.ubi.R$color: int appBg
 com.modusgo.ubi.R$color: int blue
+com.modusgo.ubi.R$color: int btn_border_orange_light
 com.modusgo.ubi.R$color: int btn_green
 com.modusgo.ubi.R$color: int btn_orange
 com.modusgo.ubi.R$color: int btn_orange_light
@@ -2496,6 +2499,8 @@ com.modusgo.ubi.R$drawable: int progress_blue
 com.modusgo.ubi.R$drawable: int progress_star_rating
 com.modusgo.ubi.R$drawable: int radio_tab_bg_selector
 com.modusgo.ubi.R$drawable: int radio_tab_text_selector
+com.modusgo.ubi.R$drawable: int rectangle_orange_with_border
+com.modusgo.ubi.R$drawable: int rectangle_with_border
 com.modusgo.ubi.R$drawable: int red_rounded_rectangle_radius_10
 com.modusgo.ubi.R$drawable: int red_rounded_rectangle_radius_8
 com.modusgo.ubi.R$drawable: int route
@@ -2629,6 +2634,7 @@ com.modusgo.ubi.R$id: int llInfoList
 com.modusgo.ubi.R$id: int llList
 com.modusgo.ubi.R$id: int llMainInfo
 com.modusgo.ubi.R$id: int llProgress
+com.modusgo.ubi.R$id: int llTime
 com.modusgo.ubi.R$id: int llValue
 com.modusgo.ubi.R$id: int loginFields
 com.modusgo.ubi.R$id: int loginProgress
@@ -2661,6 +2667,8 @@ com.modusgo.ubi.R$id: int radioGroupPieCharts
 com.modusgo.ubi.R$id: int ratingBar
 com.modusgo.ubi.R$id: int realtabcontent
 com.modusgo.ubi.R$id: int right
+com.modusgo.ubi.R$id: int rlDate
+com.modusgo.ubi.R$id: int rlLocation
 com.modusgo.ubi.R$id: int root_layout
 com.modusgo.ubi.R$id: int sandbox
 com.modusgo.ubi.R$id: int satellite
@@ -2708,6 +2716,7 @@ com.modusgo.ubi.R$id: int tvCode
 com.modusgo.ubi.R$id: int tvContent
 com.modusgo.ubi.R$id: int tvCounter
 com.modusgo.ubi.R$id: int tvDate
+com.modusgo.ubi.R$id: int tvDateLabel
 com.modusgo.ubi.R$id: int tvDescription
 com.modusgo.ubi.R$id: int tvDiagnosticsCount
 com.modusgo.ubi.R$id: int tvDistance
@@ -2729,6 +2738,7 @@ com.modusgo.ubi.R$id: int tvLastCheckup
 com.modusgo.ubi.R$id: int tvLastName
 com.modusgo.ubi.R$id: int tvLoading
 com.modusgo.ubi.R$id: int tvLocation
+com.modusgo.ubi.R$id: int tvLocationLabel
 com.modusgo.ubi.R$id: int tvMaxSpeed
 com.modusgo.ubi.R$id: int tvName
 com.modusgo.ubi.R$id: int tvParameter
