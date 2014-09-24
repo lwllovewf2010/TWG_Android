@@ -134,6 +134,15 @@ OnConnectionFailedListener, LocationListener{
 				((DriverActivity)getActivity()).switchTab(3);
 			}
 		});
+	    
+	    rootView.findViewById(R.id.rlLocation).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(getActivity(), MapActivity.class);
+				intent.putExtra("id", driverIndex);
+				startActivity(intent);	
+			}
+		});
 		
 		return rootView;
 	}

@@ -30,22 +30,22 @@
                 android:layout_marginTop="56dp"
                 android:background="#e6FFFFFF"
                 android:orientation="vertical"
-                android:paddingLeft="25dp"
-                android:paddingRight="12dp"
                 android:paddingTop="60dp" >
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="9dp"
                     android:orientation="horizontal"
-                    android:layout_marginBottom="12dp" >
+                    android:paddingLeft="25dp"
+                    android:paddingRight="12dp" >
 
                     <RelativeLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:clickable="true"
-                        android:background="@color/btn_transparent_orange_light" >
+                        android:background="@color/btn_transparent_orange_light"
+                        android:clickable="true" >
 
                         <com.modusgo.ubi.customviews.TypefacedTextView
                             android:id="@+id/tvDistanceToCar"
@@ -70,7 +70,7 @@
                             android:textSize="10sp"
                             ubi:typeface="EncodeSansNormal-300-Light.ttf" />
                     </RelativeLayout>
-                    
+
                     <RelativeLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -99,13 +99,13 @@
                             android:textSize="10sp"
                             ubi:typeface="EncodeSansNormal-300-Light.ttf" />
                     </RelativeLayout>
-                    
+
                     <RelativeLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:clickable="true"
-                        android:background="@color/btn_transparent_orange_light" >
+                        android:background="@color/btn_transparent_orange_light"
+                        android:clickable="true" >
 
                         <com.modusgo.ubi.customviews.TypefacedTextView
                             android:id="@+id/tvDiagnosticsCount"
@@ -130,13 +130,13 @@
                             android:textSize="10sp"
                             ubi:typeface="EncodeSansNormal-300-Light.ttf" />
                     </RelativeLayout>
-                    
+
                     <RelativeLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:clickable="true"
-                        android:background="@color/btn_transparent_orange_light" >
+                        android:background="@color/btn_transparent_orange_light"
+                        android:clickable="true" >
 
                         <com.modusgo.ubi.customviews.TypefacedTextView
                             android:id="@+id/tvAlertsCount"
@@ -163,40 +163,72 @@
                     </RelativeLayout>
                 </LinearLayout>
 
-                <com.modusgo.ubi.customviews.TypefacedTextView
+                <RelativeLayout
+                    android:id="@+id/rlLocation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="CURRENT LOCATION"
-                    android:textColor="#3c454f"
-                    android:textSize="10sp"
-                    ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:paddingLeft="25dp"
+                    android:paddingRight="12dp"
+                    android:background="@color/btn_transparent_orange_light" >
 
-                <com.modusgo.ubi.customviews.TypefacedTextView
-                    android:id="@+id/tvLocation"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="301-383 Lake Street, Huntington Beach, CA"
-                    android:textColor="#697078"
-                    android:textSize="12.5sp"
-                    ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+                    <com.modusgo.ubi.customviews.TypefacedTextView
+                        android:id="@+id/tvLocationLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="CURRENT LOCATION"
+                        android:textColor="#3c454f"
+                        android:textSize="10sp"
+                        ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
 
-                <com.modusgo.ubi.customviews.TypefacedTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:text="LAST TRIP"
-                    android:textColor="#3c454f"
-                    android:textSize="10sp"
-                    ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
+                    <com.modusgo.ubi.customviews.TypefacedTextView
+                        android:id="@+id/tvLocation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tvLocationLabel"
+                        android:text="301-383 Lake Street, Huntington Beach, CA"
+                        android:textColor="#697078"
+                        android:textSize="12.5sp"
+                        ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
-                <com.modusgo.ubi.customviews.TypefacedTextView
-                    android:id="@+id/tvDate"
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/arrow_small_right" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rlDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="07/05/2014 05:00 PM PST"
-                    android:textColor="#697078"
-                    android:textSize="12.5sp"
-                    ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:paddingLeft="25dp"
+                    android:paddingRight="12dp"
+                    android:background="@color/btn_transparent_orange_light" >
+
+                    <com.modusgo.ubi.customviews.TypefacedTextView
+                        android:id="@+id/tvDateLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="LAST TRIP"
+                        android:textColor="#3c454f"
+                        android:textSize="10sp"
+                        ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
+
+                    <com.modusgo.ubi.customviews.TypefacedTextView
+                        android:id="@+id/tvDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tvDateLabel"
+                        android:text="07/05/2014 05:00 PM PST"
+                        android:textColor="#697078"
+                        android:textSize="12.5sp"
+                        ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+                </RelativeLayout>
             </LinearLayout>
 
             <ImageView
