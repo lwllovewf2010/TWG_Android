@@ -61,6 +61,7 @@ OnConnectionFailedListener, LocationListener{
 	TextView tvAlerts;
 	
 	View btnDistanceToCar;
+	View rlLastTrip;
 
     private GoogleMap mMap;
     
@@ -102,10 +103,13 @@ OnConnectionFailedListener, LocationListener{
 	    tvFuel = (TextView)rootView.findViewById(R.id.tvFuel);
 	    tvDiagnostics = (TextView)rootView.findViewById(R.id.tvDiagnosticsCount);
 	    tvAlerts = (TextView)rootView.findViewById(R.id.tvAlertsCount);
+	    btnDistanceToCar = (View)tvDistanceToCar.getParent();
+	    rlLastTrip = rootView.findViewById(R.id.rlDate);
 	    
 	    updateFragment();
+
+	    rlLastTrip.findViewById(R.id.imageArrow).setVisibility(View.GONE);
 	    
-	    btnDistanceToCar = (View)tvDistanceToCar.getParent();
 	    btnDistanceToCar.setEnabled(false);
 	    btnDistanceToCar.setOnClickListener(new OnClickListener() {
 			
@@ -207,6 +211,20 @@ OnConnectionFailedListener, LocationListener{
 	    		tvAlerts.setText(""+driver.alerts);
 	    	tvAlerts.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_alerts_red_medium, 0, 0, 0);		    	
 	    }
+	    
+	    if(driver.lastTripId!=-1){
+	    	rlLastTrip.findViewById(R.id.imageArrow).setVisibility(View.VISIBLE);
+		    rlLastTrip.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent(getActivity(), TripActivity.class);
+					intent.putExtra("id", driverIndex);
+					intent.putExtra(TripActivity.EXTRA_TRIP_ID, driver.lastTripId);
+					startActivity(intent);
+				}
+			});
+	    }
+	    
         setUpMapIfNeeded();
 	}
 	
@@ -347,6 +365,7 @@ OnConnectionFailedListener, LocationListener{
 			driver.vehicle = responseJSON.optString("year")+" "+responseJSON.optString("make")+" "+responseJSON.optString("model");
 			driver.VIN = responseJSON.optString("vin");
 			driver.lastTripDate = Utils.fixTimezoneZ(responseJSON.optString("last_trip"));
+			driver.lastTripId = responseJSON.optLong("last_trip_id",-1);
 			driver.profileDate = Utils.fixTimezoneZ(responseJSON.optString("profile_date"));
 			driver.alerts = responseJSON.optInt("count_alerts");
 			driver.diags = responseJSON.optInt("count_diags");

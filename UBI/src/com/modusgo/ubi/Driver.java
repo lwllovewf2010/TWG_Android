@@ -18,6 +18,7 @@ public class Driver implements Serializable{
 	public String grade;
 	public String phone;
 	public String email;
+	public long lastTripId;
 	public int diags;
 	public int alerts;
 	public int tripsCount;
