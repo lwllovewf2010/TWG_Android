@@ -60,15 +60,15 @@
                     android:layout_height="wrap_content"
                     android:background="#FFF"
                     android:gravity="left|center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingBottom="18dp"
-                    android:paddingTop="11dp" >
+                    android:orientation="horizontal" >
 
                     <com.modusgo.ubi.customviews.TypefacedTextView
                         android:id="@+id/tvDate"
                         android:layout_width="60dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
+                        android:paddingBottom="18dp"
+                        android:paddingTop="11dp"
                         android:text="07/01/2014"
                         android:textColor="#3C454F"
                         android:textSize="10sp"
@@ -79,43 +79,55 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1" />
 
-                    <ImageView
+                    <LinearLayout
+                        android:id="@+id/llTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_trip_start_small" />
+                        android:gravity="left|center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingLeft="15dp"
+                        android:paddingBottom="18dp"
+                        android:paddingTop="11dp"
+                        android:background="@color/btn_transparent_orange_light" >
 
-                    <com.modusgo.ubi.customviews.TypefacedTextView
-                        android:id="@+id/tvStartTime"
-                        android:layout_width="60dp"
-                        android:layout_height="wrap_content"
-                        android:gravity="right"
-                        android:text="05:00 PM"
-                        android:textColor="#697078"
-                        android:textSize="12.5sp"
-                        ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_trip_start_small" />
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="7dp"
-                        android:src="@drawable/arrow_dashed" />
+                        <com.modusgo.ubi.customviews.TypefacedTextView
+                            android:id="@+id/tvStartTime"
+                            android:layout_width="60dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="right"
+                            android:text="05:00 PM"
+                            android:textColor="#697078"
+                            android:textSize="12.5sp"
+                            ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="4dp"
-                        android:src="@drawable/ic_trip_stop_small" />
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="7dp"
+                            android:src="@drawable/arrow_dashed" />
 
-                    <com.modusgo.ubi.customviews.TypefacedTextView
-                        android:id="@+id/tvEndTime"
-                        android:layout_width="60dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="17dp"
-                        android:text="05:00 PM"
-                        android:textColor="#697078"
-                        android:textSize="12.5sp"
-                        ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="4dp"
+                            android:src="@drawable/ic_trip_stop_small" />
+
+                        <com.modusgo.ubi.customviews.TypefacedTextView
+                            android:id="@+id/tvEndTime"
+                            android:layout_width="60dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="17dp"
+                            android:text="05:00 PM"
+                            android:textColor="#697078"
+                            android:textSize="12.5sp"
+                            ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+                    </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout

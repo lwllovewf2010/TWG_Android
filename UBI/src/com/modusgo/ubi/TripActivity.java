@@ -60,10 +60,13 @@ public class TripActivity extends MainActivity {
     TextView tvAvgSpeed;
     TextView tvMaxSpeed;
     TextView tvDistance;
+    LinearLayout llTime;
     LinearLayout llContent;
     LinearLayout llEventsList;
     LinearLayout llProgress;
     ScrollView scrollView;
+    
+    CameraUpdate tripCenterCameraUpdate;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -110,10 +113,19 @@ public class TripActivity extends MainActivity {
 		tvAvgSpeed = (TextView) findViewById(R.id.tvAvgSpeed);
 		tvMaxSpeed = (TextView) findViewById(R.id.tvMaxSpeed);
 		tvDistance = (TextView) findViewById(R.id.tvDistance);
+		llTime = (LinearLayout)findViewById(R.id.llTime);
 		llContent = (LinearLayout)findViewById(R.id.llContent);
 		llEventsList = (LinearLayout)findViewById(R.id.llEventsList);
 		llProgress = (LinearLayout)findViewById(R.id.llProgress);
-		scrollView = (ScrollView)findViewById(R.id.scrollView);		
+		scrollView = (ScrollView)findViewById(R.id.scrollView);
+		
+		llTime.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(map!=null && tripCenterCameraUpdate!=null)
+					map.animateCamera(tripCenterCameraUpdate);
+			}
+		});
 		
 		// Gets the MapView from the XML layout and creates it
         mapView = (MapView) findViewById(R.id.mapview);
@@ -165,8 +177,8 @@ public class TripActivity extends MainActivity {
 			map.addPolyline(optionsSpeeding.color(colorSpeeding).width(8).zIndex(2));
 		}
 		
-		CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(builder.build(), 150);
-        map.animateCamera(cameraUpdate);
+		tripCenterCameraUpdate = CameraUpdateFactory.newLatLngBounds(builder.build(), 150);
+        map.animateCamera(tripCenterCameraUpdate);
         
         for (Point p : trip.points) {
         	for (EventType e : p.events) {
