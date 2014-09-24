@@ -232,6 +232,8 @@ OnConnectionFailedListener, LocationListener{
     		final float density = getResources().getDisplayMetrics().density;			
 			mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(driver.latitude-0.016f/density, driver.longitude), 14.0f));
     	}
+    	
+    	mMap.getUiSettings().setZoomControlsEnabled(false);
     }
     
     /**** The mapfragment's id must be removed from the FragmentManager
