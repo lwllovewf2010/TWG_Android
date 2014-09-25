@@ -106,6 +106,18 @@ public class ScoreFragment extends Fragment{
 			}
 		});
 		
+		rootView.findViewById(R.id.btnScorePieChart).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(getActivity(), ScorePieChartActivity.class);
+				i.putExtra(ScorePieChartActivity.SAVED_PIE_CHART_ROAD_SETTINGS, pieChartsData[0]);
+				i.putExtra(ScorePieChartActivity.SAVED_PIE_CHART_ROAD_TYPE, pieChartsData[1]);
+				i.putExtra(ScorePieChartActivity.SAVED_PIE_CHART_TIME_OF_DAY, pieChartsData[2]);
+				startActivity(i);
+				getActivity().overridePendingTransition(R.anim.flip_in,R.anim.flip_out);
+			}
+		});
+		
         new GetScoreTask(getActivity()).execute("drivers/"+driver.id+"/score.json");
         
 		return rootView;
