@@ -12,161 +12,125 @@
         android:layout_height="wrap_content"
         layout="@layout/driver_header" />
 
-    <ScrollView
+    <LinearLayout
+        android:id="@+id/llProgress"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true" >
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/btn_transparent_orange_light"
+        android:gravity="center"
+        android:orientation="vertical" >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="horizontal" >
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="50sp"
-                android:background="@color/btn_transparent_orange_light"
-                android:gravity="center"
-                android:orientation="vertical" >
-
-                <com.modusgo.ubi.customviews.TypefacedTextView
-                    android:id="@+id/tvScore"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Loading..."
-                    android:textColor="@color/pie_orange"
-                    android:textSize="25sp"
-                    ubi:typeface="arialbd.ttf" />
-            </LinearLayout>
-
-            <com.modusgo.ubi.customviews.ExpandablePanel
-                android:id="@+id/foo"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                ubi:animationDuration="500"
-                ubi:collapsedHeight="0dp"
-                ubi:content="@+id/llValue"
-                ubi:handle="@+id/btnExpand"
-                ubi:handleTextClosed="VIEW MORE INFORMATION"
-                ubi:handleTextOpened="VIEW LESS INFORMATION"
-                ubi:handleTitleView="@+id/tvExpanderTitle"
-                ubi:indicatorDrawableClosed="@drawable/score_expand_panel_plus"
-                ubi:indicatorDrawableOpened="@drawable/score_expand_panel_minus"
-                ubi:indicatorImageView="@+id/imageExpandIndicator" >
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical" >
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:clickable="true" >
-
-                        <Button
-                            android:id="@id/btnExpand"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@color/btn_orange_light" />
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_alignParentTop="true"
-                            android:background="@color/light_orange_2" />
-
-                        <com.modusgo.ubi.customviews.TypefacedTextView
-                            android:id="@+id/tvExpanderTitle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_centerVertical="true"
-                            android:layout_marginLeft="22dp"
-                            android:text="VIEW MORE INFORMATION"
-                            android:textColor="#143358"
-                            android:textSize="10sp"
-                            ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_alignParentBottom="true"
-                            android:background="@color/light_orange_2" />
-
-                        <ImageView
-                            android:id="@+id/imageExpandIndicator"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_centerVertical="true"
-                            android:layout_marginRight="15dp"
-                            android:src="@drawable/score_expand_panel_plus" />
-                    </RelativeLayout>
-
-                    <LinearLayout
-                        android:id="@id/llValue"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:paddingBottom="8dp"
-                        android:paddingTop="4dp" >
-                    </LinearLayout>
-                </LinearLayout>
-            </com.modusgo.ubi.customviews.ExpandablePanel>
-
-            <com.modusgo.ubi.customviews.ExpandableHeightGridView
-                android:id="@+id/gvPercentData"
+            <com.modusgo.ubi.customviews.TypefacedTextView
+                android:id="@+id/tvScore"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:layout_marginLeft="22.5dp"
-                android:layout_marginRight="22.5dp"
-                android:layout_marginTop="15dp"
-                android:gravity="center"
-                android:horizontalSpacing="17.5dp"
-                android:isScrollContainer="false"
-                android:listSelector="@color/btn_transparent_orange_light"
-                android:stretchMode="columnWidth" >
-            </com.modusgo.ubi.customviews.ExpandableHeightGridView>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#b8bcc1" />
-
-            <RadioGroup
-                android:id="@+id/radioGroupPieCharts"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-            </RadioGroup>
-
-            <FrameLayout
-                android:id="@+id/pieChartsContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-            </FrameLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#b8bcc1" />
-
-            <RadioGroup
-                android:id="@+id/radioGroupCircles"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-            </RadioGroup>
-
-            <FrameLayout
-                android:id="@+id/circlesContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-            </FrameLayout>
+                android:text="C"
+                android:textColor="@color/pie_orange"
+                android:textSize="25sp"
+                ubi:typeface="arialbd.ttf" />
         </LinearLayout>
-    </ScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="3.2" >
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" >
+
+                <ImageButton
+                    android:id="@+id/btnScoreInfo"
+                    android:layout_width="81dp"
+                    android:layout_height="59dp"
+                    android:layout_centerHorizontal="true"
+                    android:background="@color/btn_border_orange_light"
+                    android:src="@drawable/ic_score_info" />
+
+                <com.modusgo.ubi.customviews.TypefacedTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/btnScoreInfo"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="3dp"
+                    android:text="Score Stats"
+                    android:textColor="#697078"
+                    android:textSize="11sp"
+                    ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" >
+
+                <ImageButton
+                    android:id="@+id/btnScoreCircles"
+                    android:layout_width="81dp"
+                    android:layout_height="59dp"
+                    android:layout_centerHorizontal="true"
+                    android:background="@color/btn_border_orange_light"
+                    android:src="@drawable/ic_score_circles" />
+
+                <com.modusgo.ubi.customviews.TypefacedTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/btnScoreCircles"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="3dp"
+                    android:text="Dot Matrix"
+                    android:textColor="#697078"
+                    android:textSize="11sp"
+                    ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" >
+
+                <ImageButton
+                    android:id="@+id/btnScorePieChart"
+                    android:layout_width="81dp"
+                    android:layout_height="59dp"
+                    android:layout_centerHorizontal="true"
+                    android:background="@color/btn_border_orange_light"
+                    android:src="@drawable/ic_score_piechart" />
+
+                <com.modusgo.ubi.customviews.TypefacedTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/btnScorePieChart"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="3dp"
+                    android:text="Time/Road Charts"
+                    android:textColor="#697078"
+                    android:textSize="11sp"
+                    ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+            </RelativeLayout>
+        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>
