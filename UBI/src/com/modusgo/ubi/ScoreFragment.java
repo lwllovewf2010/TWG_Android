@@ -176,7 +176,7 @@ public class ScoreFragment extends Fragment{
 			
 			additionalData = new String[]{
 					Utils.convertTime(driver.lastTripDate, sdf), 
-					"1GXEK4538960L23", 
+					driver.VIN, 
 					Utils.convertTime(json.getString("created"), sdf), 
 					Utils.convertTime(json.getString("startdate"), sdf), 
 					df.format(json.getDouble("summary_distance"))+" Miles", 
