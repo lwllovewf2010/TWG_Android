@@ -2,14 +2,19 @@ package com.modusgo.ubi;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Locale;
 
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -20,11 +25,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.echo.holographlibrary.Bar;
+import com.echo.holographlibrary.BarGraph;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class ScoreFragment extends Fragment{
+	
+	private final String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 	
 	Driver driver;
 	DriversHelper dHelper;
@@ -33,11 +42,17 @@ public class ScoreFragment extends Fragment{
 	View llProgress;
 	View llContent;
 	TextView tvScore;
+	TextView tvThisMonthMessage;
+	TextView tvLastMonthMessage;
+	ImageView imageLastMonthArrow;
+	BarGraph graph;
 	
 	String[] additionalData;
 	int[] percentageData;
 	float[][] pieChartsData;
 	Bundle circlesData;
+	
+	MonthStats[] yearStats;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -84,7 +99,11 @@ public class ScoreFragment extends Fragment{
 		
 		llProgress = rootView.findViewById(R.id.llProgress);
 		llContent = rootView.findViewById(R.id.llContent);
-		tvScore = (TextView)rootView.findViewById(R.id.tvScore);
+		tvScore = (TextView) rootView.findViewById(R.id.tvScore);
+		tvThisMonthMessage = (TextView) rootView.findViewById(R.id.tvThisMonthMessage);
+		tvLastMonthMessage = (TextView) rootView.findViewById(R.id.tvLastMonthMessage);
+		imageLastMonthArrow = (ImageView) rootView.findViewById(R.id.imageLastMonthArrow);
+		graph = (BarGraph) rootView.findViewById(R.id.graph);
 		
 		((View)tvScore.getParent()).setOnClickListener(new OnClickListener() {
 			@Override
@@ -133,10 +152,161 @@ public class ScoreFragment extends Fragment{
 		return rootView;
 	}
 	
+	private void updateGraph(){
+		ArrayList<Bar> points = new ArrayList<Bar>();
+//		for (int i = 0; i < 12; i++) {
+//			
+//			Bar d = new Bar();
+//			if(i%2==0){
+//				d.setColor(Color.parseColor("#99CC00"));
+//				d.setValueColor(Color.parseColor("#99CC00"));
+//			}
+//			else{
+//				d.setColor(Color.parseColor("#FFBB33"));
+//				d.setValueColor(Color.parseColor("#FFBB33"));
+//			}
+//			
+//			d.setName("Jan");
+//			d.setValuePrefix("s");
+//			d.setLabelColor(Color.parseColor("#697078"));
+//			d.setValueString("C+");
+//			d.setValue(10+10*i);
+//			points.add(d);
+//		}
+		
+		
+		int startIndex = -1;
+		int maxValue = 1;
+		for (int i = 0; i < 12; i++) {
+			if(yearStats[i].score!=0 && !yearStats[i].grade.equals("")){
+				if(startIndex==-1)
+					startIndex = i;
+				if(maxValue<yearStats[i].score)
+					maxValue = yearStats[i].score;
+			}
+		}
+		if(startIndex==-1)
+			startIndex = 0;
+		
+		for (int i = startIndex; i < startIndex+12; i++) {
+			String month;
+			if(i>=12)
+				month = months[i-12];
+			else
+				month = months[i];
+			
+			Bar b = new Bar();
+			if(i<yearStats.length && yearStats[i].score!=0 && !yearStats[i].grade.equals("")){
+				String grade = yearStats[i].grade;
+				b.setName(month);
+				b.setValue(yearStats[i].score);
+				b.setValueString(grade);
+				
+				if(grade.contains("A") || grade.contains("B")){
+					b.setColor(getActivity().getResources().getColor(R.color.ubi_green));
+					b.setValueColor(getActivity().getResources().getColor(R.color.ubi_green));						
+				}
+				else if(grade.contains("C")){
+					b.setColor(getActivity().getResources().getColor(R.color.ubi_orange));
+					b.setValueColor(getActivity().getResources().getColor(R.color.ubi_orange));
+				}
+				else if(grade.contains("D") || grade.contains("E") || grade.contains("F")){
+					b.setColor(getActivity().getResources().getColor(R.color.ubi_red));
+					b.setValueColor(getActivity().getResources().getColor(R.color.ubi_red));
+				}
+				else{
+					b.setColor(getActivity().getResources().getColor(R.color.ubi_gray));
+					b.setValueColor(getActivity().getResources().getColor(R.color.ubi_gray));
+				}
+				
+			}
+			else{
+				b.setName(month);
+				b.setValue(maxValue);
+				b.setValueString("");
+				b.setColor(getActivity().getResources().getColor(R.color.ubi_gray));
+			}
+			b.setLabelColor(Color.parseColor("#697078"));
+			points.add(b);
+		}
+		
+		Typeface vTypeface = Typeface.createFromAsset(getActivity().getAssets(), "fonts/arialbd.ttf");
+		Typeface lTypeface = Typeface.createFromAsset(getActivity().getAssets(), "fonts/EncodeSansNormal-300-Light.ttf");
+		graph.setValueTypeface(vTypeface);
+		graph.setLabelTypeface(lTypeface);
+		graph.setBars(points);
+		
+	}
+	
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		outState.putInt("id", driverIndex);
 		super.onSaveInstanceState(outState);
+	}
+	
+	private int gradeToNumber(String grade){
+		switch (grade) {
+		case "A+":
+			return 17;
+		case "A":
+			return 16;
+		case "A-":
+			return 15;
+			
+
+		case "B+":
+			return 14;
+		case "B":
+			return 13;
+		case "B-":
+			return 12;
+			
+
+		case "C+":
+			return 11;
+		case "C":
+			return 10;
+		case "C-":
+			return 9;
+			
+
+		case "D+":
+			return 8;
+		case "D":
+			return 7;
+		case "D-":
+			return 6;
+			
+
+		case "E+":
+			return 5;
+		case "E":
+			return 4;
+		case "E-":
+			return 3;
+			
+
+		case "F+":
+			return 2;
+		case "F":
+			return 1;
+		case "F-":
+			return 0;
+		}
+		return 0;
+	}
+	
+	class MonthStats {
+		int month;
+		int score;
+		String grade;
+		
+		public MonthStats(int month, int score, String grade) {
+			super();
+			this.month = month;
+			this.score = score;
+			this.grade = grade;
+		}
 	}
 	
 	class GetScoreTask extends BaseRequestAsyncTask{
@@ -170,7 +340,65 @@ public class ScoreFragment extends Fragment{
 		protected void onSuccess(JSONObject json) throws JSONException {
 			System.out.println(json);
 			
-			tvScore.setText(json.getString("grade"));
+			String grade = json.optString("grade","X").toUpperCase(Locale.getDefault());
+			String thisMonthMessage = "This month:\n";
+			tvScore.setText(grade);
+			if(grade.contains("A") || grade.contains("B")){
+				thisMonthMessage+="Great Score!\nKeep it up!";
+				tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_green));
+				tvScore.setBackgroundResource(R.drawable.circle_score_green);
+			}
+			else if(grade.contains("C")){
+				thisMonthMessage+="Average Score\nYou can do better!";
+				tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_orange));
+				tvScore.setBackgroundResource(R.drawable.circle_score_orange);
+			}
+			else if(grade.contains("D") || grade.contains("E") || grade.contains("F")){
+				thisMonthMessage+="Hmm Not good\nYou can do better!";
+				tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_red));
+				tvScore.setBackgroundResource(R.drawable.circle_score_red);
+			}
+			else{
+				thisMonthMessage+="";
+				tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_gray));
+				tvScore.setBackgroundResource(R.drawable.circle_score_gray);
+			}
+			
+			tvThisMonthMessage.setText(thisMonthMessage);
+			
+			JSONArray yearStatsJSON = json.getJSONArray("current_year_stats");
+			yearStats = new MonthStats[yearStatsJSON.length()];
+			
+			for (int i = 0; i < yearStats.length; i++) {
+				JSONObject monthStats = yearStatsJSON.getJSONObject(i);
+				yearStats[i] = new MonthStats(
+						monthStats.optInt("month"),
+						monthStats.optInt("score"),
+						monthStats.isNull("grade") ? "" : monthStats.optString("grade"));
+			}
+			updateGraph();
+			
+			Calendar c = Calendar.getInstance();
+			int currentMonth = c.get(Calendar.MONTH);
+			String lastMonthGrade = yearStats[currentMonth-1].grade;
+					
+			if(!lastMonthGrade.equals("") && !grade.equals("X")){
+				tvLastMonthMessage.setText(lastMonthGrade+" Last Month");
+				if(gradeToNumber(grade)>gradeToNumber(lastMonthGrade)){
+					tvLastMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_green));
+					imageLastMonthArrow.setImageResource(R.drawable.arrow_up_green);
+				}
+				else{
+					tvLastMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_red));
+					imageLastMonthArrow.setImageResource(R.drawable.arrow_down_red);				
+				}
+			}
+			else{
+				tvLastMonthMessage.setText("N/A Last Month");
+				tvLastMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_gray));
+				imageLastMonthArrow.setVisibility(View.INVISIBLE);
+			}
+			
 			SimpleDateFormat sdf = new SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault());
 			DecimalFormat df = new DecimalFormat("0.000");
 			
