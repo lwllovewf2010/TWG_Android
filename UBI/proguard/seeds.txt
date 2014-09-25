@@ -839,6 +839,96 @@ android.support.v7.widget.SearchView$SearchAutoComplete: SearchView$SearchAutoCo
 android.support.v7.widget.SearchView$SearchAutoComplete: SearchView$SearchAutoComplete(android.content.Context,android.util.AttributeSet,int)
 android.support.v7.widget.SearchView$SearchAutoComplete: void setSearchView(android.support.v7.widget.SearchView)
 android.support.v7.widget.SearchView$SearchAutoComplete: void setThreshold(int)
+com.echo.holographlibrary.BarGraph
+com.echo.holographlibrary.BarGraph: BarGraph(android.content.Context)
+com.echo.holographlibrary.BarGraph: BarGraph(android.content.Context,android.util.AttributeSet)
+com.echo.holographlibrary.BarGraph: BarGraph(android.content.Context,android.util.AttributeSet,int)
+com.echo.holographlibrary.BarGraph: void setShowAxis(boolean)
+com.echo.holographlibrary.BarGraph: void setShowAxisLabel(boolean)
+com.echo.holographlibrary.BarGraph: void setShowBarText(boolean)
+com.echo.holographlibrary.BarGraph: void setShowPopup(boolean)
+com.echo.holographlibrary.BarGraph: void setBars(java.util.ArrayList)
+com.echo.holographlibrary.BarGraph: java.util.ArrayList getBars()
+com.echo.holographlibrary.BarGraph: void setAxisColor(int)
+com.echo.holographlibrary.BarGraph: void setOnBarClickedListener(com.echo.holographlibrary.BarGraph$OnBarClickedListener)
+com.echo.holographlibrary.BarGraph: void setValueTypeface(android.graphics.Typeface)
+com.echo.holographlibrary.BarGraph: void setLabelTypeface(android.graphics.Typeface)
+com.echo.holographlibrary.BarGraph: int getDuration()
+com.echo.holographlibrary.BarGraph: void setDuration(int)
+com.echo.holographlibrary.BarGraph: android.view.animation.Interpolator getInterpolator()
+com.echo.holographlibrary.BarGraph: void setInterpolator(android.view.animation.Interpolator)
+com.echo.holographlibrary.BarGraph: int getmValueStringPrecision()
+com.echo.holographlibrary.BarGraph: void setValueStringPrecision(int)
+com.echo.holographlibrary.BarGraph: long getValueStringUpdateInterval()
+com.echo.holographlibrary.BarGraph: void setValueStringUpdateInterval(long)
+com.echo.holographlibrary.BarGraph: float getAnimationFraction()
+com.echo.holographlibrary.BarGraph: float getAnimatedFractionSafe()
+com.echo.holographlibrary.BarGraph: void setAnimationListener(android.animation.Animator$AnimatorListener)
+com.echo.holographlibrary.LineGraph: void setUsingDips(boolean)
+com.echo.holographlibrary.LineGraph: double getRangeYRatio()
+com.echo.holographlibrary.LineGraph: void setRangeYRatio(double)
+com.echo.holographlibrary.LineGraph: double getRangeXRatio()
+com.echo.holographlibrary.LineGraph: void setRangeXRatio(double)
+com.echo.holographlibrary.LineGraph: java.util.ArrayList getLines()
+com.echo.holographlibrary.LineGraph: void setLineToFill(int)
+com.echo.holographlibrary.LineGraph: int getLineToFill()
+com.echo.holographlibrary.LineGraph: void setLines(java.util.ArrayList)
+com.echo.holographlibrary.LineGraph: int getSize()
+com.echo.holographlibrary.LineGraph: float getMaxY()
+com.echo.holographlibrary.LineGraph: float getMinY()
+com.echo.holographlibrary.LineGraph: float getMinLimY()
+com.echo.holographlibrary.LineGraph: float getMaxLimY()
+com.echo.holographlibrary.LineGraph: float getMinLimX()
+com.echo.holographlibrary.LineGraph: float getMaxLimX()
+com.echo.holographlibrary.LineGraph: float getMaxX()
+com.echo.holographlibrary.LineGraph: float getMinX()
+com.echo.holographlibrary.LineGraph: void setOnPointClickedListener(com.echo.holographlibrary.LineGraph$OnPointClickedListener)
+com.echo.holographlibrary.PieGraph: android.graphics.Bitmap getBackgroundBitmap()
+com.echo.holographlibrary.PieGraph: void setBackgroundBitmap(android.graphics.Bitmap)
+com.echo.holographlibrary.PieGraph: void setPadding(int)
+com.echo.holographlibrary.PieGraph: void setInnerCircleRatio(int)
+com.echo.holographlibrary.PieGraph: java.util.ArrayList getSlices()
+com.echo.holographlibrary.PieGraph: void setSlices(java.util.ArrayList)
+com.echo.holographlibrary.PieGraph: void setOnSliceClickedListener(com.echo.holographlibrary.PieGraph$OnSliceClickedListener)
+com.echo.holographlibrary.PieGraph: int getDuration()
+com.echo.holographlibrary.PieGraph: void setDuration(int)
+com.echo.holographlibrary.PieGraph: android.view.animation.Interpolator getInterpolator()
+com.echo.holographlibrary.PieGraph: void setInterpolator(android.view.animation.Interpolator)
+com.echo.holographlibrary.PieGraph: void setAnimationListener(android.animation.Animator$AnimatorListener)
+com.echo.holographlibrary.R$attr: int barAxisColor
+com.echo.holographlibrary.R$attr: int barShowAxis
+com.echo.holographlibrary.R$attr: int barShowAxisLabel
+com.echo.holographlibrary.R$attr: int barShowPopup
+com.echo.holographlibrary.R$attr: int barShowText
+com.echo.holographlibrary.R$attr: int lineAxisColor
+com.echo.holographlibrary.R$attr: int lineBackground
+com.echo.holographlibrary.R$attr: int lineStrokeColor
+com.echo.holographlibrary.R$attr: int lineStrokeSpacing
+com.echo.holographlibrary.R$attr: int lineStrokeWidth
+com.echo.holographlibrary.R$attr: int lineUseDip
+com.echo.holographlibrary.R$attr: int orientation
+com.echo.holographlibrary.R$attr: int pieInnerCircleRatio
+com.echo.holographlibrary.R$attr: int pieSlicePadding
+com.echo.holographlibrary.R$drawable: int popup_black
+com.echo.holographlibrary.R$id: int horizontal
+com.echo.holographlibrary.R$id: int vertical
+com.echo.holographlibrary.R$styleable: int[] BarGraph
+com.echo.holographlibrary.R$styleable: int BarGraph_barAxisColor
+com.echo.holographlibrary.R$styleable: int BarGraph_barShowAxis
+com.echo.holographlibrary.R$styleable: int BarGraph_barShowAxisLabel
+com.echo.holographlibrary.R$styleable: int BarGraph_barShowPopup
+com.echo.holographlibrary.R$styleable: int BarGraph_barShowText
+com.echo.holographlibrary.R$styleable: int BarGraph_orientation
+com.echo.holographlibrary.R$styleable: int[] LineGraph
+com.echo.holographlibrary.R$styleable: int LineGraph_lineAxisColor
+com.echo.holographlibrary.R$styleable: int LineGraph_lineBackground
+com.echo.holographlibrary.R$styleable: int LineGraph_lineStrokeColor
+com.echo.holographlibrary.R$styleable: int LineGraph_lineStrokeSpacing
+com.echo.holographlibrary.R$styleable: int LineGraph_lineStrokeWidth
+com.echo.holographlibrary.R$styleable: int LineGraph_lineUseDip
+com.echo.holographlibrary.R$styleable: int[] PieGraph
+com.echo.holographlibrary.R$styleable: int PieGraph_pieInnerCircleRatio
+com.echo.holographlibrary.R$styleable: int PieGraph_pieSlicePadding
 com.google.ads.AdRequest$ErrorCode: com.google.ads.AdRequest$ErrorCode[] values()
 com.google.ads.AdRequest$ErrorCode: com.google.ads.AdRequest$ErrorCode valueOf(java.lang.String)
 com.google.ads.AdRequest$Gender: com.google.ads.AdRequest$Gender[] values()
@@ -1923,6 +2013,8 @@ com.modusgo.ubi.R$anim: int abc_slide_in_bottom
 com.modusgo.ubi.R$anim: int abc_slide_in_top
 com.modusgo.ubi.R$anim: int abc_slide_out_bottom
 com.modusgo.ubi.R$anim: int abc_slide_out_top
+com.modusgo.ubi.R$anim: int flip_in
+com.modusgo.ubi.R$anim: int flip_out
 com.modusgo.ubi.R$anim: int rotate
 com.modusgo.ubi.R$anim: int slide_in_left
 com.modusgo.ubi.R$anim: int slide_in_right
@@ -1973,6 +2065,11 @@ com.modusgo.ubi.R$attr: int background
 com.modusgo.ubi.R$attr: int backgroundColor
 com.modusgo.ubi.R$attr: int backgroundSplit
 com.modusgo.ubi.R$attr: int backgroundStacked
+com.modusgo.ubi.R$attr: int barAxisColor
+com.modusgo.ubi.R$attr: int barShowAxis
+com.modusgo.ubi.R$attr: int barShowAxisLabel
+com.modusgo.ubi.R$attr: int barShowPopup
+com.modusgo.ubi.R$attr: int barShowText
 com.modusgo.ubi.R$attr: int behindOffset
 com.modusgo.ubi.R$attr: int behindScrollScale
 com.modusgo.ubi.R$attr: int behindWidth
@@ -2042,7 +2139,13 @@ com.modusgo.ubi.R$attr: int initialActivityCount
 com.modusgo.ubi.R$attr: int innerBackgroundColor
 com.modusgo.ubi.R$attr: int isLightTheme
 com.modusgo.ubi.R$attr: int itemPadding
+com.modusgo.ubi.R$attr: int lineAxisColor
+com.modusgo.ubi.R$attr: int lineBackground
 com.modusgo.ubi.R$attr: int linePosition
+com.modusgo.ubi.R$attr: int lineStrokeColor
+com.modusgo.ubi.R$attr: int lineStrokeSpacing
+com.modusgo.ubi.R$attr: int lineStrokeWidth
+com.modusgo.ubi.R$attr: int lineUseDip
 com.modusgo.ubi.R$attr: int lineWidth
 com.modusgo.ubi.R$attr: int listChoiceBackgroundIndicator
 com.modusgo.ubi.R$attr: int listPopupWindowStyle
@@ -2062,11 +2165,14 @@ com.modusgo.ubi.R$attr: int maskedWalletDetailsLogoTextColor
 com.modusgo.ubi.R$attr: int maskedWalletDetailsTextAppearance
 com.modusgo.ubi.R$attr: int mode
 com.modusgo.ubi.R$attr: int navigationMode
+com.modusgo.ubi.R$attr: int orientation
 com.modusgo.ubi.R$attr: int paddingEnd
 com.modusgo.ubi.R$attr: int paddingStart
 com.modusgo.ubi.R$attr: int pageColor
 com.modusgo.ubi.R$attr: int panelMenuListTheme
 com.modusgo.ubi.R$attr: int panelMenuListWidth
+com.modusgo.ubi.R$attr: int pieInnerCircleRatio
+com.modusgo.ubi.R$attr: int pieSlicePadding
 com.modusgo.ubi.R$attr: int popupMenuStyle
 com.modusgo.ubi.R$attr: int popupPromptView
 com.modusgo.ubi.R$attr: int progressBarPadding
@@ -2159,6 +2265,7 @@ com.modusgo.ubi.R$color: int abc_search_url_text_selected
 com.modusgo.ubi.R$color: int appBg
 com.modusgo.ubi.R$color: int blue
 com.modusgo.ubi.R$color: int btn_border_orange_light
+com.modusgo.ubi.R$color: int btn_border_rounded_orange_light
 com.modusgo.ubi.R$color: int btn_green
 com.modusgo.ubi.R$color: int btn_orange
 com.modusgo.ubi.R$color: int btn_orange_light
@@ -2217,6 +2324,10 @@ com.modusgo.ubi.R$color: int transparent
 com.modusgo.ubi.R$color: int trip_blue
 com.modusgo.ubi.R$color: int trip_gray
 com.modusgo.ubi.R$color: int trip_light_gray
+com.modusgo.ubi.R$color: int ubi_gray
+com.modusgo.ubi.R$color: int ubi_green
+com.modusgo.ubi.R$color: int ubi_orange
+com.modusgo.ubi.R$color: int ubi_red
 com.modusgo.ubi.R$color: int vpi__background_holo_dark
 com.modusgo.ubi.R$color: int vpi__background_holo_light
 com.modusgo.ubi.R$color: int vpi__bright_foreground_disabled_holo_dark
@@ -2367,7 +2478,9 @@ com.modusgo.ubi.R$drawable: int abc_textfield_searchview_right_holo_dark
 com.modusgo.ubi.R$drawable: int abc_textfield_searchview_right_holo_light
 com.modusgo.ubi.R$drawable: int actiob_bar_bg
 com.modusgo.ubi.R$drawable: int arrow_dashed
+com.modusgo.ubi.R$drawable: int arrow_down_red
 com.modusgo.ubi.R$drawable: int arrow_small_right
+com.modusgo.ubi.R$drawable: int arrow_up_green
 com.modusgo.ubi.R$drawable: int bubble_blue
 com.modusgo.ubi.R$drawable: int bubble_green
 com.modusgo.ubi.R$drawable: int bubble_orange
@@ -2377,6 +2490,10 @@ com.modusgo.ubi.R$drawable: int bubble_white
 com.modusgo.ubi.R$drawable: int circle_gray
 com.modusgo.ubi.R$drawable: int circle_green
 com.modusgo.ubi.R$drawable: int circle_red
+com.modusgo.ubi.R$drawable: int circle_score_gray
+com.modusgo.ubi.R$drawable: int circle_score_green
+com.modusgo.ubi.R$drawable: int circle_score_orange
+com.modusgo.ubi.R$drawable: int circle_score_red
 com.modusgo.ubi.R$drawable: int circle_yellow
 com.modusgo.ubi.R$drawable: int common_signin_btn_icon_dark
 com.modusgo.ubi.R$drawable: int common_signin_btn_icon_disabled_dark
@@ -2447,6 +2564,9 @@ com.modusgo.ubi.R$drawable: int ic_plusone_medium_off_client
 com.modusgo.ubi.R$drawable: int ic_plusone_small_off_client
 com.modusgo.ubi.R$drawable: int ic_plusone_standard_off_client
 com.modusgo.ubi.R$drawable: int ic_plusone_tall_off_client
+com.modusgo.ubi.R$drawable: int ic_score_circles
+com.modusgo.ubi.R$drawable: int ic_score_info
+com.modusgo.ubi.R$drawable: int ic_score_piechart
 com.modusgo.ubi.R$drawable: int ic_tab_diagnostics
 com.modusgo.ubi.R$drawable: int ic_tab_diagnostics_active
 com.modusgo.ubi.R$drawable: int ic_tab_diagnostics_unactive
@@ -2493,6 +2613,7 @@ com.modusgo.ubi.R$drawable: int person_placeholder
 com.modusgo.ubi.R$drawable: int person_test
 com.modusgo.ubi.R$drawable: int person_test2
 com.modusgo.ubi.R$drawable: int person_test3
+com.modusgo.ubi.R$drawable: int popup_black
 com.modusgo.ubi.R$drawable: int powered_by_google_dark
 com.modusgo.ubi.R$drawable: int powered_by_google_light
 com.modusgo.ubi.R$drawable: int progress_blue
@@ -2500,7 +2621,9 @@ com.modusgo.ubi.R$drawable: int progress_star_rating
 com.modusgo.ubi.R$drawable: int radio_tab_bg_selector
 com.modusgo.ubi.R$drawable: int radio_tab_text_selector
 com.modusgo.ubi.R$drawable: int rectangle_orange_with_border
+com.modusgo.ubi.R$drawable: int rectangle_orange_with_border_rounded
 com.modusgo.ubi.R$drawable: int rectangle_with_border
+com.modusgo.ubi.R$drawable: int rectangle_with_border_rounded
 com.modusgo.ubi.R$drawable: int red_rounded_rectangle_radius_10
 com.modusgo.ubi.R$drawable: int red_rounded_rectangle_radius_8
 com.modusgo.ubi.R$drawable: int route
@@ -2556,12 +2679,14 @@ com.modusgo.ubi.R$id: int bottom
 com.modusgo.ubi.R$id: int btnCancel
 com.modusgo.ubi.R$id: int btnContactService
 com.modusgo.ubi.R$id: int btnEdit
-com.modusgo.ubi.R$id: int btnExpand
 com.modusgo.ubi.R$id: int btnFindMechanic
 com.modusgo.ubi.R$id: int btnForgotPassword
 com.modusgo.ubi.R$id: int btnMenu
 com.modusgo.ubi.R$id: int btnPhoto
 com.modusgo.ubi.R$id: int btnSave
+com.modusgo.ubi.R$id: int btnScoreCircles
+com.modusgo.ubi.R$id: int btnScoreInfo
+com.modusgo.ubi.R$id: int btnScorePieChart
 com.modusgo.ubi.R$id: int btnSignIn
 com.modusgo.ubi.R$id: int btnStart
 com.modusgo.ubi.R$id: int btnSwitchDriverMenu
@@ -2597,14 +2722,15 @@ com.modusgo.ubi.R$id: int edit_query
 com.modusgo.ubi.R$id: int end
 com.modusgo.ubi.R$id: int expand_activities_button
 com.modusgo.ubi.R$id: int expanded_menu
-com.modusgo.ubi.R$id: int foo
 com.modusgo.ubi.R$id: int fullscreen
+com.modusgo.ubi.R$id: int graph
 com.modusgo.ubi.R$id: int grayscale
 com.modusgo.ubi.R$id: int gvPercentData
 com.modusgo.ubi.R$id: int holo_dark
 com.modusgo.ubi.R$id: int holo_light
 com.modusgo.ubi.R$id: int home
 com.modusgo.ubi.R$id: int homeAsUp
+com.modusgo.ubi.R$id: int horizontal
 com.modusgo.ubi.R$id: int hybrid
 com.modusgo.ubi.R$id: int icon
 com.modusgo.ubi.R$id: int ifRoom
@@ -2614,6 +2740,7 @@ com.modusgo.ubi.R$id: int imageArrow
 com.modusgo.ubi.R$id: int imageDiagnostics
 com.modusgo.ubi.R$id: int imageExpandIndicator
 com.modusgo.ubi.R$id: int imageIcon
+com.modusgo.ubi.R$id: int imageLastMonthArrow
 com.modusgo.ubi.R$id: int imageLogo
 com.modusgo.ubi.R$id: int imagePhoto
 com.modusgo.ubi.R$id: int imageView1
@@ -2721,13 +2848,13 @@ com.modusgo.ubi.R$id: int tvDescription
 com.modusgo.ubi.R$id: int tvDiagnosticsCount
 com.modusgo.ubi.R$id: int tvDistance
 com.modusgo.ubi.R$id: int tvDistanceToCar
+com.modusgo.ubi.R$id: int tvDistanceToCarLabel
 com.modusgo.ubi.R$id: int tvEmail
 com.modusgo.ubi.R$id: int tvEndTime
 com.modusgo.ubi.R$id: int tvEstLaborCost
 com.modusgo.ubi.R$id: int tvEstPartsCost
 com.modusgo.ubi.R$id: int tvEstTotalCost
 com.modusgo.ubi.R$id: int tvEvent
-com.modusgo.ubi.R$id: int tvExpanderTitle
 com.modusgo.ubi.R$id: int tvFirstName
 com.modusgo.ubi.R$id: int tvFuel
 com.modusgo.ubi.R$id: int tvImportance
@@ -2735,6 +2862,7 @@ com.modusgo.ubi.R$id: int tvInfo
 com.modusgo.ubi.R$id: int tvInstructions
 com.modusgo.ubi.R$id: int tvLaborHours
 com.modusgo.ubi.R$id: int tvLastCheckup
+com.modusgo.ubi.R$id: int tvLastMonthMessage
 com.modusgo.ubi.R$id: int tvLastName
 com.modusgo.ubi.R$id: int tvLoading
 com.modusgo.ubi.R$id: int tvLocation
@@ -2754,6 +2882,7 @@ com.modusgo.ubi.R$id: int tvStartTime
 com.modusgo.ubi.R$id: int tvStatus
 com.modusgo.ubi.R$id: int tvSubTitle
 com.modusgo.ubi.R$id: int tvText
+com.modusgo.ubi.R$id: int tvThisMonthMessage
 com.modusgo.ubi.R$id: int tvTime
 com.modusgo.ubi.R$id: int tvTimezone
 com.modusgo.ubi.R$id: int tvTitle
@@ -2765,6 +2894,7 @@ com.modusgo.ubi.R$id: int underline
 com.modusgo.ubi.R$id: int up
 com.modusgo.ubi.R$id: int useLogo
 com.modusgo.ubi.R$id: int username
+com.modusgo.ubi.R$id: int vertical
 com.modusgo.ubi.R$id: int withText
 com.modusgo.ubi.R$id: int wrap_content
 com.modusgo.ubi.R$integer: int abc_max_action_buttons
@@ -2810,6 +2940,9 @@ com.modusgo.ubi.R$layout: int activity_home
 com.modusgo.ubi.R$layout: int activity_main
 com.modusgo.ubi.R$layout: int activity_map
 com.modusgo.ubi.R$layout: int activity_recall
+com.modusgo.ubi.R$layout: int activity_score_circles
+com.modusgo.ubi.R$layout: int activity_score_info
+com.modusgo.ubi.R$layout: int activity_score_pie_chart
 com.modusgo.ubi.R$layout: int activity_settings
 com.modusgo.ubi.R$layout: int activity_sign_in
 com.modusgo.ubi.R$layout: int activity_trip
@@ -3126,6 +3259,13 @@ com.modusgo.ubi.R$styleable: int[] AdsAttrs
 com.modusgo.ubi.R$styleable: int AdsAttrs_adSize
 com.modusgo.ubi.R$styleable: int AdsAttrs_adSizes
 com.modusgo.ubi.R$styleable: int AdsAttrs_adUnitId
+com.modusgo.ubi.R$styleable: int[] BarGraph
+com.modusgo.ubi.R$styleable: int BarGraph_barAxisColor
+com.modusgo.ubi.R$styleable: int BarGraph_barShowAxis
+com.modusgo.ubi.R$styleable: int BarGraph_barShowAxisLabel
+com.modusgo.ubi.R$styleable: int BarGraph_barShowPopup
+com.modusgo.ubi.R$styleable: int BarGraph_barShowText
+com.modusgo.ubi.R$styleable: int BarGraph_orientation
 com.modusgo.ubi.R$styleable: int[] CirclePageIndicator
 com.modusgo.ubi.R$styleable: int CirclePageIndicator_android_background
 com.modusgo.ubi.R$styleable: int CirclePageIndicator_android_orientation
@@ -3163,6 +3303,13 @@ com.modusgo.ubi.R$styleable: int ExpandablePanel_indicator
 com.modusgo.ubi.R$styleable: int ExpandablePanel_indicatorDrawableClosed
 com.modusgo.ubi.R$styleable: int ExpandablePanel_indicatorDrawableOpened
 com.modusgo.ubi.R$styleable: int ExpandablePanel_indicatorImageView
+com.modusgo.ubi.R$styleable: int[] LineGraph
+com.modusgo.ubi.R$styleable: int LineGraph_lineAxisColor
+com.modusgo.ubi.R$styleable: int LineGraph_lineBackground
+com.modusgo.ubi.R$styleable: int LineGraph_lineStrokeColor
+com.modusgo.ubi.R$styleable: int LineGraph_lineStrokeSpacing
+com.modusgo.ubi.R$styleable: int LineGraph_lineStrokeWidth
+com.modusgo.ubi.R$styleable: int LineGraph_lineUseDip
 com.modusgo.ubi.R$styleable: int[] LinePageIndicator
 com.modusgo.ubi.R$styleable: int LinePageIndicator_android_background
 com.modusgo.ubi.R$styleable: int LinePageIndicator_centered
@@ -3224,6 +3371,9 @@ com.modusgo.ubi.R$styleable: int MenuView_android_itemTextAppearance
 com.modusgo.ubi.R$styleable: int MenuView_android_preserveIconSpacing
 com.modusgo.ubi.R$styleable: int MenuView_android_verticalDivider
 com.modusgo.ubi.R$styleable: int MenuView_android_windowAnimationStyle
+com.modusgo.ubi.R$styleable: int[] PieGraph
+com.modusgo.ubi.R$styleable: int PieGraph_pieInnerCircleRatio
+com.modusgo.ubi.R$styleable: int PieGraph_pieSlicePadding
 com.modusgo.ubi.R$styleable: int[] SearchView
 com.modusgo.ubi.R$styleable: int SearchView_android_imeOptions
 com.modusgo.ubi.R$styleable: int SearchView_android_inputType
@@ -3320,6 +3470,12 @@ com.modusgo.ubi.R$xml: int pref_headers
 com.modusgo.ubi.R$xml: int pref_notification
 com.modusgo.ubi.RecallActivity
 com.modusgo.ubi.RecallActivity: RecallActivity()
+com.modusgo.ubi.ScoreCirclesActivity
+com.modusgo.ubi.ScoreCirclesActivity: ScoreCirclesActivity()
+com.modusgo.ubi.ScoreInfoActivity
+com.modusgo.ubi.ScoreInfoActivity: ScoreInfoActivity()
+com.modusgo.ubi.ScorePieChartActivity
+com.modusgo.ubi.ScorePieChartActivity: ScorePieChartActivity()
 com.modusgo.ubi.SettingsActivity
 com.modusgo.ubi.SettingsActivity: SettingsActivity()
 com.modusgo.ubi.SignInActivity

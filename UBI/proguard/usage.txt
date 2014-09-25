@@ -101,6 +101,7 @@ android.support.v4.app.Fragment:
     625:625:public final java.lang.String getString(int)
     638:638:public final varargs java.lang.String getString(int,java.lang.Object[])
     652:652:public final android.support.v4.app.FragmentManager getFragmentManager()
+    660:672:public final android.support.v4.app.FragmentManager getChildFragmentManager()
     680:680:public final android.support.v4.app.Fragment getParentFragment()
     705:705:public final boolean isRemoving()
     716:716:public final boolean isInLayout()
@@ -2262,6 +2263,59 @@ android.support.v7.widget.SuggestionsAdapter:
     static final int INVALID_INDEX
     124:124:public int getQueryRefinement()
     172:174:public void close()
+com.echo.holographlibrary.Bar:
+    private float mOldValue
+    private float mGoalValue
+    74:75:public void setSelectedColor(int)
+    102:102:public float getOldValue()
+    105:105:public void setOldValue(float)
+    108:108:public float getGoalValue()
+    111:111:public void setGoalValue(float)
+    124:124:public java.lang.String getValuePrefix()
+    126:126:public void setValuePrefix(java.lang.String)
+    128:128:public java.lang.String getValueSuffix()
+    130:130:public void setValueSuffix(java.lang.String)
+    133:137:public void makeValueString(int)
+com.echo.holographlibrary.BarGraph:
+    private static final int VALUE_FONT_SIZE
+    private static final int AXIS_LABEL_FONT_SIZE
+    private static final int PADDING_LEFT_RIGHT
+    private static final float LABEL_PADDING_MULTIPLIER
+    private static final int ORIENTATION_HORIZONTAL
+    private static final int ORIENTATION_VERTICAL
+    private float mOldMaxValue
+    private float mGoalMaxValue
+    private long mLastTimeValueStringsUpdated
+    501:503:public boolean cancelAnimating()
+    512:558:public void animateToGoalValues()
+    65:65:static synthetic java.util.ArrayList access$0(com.echo.holographlibrary.BarGraph)
+    83:83:static synthetic float access$1(com.echo.holographlibrary.BarGraph)
+    82:82:static synthetic float access$2(com.echo.holographlibrary.BarGraph)
+    81:81:static synthetic void access$3(com.echo.holographlibrary.BarGraph,float)
+    84:84:static synthetic long access$4(com.echo.holographlibrary.BarGraph)
+    85:85:static synthetic long access$5(com.echo.holographlibrary.BarGraph)
+    86:86:static synthetic int access$6(com.echo.holographlibrary.BarGraph)
+    84:84:static synthetic void access$7(com.echo.holographlibrary.BarGraph,long)
+com.echo.holographlibrary.BarGraph$1
+com.echo.holographlibrary.HoloGraphAnimate
+com.echo.holographlibrary.Line
+com.echo.holographlibrary.LineGraph
+com.echo.holographlibrary.LineGraph$OnPointClickedListener
+com.echo.holographlibrary.LinePoint
+com.echo.holographlibrary.PieGraph
+com.echo.holographlibrary.PieGraph$1
+com.echo.holographlibrary.PieGraph$OnSliceClickedListener
+com.echo.holographlibrary.PieSlice
+com.echo.holographlibrary.R:
+    9:9:public R()
+com.echo.holographlibrary.R$attr
+com.echo.holographlibrary.R$drawable:
+    26:26:public R$drawable()
+com.echo.holographlibrary.R$id
+com.echo.holographlibrary.R$styleable:
+    33:33:public R$styleable()
+com.echo.holographlibrary.Utils:
+    8:8:public Utils()
 com.google.ads.AdRequest
 com.google.ads.AdRequest$ErrorCode
 com.google.ads.AdRequest$Gender
@@ -6426,16 +6480,23 @@ com.modusgo.ubi.R$layout
 com.modusgo.ubi.R$string
 com.modusgo.ubi.R$style
 com.modusgo.ubi.R$styleable:
-    2915:2915:public R$styleable()
+    3069:3069:public R$styleable()
 com.modusgo.ubi.R$xml
 com.modusgo.ubi.Recall:
     private static final long serialVersionUID
 com.modusgo.ubi.RecallActivity:
     public static final java.lang.String EXTRA_RECALL
-com.modusgo.ubi.ScoreFragment:
+com.modusgo.ubi.ScoreCirclesActivity:
+    public static final java.lang.String SAVED_CIRCLES_BUNDLE
+com.modusgo.ubi.ScoreInfoActivity:
     private static final java.lang.String ATTRIBUTE_NAME_VALUE
     private static final java.lang.String ATTRIBUTE_NAME_TITLE
-    android.support.v4.app.FragmentTabHost tabHost
+    public static final java.lang.String SAVED_ADDITIONAL_DATA
+    public static final java.lang.String SAVED_PERCENTAGE_DATA
+com.modusgo.ubi.ScorePieChartActivity:
+    public static final java.lang.String SAVED_PIE_CHART_ROAD_SETTINGS
+    public static final java.lang.String SAVED_PIE_CHART_ROAD_TYPE
+    public static final java.lang.String SAVED_PIE_CHART_TIME_OF_DAY
 com.modusgo.ubi.SettingsEditFragment:
     public static final java.lang.String EXTRA_FIRST_NAME
     public static final java.lang.String EXTRA_LAST_NAME
