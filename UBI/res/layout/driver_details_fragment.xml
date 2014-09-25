@@ -46,7 +46,7 @@
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"
                         android:layout_weight="1"
-                        android:background="@color/btn_border_orange_light"
+                        android:background="@color/btn_border_rounded_orange_light"
                         android:clickable="true" >
 
                         <com.modusgo.ubi.customviews.TypefacedTextView
@@ -84,7 +84,7 @@
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"
                         android:layout_weight="1"
-                        android:background="@color/btn_border_orange_light" >
+                        android:background="@color/btn_border_rounded_orange_light" >
 
                         <com.modusgo.ubi.customviews.TypefacedTextView
                             android:id="@+id/tvFuel"
@@ -121,7 +121,7 @@
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"
                         android:layout_weight="1"
-                        android:background="@color/btn_border_orange_light"
+                        android:background="@color/btn_border_rounded_orange_light"
                         android:clickable="true" >
 
                         <com.modusgo.ubi.customviews.TypefacedTextView
@@ -159,7 +159,7 @@
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"
                         android:layout_weight="1"
-                        android:background="@color/btn_border_orange_light"
+                        android:background="@color/btn_border_rounded_orange_light"
                         android:clickable="true" >
 
                         <com.modusgo.ubi.customviews.TypefacedTextView
