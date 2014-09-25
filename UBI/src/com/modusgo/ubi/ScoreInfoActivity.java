@@ -43,7 +43,7 @@ public class ScoreInfoActivity extends MainActivity{
 		setContentView(R.layout.activity_score_info);
 		super.onCreate(savedInstanceState);
 		
-		setActionBarTitle("SCORE");
+		setActionBarTitle("Score Stats");
 		
 		if(savedInstanceState!=null){
 			driverIndex = savedInstanceState.getInt("id");

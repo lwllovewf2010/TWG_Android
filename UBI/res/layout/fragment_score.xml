@@ -87,7 +87,7 @@
                 android:layout_weight="1" >
 
                 <ImageButton
-                    android:id="@+id/btnScoreCircles"
+                    android:id="@+id/btnScorePieChart"
                     android:layout_width="81dp"
                     android:layout_height="59dp"
                     android:layout_centerHorizontal="true"
@@ -97,10 +97,10 @@
                 <com.modusgo.ubi.customviews.TypefacedTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/btnScoreCircles"
+                    android:layout_below="@+id/btnScorePieChart"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="3dp"
-                    android:text="Dot Matrix"
+                    android:text="Time/Road Charts"
                     android:textColor="#697078"
                     android:textSize="11sp"
                     ubi:typeface="EncodeSansNormal-300-Light.ttf" />
@@ -112,7 +112,7 @@
                 android:layout_weight="1" >
 
                 <ImageButton
-                    android:id="@+id/btnScorePieChart"
+                    android:id="@+id/btnScoreCircles"
                     android:layout_width="81dp"
                     android:layout_height="59dp"
                     android:layout_centerHorizontal="true"
@@ -122,10 +122,10 @@
                 <com.modusgo.ubi.customviews.TypefacedTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/btnScorePieChart"
+                    android:layout_below="@+id/btnScoreCircles"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="3dp"
-                    android:text="Time/Road Charts"
+                    android:text="Behaviors"
                     android:textColor="#697078"
                     android:textSize="11sp"
                     ubi:typeface="EncodeSansNormal-300-Light.ttf" />

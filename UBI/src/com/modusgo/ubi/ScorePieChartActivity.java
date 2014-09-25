@@ -31,7 +31,7 @@ public class ScorePieChartActivity extends MainActivity{
 		setContentView(R.layout.activity_score_pie_chart);
 		super.onCreate(savedInstanceState);
 		
-		setActionBarTitle("SCORE");
+		setActionBarTitle("Time/Road Charts");
 		
 		if(savedInstanceState!=null){
 			driverIndex = savedInstanceState.getInt("id");

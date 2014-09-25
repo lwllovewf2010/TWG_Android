@@ -28,7 +28,7 @@ public class ScoreCirclesActivity extends MainActivity{
 		setContentView(R.layout.activity_score_circles);
 		super.onCreate(savedInstanceState);
 		
-		setActionBarTitle("SCORE");
+		setActionBarTitle("Behaviors");
 		
 		if(savedInstanceState!=null){
 			driverIndex = savedInstanceState.getInt("id");
