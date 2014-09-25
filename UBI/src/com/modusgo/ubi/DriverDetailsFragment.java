@@ -19,6 +19,7 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.SuperscriptSpan;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -290,10 +291,18 @@ OnConnectionFailedListener, LocationListener{
 		
 		Location.distanceBetween(driver.latitude, driver.longitude, location.getLatitude(), location.getLongitude(), distanceToCar);
 		float distance = Utils.metersToMiles(distanceToCar[0]);
-		if(distance>=10000)
-			tvDistanceToCar.setText(">9999");
-		else if(distance>1000)
+		
+		if(distance>=10000){
+			tvDistanceToCar.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
 			tvDistanceToCar.setText(""+Math.round(distance));
+		}
+		else if(distance>=1000){
+			tvDistanceToCar.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+			tvDistanceToCar.setText(""+Math.round(distance));
+		}
+		else if(distance>=100){
+			tvDistanceToCar.setText(""+Math.round(distance));			
+		}
 		else
 			tvDistanceToCar.setText(dsitanceFormat.format(distance));
 
