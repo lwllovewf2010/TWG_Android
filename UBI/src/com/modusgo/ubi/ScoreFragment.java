@@ -95,6 +95,17 @@ public class ScoreFragment extends Fragment{
 			}
 		});
 		
+		rootView.findViewById(R.id.btnScoreInfo).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(getActivity(), ScoreInfoActivity.class);
+				i.putExtra(ScoreInfoActivity.SAVED_ADDITIONAL_DATA, additionalData);
+				i.putExtra(ScoreInfoActivity.SAVED_PERCENTAGE_DATA, percentageData);
+				startActivity(i);
+				getActivity().overridePendingTransition(R.anim.flip_in,R.anim.flip_out);
+			}
+		});
+		
         new GetScoreTask(getActivity()).execute("drivers/"+driver.id+"/score.json");
         
 		return rootView;
