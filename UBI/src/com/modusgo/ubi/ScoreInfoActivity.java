@@ -5,12 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.LinearLayout;
@@ -141,10 +138,6 @@ public class ScoreInfoActivity extends MainActivity{
 			((TextView)item.findViewById(R.id.tvValue)).setText(values[i]);
 			llAdditionalData.addView(item);
 		}
-		View line = new View(this);
-		line.setBackgroundColor(Color.parseColor("#acb1b7"));
-		line.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getResources().getDisplayMetrics())));
-		llAdditionalData.addView(line);
 	}
 	
 	@Override

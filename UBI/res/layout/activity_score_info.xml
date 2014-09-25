@@ -23,9 +23,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingBottom="8dp"
+                android:paddingBottom="15dp"
                 android:paddingTop="4dp" >
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#acb1b7" />
 
             <com.modusgo.ubi.customviews.ExpandableHeightGridView
                 android:id="@+id/gvPercentData"
@@ -34,18 +39,13 @@
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="22.5dp"
                 android:layout_marginRight="22.5dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="8dp"
                 android:gravity="center"
                 android:horizontalSpacing="17.5dp"
                 android:isScrollContainer="false"
                 android:listSelector="@color/btn_transparent_orange_light"
                 android:stretchMode="columnWidth" >
             </com.modusgo.ubi.customviews.ExpandableHeightGridView>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#b8bcc1" />
         </LinearLayout>
     </ScrollView>
 
