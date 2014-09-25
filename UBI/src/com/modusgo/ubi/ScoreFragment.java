@@ -37,7 +37,7 @@ public class ScoreFragment extends Fragment{
 	String[] additionalData;
 	int[] percentageData;
 	float[][] pieChartsData;
-	Bundle[] circlesData;
+	Bundle circlesData;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -113,6 +113,16 @@ public class ScoreFragment extends Fragment{
 				i.putExtra(ScorePieChartActivity.SAVED_PIE_CHART_ROAD_SETTINGS, pieChartsData[0]);
 				i.putExtra(ScorePieChartActivity.SAVED_PIE_CHART_ROAD_TYPE, pieChartsData[1]);
 				i.putExtra(ScorePieChartActivity.SAVED_PIE_CHART_TIME_OF_DAY, pieChartsData[2]);
+				startActivity(i);
+				getActivity().overridePendingTransition(R.anim.flip_in,R.anim.flip_out);
+			}
+		});
+		
+		rootView.findViewById(R.id.btnScoreCircles).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(getActivity(), ScoreCirclesActivity.class);
+				i.putExtra(ScoreCirclesActivity.SAVED_CIRCLES_BUNDLE, circlesData);
 				startActivity(i);
 				getActivity().overridePendingTransition(R.anim.flip_in,R.anim.flip_out);
 			}
@@ -205,11 +215,10 @@ public class ScoreFragment extends Fragment{
 			
 			JSONObject jsonStats = json.getJSONObject("road_env_stats");
 			
-			circlesData = new Bundle[]{
-					getPageBundle("suburban", jsonMarks, jsonStats),
-					getPageBundle("urban", jsonMarks, jsonStats),
-					getPageBundle("rural", jsonMarks, jsonStats)
-			};
+			circlesData = new Bundle();
+			circlesData.putBundle("suburban", getPageBundle("suburban", jsonMarks, jsonStats));
+			circlesData.putBundle("urban", getPageBundle("urban", jsonMarks, jsonStats));
+			circlesData.putBundle("rural", getPageBundle("rural", jsonMarks, jsonStats));
 			
 			super.onSuccess(json);
 		}
@@ -220,6 +229,7 @@ public class ScoreFragment extends Fragment{
 			JSONObject jsonStatsPage = jsonStats.getJSONObject(pageName);
 			
 			Bundle pageBundle = new Bundle();
+			pageBundle.putString(CirclesFragment.SAVED_TITLE, pageName);
 			pageBundle.putBundle(CirclesFragment.SAVED_USE_OF_SPEED, getBundleStats("pace", jsonMarkPage, jsonStatsPage));
 			pageBundle.putBundle(CirclesFragment.SAVED_CORNERING, getBundleStats("cornering", jsonMarkPage, jsonStatsPage));
 			pageBundle.putBundle(CirclesFragment.SAVED_INTERSECTION_ACCEL, getBundleStats("junctionacceleration", jsonMarkPage, jsonStatsPage));
