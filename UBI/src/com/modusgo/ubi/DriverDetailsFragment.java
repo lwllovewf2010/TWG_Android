@@ -373,14 +373,30 @@ OnConnectionFailedListener, LocationListener{
 			driver.name = responseJSON.optString("name");
 			driver.vehicle = responseJSON.optString("year")+" "+responseJSON.optString("make")+" "+responseJSON.optString("model");
 			driver.VIN = responseJSON.optString("vin");
-			driver.lastTripDate = Utils.fixTimezoneZ(responseJSON.optString("last_trip"));
+			driver.lastTripDate = responseJSON.isNull("last_trip") ? "Undefined" : Utils.fixTimezoneZ(responseJSON.optString("last_trip"));
 			driver.lastTripId = responseJSON.optLong("last_trip_id",-1);
 			driver.profileDate = Utils.fixTimezoneZ(responseJSON.optString("profile_date"));
 			driver.alerts = responseJSON.optInt("count_alerts");
 			driver.diags = responseJSON.optInt("count_diags");
-			driver.address = responseJSON.getJSONObject("location").optString("address");
-			driver.latitude = Double.parseDouble(responseJSON.getJSONObject("location").getJSONObject("map").optString("latitude"));
-			driver.longitude = Double.parseDouble(responseJSON.getJSONObject("location").getJSONObject("map").optString("longitude"));
+			
+			JSONObject locationJSON = responseJSON.optJSONObject("location");
+			if(locationJSON!=null){
+				driver.address = locationJSON.optString("address");
+				JSONObject mapJSON = locationJSON.getJSONObject("map");
+				if(mapJSON!=null){
+					driver.latitude = mapJSON.optDouble("latitude");
+					driver.longitude = mapJSON.optDouble("longitude");
+				}
+				else{
+					driver.latitude = 0;
+					driver.longitude = 0;
+				}
+			}
+			else{
+				driver.address = "Undefined";
+				driver.latitude = 0;
+				driver.longitude = 0;
+			}
 				
 			dHelper.setDriver(driverIndex, driver);
 			

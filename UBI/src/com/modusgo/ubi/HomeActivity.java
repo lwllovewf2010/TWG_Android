@@ -227,6 +227,7 @@ public class HomeActivity extends MainActivity{
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
 
 			JSONArray driversJSON = responseJSON.getJSONArray("drivers");
+			System.out.println(driversJSON);
 
 			dHelper.drivers.clear();
 			for (int i = 0; i < driversJSON.length(); i++) {
@@ -238,7 +239,7 @@ public class HomeActivity extends MainActivity{
 						driverJSON.optString("year") + " "
 								+ driverJSON.optString("make") + " "
 								+ driverJSON.optString("model"), "", "",
-						Utils.fixTimezoneZ(driverJSON.optString("last_trip")),
+						driverJSON.isNull("last_trip") ? "Undefined" : Utils.fixTimezoneZ(driverJSON.optString("last_trip")),
 						0, 0, 
 						driverJSON.optString("grade"));
 
@@ -246,9 +247,24 @@ public class HomeActivity extends MainActivity{
 				d.diags = driverJSON.optInt("count_diags");
 				d.imageUrl = driverJSON.optString("photo");
 				d.fuelLeft = driverJSON.optInt("fuel_left",-1);
-				d.address = driverJSON.getJSONObject("location").optString("address");
-				d.latitude = driverJSON.getJSONObject("location").getJSONObject("map").optDouble("latitude");
-				d.longitude = driverJSON.getJSONObject("location").getJSONObject("map").optDouble("longitude");
+				JSONObject locationJSON = driverJSON.optJSONObject("location");
+				if(locationJSON!=null){
+					d.address = locationJSON.optString("address");
+					JSONObject mapJSON = locationJSON.getJSONObject("map");
+					if(mapJSON!=null){
+						d.latitude = mapJSON.optDouble("latitude");
+						d.longitude = mapJSON.optDouble("longitude");
+					}
+					else{
+						d.latitude = 0;
+						d.longitude = 0;
+					}
+				}
+				else{
+					d.address = "Undefined";
+					d.latitude = 0;
+					d.longitude = 0;
+				}
 				d.markerIcon = driverJSON.optString("icon");
 
 				dHelper.drivers.add(d);
