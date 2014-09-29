@@ -2481,6 +2481,8 @@ com.modusgo.ubi.R$drawable: int arrow_dashed
 com.modusgo.ubi.R$drawable: int arrow_down_red
 com.modusgo.ubi.R$drawable: int arrow_small_right
 com.modusgo.ubi.R$drawable: int arrow_up_green
+com.modusgo.ubi.R$drawable: int bg_alerts_triangle_gray
+com.modusgo.ubi.R$drawable: int bg_alerts_triangle_red
 com.modusgo.ubi.R$drawable: int bubble_blue
 com.modusgo.ubi.R$drawable: int bubble_green
 com.modusgo.ubi.R$drawable: int bubble_orange
@@ -2550,6 +2552,7 @@ com.modusgo.ubi.R$drawable: int ic_diagnostics_red_medium
 com.modusgo.ubi.R$drawable: int ic_drawer
 com.modusgo.ubi.R$drawable: int ic_event
 com.modusgo.ubi.R$drawable: int ic_external_link
+com.modusgo.ubi.R$drawable: int ic_fuel_black
 com.modusgo.ubi.R$drawable: int ic_fuel_green
 com.modusgo.ubi.R$drawable: int ic_launcher
 com.modusgo.ubi.R$drawable: int ic_man
@@ -2739,10 +2742,13 @@ com.modusgo.ubi.R$id: int imageAlerts
 com.modusgo.ubi.R$id: int imageArrow
 com.modusgo.ubi.R$id: int imageDiagnostics
 com.modusgo.ubi.R$id: int imageExpandIndicator
+com.modusgo.ubi.R$id: int imageFuel
 com.modusgo.ubi.R$id: int imageIcon
 com.modusgo.ubi.R$id: int imageLastMonthArrow
 com.modusgo.ubi.R$id: int imageLogo
 com.modusgo.ubi.R$id: int imagePhoto
+com.modusgo.ubi.R$id: int imageStartTrip
+com.modusgo.ubi.R$id: int imageStopTrip
 com.modusgo.ubi.R$id: int imageView1
 com.modusgo.ubi.R$id: int indicator
 com.modusgo.ubi.R$id: int left
@@ -2887,6 +2893,7 @@ com.modusgo.ubi.R$id: int tvTime
 com.modusgo.ubi.R$id: int tvTimezone
 com.modusgo.ubi.R$id: int tvTitle
 com.modusgo.ubi.R$id: int tvTitle2
+com.modusgo.ubi.R$id: int tvTotals
 com.modusgo.ubi.R$id: int tvValue
 com.modusgo.ubi.R$id: int tvValue2
 com.modusgo.ubi.R$id: int tvVehicle
