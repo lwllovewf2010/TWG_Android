@@ -7,6 +7,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -15,10 +17,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import com.modusgo.ubi.Constants;
-
 import android.content.Context;
 import android.telephony.TelephonyManager;
+
+import com.modusgo.ubi.Constants;
 
 public class Utils {
 	
@@ -103,4 +105,53 @@ public class Utils {
 		return meters*0.00062137f;
 	}
 	
+	public static int durationInMinutes(Date startDate, Date endDate)
+    {
+		Calendar startCalendar = Calendar.getInstance();
+		startCalendar.setTime(startDate);
+		Calendar endCalendar = Calendar.getInstance();
+		endCalendar.setTime(endDate);
+		
+        int years 	= endCalendar.get(Calendar.YEAR) 		- startCalendar.get(Calendar.YEAR);
+        int days 	= endCalendar.get(Calendar.DAY_OF_YEAR) - startCalendar.get(Calendar.DAY_OF_YEAR);
+        int hours 	= endCalendar.get(Calendar.HOUR_OF_DAY) - startCalendar.get(Calendar.HOUR_OF_DAY);
+        int mins 	= endCalendar.get(Calendar.MINUTE) 		- startCalendar.get(Calendar.MINUTE);
+
+        if (mins < 0) {
+            hours = hours - 1;
+            mins  = mins + 60;
+        }
+
+        if (hours < 0) {
+            days  = days - 1;
+            hours = hours + 24;
+        }
+
+        // Leap year corrections
+        int daysInYear = 365;
+        Calendar leapYear = Calendar.getInstance();
+        leapYear.set( startCalendar.get(Calendar.YEAR), 11, 31, 23, 59, 59);
+        if (leapYear.get(Calendar.DAY_OF_YEAR) == 366) {
+            leapYear.set( startCalendar.get(Calendar.YEAR), 1, 29, 23, 59, 59);
+            if (startCalendar.before(leapYear))
+                daysInYear = 366;
+        }
+
+        leapYear.set( endCalendar.get(Calendar.YEAR), 11, 31, 23, 59, 59);
+        if (leapYear.get(Calendar.DAY_OF_YEAR) == 366) {
+            leapYear.set( endCalendar.get(Calendar.YEAR), 1, 29, 23, 59, 59);
+            if (endCalendar.after(leapYear)) {
+                daysInYear = 366;
+                if (years > 0)
+                    days = days - 1;
+            }
+        }
+
+        if (days < 0) {
+            years--;
+            days = days + daysInYear;
+        }
+
+        return mins+hours*60+days*24*60+years*daysInYear*24*60;   
+    }
 }

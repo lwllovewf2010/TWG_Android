@@ -9,7 +9,7 @@ import java.util.Locale;
 
 import com.google.android.gms.maps.model.LatLng;
 
-public class Trip implements Serializable{
+public class Trip extends ListItem implements Serializable{
 	
 	private static final long serialVersionUID = 2355015935997524870L;
 	long id;
@@ -23,6 +23,7 @@ public class Trip implements Serializable{
 	ArrayList<Point> points;
 	ArrayList<ArrayList<LatLng>> speedingRoute;
 	ArrayList<Event> events;
+	String grade;
 	
 	enum EventType {START, STOP, HARSH_BRAKING, HARSH_ACCELERATION, SPEEDING, PHONE_USAGE, APP_USAGE};
 	
@@ -59,6 +60,10 @@ public class Trip implements Serializable{
 	
 	public String getEndDateString() {
 		return sdfTo.format(endDate);
+	}
+	
+	public Date getEndDate() {
+		return endDate;
 	}
 	
 	static class Point {

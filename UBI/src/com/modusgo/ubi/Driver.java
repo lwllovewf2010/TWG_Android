@@ -32,7 +32,7 @@ public class Driver implements Serializable{
 	public int drivingTime;
 	public String markerIcon;
 	
-	public LinkedHashMap<String, ArrayList<Trip>> tripsMap = new LinkedHashMap<>();
+	public ArrayList<ListItem> tripsMap = new ArrayList<ListItem>();
 	
 	public Driver(String name, String score){
 		this.name = name;
