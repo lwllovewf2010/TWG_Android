@@ -12,5 +12,11 @@ public class Constants {
 
 	public static final String API_BASE_URL = "https://api.modusgo.com/api/mobile/v1/";
 	public static final String API_PLATFORM = "android";
+	
+	//-------------------- DD ---------------------
+
+	public static final String PREF_ENABLED = "enabled";
+	public static final String PREF_CALL_TIME = "calltime";
+	public static final String PREF_BLOCKED_CALLS_COUNT = "blockedcalls";
 
 }
