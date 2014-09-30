@@ -23,6 +23,8 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.modusgo.demo.R;
+
 public class SettingsViewFragment extends Fragment{	
 	
 	ProgressBar progress;

@@ -2,6 +2,8 @@ package com.modusgo.ubi;
 
 import java.util.ArrayList;
 
+import com.modusgo.demo.R;
+
 public class DbHelper {
 	
 	public DbHelper() {

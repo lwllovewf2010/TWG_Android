@@ -2,6 +2,8 @@ package com.modusgo.ubi;
 
 import android.os.Bundle;
 
+import com.modusgo.demo.R;
+
 
 public class SettingsActivity extends MainActivity {
 	

@@ -12,6 +12,8 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.modusgo.demo.R;
+
 public class ScoreCirclesActivity extends MainActivity{
 
 	public static final String SAVED_CIRCLES_BUNDLE = "circlesBundle";

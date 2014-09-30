@@ -39,6 +39,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.LatLngBounds.Builder;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.modusgo.demo.R;
 import com.modusgo.ubi.utils.Utils;
 
 public class FindMyCarActivity extends MainActivity implements ConnectionCallbacks,

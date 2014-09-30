@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.modusgo.demo.R;
 import com.modusgo.ubi.customviews.ExpandableHeightGridView;
 
 public class ScoreInfoActivity extends MainActivity{

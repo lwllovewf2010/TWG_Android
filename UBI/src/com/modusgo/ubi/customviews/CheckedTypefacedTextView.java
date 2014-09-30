@@ -6,7 +6,7 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.widget.CheckedTextView;
 
-import com.modusgo.ubi.R;
+import com.modusgo.demo.R;
 
 
 public class CheckedTypefacedTextView extends CheckedTextView {

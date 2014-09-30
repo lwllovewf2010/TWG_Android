@@ -6,7 +6,7 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-import com.modusgo.ubi.R;
+import com.modusgo.demo.R;
 
 
 public class TypefacedTextView extends TextView {

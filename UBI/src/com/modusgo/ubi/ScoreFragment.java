@@ -27,6 +27,7 @@ import android.widget.TextView;
 
 import com.echo.holographlibrary.Bar;
 import com.echo.holographlibrary.BarGraph;
+import com.modusgo.demo.R;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;

@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
+import com.modusgo.demo.R;
 import com.modusgo.ubi.customviews.ExpandablePanel;
 import com.modusgo.ubi.customviews.ExpandablePanel.OnExpandListener;
 
