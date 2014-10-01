@@ -10,14 +10,7 @@ import com.modusgo.ubi.Constants;
 
 public class PhoneUnlockReceiver extends BroadcastReceiver {
 
-	public static final String ADDRESS = "address"; 
-	public static final String DATE = "date"; 
-	public static final String READ = "read"; 
-	public static final String STATUS = "status"; 
-	public static final String TYPE = "type"; 
-	public static final String BODY = "body"; 
-	public static final int MESSAGE_TYPE_INBOX = 1;
-	public static final int MESSAGE_TYPE_SENT = 2; 
+	public static final String PREF_UNLOCK_COUNT = "unlockCount";
 	
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -25,8 +18,8 @@ public class PhoneUnlockReceiver extends BroadcastReceiver {
     	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
     	String action = intent.getAction();
     	
-    	if(action.equals(Intent.ACTION_USER_PRESENT) /*&& prefs.getBoolean(Constants.PREF_ENABLED, false)*/){
-	    	System.out.println("unlock");
+    	if(prefs.getBoolean(Constants.PREF_DD_ENABLED, false) && action.equals(Intent.ACTION_USER_PRESENT)){
+	    	prefs.edit().putInt(PREF_UNLOCK_COUNT, prefs.getInt(PREF_UNLOCK_COUNT, 0)+1).commit();
     	}
     }
 
