@@ -16,7 +16,7 @@ import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
-public class IncomingCallReceiver extends BroadcastReceiver {
+public class CallReceiver extends BroadcastReceiver {
 
 	public static final String PREF_CALL_START = "callStartTime";
 	public static final String PREF_CALL_END = "callEndTime";

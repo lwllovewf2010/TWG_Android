@@ -182,7 +182,7 @@
             </intent-filter>
         </receiver>
         
-        <receiver android:name="com.modusgo.dd.IncomingCallReceiver">
+        <receiver android:name="com.modusgo.dd.CallReceiver">
             <intent-filter android:priority="1000">                                  
                 <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
