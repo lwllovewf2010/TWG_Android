@@ -1,26 +1,26 @@
 package com.modusgo.dd;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
+import com.modusgo.ubi.Constants;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
-
-import com.modusgo.ubi.Constants;
+import android.widget.Toast;
 
 public class IncomingCallReceiver extends BroadcastReceiver {
 
-	public static final String ADDRESS = "address"; 
-	public static final String DATE = "date"; 
-	public static final String READ = "read"; 
-	public static final String STATUS = "status"; 
-	public static final String TYPE = "type"; 
-	public static final String BODY = "body"; 
-	public static final int MESSAGE_TYPE_INBOX = 1;
-	public static final int MESSAGE_TYPE_SENT = 2; 
-	
+	public static final String PREF_CALL_START = "callStartTime";
+	public static final String PREF_CALL_END = "callEndTime";
+	public static final String PREF_CALL_DURATION = "callDuration";
 	private static boolean callStarted = false;
 	private static long callStartTime = 0;
 	
@@ -30,21 +30,37 @@ public class IncomingCallReceiver extends BroadcastReceiver {
     	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
     	Bundle b = intent.getExtras();
-		String phoneNumber = b.getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
-	    if(phoneNumber==null)
-	    	phoneNumber="nonum";
-	    
-	    if(b.getString(TelephonyManager.EXTRA_STATE).equals(TelephonyManager.EXTRA_STATE_OFFHOOK)){
-	    	    	callStarted = true;
-	    	    	callStartTime = System.currentTimeMillis();
-	    	    }
-	    	    else if(b.getString(TelephonyManager.EXTRA_STATE).equals(TelephonyManager.EXTRA_STATE_IDLE)){
-	    	    	if(callStarted){
-		    	    	prefs.edit().putLong(Constants.PREF_CALL_TIME, prefs.getLong(Constants.PREF_CALL_TIME, 0)+(System.currentTimeMillis()-callStartTime)).commit();
-	    		        callStarted = false;
-	    		        callStartTime = 0;
-	    	    	}
-	    	    }
+		
+    	if(prefs.getBoolean(Constants.PREF_DD_ENABLED, false)){
+		    if(b.getString(TelephonyManager.EXTRA_STATE).equals(TelephonyManager.EXTRA_STATE_OFFHOOK)){
+		    	callStarted = true;
+		    	callStartTime = System.currentTimeMillis();
+		    	
+		    	Calendar c = Calendar.getInstance();
+		    	SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT,Locale.getDefault());
+		    	prefs.edit().putString(PREF_CALL_START, sdf.format(c.getTime())).commit();
+		    	
+		    	Toast.makeText(context, "Call start", Toast.LENGTH_LONG).show();
+		    }
+		    else if(b.getString(TelephonyManager.EXTRA_STATE).equals(TelephonyManager.EXTRA_STATE_IDLE)){
+		    	if(callStarted){
+			    	prefs.edit().putLong(PREF_CALL_DURATION, prefs.getLong(PREF_CALL_DURATION, 0)+(System.currentTimeMillis()-callStartTime)).commit();
+		    		callStarted = false;
+		    		callStartTime = 0;
+		    		
+		    		Editor e = prefs.edit();
+			    	e.putLong(PREF_CALL_DURATION, prefs.getLong(PREF_CALL_DURATION, 0)+(System.currentTimeMillis()-callStartTime));
+		    		callStarted = false;
+		    		callStartTime = 0;
+		    		
+			    	Calendar c = Calendar.getInstance();
+			    	SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT,Locale.getDefault());
+			    	e.putString(PREF_CALL_END, sdf.format(c.getTime()));
+			    	e.commit();
+			    	
+			    	Toast.makeText(context, "Call end", Toast.LENGTH_LONG).show();
+		    	}
+		    }
+	    }
     }
-
 }
