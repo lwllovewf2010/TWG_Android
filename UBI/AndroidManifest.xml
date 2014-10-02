@@ -14,6 +14,9 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+	<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
+	<uses-permission android:name="com.modusgo.demo.permission.C2D_MESSAGE"/>
+	<permission android:name="com.modusgo.demo.permission.C2D_MESSAGE" android:protectionLevel="signature" />
 
     <!-- Maps API needs OpenGL ES 2.0. -->
     <uses-feature
@@ -37,6 +40,11 @@
             android:name="com.modusgo.ubi.InitActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.modusgo.ubi.SignInActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -44,9 +52,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.modusgo.ubi.SignInActivity"
+            android:name="com.modusgo.dd.RegisterByCodeActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
+            
+            <intent-filter>
+	        	<action android:name="android.intent.action.VIEW" />
+	          	<category android:name="android.intent.category.DEFAULT" />
+	          	<category android:name="android.intent.category.BROWSABLE" />
+	          	<data android:scheme="https" android:host="api.modusgo.com"
+	                android:path="/mobile_register" />
+	        </intent-filter>
         </activity>
         <activity
             android:name="com.modusgo.ubi.HomeActivity"
@@ -180,6 +196,10 @@
                 android:value="com.modusgo.ubi.DriverActivity" />
         </activity>
         <activity android:name="net.hockeyapp.android.UpdateActivity" />
+        
+        <service
+            android:name="com.modusgo.dd.CellBlockerService"
+            android:exported="false"/>
 
         <receiver android:name="com.modusgo.dd.PhoneUnlockReceiver" >
             <intent-filter android:priority="1000" >

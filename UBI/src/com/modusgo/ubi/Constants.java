@@ -16,6 +16,22 @@ public class Constants {
 	public static final String API_BASE_URL_POSTFIX = ".test.modusgo.com/v1/";
 	public static final String API_PLATFORM = "android";
 	
+	//---------------------- DD -----------------------
 	public static final String PREF_DD_ENABLED = "ddEnabled";
+	public static final String API_AUTH_LOGIN = "ddclient";
+	public static final String API_AUTH_PASS = "h7di3g$fi2g";
+	public static final String DD_API_BASE_URL = "https://api.modusgo.com/dd/v1";
+	public static final int CHECK_IGNITION_FREQUENCY = 30000;
+	public static final int CHECK_IGNITION_NOT_AVAILABLE_TIME_LIMIT = 120000;
+	public static final String INTENT_ACTION_UPDATE_MAIN = "com.modusgo.dd.UPDATE";
+	public static final String REGISTRATION_BY_CODE_URL = DD_API_BASE_URL+"/regcode_register";
+	public static final String PREF_REG_CODE = "reg_code";
+	
+    public static String getSendStatisticsURL(String mobile_id){
+		return DD_API_BASE_URL+"/"+mobile_id+"/send_stat";    	
+    }
+    public static String getCheckIgnitionURL(String mobile_id){
+		return DD_API_BASE_URL+"/"+mobile_id+"/ignition_status";    	
+    }
 
 }

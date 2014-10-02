@@ -26,6 +26,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.modusgo.dd.CellBlockerService;
 import com.modusgo.demo.R;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
@@ -71,6 +72,8 @@ public class HomeActivity extends MainActivity{
 		
 		setButtonUpVisibility(false);
 		
+		if(!prefs.getString(Constants.PREF_REG_CODE, "").equals(""))
+			startService(new Intent(this, CellBlockerService.class));
 	}
 	
 	@Override

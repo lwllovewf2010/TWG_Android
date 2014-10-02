@@ -4,8 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-import com.modusgo.ubi.Constants;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -14,7 +12,8 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
-import android.widget.Toast;
+
+import com.modusgo.ubi.Constants;
 
 public class CallReceiver extends BroadcastReceiver {
 
@@ -39,8 +38,6 @@ public class CallReceiver extends BroadcastReceiver {
 		    	Calendar c = Calendar.getInstance();
 		    	SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT,Locale.getDefault());
 		    	prefs.edit().putString(PREF_CALL_START, sdf.format(c.getTime())).commit();
-		    	
-		    	Toast.makeText(context, "Call start", Toast.LENGTH_LONG).show();
 		    }
 		    else if(b.getString(TelephonyManager.EXTRA_STATE).equals(TelephonyManager.EXTRA_STATE_IDLE)){
 		    	if(callStarted){
@@ -57,8 +54,6 @@ public class CallReceiver extends BroadcastReceiver {
 			    	SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT,Locale.getDefault());
 			    	e.putString(PREF_CALL_END, sdf.format(c.getTime()));
 			    	e.commit();
-			    	
-			    	Toast.makeText(context, "Call end", Toast.LENGTH_LONG).show();
 		    	}
 		    }
 	    }
