@@ -114,7 +114,6 @@ android.support.v4.app.Fragment:
     802:808:public void setHasOptionsMenu(boolean)
     854:854:public boolean getUserVisibleHint()
     861:869:public android.support.v4.app.LoaderManager getLoaderManager()
-    888:892:public void startActivityForResult(android.content.Intent,int)
     1332:1333:public void registerForContextMenu(android.view.View)
     1343:1344:public void unregisterForContextMenu(android.view.View)
     1454:1460:android.support.v4.app.Fragment findFragmentByWho(java.lang.String)
@@ -252,43 +251,239 @@ android.support.v4.app.NavUtils$NavUtilsImplJB:
 android.support.v4.app.NavUtilsJB:
     23:23:NavUtilsJB()
     29:29:public static boolean shouldUpRecreateTask(android.app.Activity,android.content.Intent)
-android.support.v4.app.NotificationBuilderWithActions
-android.support.v4.app.NotificationBuilderWithBuilderAccessor
-android.support.v4.app.NotificationCompat
+android.support.v4.app.NotificationCompat:
+    public static final int DEFAULT_ALL
+    public static final int DEFAULT_SOUND
+    public static final int DEFAULT_VIBRATE
+    public static final int DEFAULT_LIGHTS
+    public static final int STREAM_DEFAULT
+    public static final int FLAG_SHOW_LIGHTS
+    public static final int FLAG_ONGOING_EVENT
+    public static final int FLAG_INSISTENT
+    public static final int FLAG_ONLY_ALERT_ONCE
+    public static final int FLAG_AUTO_CANCEL
+    public static final int FLAG_NO_CLEAR
+    public static final int FLAG_FOREGROUND_SERVICE
+    public static final int FLAG_HIGH_PRIORITY
+    public static final int FLAG_LOCAL_ONLY
+    public static final int FLAG_GROUP_SUMMARY
+    public static final int PRIORITY_DEFAULT
+    public static final int PRIORITY_LOW
+    public static final int PRIORITY_MIN
+    public static final int PRIORITY_HIGH
+    public static final int PRIORITY_MAX
+    public static final java.lang.String EXTRA_TITLE
+    public static final java.lang.String EXTRA_TITLE_BIG
+    public static final java.lang.String EXTRA_TEXT
+    public static final java.lang.String EXTRA_SUB_TEXT
+    public static final java.lang.String EXTRA_INFO_TEXT
+    public static final java.lang.String EXTRA_SUMMARY_TEXT
+    public static final java.lang.String EXTRA_SMALL_ICON
+    public static final java.lang.String EXTRA_LARGE_ICON
+    public static final java.lang.String EXTRA_LARGE_ICON_BIG
+    public static final java.lang.String EXTRA_PROGRESS
+    public static final java.lang.String EXTRA_PROGRESS_MAX
+    public static final java.lang.String EXTRA_PROGRESS_INDETERMINATE
+    public static final java.lang.String EXTRA_SHOW_CHRONOMETER
+    public static final java.lang.String EXTRA_PICTURE
+    public static final java.lang.String EXTRA_TEXT_LINES
+    public static final java.lang.String EXTRA_PEOPLE
+    40:1769:public NotificationCompat()
+    2379:2388:private static android.app.Notification[] getNotificationArrayFromBundle(android.os.Bundle,java.lang.String)
+    2397:2397:public static android.os.Bundle getExtras(android.app.Notification)
+    2405:2405:public static int getActionCount(android.app.Notification)
+    2415:2415:public static android.support.v4.app.NotificationCompat$Action getAction(android.app.Notification,int)
+    2425:2425:public static boolean getLocalOnly(android.app.Notification)
+    2433:2433:public static java.lang.String getGroup(android.app.Notification)
+    2443:2443:public static boolean isGroupSummary(android.app.Notification)
+    2459:2459:public static java.lang.String getSortKey(android.app.Notification)
+    40:40:static synthetic android.app.Notification[] access$500(android.os.Bundle,java.lang.String)
 android.support.v4.app.NotificationCompat$1
-android.support.v4.app.NotificationCompat$Action
-android.support.v4.app.NotificationCompat$Action$1
+android.support.v4.app.NotificationCompat$Action:
+    1447:1448:public NotificationCompat$Action(int,java.lang.CharSequence,android.app.PendingIntent)
+    1451:1457:private NotificationCompat$Action(int,java.lang.CharSequence,android.app.PendingIntent,android.os.Bundle,android.support.v4.app.RemoteInput[])
+    1428:1428:static synthetic android.os.Bundle access$300(android.support.v4.app.NotificationCompat$Action)
+    1428:1428:synthetic NotificationCompat$Action(int,java.lang.CharSequence,android.app.PendingIntent,android.os.Bundle,android.support.v4.app.RemoteInput[],android.support.v4.app.NotificationCompat$1)
+android.support.v4.app.NotificationCompat$Action$1:
+    1705:1705:public android.support.v4.app.NotificationCompat$Action build(int,java.lang.CharSequence,android.app.PendingIntent,android.os.Bundle,android.support.v4.app.RemoteInputCompatBase$RemoteInput[])
+    1711:1711:public android.support.v4.app.NotificationCompat$Action[] newArray(int)
+    1700:1700:public bridge synthetic android.support.v4.app.NotificationCompatBase$Action[] newArray(int)
+    1700:1700:public bridge synthetic android.support.v4.app.NotificationCompatBase$Action build(int,java.lang.CharSequence,android.app.PendingIntent,android.os.Bundle,android.support.v4.app.RemoteInputCompatBase$RemoteInput[])
 android.support.v4.app.NotificationCompat$Action$Builder
 android.support.v4.app.NotificationCompat$Action$Extender
 android.support.v4.app.NotificationCompat$Action$WearableExtender
-android.support.v4.app.NotificationCompat$BigPictureStyle
-android.support.v4.app.NotificationCompat$BigTextStyle
-android.support.v4.app.NotificationCompat$Builder
+android.support.v4.app.NotificationCompat$BigPictureStyle:
+    1259:1261:public NotificationCompat$BigPictureStyle(android.support.v4.app.NotificationCompat$Builder)
+    1268:1269:public android.support.v4.app.NotificationCompat$BigPictureStyle setBigContentTitle(java.lang.CharSequence)
+    1276:1278:public android.support.v4.app.NotificationCompat$BigPictureStyle setSummaryText(java.lang.CharSequence)
+    1285:1286:public android.support.v4.app.NotificationCompat$BigPictureStyle bigPicture(android.graphics.Bitmap)
+    1293:1295:public android.support.v4.app.NotificationCompat$BigPictureStyle bigLargeIcon(android.graphics.Bitmap)
+android.support.v4.app.NotificationCompat$BigTextStyle:
+    1326:1328:public NotificationCompat$BigTextStyle(android.support.v4.app.NotificationCompat$Builder)
+    1335:1336:public android.support.v4.app.NotificationCompat$BigTextStyle setBigContentTitle(java.lang.CharSequence)
+    1343:1345:public android.support.v4.app.NotificationCompat$BigTextStyle setSummaryText(java.lang.CharSequence)
+    1353:1354:public android.support.v4.app.NotificationCompat$BigTextStyle bigText(java.lang.CharSequence)
+android.support.v4.app.NotificationCompat$Builder:
+    690:691:public android.support.v4.app.NotificationCompat$Builder setWhen(long)
+    706:707:public android.support.v4.app.NotificationCompat$Builder setUsesChronometer(boolean)
+    733:735:public android.support.v4.app.NotificationCompat$Builder setSmallIcon(int,int)
+    764:765:public android.support.v4.app.NotificationCompat$Builder setSubText(java.lang.CharSequence)
+    774:775:public android.support.v4.app.NotificationCompat$Builder setNumber(int)
+    782:783:public android.support.v4.app.NotificationCompat$Builder setContentInfo(java.lang.CharSequence)
+    791:794:public android.support.v4.app.NotificationCompat$Builder setProgress(int,int,boolean)
+    801:802:public android.support.v4.app.NotificationCompat$Builder setContent(android.widget.RemoteViews)
+    826:827:public android.support.v4.app.NotificationCompat$Builder setDeleteIntent(android.app.PendingIntent)
+    844:846:public android.support.v4.app.NotificationCompat$Builder setFullScreenIntent(android.app.PendingIntent,boolean)
+    854:855:public android.support.v4.app.NotificationCompat$Builder setTicker(java.lang.CharSequence)
+    864:866:public android.support.v4.app.NotificationCompat$Builder setTicker(java.lang.CharSequence,android.widget.RemoteViews)
+    873:874:public android.support.v4.app.NotificationCompat$Builder setLargeIcon(android.graphics.Bitmap)
+    881:883:public android.support.v4.app.NotificationCompat$Builder setSound(android.net.Uri)
+    893:895:public android.support.v4.app.NotificationCompat$Builder setSound(android.net.Uri,int)
+    905:906:public android.support.v4.app.NotificationCompat$Builder setVibrate(long[])
+    915:921:public android.support.v4.app.NotificationCompat$Builder setLights(int,int,int)
+    936:937:public android.support.v4.app.NotificationCompat$Builder setOngoing(boolean)
+    945:946:public android.support.v4.app.NotificationCompat$Builder setOnlyAlertOnce(boolean)
+    956:957:public android.support.v4.app.NotificationCompat$Builder setAutoCancel(boolean)
+    967:968:public android.support.v4.app.NotificationCompat$Builder setLocalOnly(boolean)
+    982:986:public android.support.v4.app.NotificationCompat$Builder setDefaults(int)
+    990:995:private void setFlag(int,boolean)
+    1015:1016:public android.support.v4.app.NotificationCompat$Builder setPriority(int)
+    1031:1032:public android.support.v4.app.NotificationCompat$Builder setGroup(java.lang.String)
+    1043:1044:public android.support.v4.app.NotificationCompat$Builder setGroupSummary(boolean)
+    1060:1061:public android.support.v4.app.NotificationCompat$Builder setSortKey(java.lang.String)
+    1072:1079:public android.support.v4.app.NotificationCompat$Builder addExtras(android.os.Bundle)
+    1095:1096:public android.support.v4.app.NotificationCompat$Builder setExtras(android.os.Bundle)
+    1110:1113:public android.os.Bundle getExtras()
+    1133:1134:public android.support.v4.app.NotificationCompat$Builder addAction(int,java.lang.CharSequence,android.app.PendingIntent)
+    1152:1153:public android.support.v4.app.NotificationCompat$Builder addAction(android.support.v4.app.NotificationCompat$Action)
+    1165:1171:public android.support.v4.app.NotificationCompat$Builder setStyle(android.support.v4.app.NotificationCompat$Style)
+    1179:1180:public android.support.v4.app.NotificationCompat$Builder extend(android.support.v4.app.NotificationCompat$Extender)
+    1188:1188:public android.app.Notification getNotification()
 android.support.v4.app.NotificationCompat$Extender
-android.support.v4.app.NotificationCompat$InboxStyle
-android.support.v4.app.NotificationCompat$NotificationCompatImpl
-android.support.v4.app.NotificationCompat$NotificationCompatImplApi20
-android.support.v4.app.NotificationCompat$NotificationCompatImplBase
-android.support.v4.app.NotificationCompat$NotificationCompatImplGingerbread
-android.support.v4.app.NotificationCompat$NotificationCompatImplHoneycomb
-android.support.v4.app.NotificationCompat$NotificationCompatImplIceCreamSandwich
-android.support.v4.app.NotificationCompat$NotificationCompatImplJellybean
-android.support.v4.app.NotificationCompat$NotificationCompatImplKitKat
-android.support.v4.app.NotificationCompat$Style
+android.support.v4.app.NotificationCompat$InboxStyle:
+    1388:1390:public NotificationCompat$InboxStyle(android.support.v4.app.NotificationCompat$Builder)
+    1397:1398:public android.support.v4.app.NotificationCompat$InboxStyle setBigContentTitle(java.lang.CharSequence)
+    1405:1407:public android.support.v4.app.NotificationCompat$InboxStyle setSummaryText(java.lang.CharSequence)
+    1414:1415:public android.support.v4.app.NotificationCompat$InboxStyle addLine(java.lang.CharSequence)
+android.support.v4.app.NotificationCompat$NotificationCompatImpl:
+    public abstract android.os.Bundle getExtras(android.app.Notification)
+    public abstract int getActionCount(android.app.Notification)
+    public abstract android.support.v4.app.NotificationCompat$Action getAction(android.app.Notification,int)
+    public abstract android.support.v4.app.NotificationCompat$Action[] getActionsFromParcelableArrayList(java.util.ArrayList)
+    public abstract java.util.ArrayList getParcelableArrayListForActions(android.support.v4.app.NotificationCompat$Action[])
+    public abstract boolean getLocalOnly(android.app.Notification)
+    public abstract java.lang.String getGroup(android.app.Notification)
+    public abstract boolean isGroupSummary(android.app.Notification)
+    public abstract java.lang.String getSortKey(android.app.Notification)
+android.support.v4.app.NotificationCompat$NotificationCompatImplApi20:
+    525:525:public android.support.v4.app.NotificationCompat$Action getAction(android.app.Notification,int)
+    532:532:public android.support.v4.app.NotificationCompat$Action[] getActionsFromParcelableArrayList(java.util.ArrayList)
+    539:539:public java.util.ArrayList getParcelableArrayListForActions(android.support.v4.app.NotificationCompat$Action[])
+    544:544:public boolean getLocalOnly(android.app.Notification)
+    549:549:public java.lang.String getGroup(android.app.Notification)
+    554:554:public boolean isGroupSummary(android.app.Notification)
+    559:559:public java.lang.String getSortKey(android.app.Notification)
+android.support.v4.app.NotificationCompat$NotificationCompatImplBase:
+    314:314:public android.os.Bundle getExtras(android.app.Notification)
+    319:319:public int getActionCount(android.app.Notification)
+    324:324:public android.support.v4.app.NotificationCompat$Action getAction(android.app.Notification,int)
+    330:330:public android.support.v4.app.NotificationCompat$Action[] getActionsFromParcelableArrayList(java.util.ArrayList)
+    335:335:public java.util.ArrayList getParcelableArrayListForActions(android.support.v4.app.NotificationCompat$Action[])
+    340:340:public boolean getLocalOnly(android.app.Notification)
+    345:345:public java.lang.String getGroup(android.app.Notification)
+    350:350:public boolean isGroupSummary(android.app.Notification)
+    355:355:public java.lang.String getSortKey(android.app.Notification)
+android.support.v4.app.NotificationCompat$NotificationCompatImplJellybean:
+    410:410:public android.os.Bundle getExtras(android.app.Notification)
+    415:415:public int getActionCount(android.app.Notification)
+    420:420:public android.support.v4.app.NotificationCompat$Action getAction(android.app.Notification,int)
+    427:427:public android.support.v4.app.NotificationCompat$Action[] getActionsFromParcelableArrayList(java.util.ArrayList)
+    434:434:public java.util.ArrayList getParcelableArrayListForActions(android.support.v4.app.NotificationCompat$Action[])
+    439:439:public boolean getLocalOnly(android.app.Notification)
+    444:444:public java.lang.String getGroup(android.app.Notification)
+    449:449:public boolean isGroupSummary(android.app.Notification)
+    454:454:public java.lang.String getSortKey(android.app.Notification)
+android.support.v4.app.NotificationCompat$NotificationCompatImplKitKat:
+    474:474:public android.os.Bundle getExtras(android.app.Notification)
+    479:479:public int getActionCount(android.app.Notification)
+    484:484:public android.support.v4.app.NotificationCompat$Action getAction(android.app.Notification,int)
+    490:490:public boolean getLocalOnly(android.app.Notification)
+    495:495:public java.lang.String getGroup(android.app.Notification)
+    500:500:public boolean isGroupSummary(android.app.Notification)
+    505:505:public java.lang.String getSortKey(android.app.Notification)
+android.support.v4.app.NotificationCompat$Style:
+    android.support.v4.app.NotificationCompat$Builder mBuilder
+    1214:1220:public void setBuilder(android.support.v4.app.NotificationCompat$Builder)
+    1223:1227:public android.app.Notification build()
 android.support.v4.app.NotificationCompat$WearableExtender
-android.support.v4.app.NotificationCompatApi20
-android.support.v4.app.NotificationCompatApi20$Builder
-android.support.v4.app.NotificationCompatBase
-android.support.v4.app.NotificationCompatBase$Action
-android.support.v4.app.NotificationCompatBase$Action$Factory
+android.support.v4.app.NotificationCompatApi20:
+    30:31:NotificationCompatApi20()
+    103:103:public static android.support.v4.app.NotificationCompatBase$Action getAction(android.app.Notification,int,android.support.v4.app.NotificationCompatBase$Action$Factory,android.support.v4.app.RemoteInputCompatBase$RemoteInput$Factory)
+    109:111:private static android.support.v4.app.NotificationCompatBase$Action getActionCompatFromAction(android.app.Notification$Action,android.support.v4.app.NotificationCompatBase$Action$Factory,android.support.v4.app.RemoteInputCompatBase$RemoteInput$Factory)
+    117:127:private static android.app.Notification$Action getActionFromActionCompat(android.support.v4.app.NotificationCompatBase$Action)
+    140:148:public static android.support.v4.app.NotificationCompatBase$Action[] getActionsFromParcelableArrayList(java.util.ArrayList,android.support.v4.app.NotificationCompatBase$Action$Factory,android.support.v4.app.RemoteInputCompatBase$RemoteInput$Factory)
+    158:165:public static java.util.ArrayList getParcelableArrayListForActions(android.support.v4.app.NotificationCompatBase$Action[])
+    169:169:public static boolean getLocalOnly(android.app.Notification)
+    173:173:public static java.lang.String getGroup(android.app.Notification)
+    177:177:public static boolean isGroupSummary(android.app.Notification)
+    181:181:public static java.lang.String getSortKey(android.app.Notification)
+android.support.v4.app.NotificationCompatBase:
+    22:24:NotificationCompatBase()
+android.support.v4.app.NotificationCompatBase$Action:
+    24:31:public NotificationCompatBase$Action()
+android.support.v4.app.NotificationCompatBase$Action$Factory:
+    public abstract android.support.v4.app.NotificationCompatBase$Action build(int,java.lang.CharSequence,android.app.PendingIntent,android.os.Bundle,android.support.v4.app.RemoteInputCompatBase$RemoteInput[])
+    public abstract android.support.v4.app.NotificationCompatBase$Action[] newArray(int)
 android.support.v4.app.NotificationCompatExtras
-android.support.v4.app.NotificationCompatGingerbread
-android.support.v4.app.NotificationCompatHoneycomb
-android.support.v4.app.NotificationCompatIceCreamSandwich
-android.support.v4.app.NotificationCompatJellybean
-android.support.v4.app.NotificationCompatJellybean$Builder
-android.support.v4.app.NotificationCompatKitKat
-android.support.v4.app.NotificationCompatKitKat$Builder
+android.support.v4.app.NotificationCompatGingerbread:
+    23:23:NotificationCompatGingerbread()
+android.support.v4.app.NotificationCompatHoneycomb:
+    25:25:NotificationCompatHoneycomb()
+android.support.v4.app.NotificationCompatIceCreamSandwich:
+    25:25:NotificationCompatIceCreamSandwich()
+android.support.v4.app.NotificationCompatJellybean:
+    public static final java.lang.String TAG
+    static final java.lang.String EXTRA_LOCAL_ONLY
+    static final java.lang.String EXTRA_ACTION_EXTRAS
+    static final java.lang.String EXTRA_REMOTE_INPUTS
+    static final java.lang.String EXTRA_GROUP_KEY
+    static final java.lang.String EXTRA_GROUP_SUMMARY
+    static final java.lang.String EXTRA_SORT_KEY
+    static final java.lang.String EXTRA_USE_SIDE_CHANNEL
+    private static final java.lang.String KEY_ICON
+    private static final java.lang.String KEY_TITLE
+    private static final java.lang.String KEY_ACTION_INTENT
+    private static final java.lang.String KEY_EXTRAS
+    private static final java.lang.String KEY_REMOTE_INPUTS
+    private static java.lang.Class sActionClass
+    private static java.lang.reflect.Field sActionsField
+    private static java.lang.reflect.Field sActionIconField
+    private static java.lang.reflect.Field sActionTitleField
+    private static java.lang.reflect.Field sActionIntentField
+    private static boolean sActionsAccessFailed
+    33:64:NotificationCompatJellybean()
+    247:253:public static android.support.v4.app.NotificationCompatBase$Action readAction(android.support.v4.app.NotificationCompatBase$Action$Factory,android.support.v4.app.RemoteInputCompatBase$RemoteInput$Factory,int,java.lang.CharSequence,android.app.PendingIntent,android.os.Bundle)
+    268:271:public static int getActionCount(android.app.Notification)
+    277:299:public static android.support.v4.app.NotificationCompatBase$Action getAction(android.app.Notification,int,android.support.v4.app.NotificationCompatBase$Action$Factory,android.support.v4.app.RemoteInputCompatBase$RemoteInput$Factory)
+    303:314:private static java.lang.Object[] getActionObjectsLocked(android.app.Notification)
+    318:337:private static boolean ensureActionReflectionReadyLocked()
+    344:352:public static android.support.v4.app.NotificationCompatBase$Action[] getActionsFromParcelableArrayList(java.util.ArrayList,android.support.v4.app.NotificationCompatBase$Action$Factory,android.support.v4.app.RemoteInputCompatBase$RemoteInput$Factory)
+    358:358:private static android.support.v4.app.NotificationCompatBase$Action getActionFromBundle(android.os.Bundle,android.support.v4.app.NotificationCompatBase$Action$Factory,android.support.v4.app.RemoteInputCompatBase$RemoteInput$Factory)
+    370:377:public static java.util.ArrayList getParcelableArrayListForActions(android.support.v4.app.NotificationCompatBase$Action[])
+    381:388:private static android.os.Bundle getBundleForAction(android.support.v4.app.NotificationCompatBase$Action)
+    392:392:public static boolean getLocalOnly(android.app.Notification)
+    396:396:public static java.lang.String getGroup(android.app.Notification)
+    400:400:public static boolean isGroupSummary(android.app.Notification)
+    404:404:public static java.lang.String getSortKey(android.app.Notification)
+android.support.v4.app.NotificationCompatKitKat:
+    30:31:NotificationCompatKitKat()
+    113:113:public static android.os.Bundle getExtras(android.app.Notification)
+    117:117:public static int getActionCount(android.app.Notification)
+    123:130:public static android.support.v4.app.NotificationCompatBase$Action getAction(android.app.Notification,int,android.support.v4.app.NotificationCompatBase$Action$Factory,android.support.v4.app.RemoteInputCompatBase$RemoteInput$Factory)
+    135:135:public static boolean getLocalOnly(android.app.Notification)
+    139:139:public static java.lang.String getGroup(android.app.Notification)
+    143:143:public static boolean isGroupSummary(android.app.Notification)
+    147:147:public static java.lang.String getSortKey(android.app.Notification)
 android.support.v4.app.NotificationCompatSideChannelService
 android.support.v4.app.NotificationCompatSideChannelService$1
 android.support.v4.app.NotificationCompatSideChannelService$NotificationSideChannelStub
@@ -305,18 +500,56 @@ android.support.v4.app.NotificationManagerCompat$SideChannelManager$ListenerReco
 android.support.v4.app.NotificationManagerCompat$Task
 android.support.v4.app.NotificationManagerCompatEclair
 android.support.v4.app.NotificationManagerCompatIceCreamSandwich
-android.support.v4.app.RemoteInput
-android.support.v4.app.RemoteInput$1
+android.support.v4.app.RemoteInput:
+    private static final java.lang.String TAG
+    public static final java.lang.String RESULTS_CLIP_LABEL
+    public static final java.lang.String EXTRA_RESULTS_DATA
+    44:50:RemoteInput(java.lang.String,java.lang.CharSequence,java.lang.CharSequence[],boolean,android.os.Bundle)
+    188:188:public static android.os.Bundle getResultsFromIntent(android.content.Intent)
+    204:205:public static void addResultsToIntent(android.support.v4.app.RemoteInput[],android.content.Intent,android.os.Bundle)
+android.support.v4.app.RemoteInput$1:
+    268:268:public android.support.v4.app.RemoteInput build(java.lang.String,java.lang.CharSequence,java.lang.CharSequence[],boolean,android.os.Bundle)
+    273:273:public android.support.v4.app.RemoteInput[] newArray(int)
+    263:263:public bridge synthetic android.support.v4.app.RemoteInputCompatBase$RemoteInput[] newArray(int)
+    263:263:public bridge synthetic android.support.v4.app.RemoteInputCompatBase$RemoteInput build(java.lang.String,java.lang.CharSequence,java.lang.CharSequence[],boolean,android.os.Bundle)
 android.support.v4.app.RemoteInput$Builder
-android.support.v4.app.RemoteInput$Impl
-android.support.v4.app.RemoteInput$ImplApi20
-android.support.v4.app.RemoteInput$ImplBase
-android.support.v4.app.RemoteInput$ImplJellybean
-android.support.v4.app.RemoteInputCompatApi20
-android.support.v4.app.RemoteInputCompatBase
-android.support.v4.app.RemoteInputCompatBase$RemoteInput
-android.support.v4.app.RemoteInputCompatBase$RemoteInput$Factory
-android.support.v4.app.RemoteInputCompatJellybean
+android.support.v4.app.RemoteInput$Impl:
+    public abstract android.os.Bundle getResultsFromIntent(android.content.Intent)
+    public abstract void addResultsToIntent(android.support.v4.app.RemoteInput[],android.content.Intent,android.os.Bundle)
+android.support.v4.app.RemoteInput$ImplApi20:
+    243:243:public android.os.Bundle getResultsFromIntent(android.content.Intent)
+    248:249:public void addResultsToIntent(android.support.v4.app.RemoteInput[],android.content.Intent,android.os.Bundle)
+android.support.v4.app.RemoteInput$ImplBase:
+    218:219:public android.os.Bundle getResultsFromIntent(android.content.Intent)
+    224:225:public void addResultsToIntent(android.support.v4.app.RemoteInput[],android.content.Intent,android.os.Bundle)
+android.support.v4.app.RemoteInput$ImplJellybean:
+    231:231:public android.os.Bundle getResultsFromIntent(android.content.Intent)
+    236:237:public void addResultsToIntent(android.support.v4.app.RemoteInput[],android.content.Intent,android.os.Bundle)
+android.support.v4.app.RemoteInputCompatApi20:
+    23:23:RemoteInputCompatApi20()
+    26:35:static android.support.v4.app.RemoteInputCompatBase$RemoteInput[] toCompat(android.app.RemoteInput[],android.support.v4.app.RemoteInputCompatBase$RemoteInput$Factory)
+    56:56:static android.os.Bundle getResultsFromIntent(android.content.Intent)
+    61:62:static void addResultsToIntent(android.support.v4.app.RemoteInputCompatBase$RemoteInput[],android.content.Intent,android.os.Bundle)
+android.support.v4.app.RemoteInputCompatBase:
+    21:23:RemoteInputCompatBase()
+android.support.v4.app.RemoteInputCompatBase$RemoteInput:
+    23:30:public RemoteInputCompatBase$RemoteInput()
+android.support.v4.app.RemoteInputCompatBase$RemoteInput$Factory:
+    public abstract android.support.v4.app.RemoteInputCompatBase$RemoteInput build(java.lang.String,java.lang.CharSequence,java.lang.CharSequence[],boolean,android.os.Bundle)
+    public abstract android.support.v4.app.RemoteInputCompatBase$RemoteInput[] newArray(int)
+android.support.v4.app.RemoteInputCompatJellybean:
+    public static final java.lang.String RESULTS_CLIP_LABEL
+    public static final java.lang.String EXTRA_RESULTS_DATA
+    private static final java.lang.String KEY_RESULT_KEY
+    private static final java.lang.String KEY_LABEL
+    private static final java.lang.String KEY_CHOICES
+    private static final java.lang.String KEY_ALLOW_FREE_FORM_INPUT
+    private static final java.lang.String KEY_EXTRAS
+    24:24:RemoteInputCompatJellybean()
+    39:39:static android.support.v4.app.RemoteInputCompatBase$RemoteInput fromBundle(android.os.Bundle,android.support.v4.app.RemoteInputCompatBase$RemoteInput$Factory)
+    58:65:static android.support.v4.app.RemoteInputCompatBase$RemoteInput[] fromBundleArray(android.os.Bundle[],android.support.v4.app.RemoteInputCompatBase$RemoteInput$Factory)
+    80:91:static android.os.Bundle getResultsFromIntent(android.content.Intent)
+    96:106:static void addResultsToIntent(android.support.v4.app.RemoteInputCompatBase$RemoteInput[],android.content.Intent,android.os.Bundle)
 android.support.v4.app.ServiceCompat
 android.support.v4.app.ShareCompat
 android.support.v4.app.ShareCompat$IntentBuilder
@@ -2613,7 +2846,6 @@ com.google.android.gms.common.ConnectionResult:
     public static final int API_UNAVAILABLE
     public static final int DRIVE_EXTERNAL_STORAGE_REQUIRED
     public void startResolutionForResult(android.app.Activity,int)
-    public boolean hasResolution()
     public boolean isSuccess()
     public int getErrorCode()
     public android.app.PendingIntent getResolution()
@@ -2644,14 +2876,10 @@ com.google.android.gms.common.GooglePlayServicesUtil:
     public static boolean c(android.content.pm.PackageManager)
     public static java.lang.String f(android.content.Context,int)
     public static android.app.PendingIntent getErrorPendingIntent(int,android.content.Context,int)
-    public static android.app.Dialog getErrorDialog(int,android.app.Activity,int)
-    public static android.app.Dialog getErrorDialog(int,android.app.Activity,int,android.content.DialogInterface$OnCancelListener)
-    private static android.app.Dialog a(int,android.app.Activity,android.support.v4.app.Fragment,int,android.content.DialogInterface$OnCancelListener)
     public static boolean showErrorDialogFragment(int,android.app.Activity,int,android.content.DialogInterface$OnCancelListener)
     public static boolean b(int,android.app.Activity,android.support.v4.app.Fragment,int,android.content.DialogInterface$OnCancelListener)
     public static void showErrorNotification(int,android.content.Context)
     public static boolean showErrorDialogFragment(int,android.app.Activity,int)
-    public static boolean isUserRecoverableError(int)
     public static java.lang.String getOpenSourceSoftwareLicenseInfo(android.content.Context)
     public static android.content.res.Resources getRemoteResource(android.content.Context)
     private static java.lang.String B(android.content.Context)
@@ -4009,8 +4237,20 @@ com.google.android.gms.games.snapshot.Snapshots$CommitSnapshotResult
 com.google.android.gms.games.snapshot.Snapshots$DeleteSnapshotResult
 com.google.android.gms.games.snapshot.Snapshots$LoadSnapshotsResult
 com.google.android.gms.games.snapshot.Snapshots$OpenSnapshotResult
-com.google.android.gms.gcm.GoogleCloudMessaging
-com.google.android.gms.gcm.GoogleCloudMessaging$1
+com.google.android.gms.gcm.GoogleCloudMessaging:
+    public static final java.lang.String ERROR_SERVICE_NOT_AVAILABLE
+    public static final java.lang.String ERROR_MAIN_THREAD
+    public static final java.lang.String MESSAGE_TYPE_DELETED
+    public static final java.lang.String MESSAGE_TYPE_MESSAGE
+    public static final java.lang.String MESSAGE_TYPE_SEND_ERROR
+    public void close()
+    public void send(java.lang.String,java.lang.String,android.os.Bundle)
+    public void send(java.lang.String,java.lang.String,long,android.os.Bundle)
+    private void a(java.lang.String,java.lang.String,long,int,android.os.Bundle)
+    public void unregister()
+    private void iO()
+    public java.lang.String getMessageType(android.content.Intent)
+    synchronized void iP()
 com.google.android.gms.identity.intents.Address
 com.google.android.gms.identity.intents.Address$1
 com.google.android.gms.identity.intents.Address$2
@@ -4505,7 +4745,6 @@ com.google.android.gms.internal.gy:
 com.google.android.gms.internal.gy$a:
     public gy$a(java.lang.String,java.util.Collection,int,java.lang.String)
     public java.lang.String fj()
-com.google.android.gms.internal.gz
 com.google.android.gms.internal.h
 com.google.android.gms.internal.hb:
     public void an(int)
@@ -4562,7 +4801,6 @@ com.google.android.gms.internal.in:
     public static boolean d(java.lang.Object,java.lang.Object)
 com.google.android.gms.internal.ip:
     public static boolean gd()
-    public static boolean gf()
     public static boolean gg()
     public static boolean gh()
     public static boolean gi()
@@ -4615,7 +4853,6 @@ com.google.android.gms.internal.jc$a
 com.google.android.gms.internal.jd$a:
     public jd$a()
 com.google.android.gms.internal.jf:
-    public android.location.Location getLastLocation()
     public void requestLocationUpdates(com.google.android.gms.location.LocationRequest,android.app.PendingIntent)
     public void removeLocationUpdates(com.google.android.gms.location.LocationListener)
     public void removeLocationUpdates(android.app.PendingIntent)
@@ -4630,7 +4867,6 @@ com.google.android.gms.internal.jg:
     public void addGeofences(java.util.List,android.app.PendingIntent,com.google.android.gms.location.LocationClient$OnAddGeofencesResultListener)
     public void removeGeofences(android.app.PendingIntent,com.google.android.gms.location.LocationClient$OnRemoveGeofencesResultListener)
     public void removeGeofences(java.util.List,com.google.android.gms.location.LocationClient$OnRemoveGeofencesResultListener)
-    public android.location.Location getLastLocation()
     public void requestLocationUpdates(com.google.android.gms.location.LocationRequest,android.app.PendingIntent)
     public void removeLocationUpdates(com.google.android.gms.location.LocationListener)
     public void removeLocationUpdates(android.app.PendingIntent)
@@ -5036,14 +5272,12 @@ com.google.android.gms.location.LocationClient:
     public static int getGeofenceTransition(android.content.Intent)
     public static java.util.List getTriggeringGeofences(android.content.Intent)
     public static android.location.Location getTriggeringLocation(android.content.Intent)
-    public android.location.Location getLastLocation()
     public void requestLocationUpdates(com.google.android.gms.location.LocationRequest,com.google.android.gms.location.LocationListener,android.os.Looper)
     public void requestLocationUpdates(com.google.android.gms.location.LocationRequest,android.app.PendingIntent)
     public void removeLocationUpdates(com.google.android.gms.location.LocationListener)
     public void removeLocationUpdates(android.app.PendingIntent)
     public void setMockMode(boolean)
     public void setMockLocation(android.location.Location)
-    public boolean isConnecting()
     public void registerConnectionCallbacks(com.google.android.gms.common.GooglePlayServicesClient$ConnectionCallbacks)
     public boolean isConnectionCallbacksRegistered(com.google.android.gms.common.GooglePlayServicesClient$ConnectionCallbacks)
     public void unregisterConnectionCallbacks(com.google.android.gms.common.GooglePlayServicesClient$ConnectionCallbacks)
@@ -6419,7 +6653,45 @@ com.jeremyfeinstein.slidingmenu.lib.app.SlidingActivityHelper$1
 com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity
 com.jeremyfeinstein.slidingmenu.lib.app.SlidingListActivity
 com.jeremyfeinstein.slidingmenu.lib.app.SlidingPreferenceActivity
-com.modusgo.ubi.BuildConfig
+com.modusgo.dd.CallReceiver:
+    public static final java.lang.String PREF_CALL_START
+    public static final java.lang.String PREF_CALL_END
+    public static final java.lang.String PREF_CALL_DURATION
+com.modusgo.dd.CellBlockerService:
+    java.util.ArrayList whitelist
+    java.util.ArrayList blacklist
+com.modusgo.dd.GcmBroadcastReceiver
+com.modusgo.dd.GcmIntentService
+com.modusgo.dd.PhoneUnlockReceiver:
+    public static final java.lang.String PREF_UNLOCK_COUNT
+com.modusgo.dd.RegisterByCodeActivity:
+    public static final java.lang.String EXTRA_MESSAGE
+    public static final java.lang.String PROPERTY_REG_ID
+    private static final java.lang.String PROPERTY_APP_VERSION
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST
+    android.view.View layoutProgress
+com.modusgo.dd.RegisterByCodeActivity$UserRegistrationServerError:
+    private static final long serialVersionUID
+com.modusgo.demo.BuildConfig
+com.modusgo.demo.Manifest
+com.modusgo.demo.Manifest$permission
+com.modusgo.demo.R:
+    10:10:public R()
+com.modusgo.demo.R$anim
+com.modusgo.demo.R$array
+com.modusgo.demo.R$attr
+com.modusgo.demo.R$bool
+com.modusgo.demo.R$color
+com.modusgo.demo.R$dimen
+com.modusgo.demo.R$drawable
+com.modusgo.demo.R$id
+com.modusgo.demo.R$integer
+com.modusgo.demo.R$layout
+com.modusgo.demo.R$string
+com.modusgo.demo.R$style
+com.modusgo.demo.R$styleable:
+    3082:3082:public R$styleable()
+com.modusgo.demo.R$xml
 com.modusgo.ubi.CirclesFragment:
     public static final java.lang.String SAVED_USE_OF_SPEED
     public static final java.lang.String SAVED_CORNERING
@@ -6427,7 +6699,27 @@ com.modusgo.ubi.CirclesFragment:
     public static final java.lang.String SAVED_ROAD_ACCEL
     public static final java.lang.String SAVED_INTERSECTION_BRAKING
     public static final java.lang.String SAVED_ROAD_BRAKING
-com.modusgo.ubi.Constants
+com.modusgo.ubi.Constants:
+    public static final java.lang.String HOCKEY_APP_ID
+    public static final java.lang.String DATE_TIME_FORMAT
+    public static final java.lang.String PREF_CURRENT_DRIVER
+    public static final java.lang.String PREF_AUTH_KEY
+    public static final java.lang.String PREF_CLIENT_ID
+    public static final java.lang.String PREF_SHOW_TIP_POPUP
+    public static final java.lang.String API_BASE_URL
+    public static final java.lang.String API_BASE_URL_PREFIX
+    public static final java.lang.String API_BASE_URL_POSTFIX
+    public static final java.lang.String API_PLATFORM
+    public static final java.lang.String PREF_DD_ENABLED
+    public static final java.lang.String API_AUTH_LOGIN
+    public static final java.lang.String API_AUTH_PASS
+    public static final java.lang.String DD_API_BASE_URL
+    public static final int CHECK_IGNITION_FREQUENCY
+    public static final int CHECK_IGNITION_NOT_AVAILABLE_TIME_LIMIT
+    public static final java.lang.String INTENT_ACTION_UPDATE_MAIN
+    public static final java.lang.String REGISTRATION_BY_CODE_URL
+    public static final java.lang.String PREF_REG_CODE
+    3:3:public Constants()
 com.modusgo.ubi.DbHelper
 com.modusgo.ubi.DiagnosticDetailActivity:
     public static final java.lang.String EXTRA_DTC
@@ -6440,8 +6732,8 @@ com.modusgo.ubi.Driver:
     61:67:public java.lang.String getLastName()
 com.modusgo.ubi.DriverActivity:
     public static final java.lang.String SAVED_DRIVER
-    236:239:public android.view.animation.Animation fadeOutAnimation()
-    244:247:public android.view.animation.Animation fadeInAnimation()
+    237:240:public android.view.animation.Animation fadeOutAnimation()
+    245:248:public android.view.animation.Animation fadeInAnimation()
 com.modusgo.ubi.DriversHelper:
     23:24:public void setDrivers(java.util.ArrayList)
 com.modusgo.ubi.EducationActivity:
@@ -6453,35 +6745,18 @@ com.modusgo.ubi.FindMyCarActivity:
 com.modusgo.ubi.FindMyCarActivity$ErrorDialogFragment
 com.modusgo.ubi.MainActivity:
     private static final java.lang.String ATTRIBUTE_NAME_TEXT
-    386:388:public void showFeedbackActivity()
+    388:390:public void showFeedbackActivity()
 com.modusgo.ubi.MainActivity$MenuItems:
-    59:59:public int toInt()
-    63:63:public java.lang.String[] valuesString()
+    61:61:public int toInt()
+    65:65:public java.lang.String[] valuesString()
 com.modusgo.ubi.PieChartFragment:
     public static final java.lang.String SAVED_VISIBILITIES
     public static final java.lang.String SAVED_VALUES
     public static final java.lang.String SAVED_SUBTITLES
     public static final java.lang.String SAVED_TITLES
-    41:47:public PieChartFragment(float[],java.lang.String[],java.lang.String[])
-    95:105:private void hideMarker(android.view.View,long)
-    108:118:private void showMarker(android.view.View,long)
-com.modusgo.ubi.R:
-    10:10:public R()
-com.modusgo.ubi.R$anim
-com.modusgo.ubi.R$array
-com.modusgo.ubi.R$attr
-com.modusgo.ubi.R$bool
-com.modusgo.ubi.R$color
-com.modusgo.ubi.R$dimen
-com.modusgo.ubi.R$drawable
-com.modusgo.ubi.R$id
-com.modusgo.ubi.R$integer
-com.modusgo.ubi.R$layout
-com.modusgo.ubi.R$string
-com.modusgo.ubi.R$style
-com.modusgo.ubi.R$styleable:
-    3076:3076:public R$styleable()
-com.modusgo.ubi.R$xml
+    42:48:public PieChartFragment(float[],java.lang.String[],java.lang.String[])
+    96:106:private void hideMarker(android.view.View,long)
+    109:119:private void showMarker(android.view.View,long)
 com.modusgo.ubi.Recall:
     private static final long serialVersionUID
 com.modusgo.ubi.RecallActivity:
@@ -6524,8 +6799,6 @@ com.modusgo.ubi.customviews.PieChartView:
     private static final int START_ANGLE
 com.modusgo.ubi.customviews.PieChartView$PieSector:
     150:150:public PieChartView$PieSector(com.modusgo.ubi.customviews.PieChartView)
-com.modusgo.ubi.utils.RequestGet:
-    19:21:public RequestGet(java.lang.String)
 com.modusgo.ubi.utils.Utils:
     25:25:public Utils()
 com.nostra13.universalimageloader.cache.disc.DiscCacheAware:
