@@ -17,7 +17,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.modusgo.demo.R;
 import com.modusgo.ubi.utils.RequestGet;
@@ -28,6 +28,7 @@ public class InitActivity extends FragmentActivity {
 	View layoutProgress;
 	View layoutFields;
 	EditText editClientId;
+	TextView tvError;
 	
 	SharedPreferences prefs;
 	
@@ -46,6 +47,7 @@ public class InitActivity extends FragmentActivity {
 	    
 	    layoutFields = findViewById(R.id.llFields);
 	    layoutProgress = findViewById(R.id.rlProgress);
+	    tvError = (TextView) findViewById(R.id.tvError);
 	    
 	    editClientId = (EditText)findViewById(R.id.editClientId);
 	    
@@ -106,7 +108,7 @@ public class InitActivity extends FragmentActivity {
 		Animation fadeInFields;
 		Animation fadeOutFields;
 		int status;
-		String message = "";
+		String message = "Client ID not found or server is unavailable";
 		
 		public LoginTask() {
 			fadeInProgress = getFadeInAnmation(layoutProgress);
@@ -131,7 +133,7 @@ public class InitActivity extends FragmentActivity {
 			HttpResponse result = new RequestGet(Constants.API_BASE_URL_PREFIX+clientId+Constants.API_BASE_URL_POSTFIX+"info").execute();
 			if(result==null){
 				status = 0;
-				message = "Connection error";
+				//message = "Connection error";
 				
 				try {
 					synchronized (this) {
@@ -145,21 +147,23 @@ public class InitActivity extends FragmentActivity {
 			}
 			
 	        try {
+	        	status = result.getStatusLine().getStatusCode();
+	        	
 	        	if(status>=200 && status<300){
 					JSONObject responseJSON = Utils.getJSONObjectFromHttpResponse(result);
+					System.out.println(responseJSON);
 					if(responseJSON.getString("status").equals("success")){
 						prefs.edit().putString(Constants.PREF_CLIENT_ID, clientId).commit();
 						return true;
 					}
 	        	}
 	        	else{
-	        		status = result.getStatusLine().getStatusCode();
-			        message = "Error "+result.getStatusLine().getStatusCode()+": "+result.getStatusLine().getReasonPhrase();
+	        		//message = "Error "+result.getStatusLine().getStatusCode()+": "+result.getStatusLine().getReasonPhrase();
 			        return false;
 	        	}
 			} catch (Exception e) {
 				status = 0;
-				message = "Wrong Client ID";
+				//message = "Wrong Client ID";
 				e.printStackTrace();
 			}
 	        
@@ -170,12 +174,13 @@ public class InitActivity extends FragmentActivity {
 		protected void onPostExecute(Boolean result) {
 			if(result){
 				startActivity(new Intent(InitActivity.this, SignInActivity.class));
+				overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
 				finish();
 			}
 			else{
 				layoutProgress.startAnimation(fadeOutProgress);
 				layoutFields.startAnimation(fadeInFields);
-				Toast.makeText(InitActivity.this, message, Toast.LENGTH_SHORT).show();
+				tvError.setText(message);
 			}
 			
 			super.onPostExecute(result);

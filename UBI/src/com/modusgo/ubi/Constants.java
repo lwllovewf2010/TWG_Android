@@ -13,7 +13,7 @@ public class Constants {
 
 	public static final String API_BASE_URL = "https://api.modusgo.com/api/mobile/v1/";
 	public static final String API_BASE_URL_PREFIX = "http://api.";
-	public static final String API_BASE_URL_POSTFIX = ".test.modusgo.com/v1/";
+	public static final String API_BASE_URL_POSTFIX = ".test.modusgo.com/";
 	public static final String API_PLATFORM = "android";
 	
 	//---------------------- DD -----------------------
