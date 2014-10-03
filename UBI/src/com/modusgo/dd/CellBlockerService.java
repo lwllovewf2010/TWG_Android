@@ -104,8 +104,6 @@ GooglePlayServicesClient.OnConnectionFailedListener{
         	mInProgress = true;
         	mLocationClient.connect();
         }
-
-		System.out.println("service start");
 		
 		checkIgnitionHandler = new Handler();
 	    checkIgnitionRunnable = new Runnable() {
@@ -113,8 +111,6 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 	        public void run() {
 	        	
 	        	if(!prefs.getString(Constants.PREF_AUTH_KEY, "").equals("")){
-	        		
-	        		System.out.println("runnable start");
 		        	
 		        	if(lastIgnitionReceivedTime==0)
 		        		lastIgnitionReceivedTime = System.currentTimeMillis();
@@ -126,34 +122,21 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 		        	if(mLocationClient!=null && mLocationClient.isConnected()){
 			        	mLastLocation = mLocationClient.getLastLocation();
 			        	if(mLastLocation!=null){
-				            new CheckIgnitionRequest(CellBlockerService.this, mLastLocation.getLongitude(), mLastLocation.getLatitude()){
+			        		new CheckIgnitionRequest(CellBlockerService.this, mLastLocation.getLatitude(), mLastLocation.getLongitude()){
 				            	@Override
 				            	protected void onPostExecuteSuccess(String ignition, String awayStr, String meters) {
 				            		
 				            		lastIgnitionReceivedTime = System.currentTimeMillis();
 				            		
 				            		boolean blockEnabled = Integer.parseInt(ignition)==0 ? false : true; 
-				            		//boolean away = Integer.parseInt(awayStr)==0 ? false : true;
-				            		//int distance =  Integer.parseInt(meters);
+				            		boolean away = Integer.parseInt(awayStr)==0 ? false : true;
+				            		//long distance =  Integer.parseInt(meters);
 		
-				            		if((!blockEnabled/* || away*/) && prefs.getBoolean(Constants.PREF_DD_ENABLED, false)){
-				            			/*if(away){
-				            				Toast.makeText(getApplicationContext(), "Protection disabled, phone is " + distance + " meters away from your car.", Toast.LENGTH_SHORT).show();
-				            				if(mLastLocation!=null){
-				            					if(!HockeyCrashManager.DEBUG){
-				            						Bugsnag.register(CellBlockerService.this, Constants.BUGSNAG_KEY);
-				            						Bugsnag.addToTab("Phone Away", "Last location accuracy", mLastLocation.getAccuracy());
-				            						Bugsnag.addToTab("Phone Away", "Ignition", ignition);
-				            						Bugsnag.addToTab("Phone Away", "Away", awayStr);
-				            						Bugsnag.addToTab("Phone Away", "Distance", meters);
-				            						Bugsnag.notify(new RuntimeException("Phone away from device"));
-				            					}
-				            				}
-				            			}*/
+				            		if((!blockEnabled || away) && prefs.getBoolean(Constants.PREF_DD_ENABLED, false)){
 				            			setBlockEnabled(false);
 				            		}
-				            		else if(blockEnabled && !prefs.getBoolean(Constants.PREF_DD_ENABLED, false)){
-				            			setBlockEnabled(true);				            			
+				            		else if(blockEnabled && !away && !prefs.getBoolean(Constants.PREF_DD_ENABLED, false)){
+				            			setBlockEnabled(true);   			
 				            		}
 				            		super.onPostExecuteSuccess(ignition, awayStr, meters);
 				            	}
