@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
@@ -181,26 +182,62 @@ public class SignInActivity extends FragmentActivity {
         }
     }
 	
+	public class MyAnimationListener implements AnimationListener {
+	    
+		View view;
+	    boolean hideView;
+	    
+	    public MyAnimationListener(View v, boolean hideView) {
+			view = v;
+			this.hideView = hideView;
+		}
+	    
+	    public void onAnimationEnd(Animation animation) {
+	    	if(hideView)
+	    		view.setVisibility(View.GONE);
+	    	else
+	    		view.setVisibility(View.VISIBLE);
+	    }
+	    
+	    public void onAnimationRepeat(Animation animation) {
+	    }
+	    public void onAnimationStart(Animation animation) {
+	    }
+	}
+	
+	private Animation getFadeInAnmation(View v){
+		Animation fadeIn = AnimationUtils.loadAnimation(SignInActivity.this,android.R.anim.fade_in);
+		fadeIn.setAnimationListener(new MyAnimationListener(v, false));
+		return fadeIn;
+	}
+	
+	private Animation getFadeOutAnmation(View v){
+		Animation fadeOut = AnimationUtils.loadAnimation(SignInActivity.this,android.R.anim.fade_out);
+		fadeOut.setAnimationListener(new MyAnimationListener(v, true));
+		return fadeOut;
+	}
+	
 	class LoginTask extends AsyncTask<Void, Void, JSONObject>{
 
-		Animation fadeIn;
-		Animation fadeOut;
+		Animation fadeInProgress;
+		Animation fadeOutProgress;
+		Animation fadeInFields;
+		Animation fadeOutFields;
 		int status;
 		String message = "";
 		
-		public LoginTask() {			
-			fadeOut = AnimationUtils.loadAnimation(SignInActivity.this,android.R.anim.fade_out);
-			fadeOut.setFillAfter(true);
-			
-			fadeIn = AnimationUtils.loadAnimation(SignInActivity.this,android.R.anim.fade_in);
-			fadeIn.setFillAfter(true);
+		public LoginTask() {
+			fadeInProgress = getFadeInAnmation(layoutProgress);
+			fadeOutProgress = getFadeOutAnmation(layoutProgress);
+			fadeInFields = getFadeInAnmation(layoutFields);
+			fadeOutFields = getFadeOutAnmation(layoutFields);
 		}
 		
 		@Override
 		protected void onPreExecute() {
 			layoutProgress.setVisibility(View.VISIBLE);
-			layoutProgress.startAnimation(fadeIn);
-			layoutFields.startAnimation(fadeOut);
+			layoutProgress.startAnimation(fadeInProgress);
+			layoutFields.startAnimation(fadeOutFields);
 			super.onPreExecute();
 		}
 		
@@ -245,8 +282,8 @@ public class SignInActivity extends FragmentActivity {
 				finish();
 			}
 			else{
-				layoutProgress.startAnimation(fadeOut);
-				layoutFields.startAnimation(fadeIn);
+				layoutProgress.startAnimation(fadeOutProgress);
+				layoutFields.startAnimation(fadeInFields);
 				Toast.makeText(SignInActivity.this, message, Toast.LENGTH_SHORT).show();
 			}
 			
