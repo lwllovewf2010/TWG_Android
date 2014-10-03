@@ -6657,9 +6657,6 @@ com.modusgo.dd.CallReceiver:
     public static final java.lang.String PREF_CALL_START
     public static final java.lang.String PREF_CALL_END
     public static final java.lang.String PREF_CALL_DURATION
-com.modusgo.dd.CellBlockerService:
-    java.util.ArrayList whitelist
-    java.util.ArrayList blacklist
 com.modusgo.dd.GcmBroadcastReceiver
 com.modusgo.dd.GcmIntentService
 com.modusgo.dd.PhoneUnlockReceiver:
@@ -6672,6 +6669,9 @@ com.modusgo.dd.RegisterByCodeActivity:
     android.view.View layoutProgress
 com.modusgo.dd.RegisterByCodeActivity$UserRegistrationServerError:
     private static final long serialVersionUID
+com.modusgo.dd.TrackingStatusService:
+    java.util.ArrayList whitelist
+    java.util.ArrayList blacklist
 com.modusgo.demo.BuildConfig
 com.modusgo.demo.Manifest
 com.modusgo.demo.Manifest$permission

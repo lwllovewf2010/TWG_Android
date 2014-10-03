@@ -12337,41 +12337,6 @@ com.modusgo.dd.CallReceiver -> com.modusgo.dd.CallReceiver:
     boolean callStarted -> a
     long callStartTime -> b
     29:60:void onReceive(android.content.Context,android.content.Intent) -> onReceive
-com.modusgo.dd.CellBlockerService -> com.modusgo.dd.CellBlockerService:
-    android.os.Handler handler -> d
-    java.lang.Runnable runnable -> a
-    android.os.Handler checkIgnitionHandler -> e
-    java.lang.Runnable checkIgnitionRunnable -> f
-    int notificationId -> g
-    android.app.NotificationManager notificationManager -> h
-    android.content.SharedPreferences prefs -> i
-    java.lang.Boolean servicesAvailable -> j
-    boolean mInProgress -> k
-    com.google.android.gms.location.LocationClient mLocationClient -> b
-    android.location.Location mLastLocation -> c
-    long lastIgnitionReceivedTime -> l
-    62:73:void onCreate() -> onCreate
-    79:172:int onStartCommand(android.content.Intent,int,int) -> onStartCommand
-    176:185:void setBlockEnabled(boolean) -> a
-    198:209:void onDestroy() -> onDestroy
-    215:215:android.os.IBinder onBind(android.content.Intent) -> onBind
-    220:227:boolean servicesConnected() -> b
-    233:235:void setUpLocationClientIfNeeded() -> c
-    248:248:void onConnected(android.os.Bundle) -> a
-    257:262:void onDisconnected() -> n_
-    270:277:void onConnectionFailed(com.google.android.gms.common.ConnectionResult) -> a
-    50:50:android.content.SharedPreferences access$0(com.modusgo.dd.CellBlockerService) -> a
-    57:57:long access$1(com.modusgo.dd.CellBlockerService) -> b
-    57:57:void access$2(com.modusgo.dd.CellBlockerService,long) -> a
-    175:175:void access$3(com.modusgo.dd.CellBlockerService,boolean) -> a
-    39:39:android.os.Handler access$4(com.modusgo.dd.CellBlockerService) -> c
-com.modusgo.dd.CellBlockerService$1 -> com.modusgo.dd.a:
-    com.modusgo.dd.CellBlockerService this$0 -> a
-    115:165:void run() -> run
-    111:111:com.modusgo.dd.CellBlockerService access$0(com.modusgo.dd.CellBlockerService$1) -> a
-com.modusgo.dd.CellBlockerService$1$1 -> com.modusgo.dd.b:
-    com.modusgo.dd.CellBlockerService$1 this$1 -> a
-    133:159:void onPostExecuteSuccess(java.lang.String,java.lang.String,java.lang.String) -> a
 com.modusgo.dd.PhoneUnlockReceiver -> com.modusgo.dd.PhoneUnlockReceiver:
     18:24:void onReceive(android.content.Context,android.content.Intent) -> onReceive
 com.modusgo.dd.RegisterByCodeActivity -> com.modusgo.dd.RegisterByCodeActivity:
@@ -12396,15 +12361,50 @@ com.modusgo.dd.RegisterByCodeActivity -> com.modusgo.dd.RegisterByCodeActivity:
     325:352:java.util.Set getQueryParameterNames(android.net.Uri) -> a
     188:188:void access$0(com.modusgo.dd.RegisterByCodeActivity,java.lang.String) -> a
     315:315:void access$1(com.modusgo.dd.RegisterByCodeActivity,android.content.Context,java.lang.String) -> a
-com.modusgo.dd.RegisterByCodeActivity$1 -> com.modusgo.dd.c:
+com.modusgo.dd.RegisterByCodeActivity$1 -> com.modusgo.dd.a:
     com.modusgo.dd.RegisterByCodeActivity this$0 -> a
     java.lang.String val$regCode -> b
     148:172:java.lang.String doInBackground(java.lang.Void[]) -> a
     177:184:void onPostExecute(java.lang.String) -> a
     1:1:void onPostExecute(java.lang.Object) -> onPostExecute
     1:1:java.lang.Object doInBackground(java.lang.Object[]) -> doInBackground
-com.modusgo.dd.RegisterByCodeActivity$UserRegistrationServerError -> com.modusgo.dd.d:
+com.modusgo.dd.RegisterByCodeActivity$UserRegistrationServerError -> com.modusgo.dd.b:
     com.modusgo.dd.RegisterByCodeActivity this$0 -> a
+com.modusgo.dd.TrackingStatusService -> com.modusgo.dd.TrackingStatusService:
+    android.os.Handler handler -> d
+    java.lang.Runnable runnable -> a
+    android.os.Handler checkIgnitionHandler -> e
+    java.lang.Runnable checkIgnitionRunnable -> f
+    int notificationId -> g
+    android.app.NotificationManager notificationManager -> h
+    android.content.SharedPreferences prefs -> i
+    java.lang.Boolean servicesAvailable -> j
+    boolean mInProgress -> k
+    com.google.android.gms.location.LocationClient mLocationClient -> b
+    android.location.Location mLastLocation -> c
+    long lastIgnitionReceivedTime -> l
+    62:73:void onCreate() -> onCreate
+    79:155:int onStartCommand(android.content.Intent,int,int) -> onStartCommand
+    159:168:void setBlockEnabled(boolean) -> a
+    181:192:void onDestroy() -> onDestroy
+    198:198:android.os.IBinder onBind(android.content.Intent) -> onBind
+    203:210:boolean servicesConnected() -> b
+    216:218:void setUpLocationClientIfNeeded() -> c
+    231:231:void onConnected(android.os.Bundle) -> a
+    240:245:void onDisconnected() -> n_
+    253:260:void onConnectionFailed(com.google.android.gms.common.ConnectionResult) -> a
+    50:50:android.content.SharedPreferences access$0(com.modusgo.dd.TrackingStatusService) -> a
+    57:57:long access$1(com.modusgo.dd.TrackingStatusService) -> b
+    57:57:void access$2(com.modusgo.dd.TrackingStatusService,long) -> a
+    158:158:void access$3(com.modusgo.dd.TrackingStatusService,boolean) -> a
+    39:39:android.os.Handler access$4(com.modusgo.dd.TrackingStatusService) -> c
+com.modusgo.dd.TrackingStatusService$1 -> com.modusgo.dd.c:
+    com.modusgo.dd.TrackingStatusService this$0 -> a
+    113:148:void run() -> run
+    109:109:com.modusgo.dd.TrackingStatusService access$0(com.modusgo.dd.TrackingStatusService$1) -> a
+com.modusgo.dd.TrackingStatusService$1$1 -> com.modusgo.dd.d:
+    com.modusgo.dd.TrackingStatusService$1 this$1 -> a
+    129:142:void onPostExecuteSuccess(java.lang.String,java.lang.String,java.lang.String) -> a
 com.modusgo.dd.requests.BasicAsyncTask -> com.modusgo.dd.a.a:
     9:16:void onPostExecute(java.lang.String[]) -> a
     19:19:void onPostExecuteSuccess(java.lang.String,java.lang.String,java.lang.String) -> a
