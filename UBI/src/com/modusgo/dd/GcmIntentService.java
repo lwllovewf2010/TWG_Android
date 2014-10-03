@@ -87,7 +87,7 @@ public class GcmIntentService extends IntentService {
     	    				editor.commit();
     	    				//Clear GCM preferences file
     	    				getSharedPreferences(MainActivity.class.getSimpleName(),Context.MODE_PRIVATE).edit().clear().commit();
-    	    				stopService(new Intent(this, CellBlockerService.class));
+    	    				stopService(new Intent(this, TrackingStatusService.class));
     	    				//Toast.makeText(getApplicationContext(), "Distracted Driving: device unregistered", Toast.LENGTH_SHORT);
     	    				//sendNotification("Distracted Driving", "Device unregistered, tap to reregister.");
                 		}
@@ -109,7 +109,7 @@ public class GcmIntentService extends IntentService {
     	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         prefs.edit().putBoolean(Constants.PREF_DD_ENABLED, enabled).commit();
 		
-		Intent i = new Intent(getApplicationContext(), CellBlockerService.class);
+		Intent i = new Intent(getApplicationContext(), TrackingStatusService.class);
 		startService(i); 
     	
     }

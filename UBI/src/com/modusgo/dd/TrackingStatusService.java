@@ -27,10 +27,10 @@ import com.modusgo.ubi.Constants;
 import com.modusgo.ubi.SignInActivity;
 import com.modusgo.ubi.utils.Utils;
 
-public class CellBlockerService extends Service implements GooglePlayServicesClient.ConnectionCallbacks,
+public class TrackingStatusService extends Service implements GooglePlayServicesClient.ConnectionCallbacks,
 GooglePlayServicesClient.OnConnectionFailedListener{
 
-	public CellBlockerService() {
+	public TrackingStatusService() {
 		super();
 	}
 	
@@ -122,7 +122,7 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 		        	if(mLocationClient!=null && mLocationClient.isConnected()){
 			        	mLastLocation = mLocationClient.getLastLocation();
 			        	if(mLastLocation!=null){
-			        		new CheckIgnitionRequest(CellBlockerService.this, mLastLocation.getLatitude(), mLastLocation.getLongitude()){
+			        		new CheckIgnitionRequest(TrackingStatusService.this, mLastLocation.getLatitude(), mLastLocation.getLongitude()){
 				            	@Override
 				            	protected void onPostExecuteSuccess(String ignition, String awayStr, String meters) {
 				            		
@@ -157,7 +157,7 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 	
 	private void setBlockEnabled(boolean enabled){
 		prefs.edit().putBoolean(Constants.PREF_DD_ENABLED, enabled).commit();
-		Intent i = new Intent(getApplicationContext(), CellBlockerService.class);
+		Intent i = new Intent(getApplicationContext(), TrackingStatusService.class);
 		startService(i);
 		
 		if(!enabled)

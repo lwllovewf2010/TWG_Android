@@ -198,7 +198,7 @@
         <activity android:name="net.hockeyapp.android.UpdateActivity" />
         
         <service
-            android:name="com.modusgo.dd.CellBlockerService"
+            android:name="com.modusgo.dd.TrackingStatusService"
             android:exported="false"/>
 
         <receiver android:name="com.modusgo.dd.PhoneUnlockReceiver" >
