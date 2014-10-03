@@ -61,7 +61,7 @@ public class InitActivity extends FragmentActivity {
 	    btnSubmit.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				new LoginTask().execute();
+				new ServerCheckTask().execute();
 			}
 		});
 	}
@@ -101,7 +101,7 @@ public class InitActivity extends FragmentActivity {
 		return fadeOut;
 	}
 	
-	class LoginTask extends AsyncTask<Void, Void, Boolean>{
+	class ServerCheckTask extends AsyncTask<Void, Void, Boolean>{
 
 		Animation fadeInProgress;
 		Animation fadeOutProgress;
@@ -110,7 +110,7 @@ public class InitActivity extends FragmentActivity {
 		int status;
 		String message = "Client ID not found or server is unavailable";
 		
-		public LoginTask() {
+		public ServerCheckTask() {
 			fadeInProgress = getFadeInAnmation(layoutProgress);
 			fadeOutProgress = getFadeOutAnmation(layoutProgress);
 			fadeInFields = getFadeInAnmation(layoutFields);
