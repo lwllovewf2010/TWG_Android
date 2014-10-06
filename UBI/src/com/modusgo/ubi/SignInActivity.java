@@ -245,7 +245,7 @@ public class SignInActivity extends FragmentActivity {
 		protected JSONObject doInBackground(Void... params) {
 			
 			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-	        nameValuePairs.add(new BasicNameValuePair("username", editUsername.getText().toString()));
+	        nameValuePairs.add(new BasicNameValuePair("email", editUsername.getText().toString()));
 	        nameValuePairs.add(new BasicNameValuePair("password", editPassword.getText().toString()));
 	        nameValuePairs.add(new BasicNameValuePair("platform", Constants.API_PLATFORM));
 	        nameValuePairs.add(new BasicNameValuePair("mobile_id", Utils.getUUID(SignInActivity.this)));
