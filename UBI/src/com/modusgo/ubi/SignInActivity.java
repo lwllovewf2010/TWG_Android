@@ -250,7 +250,7 @@ public class SignInActivity extends FragmentActivity {
 	        nameValuePairs.add(new BasicNameValuePair("platform", Constants.API_PLATFORM));
 	        nameValuePairs.add(new BasicNameValuePair("mobile_id", Utils.getUUID(SignInActivity.this)));
 			
-	        HttpResponse result = new RequestPost(Constants.API_BASE_URL+"login.json", nameValuePairs).execute();
+	        HttpResponse result = new RequestPost(Constants.API_BASE_URL_PREFIX+prefs.getString(Constants.PREF_CLIENT_ID, "")+Constants.API_BASE_URL_POSTFIX+"login.json", nameValuePairs).execute();
 	        try{
 		        status = result.getStatusLine().getStatusCode();
 		        message = "Error "+result.getStatusLine().getStatusCode()+": "+result.getStatusLine().getReasonPhrase();
