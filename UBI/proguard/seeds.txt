@@ -2665,6 +2665,7 @@ com.modusgo.demo.R$id: int btnEdit
 com.modusgo.demo.R$id: int btnFindMechanic
 com.modusgo.demo.R$id: int btnForgotPassword
 com.modusgo.demo.R$id: int btnMenu
+com.modusgo.demo.R$id: int btnNext
 com.modusgo.demo.R$id: int btnPhoto
 com.modusgo.demo.R$id: int btnSave
 com.modusgo.demo.R$id: int btnScoreCircles
@@ -2841,6 +2842,7 @@ com.modusgo.demo.R$id: int tvDistanceToCar
 com.modusgo.demo.R$id: int tvDistanceToCarLabel
 com.modusgo.demo.R$id: int tvEmail
 com.modusgo.demo.R$id: int tvEndTime
+com.modusgo.demo.R$id: int tvError
 com.modusgo.demo.R$id: int tvEstLaborCost
 com.modusgo.demo.R$id: int tvEstPartsCost
 com.modusgo.demo.R$id: int tvEstTotalCost
@@ -2886,6 +2888,7 @@ com.modusgo.demo.R$id: int up
 com.modusgo.demo.R$id: int useLogo
 com.modusgo.demo.R$id: int username
 com.modusgo.demo.R$id: int vertical
+com.modusgo.demo.R$id: int webView
 com.modusgo.demo.R$id: int withText
 com.modusgo.demo.R$id: int wrap_content
 com.modusgo.demo.R$integer: int abc_max_action_buttons
@@ -2939,6 +2942,7 @@ com.modusgo.demo.R$layout: int activity_score_pie_chart
 com.modusgo.demo.R$layout: int activity_settings
 com.modusgo.demo.R$layout: int activity_sign_in
 com.modusgo.demo.R$layout: int activity_trip
+com.modusgo.demo.R$layout: int activity_welcome
 com.modusgo.demo.R$layout: int alerts_item
 com.modusgo.demo.R$layout: int chart_marker_text
 com.modusgo.demo.R$layout: int compare_item
@@ -3507,6 +3511,8 @@ com.modusgo.ubi.Trip$EventType: com.modusgo.ubi.Trip$EventType[] values()
 com.modusgo.ubi.Trip$EventType: com.modusgo.ubi.Trip$EventType valueOf(java.lang.String)
 com.modusgo.ubi.TripActivity
 com.modusgo.ubi.TripActivity: TripActivity()
+com.modusgo.ubi.WelcomeActivity
+com.modusgo.ubi.WelcomeActivity: WelcomeActivity()
 com.modusgo.ubi.customviews.CheckedRelativeLayout
 com.modusgo.ubi.customviews.CheckedRelativeLayout: CheckedRelativeLayout(android.content.Context,android.util.AttributeSet,int)
 com.modusgo.ubi.customviews.CheckedRelativeLayout: CheckedRelativeLayout(android.content.Context,android.util.AttributeSet)

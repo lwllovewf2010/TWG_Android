@@ -6690,7 +6690,7 @@ com.modusgo.demo.R$layout
 com.modusgo.demo.R$string
 com.modusgo.demo.R$style
 com.modusgo.demo.R$styleable:
-    3082:3082:public R$styleable()
+    3086:3086:public R$styleable()
 com.modusgo.demo.R$xml
 com.modusgo.ubi.CirclesFragment:
     public static final java.lang.String SAVED_USE_OF_SPEED
@@ -6706,7 +6706,12 @@ com.modusgo.ubi.Constants:
     public static final java.lang.String PREF_AUTH_KEY
     public static final java.lang.String PREF_CLIENT_ID
     public static final java.lang.String PREF_SHOW_TIP_POPUP
-    public static final java.lang.String API_BASE_URL
+    public static final java.lang.String PREF_WELCOME_PAGES
+    public static final java.lang.String PREF_ROLE
+    public static final java.lang.String PREF_DEVICE_MEID
+    public static final java.lang.String PREF_DEVICE_TYPE
+    public static final java.lang.String PREF_DEVICE_DATA_URL
+    public static final java.lang.String PREF_DEVICE_AUTH_KEY
     public static final java.lang.String API_BASE_URL_PREFIX
     public static final java.lang.String API_BASE_URL_POSTFIX
     public static final java.lang.String API_PLATFORM
@@ -6781,6 +6786,8 @@ com.modusgo.ubi.SettingsEditFragment:
     public static final java.lang.String EXTRA_PASSWORD
     public static final java.lang.String PREF_JUSTSAVED
     private static final java.lang.String TAG_CHANGED
+com.modusgo.ubi.SignInActivity$LoginTask:
+    int status
 com.modusgo.ubi.SignInActivity$ScreenSlidePageFragment:
     int mNum
 com.modusgo.ubi.TitledFragment:
@@ -6791,6 +6798,8 @@ com.modusgo.ubi.TripActivity:
     public static final java.lang.String EXTRA_TRIP_ID
 com.modusgo.ubi.TripsFragment:
     android.content.SharedPreferences prefs
+com.modusgo.ubi.WelcomeActivity:
+    public static final java.lang.String SAVED_SCREENS
 com.modusgo.ubi.customviews.CircularProgressBar
 com.modusgo.ubi.customviews.CircularProgressBar$1
 com.modusgo.ubi.customviews.CircularProgressBar$2
