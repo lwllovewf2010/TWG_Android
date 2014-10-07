@@ -58,6 +58,7 @@
             android:layout_width="275dp"
             android:layout_height="30dp"
             android:background="@drawable/textview_login_name_bg"
+            android:digits="abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ-_"
             android:hint="Client ID"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
