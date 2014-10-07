@@ -1,6 +1,7 @@
 package com.modusgo.ubi;
 
 import org.apache.http.HttpResponse;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.content.Intent;
@@ -22,6 +23,9 @@ import android.widget.TextView;
 import com.modusgo.demo.R;
 import com.modusgo.ubi.utils.RequestGet;
 import com.modusgo.ubi.utils.Utils;
+import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 public class InitActivity extends FragmentActivity {
     
@@ -38,18 +42,30 @@ public class InitActivity extends FragmentActivity {
 		setContentView(R.layout.activity_init);
 	    getActionBar().hide();
 	    
-	    prefs = PreferenceManager.getDefaultSharedPreferences(InitActivity.this);
+	    ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
+        .memoryCache(new LruMemoryCache(2 * 1024 * 1024))
+        .memoryCacheSize(2 * 1024 * 1024)
+        .diskCacheSize(50 * 1024 * 1024)
+        .diskCacheFileCount(100)
+        .build();
+		ImageLoader.getInstance().init(config);
 	    
-	    if(!prefs.getString(Constants.PREF_CLIENT_ID, "").equals("")){
-	    	startActivity(new Intent(InitActivity.this, SignInActivity.class));
-			finish();
-	    }
+	    prefs = PreferenceManager.getDefaultSharedPreferences(InitActivity.this);
+	    String clientId = prefs.getString(Constants.PREF_CLIENT_ID, "");
 	    
 	    layoutFields = findViewById(R.id.llFields);
 	    layoutProgress = findViewById(R.id.rlProgress);
 	    tvError = (TextView) findViewById(R.id.tvError);
-	    
 	    editClientId = (EditText)findViewById(R.id.editClientId);
+	    editClientId.setText(clientId);
+	    
+	    if(!clientId.equals("")){
+		    layoutFields.setVisibility(View.GONE);
+	    	new ServerCheckTask().execute();
+//	    	startActivity(new Intent(InitActivity.this, SignInActivity.class));
+//			finish();
+	    }
+	    
 	    
 	    Button btnSubmit = (Button)findViewById(R.id.btnSubmit);
 	    
@@ -107,6 +123,7 @@ public class InitActivity extends FragmentActivity {
 		Animation fadeOutProgress;
 		Animation fadeInFields;
 		Animation fadeOutFields;
+		JSONArray welcomeScreens = null;
 		int status;
 		String message = "Client ID not found or server is unavailable";
 		
@@ -151,9 +168,18 @@ public class InitActivity extends FragmentActivity {
 	        	
 	        	if(status>=200 && status<300){
 					JSONObject responseJSON = Utils.getJSONObjectFromHttpResponse(result);
-					System.out.println(responseJSON);
 					if(responseJSON.getString("status").equals("success")){
 						prefs.edit().putString(Constants.PREF_CLIENT_ID, clientId).commit();
+						JSONObject infoJSON = responseJSON.getJSONObject("info");
+						
+						if(!infoJSON.isNull("welcome"))
+							welcomeScreens = infoJSON.getJSONArray("welcome");
+//						else{
+//							welcomeScreens = new JSONArray("[{page_id: \"unique_identifator_of_page\",content_type:\"image\",title: \"Some title of the page\"," +
+//						"image: \"http://fbrest.edgecaching.net/tpr-theme-img/concept_girl.png\"},{page_id: \"v2\", content_type: \"text\", confirm: \"popup\", " +
+//						"confirm_text: \"I agree terms of services\", title: \"Whats new ?\", body: \"Improved search :)\"}]");
+//						System.out.println(welcomeScreens);
+//						}
 						return true;
 					}
 	        	}
@@ -173,7 +199,14 @@ public class InitActivity extends FragmentActivity {
 		@Override
 		protected void onPostExecute(Boolean result) {
 			if(result){
-				startActivity(new Intent(InitActivity.this, SignInActivity.class));
+				if(welcomeScreens!=null){
+					System.out.println("welcomne not null");
+					Intent i = new Intent(InitActivity.this, WelcomeActivity.class);
+					i.putExtra(WelcomeActivity.SAVED_SCREENS, welcomeScreens.toString());
+					startActivity(i);
+				}
+				else
+					startActivity(new Intent(InitActivity.this, SignInActivity.class));
 				overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
 				finish();
 			}
