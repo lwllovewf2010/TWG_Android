@@ -29,10 +29,8 @@ import android.widget.TextView;
 import com.modusgo.dd.TrackingStatusService;
 import com.modusgo.demo.R;
 import com.modusgo.ubi.utils.Utils;
-import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 public class HomeActivity extends MainActivity{
 	
@@ -48,14 +46,6 @@ public class HomeActivity extends MainActivity{
 		super.onCreate(savedInstanceState);
 		
 		setActionBarTitle("HOME");
-		
-		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
-        .memoryCache(new LruMemoryCache(2 * 1024 * 1024))
-        .memoryCacheSize(2 * 1024 * 1024)
-        .diskCacheSize(50 * 1024 * 1024)
-        .diskCacheFileCount(100)
-        .build();
-		ImageLoader.getInstance().init(config);
 
 		progressBar = (ProgressBar)findViewById(R.id.progressBar);
 		lvDrivers = (ListView)findViewById(R.id.listViewDrivers);

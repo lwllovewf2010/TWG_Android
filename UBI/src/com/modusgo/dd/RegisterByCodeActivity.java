@@ -43,8 +43,8 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.modusgo.demo.R;
 import com.modusgo.ubi.Constants;
+import com.modusgo.ubi.InitActivity;
 import com.modusgo.ubi.MainActivity;
-import com.modusgo.ubi.SignInActivity;
 import com.modusgo.ubi.utils.Utils;
 
 public class RegisterByCodeActivity extends FragmentActivity {
@@ -80,7 +80,7 @@ public class RegisterByCodeActivity extends FragmentActivity {
 	    
 	    if(prefs.getString(Constants.PREF_AUTH_KEY, "").equals("")){
 			Toast.makeText(getApplicationContext(), "You should login first", Toast.LENGTH_SHORT).show();
-	    	startActivity(new Intent(this, SignInActivity.class));
+	    	startActivity(new Intent(this, InitActivity.class));
 			finish();
 	    }
 	    else{
@@ -129,7 +129,7 @@ public class RegisterByCodeActivity extends FragmentActivity {
 	}
 	
 	public void registerSuccess(){
-		Intent i = new Intent(getApplicationContext(), SignInActivity.class);
+		Intent i = new Intent(getApplicationContext(), InitActivity.class);
 		startActivity(i);
 		Toast.makeText(getApplicationContext(), "Code registration successful!", Toast.LENGTH_SHORT).show();
         finish();

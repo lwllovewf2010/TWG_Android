@@ -24,7 +24,7 @@ import com.modusgo.dd.requests.CheckIgnitionRequest;
 import com.modusgo.dd.requests.SendStatsRequest;
 import com.modusgo.demo.R;
 import com.modusgo.ubi.Constants;
-import com.modusgo.ubi.SignInActivity;
+import com.modusgo.ubi.InitActivity;
 import com.modusgo.ubi.utils.Utils;
 
 public class TrackingStatusService extends Service implements GooglePlayServicesClient.ConnectionCallbacks,
@@ -81,7 +81,7 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 		        .setContentTitle("ModusGO")
 		        .setContentText("ModusGO tracking is "+(prefs.getBoolean(Constants.PREF_DD_ENABLED, false) ? "enabled." : "disabled."));
 
-		Intent resultIntent = new Intent(this, SignInActivity.class);
+		Intent resultIntent = new Intent(this, InitActivity.class);
 
 		PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_CANCEL_CURRENT);//stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 		mBuilder.setContentIntent(resultPendingIntent);

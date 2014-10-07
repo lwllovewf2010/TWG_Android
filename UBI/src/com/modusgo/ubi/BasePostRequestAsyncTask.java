@@ -16,7 +16,7 @@ public class BasePostRequestAsyncTask extends BaseRequestAsyncTask{
 
 	@Override
 	protected JSONObject doInBackground(String... params) {
-		HttpResponse result = new RequestPost(Constants.API_BASE_URL+params[0], requestParams).execute();
+		HttpResponse result = new RequestPost(Constants.API_BASE_URL_PREFIX+prefs.getString(Constants.PREF_CLIENT_ID, "")+Constants.API_BASE_URL_POSTFIX+params[0], requestParams).execute();
 		status = result.getStatusLine().getStatusCode();
 		message = "Error "+result.getStatusLine().getStatusCode()+": "+result.getStatusLine().getReasonPhrase();
 		
