@@ -27,7 +27,7 @@
             android:indeterminateDrawable="@drawable/login_progress" />
     </RelativeLayout>
 
-    <LinearLayout
+   <LinearLayout
         android:id="@+id/llContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -39,37 +39,27 @@
             android:id="@+id/tvTitle"
             android:layout_width="275dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:layout_marginBottom="10dp"
+            android:layout_marginTop="20dp"
             android:gravity="center"
             android:text="Hello"
-            android:textSize="18sp"
             android:textColor="#FFF"
+            android:textSize="18sp"
             ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
-        <ScrollView
-            android:id="@+id/scrollView"
+        <WebView
+            android:id="@+id/webView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1" >
-
-            <com.modusgo.ubi.customviews.TypefacedTextView
-                android:id="@+id/tvText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:gravity="center"
-                android:text="Text"
-                android:textColor="#FFF"
-                ubi:typeface="EncodeSansNormal-300-Light.ttf" />
-        </ScrollView>
+            android:layout_weight="1"
+            android:layout_margin="10dp" />
 
         <ImageView
             android:id="@+id/image"
             android:layout_width="match_parent"
-            android:padding="10dp"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:padding="10dp"
             android:src="@drawable/slide_3"
             android:visibility="gone" />
 
@@ -77,8 +67,8 @@
             android:id="@+id/btnNext"
             android:layout_width="102dp"
             android:layout_height="33dp"
-            android:layout_marginTop="15dp"
             android:layout_marginBottom="15dp"
+            android:layout_marginTop="15dp"
             android:background="@color/btn_orange"
             android:text="Next"
             android:textColor="#edf1f9"

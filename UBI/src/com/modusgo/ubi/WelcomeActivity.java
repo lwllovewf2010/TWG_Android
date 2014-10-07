@@ -11,15 +11,14 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
-import android.text.Html;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.modusgo.demo.R;
@@ -33,8 +32,7 @@ public class WelcomeActivity extends FragmentActivity {
 	View layoutProgress;
 	View layoutFields;
 	TextView tvTitle;
-	TextView tvText;
-	ScrollView scrollView;
+	WebView webView;
 	ImageView imageView;
 	Button btnNext;
 	
@@ -55,8 +53,7 @@ public class WelcomeActivity extends FragmentActivity {
 	    layoutFields = findViewById(R.id.llFields);
 	    layoutProgress = findViewById(R.id.rlProgress);
 	    tvTitle = (TextView) findViewById(R.id.tvTitle);
-	    tvText = (TextView) findViewById(R.id.tvText);
-	    scrollView = (ScrollView) findViewById(R.id.scrollView);
+	    webView = (WebView) findViewById(R.id.webView);
 	    imageView = (ImageView) findViewById(R.id.image);
 	    btnNext = (Button)findViewById(R.id.btnNext);
 	    
@@ -89,15 +86,17 @@ public class WelcomeActivity extends FragmentActivity {
 			
 			if(!pageId.equals("") && !welcomePagesIds.contains(pageId)){
 			
-				scrollView.setVisibility(View.GONE);
+				webView.setVisibility(View.GONE);
 				imageView.setVisibility(View.GONE);
 				
 				tvTitle.setText(screenJSON.optString("title"));
 				
 				switch (screenJSON.optString("content_type","text")) {
 				case "text":
-					scrollView.setVisibility(View.VISIBLE);
-					tvText.setText(Html.fromHtml(screenJSON.optString("body")));
+					webView.setVisibility(View.VISIBLE);
+					webView.loadData(screenJSON.optString("body"), "text/html", null);
+					webView.setBackgroundColor(0x00000000);
+					webView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
 					break;
 				case "image":
 					imageView.setVisibility(View.VISIBLE);
