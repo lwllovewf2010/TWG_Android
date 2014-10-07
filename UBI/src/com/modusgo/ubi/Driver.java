@@ -2,55 +2,46 @@ package com.modusgo.ubi;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 
 public class Driver implements Serializable{
 	
 	private static final long serialVersionUID = 1315237349232671000L;
 	public long id;
 	public String name;
-	public int imageId;
 	public String imageUrl;
-	public String vehicle;
-	public String VIN;
-	public String lastTripDate;
-	public String profileDate;
-	public String grade;
-	public String phone;
-	public String email;
-	public long lastTripId;
+	public String markerIcon;
+
+	public String carVIN;
+	public String carMake;
+	public String carModel;
+	public String carYear;
+	public int carFuelLeft;
+
 	public int diags;
 	public int alerts;
-	public int tripsCount;
-	public int harshEvents;
+	
 	public double latitude;
 	public double longitude;
-	public int fuelLeft;
 	public String address;
-	public double distance;
-	public int scoreInt;
-	public int drivingTime;
-	public String markerIcon;
+	public String lastTripDate;
+	public long lastTripId;
+	
+	public int score;
+	public String grade;
+	public int totalTripsCount;
+	public int totalDrivingTime;
+	public double totalDistance;
+	public int totalBraking;
+	public int totalAcceleration;
+	public int totalSpeeding;
+	public long totalSpeedingDistance;
+	
+	public String profileDate;
+	public int harshEvents;
 	
 	public ArrayList<ListItem> tripsMap = new ArrayList<ListItem>();
 	
-	public Driver(String name, String score){
-		this.name = name;
-		this.grade = score;
-	}
-	
-	public Driver(long id, String name, int imageId, String vehicle, String phone, String email, String lastTripDate, int tripsCount, int harshEvents, String grade){
-		this.id = id;
-		this.name = name;
-		this.imageId = imageId;
-		this.vehicle = vehicle;
-		this.phone = phone;
-		this.email = email;
-		this.lastTripDate = lastTripDate;
-		this.tripsCount = tripsCount;
-		this.harshEvents = harshEvents;
-		this.grade = grade;
-		this.address = "";
+	public Driver(){
 	}
 	
 	public String getFirstName(){
@@ -65,6 +56,10 @@ public class Driver implements Serializable{
 			e.printStackTrace();
 		}
 		return lastName;
-	}	
+	}
+	
+	public String getCarFullName(){
+		return carYear + " " + carMake + " " + carModel;
+	}
 
 }

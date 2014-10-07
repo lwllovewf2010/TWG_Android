@@ -75,7 +75,7 @@ public class GeofenceActivity extends MainActivity {
 		
 		ImageView imagePhoto = (ImageView)findViewById(R.id.imagePhoto);
 	    if(driver.imageUrl == null || driver.imageUrl.equals(""))
-	    	imagePhoto.setImageResource(driver.imageId);
+	    	imagePhoto.setImageResource(R.drawable.person_placeholder);
 	    else{
 	    	DisplayImageOptions options = new DisplayImageOptions.Builder()
 	        .showImageOnLoading(R.drawable.person_placeholder)

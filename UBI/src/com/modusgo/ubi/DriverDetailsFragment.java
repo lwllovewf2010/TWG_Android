@@ -155,7 +155,7 @@ OnConnectionFailedListener, LocationListener{
 	
 	private void updateFragment(){
 		tvName.setText(driver.name);
-	    tvVehicle.setText(driver.vehicle);
+	    tvVehicle.setText(driver.getCarFullName());
 	    if(driver.address == null || driver.address.equals(""))
 	    	tvLocation.setText("Unknown address");
 	    else
@@ -171,7 +171,7 @@ OnConnectionFailedListener, LocationListener{
 		}
 	    
 		if(driver.imageUrl == null || driver.imageUrl.equals(""))
-	    	imagePhoto.setImageResource(driver.imageId);
+	    	imagePhoto.setImageResource(R.drawable.person_placeholder);
 	    else{
 	    	DisplayImageOptions options = new DisplayImageOptions.Builder()
 	        .showImageOnLoading(R.drawable.person_placeholder)
@@ -184,8 +184,8 @@ OnConnectionFailedListener, LocationListener{
 	    	ImageLoader.getInstance().displayImage(driver.imageUrl, imagePhoto, options);
 	    }
 	    
-		if(driver.fuelLeft>=0){
-			String fuelLestString = driver.fuelLeft+"%";
+		if(driver.carFuelLeft>=0){
+			String fuelLestString = driver.carFuelLeft+"%";
 		    SpannableStringBuilder cs = new SpannableStringBuilder(fuelLestString);
 		    cs.setSpan(new SuperscriptSpan(), fuelLestString.length()-1, fuelLestString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		    cs.setSpan(new RelativeSizeSpan(0.5f), fuelLestString.length()-1, fuelLestString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -372,8 +372,10 @@ OnConnectionFailedListener, LocationListener{
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
 			
 			driver.name = responseJSON.optString("name");
-			driver.vehicle = responseJSON.optString("year")+" "+responseJSON.optString("make")+" "+responseJSON.optString("model");
-			driver.VIN = responseJSON.optString("vin");
+			driver.carModel = responseJSON.optString("model");
+			driver.carMake = responseJSON.optString("make");
+			driver.carYear = responseJSON.optString("year");
+			driver.carVIN = responseJSON.optString("vin");
 			driver.lastTripDate = responseJSON.isNull("last_trip") ? "Undefined" : Utils.fixTimezoneZ(responseJSON.optString("last_trip"));
 			driver.lastTripId = responseJSON.optLong("last_trip_id",-1);
 			driver.profileDate = Utils.fixTimezoneZ(responseJSON.optString("profile_date"));

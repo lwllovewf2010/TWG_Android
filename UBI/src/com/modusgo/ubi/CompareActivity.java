@@ -206,20 +206,20 @@ public class CompareActivity extends MainActivity{
 			for (Driver driver : drivers) {
 		    	switch (param) {
 				case TRIPS_COUNT:
-					if(driver.tripsCount>maxProgress)
-						maxProgress = driver.tripsCount;
+					if(driver.totalTripsCount>maxProgress)
+						maxProgress = driver.totalTripsCount;
 					break;
 				case TIME:
-					if(driver.drivingTime>maxProgress)
-						maxProgress = driver.drivingTime;
+					if(driver.totalDrivingTime>maxProgress)
+						maxProgress = driver.totalDrivingTime;
 					break;
 				case SCORE:
-					if(driver.scoreInt>maxProgress)
-						maxProgress = driver.scoreInt;
+					if(driver.score>maxProgress)
+						maxProgress = driver.score;
 					break;
 				case DISTANCE:
-					if(driver.distance>maxProgress)
-						maxProgress = (int)driver.distance;
+					if(driver.totalDistance>maxProgress)
+						maxProgress = (int)driver.totalDistance;
 					break;
 				}
 			}
@@ -258,7 +258,7 @@ public class CompareActivity extends MainActivity{
 		    ((TextView) view.findViewById(R.id.tvName)).setText(d.name);
 		    ImageView imagePhoto = (ImageView)view.findViewById(R.id.imagePhoto);
 		    if(d.imageUrl == null || d.imageUrl.equals(""))
-		    	imagePhoto.setImageResource(d.imageId);
+		    	imagePhoto.setImageResource(R.drawable.person_placeholder);
 		    else{
 		    	DisplayImageOptions options = new DisplayImageOptions.Builder()
 		        .showImageOnLoading(R.drawable.person_placeholder)
@@ -276,21 +276,21 @@ public class CompareActivity extends MainActivity{
 		    
 		    switch (param) {
 			case TRIPS_COUNT:
-			    ((TextView) view.findViewById(R.id.tvParameter)).setText(""+d.tripsCount);
-			    progress.setProgress(d.tripsCount);
+			    ((TextView) view.findViewById(R.id.tvParameter)).setText(""+d.totalTripsCount);
+			    progress.setProgress(d.totalTripsCount);
 				break;
 			case TIME:
-			    ((TextView) view.findViewById(R.id.tvParameter)).setText(""+d.drivingTime);
-			    progress.setProgress(d.drivingTime);
+			    ((TextView) view.findViewById(R.id.tvParameter)).setText(""+d.totalDrivingTime);
+			    progress.setProgress(d.totalDrivingTime);
 				break;
 			case SCORE:
-				((TextView) view.findViewById(R.id.tvParameter)).setText(""+d.scoreInt);
-			    progress.setProgress(d.scoreInt);		
+				((TextView) view.findViewById(R.id.tvParameter)).setText(""+d.score);
+			    progress.setProgress(d.score);		
 				break;
 			case DISTANCE:
 				DecimalFormat df = new DecimalFormat("0.0");
-				((TextView) view.findViewById(R.id.tvParameter)).setText(""+df.format(d.distance));
-			    progress.setProgress((int)d.distance);		
+				((TextView) view.findViewById(R.id.tvParameter)).setText(""+df.format(d.totalDistance));
+			    progress.setProgress((int)d.totalDistance);		
 				break;
 			}
 		    	    
@@ -343,10 +343,10 @@ public class CompareActivity extends MainActivity{
 			for (int i = 0; i < compareJSON.length(); i++) {
 				JSONObject driverJSON = compareJSON.getJSONObject(i);
 				Driver d = dHelper.getDriverById(driverJSON.getLong("id"));
-				d.distance = driverJSON.getDouble("mileage");
-				d.tripsCount = driverJSON.getInt("number_of_trips");
-				d.scoreInt = driverJSON.getInt("drive_score");
-				d.drivingTime = driverJSON.getInt("driving_time");
+				d.totalDistance = driverJSON.getDouble("mileage");
+				d.totalTripsCount = driverJSON.getInt("number_of_trips");
+				d.score = driverJSON.getInt("drive_score");
+				d.totalDrivingTime = driverJSON.getInt("driving_time");
 				
 				dHelper.setDriverById(d.id, d);
 			}

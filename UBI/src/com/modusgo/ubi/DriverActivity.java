@@ -146,7 +146,7 @@ public class DriverActivity extends MainActivity{
 		    
 		    ImageView imagePhoto = (ImageView)view.findViewById(R.id.imagePhoto);
 		    if(d.imageUrl == null || d.imageUrl.equals(""))
-		    	imagePhoto.setImageResource(d.imageId);
+		    	imagePhoto.setImageResource(R.drawable.person_placeholder);
 		    else{
 		    	DisplayImageOptions options = new DisplayImageOptions.Builder()
 		        .showImageOnLoading(R.drawable.person_placeholder)

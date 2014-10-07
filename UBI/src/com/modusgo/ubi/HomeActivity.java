@@ -113,7 +113,7 @@ public class HomeActivity extends MainActivity{
 		    Driver d = getDriver(position);
 
 		    ((TextView) view.findViewById(R.id.tvName)).setText(d.name);
-		    ((TextView) view.findViewById(R.id.tvVehicle)).setText(d.vehicle);
+		    ((TextView) view.findViewById(R.id.tvVehicle)).setText(d.getCarFullName());
 		    try {
 				((TextView) view.findViewById(R.id.tvDate)).setText(sdfTo.format(sdfFrom.parse(d.lastTripDate)));
 			} catch (ParseException e) {
@@ -123,7 +123,7 @@ public class HomeActivity extends MainActivity{
 		    
 		    ImageView imagePhoto = (ImageView)view.findViewById(R.id.imagePhoto);
 		    if(d.imageUrl == null || d.imageUrl.equals(""))
-		    	imagePhoto.setImageResource(d.imageId);
+		    	imagePhoto.setImageResource(R.drawable.person_placeholder);
 		    else{
 		    	DisplayImageOptions options = new DisplayImageOptions.Builder()
 		        .showImageOnLoading(R.drawable.person_placeholder)
@@ -227,20 +227,18 @@ public class HomeActivity extends MainActivity{
 			for (int i = 0; i < driversJSON.length(); i++) {
 				JSONObject driverJSON = driversJSON.getJSONObject(i);
 
-				Driver d = new Driver(driverJSON.getLong("id"),
-						driverJSON.optString("name"),
-						R.drawable.person_placeholder,
-						driverJSON.optString("year") + " "
-								+ driverJSON.optString("make") + " "
-								+ driverJSON.optString("model"), "", "",
-						driverJSON.isNull("last_trip") ? "Undefined" : Utils.fixTimezoneZ(driverJSON.optString("last_trip")),
-						0, 0, 
-						driverJSON.optString("grade"));
-
+				Driver d = new Driver();
+				d.id = driverJSON.getLong("id");
+				d.name = driverJSON.optString("name");
+				d.carMake = driverJSON.optString("make");
+				d.carModel = driverJSON.optString("model");
+				d.carYear = driverJSON.optString("year");
+				d.lastTripDate = driverJSON.isNull("last_trip") ? "Undefined" : Utils.fixTimezoneZ(driverJSON.optString("last_trip"));
+				d.grade = driverJSON.optString("grade");
 				d.alerts = driverJSON.optInt("count_alerts");
 				d.diags = driverJSON.optInt("count_diags");
 				d.imageUrl = driverJSON.optString("photo");
-				d.fuelLeft = driverJSON.optInt("fuel_left",-1);
+				d.carFuelLeft = driverJSON.optInt("fuel_left",-1);
 				JSONObject locationJSON = driverJSON.optJSONObject("location");
 				if(locationJSON!=null){
 					d.address = locationJSON.optString("address");

@@ -76,7 +76,7 @@ public class ScoreFragment extends Fragment{
 		
 		ImageView imagePhoto = (ImageView)rootView.findViewById(R.id.imagePhoto);
 	    if(driver.imageUrl == null || driver.imageUrl.equals(""))
-	    	imagePhoto.setImageResource(driver.imageId);
+	    	imagePhoto.setImageResource(R.drawable.person_placeholder);
 	    else{
 	    	DisplayImageOptions options = new DisplayImageOptions.Builder()
 	        .showImageOnLoading(R.drawable.person_placeholder)
@@ -405,7 +405,7 @@ public class ScoreFragment extends Fragment{
 			
 			additionalData = new String[]{
 					Utils.convertTime(driver.lastTripDate, sdf), 
-					driver.VIN, 
+					driver.carVIN, 
 					Utils.convertTime(json.getString("created"), sdf), 
 					Utils.convertTime(json.getString("startdate"), sdf), 
 					df.format(json.getDouble("summary_distance"))+" Miles", 
