@@ -11,6 +11,11 @@ public class Constants {
 	public static final String PREF_CLIENT_ID = "clientId";
 	public static final String PREF_SHOW_TIP_POPUP = "showTipPopup";
 	public static final String PREF_WELCOME_PAGES = "welcomePagesIds";
+	public static final String PREF_ROLE = "role";
+	public static final String PREF_DEVICE_MEID = "deviceMEID";
+	public static final String PREF_DEVICE_TYPE = "deviceType";
+	public static final String PREF_DEVICE_DATA_URL = "deviceDataUrl";
+	public static final String PREF_DEVICE_AUTH_KEY = "deviceAuthKey";
 
 	public static final String API_BASE_URL_PREFIX = "http://api.";
 	public static final String API_BASE_URL_POSTFIX = ".test.modusgo.com/";

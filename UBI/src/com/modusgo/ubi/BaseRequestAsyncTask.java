@@ -61,21 +61,29 @@ public class BaseRequestAsyncTask extends AsyncTask<String, Void, JSONObject>{
 				onSuccess(result);
 			} catch (JSONException e) {
 				e.printStackTrace();
-				Toast.makeText(context, "Error parsing data", Toast.LENGTH_SHORT).show();
+				onError("Error parsing data");
 			}
 		}
 		else if(status==401){
-			prefs.edit().putString(Constants.PREF_AUTH_KEY, "").commit();
-			Intent intent = new Intent(context, SignInActivity.class);
-			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
-			context.startActivity(intent);
-			Toast.makeText(context, "Your session has expired.", Toast.LENGTH_SHORT).show();
+			onError401();
 		}
 		else{
-			Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+			onError(message);
 		}
 
 		super.onPostExecute(result);
+	}
+	
+	protected void onError401(){
+		prefs.edit().putString(Constants.PREF_AUTH_KEY, "").commit();
+		Intent intent = new Intent(context, SignInActivity.class);
+		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+		context.startActivity(intent);
+		onError("Your session has expired.");
+	}
+	
+	protected void onError(String message) {
+		Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
 	}
 	
 	protected void onSuccess(JSONObject responseJSON) throws JSONException {

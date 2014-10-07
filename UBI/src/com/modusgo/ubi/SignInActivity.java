@@ -1,16 +1,13 @@
 package com.modusgo.ubi;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -31,10 +28,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.modusgo.demo.R;
-import com.modusgo.ubi.utils.RequestPost;
 import com.modusgo.ubi.utils.Utils;
 import com.viewpagerindicator.CirclePageIndicator;
 
@@ -79,7 +74,7 @@ public class SignInActivity extends FragmentActivity {
 	    btnSignIn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				new LoginTask().execute();
+				new LoginTask(SignInActivity.this).execute("login.json");
 			}
 		});
 	    
@@ -217,8 +212,8 @@ public class SignInActivity extends FragmentActivity {
 		return fadeOut;
 	}
 	
-	class LoginTask extends AsyncTask<Void, Void, JSONObject>{
-
+	class LoginTask extends BasePostRequestAsyncTask{
+		
 		Animation fadeInProgress;
 		Animation fadeOutProgress;
 		Animation fadeInFields;
@@ -226,7 +221,9 @@ public class SignInActivity extends FragmentActivity {
 		int status;
 		String message = "";
 		
-		public LoginTask() {
+		
+		public LoginTask(Context context) {
+			super(context);
 			fadeInProgress = getFadeInAnmation(layoutProgress);
 			fadeOutProgress = getFadeOutAnmation(layoutProgress);
 			fadeInFields = getFadeInAnmation(layoutFields);
@@ -242,52 +239,50 @@ public class SignInActivity extends FragmentActivity {
 		}
 		
 		@Override
-		protected JSONObject doInBackground(Void... params) {
+		protected void onPostExecute(JSONObject result) {
+			super.onPostExecute(result);
+		}
+
+		@Override
+		protected JSONObject doInBackground(String... params) {
+	        requestParams.add(new BasicNameValuePair("email", editUsername.getText().toString()));
+	        requestParams.add(new BasicNameValuePair("password", editPassword.getText().toString()));
+	        requestParams.add(new BasicNameValuePair("platform", Constants.API_PLATFORM));
+	        requestParams.add(new BasicNameValuePair("mobile_id", Utils.getUUID(SignInActivity.this)));
 			
-			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-	        nameValuePairs.add(new BasicNameValuePair("email", editUsername.getText().toString()));
-	        nameValuePairs.add(new BasicNameValuePair("password", editPassword.getText().toString()));
-	        nameValuePairs.add(new BasicNameValuePair("platform", Constants.API_PLATFORM));
-	        nameValuePairs.add(new BasicNameValuePair("mobile_id", Utils.getUUID(SignInActivity.this)));
-			
-	        HttpResponse result = new RequestPost(Constants.API_BASE_URL_PREFIX+prefs.getString(Constants.PREF_CLIENT_ID, "")+Constants.API_BASE_URL_POSTFIX+"login.json", nameValuePairs).execute();
-	        try{
-		        status = result.getStatusLine().getStatusCode();
-		        message = "Error "+result.getStatusLine().getStatusCode()+": "+result.getStatusLine().getReasonPhrase();
-	        }
-	        catch(NullPointerException e){
-	        	e.printStackTrace();
-				status = 0;
-				message = "Connection error";
-				return null;
-	        }
-	        
-	        try {
-				JSONObject responseJSON = Utils.getJSONObjectFromHttpResponse(result);
-				prefs.edit().putString(Constants.PREF_AUTH_KEY, responseJSON.getString("auth_key")).commit();
-				return responseJSON;
-			} catch (Exception e) {
-				status = 0;
-				message = "Something went wrong, please try again later";
-				e.printStackTrace();
-			}
-	        
-			return null;
+	        return super.doInBackground(params);
 		}
 		
 		@Override
-		protected void onPostExecute(JSONObject result) {
-			if(status>=200 && status<300){
-				startActivity(new Intent(SignInActivity.this, HomeActivity.class));
-				finish();
+		protected void onSuccess(JSONObject responseJSON) throws JSONException {
+			Editor e = prefs.edit();
+			e.putString(Constants.PREF_AUTH_KEY, responseJSON.getString("auth_key"));
+			if(!responseJSON.isNull("driver"))
+				e.putString(Constants.PREF_ROLE, responseJSON.getJSONObject("driver").optString("role"));
+			if(!responseJSON.isNull("device")){
+				JSONObject deviceJSON = responseJSON.getJSONObject("device");
+				e.putString(Constants.PREF_DEVICE_MEID, deviceJSON.getString("meid"));
+				e.putString(Constants.PREF_DEVICE_TYPE, deviceJSON.getString("type"));
+				e.putString(Constants.PREF_DEVICE_DATA_URL, deviceJSON.getString("data_url"));
+				e.putString(Constants.PREF_DEVICE_AUTH_KEY, deviceJSON.getString("auth_key"));
 			}
-			else{
-				layoutProgress.startAnimation(fadeOutProgress);
-				layoutFields.startAnimation(fadeInFields);
-				Toast.makeText(SignInActivity.this, message, Toast.LENGTH_SHORT).show();
-			}
-			
-			super.onPostExecute(result);
+			e.commit();
+			startActivity(new Intent(SignInActivity.this, HomeActivity.class));
+			finish();
+			super.onSuccess(responseJSON);
+		}
+		
+		@Override
+		protected void onError(String message) {
+			layoutProgress.startAnimation(fadeOutProgress);
+			layoutFields.startAnimation(fadeInFields);
+			super.onError(message);
+		}
+		
+		@Override
+		protected void onError401() {
+			//disable
+			onError("Invalid login or password");
 		}
 	}
 }
