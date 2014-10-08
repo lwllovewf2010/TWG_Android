@@ -220,45 +220,56 @@ public class HomeActivity extends MainActivity{
 		@Override
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
 
-			JSONArray driversJSON = responseJSON.getJSONArray("drivers");
-			System.out.println(driversJSON);
+			JSONArray vehiclesJSON = responseJSON.getJSONArray("vehicles");
+			System.out.println(vehiclesJSON);
 
 			dHelper.drivers.clear();
-			for (int i = 0; i < driversJSON.length(); i++) {
-				JSONObject driverJSON = driversJSON.getJSONObject(i);
+			for (int i = 0; i < vehiclesJSON.length(); i++) {
+				JSONObject vehicleJSON = vehiclesJSON.getJSONObject(i);
 
 				Driver d = new Driver();
-				d.id = driverJSON.getLong("id");
-				d.name = driverJSON.optString("name");
-				d.carMake = driverJSON.optString("make");
-				d.carModel = driverJSON.optString("model");
-				d.carYear = driverJSON.optString("year");
-				d.lastTripDate = driverJSON.isNull("last_trip") ? "Undefined" : Utils.fixTimezoneZ(driverJSON.optString("last_trip"));
-				d.grade = driverJSON.optString("grade");
-				d.alerts = driverJSON.optInt("count_alerts");
-				d.diags = driverJSON.optInt("count_diags");
-				d.imageUrl = driverJSON.optString("photo");
-				d.carFuelLeft = driverJSON.optInt("fuel_left",-1);
-				JSONObject locationJSON = driverJSON.optJSONObject("location");
-				if(locationJSON!=null){
+				d.id = vehicleJSON.getLong("id");
+				
+				if(vehicleJSON.isNull("driver")){
+					JSONObject driverJSON = vehicleJSON.getJSONObject("driver");
+					d.name = driverJSON.optString("name");
+					d.imageUrl = driverJSON.optString("photo");
+					d.markerIcon = driverJSON.optString("icon");
+				}
+				
+				if(!vehicleJSON.isNull("car")){
+					JSONObject carJSON = vehicleJSON.getJSONObject("car");
+					d.carVIN = carJSON.optString("vin");
+					d.carMake = carJSON.optString("make");
+					d.carModel = carJSON.optString("model");
+					d.carYear = carJSON.optString("year");
+					d.carFuelLevel = carJSON.optInt("fuel_level", -1);
+					d.carCheckup = carJSON.optBoolean("checkup");
+				}
+				
+				if(!vehicleJSON.isNull("location")){
+					JSONObject locationJSON = vehicleJSON.getJSONObject("location");
+					d.latitude = locationJSON.optDouble("latitude");
+					d.longitude = locationJSON.optDouble("longitude");
 					d.address = locationJSON.optString("address");
-					JSONObject mapJSON = locationJSON.getJSONObject("map");
-					if(mapJSON!=null){
-						d.latitude = mapJSON.optDouble("latitude");
-						d.longitude = mapJSON.optDouble("longitude");
-					}
-					else{
-						d.latitude = 0;
-						d.longitude = 0;
-					}
+					d.lastTripDate = Utils.fixTimezoneZ(locationJSON.optString("last_trip_time","Undefined"));
+					d.lastTripId = locationJSON.optLong("last_trip_id");
 				}
-				else{
-					d.address = "Undefined";
-					d.latitude = 0;
-					d.longitude = 0;
+				
+				if(!vehicleJSON.isNull("stats")){
+					JSONObject statsJSON = vehicleJSON.getJSONObject("stats");
+					d.score = statsJSON.optInt("score");
+					d.grade = statsJSON.optString("grade");
+					d.totalTripsCount = statsJSON.optInt("trips");
+					d.totalDrivingTime = statsJSON.optInt("time");
+					d.totalDistance = statsJSON.optDouble("distance");
+					d.totalBraking = statsJSON.optInt("braking");
+					d.totalAcceleration = statsJSON.optInt("acceleration");
+					d.totalSpeeding = statsJSON.optInt("speeding");
+					d.totalSpeedingDistance = statsJSON.optDouble("speeding_distance");
+					d.alerts = statsJSON.optInt("new_alerts");
 				}
-				d.markerIcon = driverJSON.optString("icon");
-
+				
 				dHelper.drivers.add(d);
 			}
 

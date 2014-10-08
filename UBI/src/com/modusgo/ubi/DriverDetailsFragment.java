@@ -184,8 +184,8 @@ OnConnectionFailedListener, LocationListener{
 	    	ImageLoader.getInstance().displayImage(driver.imageUrl, imagePhoto, options);
 	    }
 	    
-		if(driver.carFuelLeft>=0){
-			String fuelLestString = driver.carFuelLeft+"%";
+		if(driver.carFuelLevel>=0){
+			String fuelLestString = driver.carFuelLevel+"%";
 		    SpannableStringBuilder cs = new SpannableStringBuilder(fuelLestString);
 		    cs.setSpan(new SuperscriptSpan(), fuelLestString.length()-1, fuelLestString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		    cs.setSpan(new RelativeSizeSpan(0.5f), fuelLestString.length()-1, fuelLestString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

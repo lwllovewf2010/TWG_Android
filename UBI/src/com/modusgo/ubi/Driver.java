@@ -15,7 +15,8 @@ public class Driver implements Serializable{
 	public String carMake;
 	public String carModel;
 	public String carYear;
-	public int carFuelLeft;
+	public int carFuelLevel;
+	public boolean carCheckup;
 
 	public int diags;
 	public int alerts;
@@ -34,7 +35,7 @@ public class Driver implements Serializable{
 	public int totalBraking;
 	public int totalAcceleration;
 	public int totalSpeeding;
-	public long totalSpeedingDistance;
+	public double totalSpeedingDistance;
 	
 	public String profileDate;
 	public int harshEvents;
