@@ -52,6 +52,13 @@ public class HomeActivity extends MainActivity{
 		
 		dHelper = DriversHelper.getInstance();
 		
+		if(dHelper.drivers.size()==1){
+			Intent i = new Intent(this, DriverActivity.class);
+			i.putExtra("id", 0);
+			startActivity(i);
+			finish();
+		}
+		
 		driversAdapter = new DriversAdapter(this, dHelper.drivers);
 		
 		lvDrivers.setAdapter(driversAdapter);
