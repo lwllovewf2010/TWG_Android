@@ -13,6 +13,8 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
@@ -28,13 +30,15 @@ import android.widget.TextView;
 
 import com.modusgo.dd.TrackingStatusService;
 import com.modusgo.demo.R;
+import com.modusgo.ubi.db.DbHelper;
+import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class HomeActivity extends MainActivity{
 	
 	DriversAdapter driversAdapter;
-	DriversHelper dHelper;
+	ArrayList<Driver> drivers;
 	
 	ListView lvDrivers;
 	ProgressBar progressBar;
@@ -49,22 +53,22 @@ public class HomeActivity extends MainActivity{
 		progressBar = (ProgressBar)findViewById(R.id.progressBar);
 		lvDrivers = (ListView)findViewById(R.id.listViewDrivers);
 		
-		dHelper = DriversHelper.getInstance();
+		drivers = getDriversFromDB();
 		
-		if(dHelper.drivers.size()==1){
+		if(drivers.size()==1){
 			Intent i = new Intent(this, DriverActivity.class);
 			i.putExtra("id", 0);
 			startActivity(i);
 			finish();
 		}
 		
-		driversAdapter = new DriversAdapter(this, dHelper.drivers);
+		driversAdapter = new DriversAdapter(this, drivers);
 		
 		lvDrivers.setAdapter(driversAdapter);
 		
 		btnUp.setImageResource(R.drawable.ic_map);
 		
-		new GetDriversTask(this).execute("drivers.json");
+		//new GetDriversTask(this).execute("drivers.json");
 		
 		setButtonUpVisibility(false);
 		
@@ -81,26 +85,24 @@ public class HomeActivity extends MainActivity{
 		
 		Context ctx;
 		LayoutInflater lInflater;
-		ArrayList<Driver> objects;
 		
 		SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
 		SimpleDateFormat sdfTo = new SimpleDateFormat("MM/dd/yyyy KK:mm aa z", Locale.getDefault());
 		
 		DriversAdapter(Context context, ArrayList<Driver> drivers) {
 		    ctx = context;
-		    objects = drivers;
 		    lInflater = (LayoutInflater) ctx
 		        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		  }
 		
 		@Override
 		public int getCount() {
-		    return objects.size();
+		    return drivers.size();
 		}
 
 		@Override
 		public Object getItem(int position) {
-		    return objects.get(position);
+		    return drivers.get(position);
 		}
 
 		@Override
@@ -195,6 +197,44 @@ public class HomeActivity extends MainActivity{
 		super.onResume();
 	}
 	
+	private ArrayList<Driver> getDriversFromDB(){
+		DbHelper dbHelper = DbHelper.getInstance(this);
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		Cursor c = db.query(VehicleEntry.TABLE_NAME, 
+				new String[]{
+				VehicleEntry._ID,
+				VehicleEntry.COLUMN_NAME_DRIVER_NAME,
+				VehicleEntry.COLUMN_NAME_CAR_MAKE,
+				VehicleEntry.COLUMN_NAME_CAR_MODEL,
+				VehicleEntry.COLUMN_NAME_CAR_YEAR,
+				VehicleEntry.COLUMN_NAME_CAR_CHECKUP,
+				VehicleEntry.COLUMN_NAME_LAST_TRIP_DATE,
+				VehicleEntry.COLUMN_NAME_ALERTS}, 
+				null, null, null, null, null);
+		
+		ArrayList<Driver> drivers = new ArrayList<Driver>();
+		
+		if(c.moveToFirst()){
+			while (c.isAfterLast()) {
+				Driver d = new Driver();
+				d.id = c.getLong(0);
+				d.name = c.getString(1);
+				d.carMake = c.getString(2);
+				d.carModel = c.getString(3);
+				d.carYear = c.getString(4);
+				d.carCheckup = c.getInt(5) == 1;
+				d.lastTripDate = c.getString(6);
+				drivers.add(d);
+				
+				c.moveToNext();
+			}
+		}
+		c.close();
+		dbHelper.close();
+		
+		return drivers;
+	}
+	
 	class GetDriversTask extends BaseRequestAsyncTask{
 
 		public GetDriversTask(Context context) {
@@ -219,6 +259,7 @@ public class HomeActivity extends MainActivity{
 		protected JSONObject doInBackground(String... params) {
 	        requestParams.add(new BasicNameValuePair("page", "1"));
 	        requestParams.add(new BasicNameValuePair("per_page", "1000"));
+	        System.out.println(requestParams);
 			
 	        return super.doInBackground(params);
 		}
@@ -228,13 +269,16 @@ public class HomeActivity extends MainActivity{
 
 			JSONArray vehiclesJSON = responseJSON.getJSONArray("vehicles");
 			System.out.println(vehiclesJSON);
-
-			dHelper.drivers.clear();
+			drivers.clear();
 			for (int i = 0; i < vehiclesJSON.length(); i++) {
 				JSONObject vehicleJSON = vehiclesJSON.getJSONObject(i);
-				dHelper.drivers.add(Driver.fromJSON(vehicleJSON));
+				drivers.add(Driver.fromJSON(vehicleJSON));
 			}
-
+			
+			DbHelper dbHelper = DbHelper.getInstance(HomeActivity.this);
+			dbHelper.saveDrivers(drivers);
+			dbHelper.close();
+			
 			driversAdapter.notifyDataSetChanged();
 			setButtonUpVisibility(true);
 			super.onSuccess(responseJSON);
