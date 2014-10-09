@@ -8,8 +8,8 @@ public class Driver implements Serializable{
 	private static final long serialVersionUID = 1315237349232671000L;
 	public long id;
 	public String name;
-	public String imageUrl;
 	public String markerIcon;
+	public String photo = "";
 
 	public String carVIN;
 	public String carMake;

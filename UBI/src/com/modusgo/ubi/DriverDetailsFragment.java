@@ -170,7 +170,7 @@ OnConnectionFailedListener, LocationListener{
 			e.printStackTrace();
 		}
 	    
-		if(driver.imageUrl == null || driver.imageUrl.equals(""))
+		if(driver.photo == null || driver.photo.equals(""))
 	    	imagePhoto.setImageResource(R.drawable.person_placeholder);
 	    else{
 	    	DisplayImageOptions options = new DisplayImageOptions.Builder()
@@ -181,7 +181,7 @@ OnConnectionFailedListener, LocationListener{
 	        .cacheOnDisk(true)
 	        .build();
 	    	
-	    	ImageLoader.getInstance().displayImage(driver.imageUrl, imagePhoto, options);
+	    	ImageLoader.getInstance().displayImage(driver.photo, imagePhoto, options);
 	    }
 	    
 		if(driver.carFuelLevel>=0){

@@ -257,7 +257,7 @@ public class CompareActivity extends MainActivity{
 
 		    ((TextView) view.findViewById(R.id.tvName)).setText(d.name);
 		    ImageView imagePhoto = (ImageView)view.findViewById(R.id.imagePhoto);
-		    if(d.imageUrl == null || d.imageUrl.equals(""))
+		    if(d.photo == null || d.photo.equals(""))
 		    	imagePhoto.setImageResource(R.drawable.person_placeholder);
 		    else{
 		    	DisplayImageOptions options = new DisplayImageOptions.Builder()
@@ -268,7 +268,7 @@ public class CompareActivity extends MainActivity{
 		        .cacheOnDisk(true)
 		        .build();
 		    	
-		    	ImageLoader.getInstance().displayImage(d.imageUrl, imagePhoto, options);
+		    	ImageLoader.getInstance().displayImage(d.photo, imagePhoto, options);
 		    }
 		    
 		    ProgressBar progress = (ProgressBar)view.findViewById(R.id.progressBar);

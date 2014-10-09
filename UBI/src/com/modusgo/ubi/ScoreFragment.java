@@ -75,7 +75,7 @@ public class ScoreFragment extends Fragment{
 		((TextView)rootView.findViewById(R.id.tvName)).setText(driver.name);
 		
 		ImageView imagePhoto = (ImageView)rootView.findViewById(R.id.imagePhoto);
-	    if(driver.imageUrl == null || driver.imageUrl.equals(""))
+	    if(driver.photo == null || driver.photo.equals(""))
 	    	imagePhoto.setImageResource(R.drawable.person_placeholder);
 	    else{
 	    	DisplayImageOptions options = new DisplayImageOptions.Builder()
@@ -86,7 +86,7 @@ public class ScoreFragment extends Fragment{
 	        .cacheOnDisk(true)
 	        .build();
 	    	
-	    	ImageLoader.getInstance().displayImage(driver.imageUrl, imagePhoto, options);
+	    	ImageLoader.getInstance().displayImage(driver.photo, imagePhoto, options);
 	    }
 		
 		rootView.findViewById(R.id.btnSwitchDriverMenu).setOnClickListener(new OnClickListener() {

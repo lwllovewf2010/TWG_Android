@@ -283,7 +283,7 @@ public class SignInActivity extends FragmentActivity {
 					if(vehicleJSON.isNull("driver")){
 						JSONObject driverJSON = vehicleJSON.getJSONObject("driver");
 						d.name = driverJSON.optString("name");
-						d.imageUrl = driverJSON.optString("photo");
+						d.photo = driverJSON.optString("photo");
 						d.markerIcon = driverJSON.optString("icon");
 					}
 					

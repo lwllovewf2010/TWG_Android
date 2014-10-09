@@ -129,7 +129,7 @@ public class HomeActivity extends MainActivity{
 			}
 		    
 		    ImageView imagePhoto = (ImageView)view.findViewById(R.id.imagePhoto);
-		    if(d.imageUrl == null || d.imageUrl.equals(""))
+		    if(d.photo == null || d.photo.equals(""))
 		    	imagePhoto.setImageResource(R.drawable.person_placeholder);
 		    else{
 		    	DisplayImageOptions options = new DisplayImageOptions.Builder()
@@ -140,7 +140,7 @@ public class HomeActivity extends MainActivity{
 		        .cacheOnDisk(true)
 		        .build();
 		    	
-		    	ImageLoader.getInstance().displayImage(d.imageUrl, imagePhoto, options);
+		    	ImageLoader.getInstance().displayImage(d.photo, imagePhoto, options);
 		    }
 		    
 		    if(d.diags<=0){
