@@ -210,6 +210,7 @@ public class InitActivity extends FragmentActivity {
 				finish();
 			}
 			else{
+				layoutFields.setVisibility(View.VISIBLE);
 				layoutProgress.startAnimation(fadeOutProgress);
 				layoutFields.startAnimation(fadeInFields);
 				tvError.setText(message);
