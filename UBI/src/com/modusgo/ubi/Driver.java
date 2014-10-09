@@ -7,14 +7,14 @@ public class Driver implements Serializable{
 	
 	private static final long serialVersionUID = 1315237349232671000L;
 	public long id;
-	public String name;
-	public String markerIcon;
+	public String name = "";
 	public String photo = "";
+	public String markerIcon = "";
 
-	public String carVIN;
-	public String carMake;
-	public String carModel;
-	public String carYear;
+	public String carVIN = "";
+	public String carMake = "";
+	public String carModel = "";
+	public String carYear = "";
 	public int carFuelLevel;
 	public boolean carCheckup;
 
@@ -23,12 +23,12 @@ public class Driver implements Serializable{
 	
 	public double latitude;
 	public double longitude;
-	public String address;
-	public String lastTripDate;
+	public String address = "";
+	public String lastTripDate = "";
 	public long lastTripId;
 	
 	public int score;
-	public String grade;
+	public String grade = "";
 	public int totalTripsCount;
 	public int totalDrivingTime;
 	public double totalDistance;
@@ -37,7 +37,7 @@ public class Driver implements Serializable{
 	public int totalSpeeding;
 	public double totalSpeedingDistance;
 	
-	public String profileDate;
+	public String profileDate = "";
 	public int harshEvents;
 	
 	public ArrayList<ListItem> tripsMap = new ArrayList<ListItem>();
