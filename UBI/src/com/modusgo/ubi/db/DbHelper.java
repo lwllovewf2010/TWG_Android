@@ -1,9 +1,13 @@
 package com.modusgo.ubi.db;
 
+import java.util.ArrayList;
+
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
 
+import com.modusgo.ubi.Driver;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 
 public class DbHelper extends SQLiteOpenHelper {
@@ -74,6 +78,93 @@ public class DbHelper extends SQLiteOpenHelper {
 	}
 	public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 	    onUpgrade(db, oldVersion, newVersion);
+	}
+	
+	public void saveDrivers(ArrayList<Driver> drivers){
+		SQLiteDatabase database = sInstance.getWritableDatabase();
+		
+		if(database!=null && drivers!=null){
+			String sql = "INSERT OR REPLACE INTO "+ VehicleEntry.TABLE_NAME +" ("
+					+ VehicleEntry._ID +","
+					+ VehicleEntry.COLUMN_NAME_DRIVER_NAME +","
+					+ VehicleEntry.COLUMN_NAME_DRIVER_MARKER_ICON +","
+					+ VehicleEntry.COLUMN_NAME_DRIVER_PHOTO +","
+					+ VehicleEntry.COLUMN_NAME_CAR_VIN +","
+					+ VehicleEntry.COLUMN_NAME_CAR_MAKE +","
+					+ VehicleEntry.COLUMN_NAME_CAR_MODEL +","
+					+ VehicleEntry.COLUMN_NAME_CAR_YEAR +","
+					+ VehicleEntry.COLUMN_NAME_CAR_FUEL +","
+					+ VehicleEntry.COLUMN_NAME_CAR_CHECKUP +","
+					+ VehicleEntry.COLUMN_NAME_LATITUDE +","
+					+ VehicleEntry.COLUMN_NAME_LONGITUDE +","
+					+ VehicleEntry.COLUMN_NAME_ADDRESS +","
+					+ VehicleEntry.COLUMN_NAME_LAST_TRIP_DATE +","
+					+ VehicleEntry.COLUMN_NAME_LAST_TRIP_ID +","
+					+ VehicleEntry.COLUMN_NAME_SCORE +","
+					+ VehicleEntry.COLUMN_NAME_GRADE +","
+					+ VehicleEntry.COLUMN_NAME_TOTAL_TRIPS_COUNT +","
+					+ VehicleEntry.COLUMN_NAME_TOTAL_DRIVING_TIME +","
+					+ VehicleEntry.COLUMN_NAME_TOTAL_DISTANCE +","
+					+ VehicleEntry.COLUMN_NAME_TOTAL_BREAKING +","
+					+ VehicleEntry.COLUMN_NAME_TOTAL_ACCELERATION +","
+					+ VehicleEntry.COLUMN_NAME_TOTAL_SPEEDING +","
+					+ VehicleEntry.COLUMN_NAME_TOTAL_SPEEDING_DISTANCE +","
+					+ VehicleEntry.COLUMN_NAME_ALERTS +""
+					+ ") VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
+			
+			SQLiteStatement statement = database.compileStatement(sql);
+		    database.beginTransaction();
+		    String ids = "";
+		    for (int i = 0; i < drivers.size(); i++) {
+		    	Driver driver = drivers.get(i);
+		    	
+		    	ids+= i!=drivers.size()-1 ? driver.id+"," : driver.id;
+		    	
+		    	statement.clearBindings();
+		    	statement.bindLong(1, driver.id);
+		    	statement.bindString(2, driver.name);
+		    	statement.bindString(3, driver.markerIcon);
+		    	statement.bindString(4, driver.photo);
+		    	statement.bindString(5, driver.carVIN);
+		    	statement.bindString(6, driver.carMake);
+		    	statement.bindString(7, driver.carModel);
+		    	statement.bindString(8, driver.carYear);
+		    	statement.bindLong(9, driver.carFuelLevel);
+		    	statement.bindLong(10, driver.carCheckup ? 1 : 0);
+		    	statement.bindDouble(11, driver.latitude);
+		    	statement.bindDouble(12, driver.longitude);
+		    	statement.bindString(13, driver.address);
+		    	statement.bindString(14, driver.lastTripDate);
+		    	statement.bindLong(15, driver.lastTripId);
+		    	statement.bindLong(16, driver.score);
+		    	statement.bindString(17, driver.grade);
+		    	statement.bindLong(18, driver.totalTripsCount);
+		    	statement.bindLong(19, driver.totalDrivingTime);
+		    	statement.bindDouble(20, driver.totalDistance);
+		    	statement.bindLong(21, driver.totalBraking);
+		    	statement.bindLong(22, driver.totalAcceleration);
+		    	statement.bindLong(23, driver.totalSpeeding);
+		    	statement.bindDouble(24, driver.totalSpeedingDistance);
+		    	statement.bindLong(25, driver.alerts);
+		    	statement.execute();
+		    	
+			}
+		    
+		    database.setTransactionSuccessful();	
+		    database.endTransaction();
+		    statement.close();
+
+		    SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+VehicleEntry.TABLE_NAME+" WHERE "+VehicleEntry._ID+" NOT IN (" + ids + ")");
+		    database.beginTransaction();
+		    removeStatement.clearBindings();
+	        removeStatement.execute();
+	        database.setTransactionSuccessful();	
+		    database.endTransaction();
+		    removeStatement.close();
+		}
+		
+		database.close();
+		
 	}
 	
 }
