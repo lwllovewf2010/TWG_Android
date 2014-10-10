@@ -72,7 +72,7 @@ public class Driver implements Serializable{
 		Driver d = new Driver();
 		d.id = vehicleJSON.getLong("id");
 		
-		if(vehicleJSON.isNull("driver")){
+		if(!vehicleJSON.isNull("driver")){
 			JSONObject driverJSON = vehicleJSON.getJSONObject("driver");
 			d.name = driverJSON.optString("name");
 			d.photo = driverJSON.optString("photo");
