@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTabHost;
@@ -29,6 +31,8 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnCloseListener;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnOpenListener;
 import com.modusgo.demo.R;
+import com.modusgo.ubi.db.DbHelper;
+import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -39,8 +43,7 @@ public class DriverActivity extends MainActivity{
 	private FragmentTabHost tabHost;
 	SlidingMenu menu;
 
-	Driver driver;
-	DriversHelper dHelper;
+	public Driver driver;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -51,10 +54,9 @@ public class DriverActivity extends MainActivity{
         tabHost.setup(getApplicationContext(), getSupportFragmentManager(), R.id.realtabcontent);
 
         Bundle b = new Bundle();
-		b.putInt("id", getIntent().getIntExtra("id", 0));
+		b.putLong("id", getIntent().getLongExtra(VehicleEntry._ID, 0));
 		
-		dHelper = DriversHelper.getInstance();
-		driver = dHelper.getDriverByIndex(getIntent().getIntExtra("id", 0));
+		driver = getDriverFromDB(getIntent().getLongExtra(VehicleEntry._ID, 0));
 		
 		setupTab(DriverDetailsFragment.class, b, "Driver Detail", R.drawable.ic_tab_driver, 0);
 		setupTab(TripsFragment.class, b, "Trips", R.drawable.ic_tab_trips, 0);
@@ -94,6 +96,38 @@ public class DriverActivity extends MainActivity{
 	
 	public void switchTab(int index){
 		tabHost.setCurrentTab(index);
+	}
+	
+	private Driver getDriverFromDB(long id){
+		DbHelper dbHelper = DbHelper.getInstance(this);
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		Cursor c = db.query(VehicleEntry.TABLE_NAME, 
+				new String[]{
+				VehicleEntry._ID,
+				VehicleEntry.COLUMN_NAME_DRIVER_NAME,
+				VehicleEntry.COLUMN_NAME_CAR_MAKE,
+				VehicleEntry.COLUMN_NAME_CAR_MODEL,
+				VehicleEntry.COLUMN_NAME_CAR_YEAR,
+				VehicleEntry.COLUMN_NAME_CAR_CHECKUP,
+				VehicleEntry.COLUMN_NAME_LAST_TRIP_DATE,
+				VehicleEntry.COLUMN_NAME_ALERTS}, 
+				VehicleEntry._ID+" = ?", new String[]{Long.toString(id)}, null, null, null);
+		
+		Driver d = new Driver();
+		
+		if(c.moveToFirst()){
+			d.id = c.getLong(0);
+			d.name = c.getString(1);
+			d.carMake = c.getString(2);
+			d.carModel = c.getString(3);
+			d.carYear = c.getString(4);
+			d.carCheckup = c.getInt(5) == 1;
+			d.lastTripDate = c.getString(6);
+				
+		}
+		c.close();
+		dbHelper.close();
+		return d;
 	}
 	
 	class DriversAdapter extends BaseAdapter{

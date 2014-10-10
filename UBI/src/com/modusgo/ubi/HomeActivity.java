@@ -32,6 +32,7 @@ import com.modusgo.dd.TrackingStatusService;
 import com.modusgo.demo.R;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
+import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -55,25 +56,25 @@ public class HomeActivity extends MainActivity{
 		
 		drivers = getDriversFromDB();
 		
-		if(drivers.size()==1){
-			Intent i = new Intent(this, DriverActivity.class);
-			i.putExtra("id", 0);
-			startActivity(i);
-			finish();
-		}
-		
 		driversAdapter = new DriversAdapter(this, drivers);
 		
 		lvDrivers.setAdapter(driversAdapter);
 		
 		btnUp.setImageResource(R.drawable.ic_map);
 		
-		//new GetDriversTask(this).execute("drivers.json");
+		new GetDriversTask(this).execute("drivers.json");
 		
 		setButtonUpVisibility(false);
 		
 		if(!prefs.getString(Constants.PREF_REG_CODE, "").equals(""))
 			startService(new Intent(this, TrackingStatusService.class));
+		
+//		if(drivers.size()==1){
+//			Intent i = new Intent(this, DriverActivity.class);
+//			i.putExtra("id", 0);
+//			startActivity(i);
+//			finish();
+//		}
 	}
 	
 	@Override
@@ -118,7 +119,7 @@ public class HomeActivity extends MainActivity{
 		      view = lInflater.inflate(R.layout.home_drivers_list_item, parent, false);
 		    }
 
-		    Driver d = getDriver(position);
+		    final Driver d = getDriver(position);
 
 		    ((TextView) view.findViewById(R.id.tvName)).setText(d.name);
 		    ((TextView) view.findViewById(R.id.tvVehicle)).setText(d.getCarFullName());
@@ -162,7 +163,7 @@ public class HomeActivity extends MainActivity{
 				@Override
 				public void onClick(View v) {
 					Intent i = new Intent(HomeActivity.this, AlertsActivity.class);
-					i.putExtra("id", position);
+					i.putExtra(VehicleEntry._ID, d.id);
 					startActivity(i);
 				}
 			});
@@ -175,7 +176,7 @@ public class HomeActivity extends MainActivity{
 					prefs.edit().putInt(Constants.PREF_CURRENT_DRIVER, position).commit();
 					
 					Intent i = new Intent(HomeActivity.this, DriverActivity.class);
-					i.putExtra("id", position);
+					i.putExtra(VehicleEntry._ID, d.id);
 					//i.putExtra(DriverActivity.SAVED_DRIVER, drivers.get(position));
 					startActivity(i);
 				}
@@ -215,7 +216,7 @@ public class HomeActivity extends MainActivity{
 		ArrayList<Driver> drivers = new ArrayList<Driver>();
 		
 		if(c.moveToFirst()){
-			while (c.isAfterLast()) {
+			while (!c.isAfterLast()) {
 				Driver d = new Driver();
 				d.id = c.getLong(0);
 				d.name = c.getString(1);
@@ -231,7 +232,6 @@ public class HomeActivity extends MainActivity{
 		}
 		c.close();
 		dbHelper.close();
-		
 		return drivers;
 	}
 	
@@ -259,7 +259,6 @@ public class HomeActivity extends MainActivity{
 		protected JSONObject doInBackground(String... params) {
 	        requestParams.add(new BasicNameValuePair("page", "1"));
 	        requestParams.add(new BasicNameValuePair("per_page", "1000"));
-	        System.out.println(requestParams);
 			
 	        return super.doInBackground(params);
 		}
@@ -267,6 +266,8 @@ public class HomeActivity extends MainActivity{
 		@Override
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
 
+			responseJSON = Utils.getJSONObjectFromAssets(HomeActivity.this, "vehicles.json");
+			System.out.println(responseJSON);
 			JSONArray vehiclesJSON = responseJSON.getJSONArray("vehicles");
 			System.out.println(vehiclesJSON);
 			drivers.clear();

@@ -2,6 +2,7 @@ package com.modusgo.ubi.utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -66,6 +67,28 @@ public class Utils {
 	    UUID deviceUuid = new UUID(androidId.hashCode(), ((long)tmDevice.hashCode() << 32) | tmSerial.hashCode());
 	    String deviceId = deviceUuid.toString();
 	    return md5(deviceId);
+	}
+	
+	public static JSONObject getJSONObjectFromAssets(Context context, String filename){
+		String json = null;
+        try {
+            InputStream is = context.getAssets().open(filename);
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+        
+        try {
+			return new JSONObject(json);
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	public static JSONObject getJSONObjectFromHttpResponse(HttpResponse response){

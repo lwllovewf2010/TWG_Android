@@ -48,7 +48,6 @@ public class DriverDetailsFragment extends Fragment  implements ConnectionCallba
 OnConnectionFailedListener, LocationListener{
 	
 	Driver driver;
-	DriversHelper dHelper;
 	int driverIndex = 0;
 	SharedPreferences prefs;
 	
@@ -93,8 +92,7 @@ OnConnectionFailedListener, LocationListener{
 			driverIndex = getArguments().getInt("id");
 		}
 
-		dHelper = DriversHelper.getInstance();
-		driver = dHelper.getDriverByIndex(driverIndex);
+		driver = ((DriverActivity)getActivity()).driver;
 		
 	    tvName = (TextView) rootView.findViewById(R.id.tvName);
 	    tvVehicle = (TextView) rootView.findViewById(R.id.tvVehicle);
@@ -108,7 +106,19 @@ OnConnectionFailedListener, LocationListener{
 	    btnDistanceToCar = (View)tvDistanceToCar.getParent();
 	    rlLastTrip = rootView.findViewById(R.id.rlDate);
 	    
-	    updateFragment();
+	    try{
+			if(mMap!=null){
+				mMap.clear();
+				setUpMap();
+			}
+			updateFragment();
+			
+	        setUpLocationClientIfNeeded();
+	        mLocationClient.connect();
+		}
+		catch(NullPointerException e){
+			e.printStackTrace();
+		}
 
 	    rlLastTrip.findViewById(R.id.imageArrow).setVisibility(View.GONE);
 	    
@@ -337,8 +347,7 @@ OnConnectionFailedListener, LocationListener{
     
     @Override
 	public void onResume() {
-	    new GetDriverTask(getActivity()).execute("drivers/"+driver.id+".json");
-        super.onResume();
+	    super.onResume();
     }
 
     @Override
@@ -353,70 +362,5 @@ OnConnectionFailedListener, LocationListener{
 	public void onSaveInstanceState(Bundle outState) {
 		outState.putInt("id", driverIndex);
 		super.onSaveInstanceState(outState);
-	}
-	
-	
-	
-	class GetDriverTask extends BaseRequestAsyncTask{
-
-		public GetDriverTask(Context context) {
-			super(context);
-		}
-
-		@Override
-		protected JSONObject doInBackground(String... params) {			
-			return super.doInBackground(params);
-		}
-		
-		@Override
-		protected void onSuccess(JSONObject responseJSON) throws JSONException {
-			
-			driver.name = responseJSON.optString("name");
-			driver.carModel = responseJSON.optString("model");
-			driver.carMake = responseJSON.optString("make");
-			driver.carYear = responseJSON.optString("year");
-			driver.carVIN = responseJSON.optString("vin");
-			driver.lastTripDate = responseJSON.isNull("last_trip") ? "Undefined" : Utils.fixTimezoneZ(responseJSON.optString("last_trip"));
-			driver.lastTripId = responseJSON.optLong("last_trip_id",-1);
-			driver.profileDate = Utils.fixTimezoneZ(responseJSON.optString("profile_date"));
-			driver.alerts = responseJSON.optInt("count_alerts");
-			driver.diags = responseJSON.optInt("count_diags");
-			
-			JSONObject locationJSON = responseJSON.optJSONObject("location");
-			if(locationJSON!=null){
-				driver.address = locationJSON.optString("address");
-				JSONObject mapJSON = locationJSON.getJSONObject("map");
-				if(mapJSON!=null){
-					driver.latitude = mapJSON.optDouble("latitude");
-					driver.longitude = mapJSON.optDouble("longitude");
-				}
-				else{
-					driver.latitude = 0;
-					driver.longitude = 0;
-				}
-			}
-			else{
-				driver.address = "Undefined";
-				driver.latitude = 0;
-				driver.longitude = 0;
-			}
-				
-			dHelper.setDriver(driverIndex, driver);
-			
-			try{
-				if(mMap!=null){
-					mMap.clear();
-					setUpMap();
-				}
-				updateFragment();
-				
-		        setUpLocationClientIfNeeded();
-		        mLocationClient.connect();
-			}
-			catch(NullPointerException e){
-				e.printStackTrace();
-			}
-			super.onSuccess(responseJSON);
-		}
 	}
 }

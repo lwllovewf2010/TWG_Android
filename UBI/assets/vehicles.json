@@ -1,0 +1,75 @@
+{
+  "status": "success",
+  "vehicles": [
+    {
+      id: 1233,
+      driver: {
+        name: "Jon",
+        icon: "http://api.modusgo.com/drivers/13094.png",
+        photo: "http://api.modusgo.com/uploads/vehicle/photo/13094/Nathan.png"
+      },
+      car: {
+        vin: "1JUHDGSYDGY2323",
+        make: "Ford",
+        model: "Edge",
+        year: "2013",
+        fuel_level: 78,
+        checkup: true
+      },
+      location: {
+        latitude: "33.725375",
+        longitude: "-118.0471885", 
+        address: "4662 Operetta Drive, Huntington Beach, CA 92649, USA",
+        last_trip_time: "2014-09-03T01:10:28-07:00",
+        last_trip_id: 1232131
+      },
+      stats: {
+        score: 85,
+        grade: "C-",
+        trips: 63,
+        time: 2885,
+        distance: 388.4703107794,
+        braking: 20,
+        acceleration: 20,
+        speeding: 20,
+        speeding_distance: 120,
+        new_alerts: 2
+      }
+    },
+    {
+      id: 1234,
+      driver: {
+        name: "James May",
+        icon: "http://api.modusgo.com/drivers/13094.png",
+        photo: "http://mygazeta.com/i/2010/06/Kosmicheskii-turizm_09.jpg"
+      },
+      car: {
+        vin: "1JUHDGSYDGY2323",
+        make: "Ford",
+        model: "Edge",
+        year: "2013",
+        fuel_level: 78,
+        checkup: true
+      },
+      location: {
+        latitude: "33.725375",
+        longitude: "-118.0471885", 
+        address: "4662 Operetta Drive, Huntington Beach, CA 92649, USA",
+        last_trip_time: "2014-09-03T01:10:28-07:00",
+        last_trip_id: 1232131
+      },
+      stats: {
+        score: 85,
+        grade: "A+ ",
+        trips: 63,
+        time: 2885,
+        distance: 388.4703107794,
+        braking: 20,
+        acceleration: 20,
+        speeding: 20,
+        speeding_distance: 120,
+        new_alerts: 2
+      }
+    }
+  ]
+}
