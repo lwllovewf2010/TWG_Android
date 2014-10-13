@@ -32,7 +32,6 @@ import com.modusgo.dd.TrackingStatusService;
 import com.modusgo.demo.R;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
-import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -62,7 +61,7 @@ public class HomeActivity extends MainActivity{
 		
 		btnUp.setImageResource(R.drawable.ic_map);
 		
-		new GetDriversTask(this).execute("drivers.json");
+		new GetDriversTask(this).execute("vehicles.json");
 		
 		setButtonUpVisibility(false);
 		
@@ -259,17 +258,14 @@ public class HomeActivity extends MainActivity{
 		protected JSONObject doInBackground(String... params) {
 	        requestParams.add(new BasicNameValuePair("page", "1"));
 	        requestParams.add(new BasicNameValuePair("per_page", "1000"));
-			
 	        return super.doInBackground(params);
 		}
 		
 		@Override
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
-
-			responseJSON = Utils.getJSONObjectFromAssets(HomeActivity.this, "vehicles.json");
-			System.out.println(responseJSON);
+			//responseJSON = Utils.getJSONObjectFromAssets(HomeActivity.this, "vehicles.json");
+			
 			JSONArray vehiclesJSON = responseJSON.getJSONArray("vehicles");
-			System.out.println(vehiclesJSON);
 			drivers.clear();
 			for (int i = 0; i < vehiclesJSON.length(); i++) {
 				JSONObject vehicleJSON = vehiclesJSON.getJSONObject(i);

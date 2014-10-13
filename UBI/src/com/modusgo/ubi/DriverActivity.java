@@ -105,12 +105,18 @@ public class DriverActivity extends MainActivity{
 				new String[]{
 				VehicleEntry._ID,
 				VehicleEntry.COLUMN_NAME_DRIVER_NAME,
+				VehicleEntry.COLUMN_NAME_DRIVER_PHOTO,
 				VehicleEntry.COLUMN_NAME_CAR_MAKE,
 				VehicleEntry.COLUMN_NAME_CAR_MODEL,
 				VehicleEntry.COLUMN_NAME_CAR_YEAR,
+				VehicleEntry.COLUMN_NAME_CAR_FUEL,
 				VehicleEntry.COLUMN_NAME_CAR_CHECKUP,
 				VehicleEntry.COLUMN_NAME_LAST_TRIP_DATE,
-				VehicleEntry.COLUMN_NAME_ALERTS}, 
+				VehicleEntry.COLUMN_NAME_ALERTS,
+				VehicleEntry.COLUMN_NAME_LATITUDE,
+				VehicleEntry.COLUMN_NAME_LONGITUDE,
+				VehicleEntry.COLUMN_NAME_ADDRESS,
+				VehicleEntry.COLUMN_NAME_GRADE}, 
 				VehicleEntry._ID+" = ?", new String[]{Long.toString(id)}, null, null, null);
 		
 		Driver d = new Driver();
@@ -118,11 +124,18 @@ public class DriverActivity extends MainActivity{
 		if(c.moveToFirst()){
 			d.id = c.getLong(0);
 			d.name = c.getString(1);
-			d.carMake = c.getString(2);
-			d.carModel = c.getString(3);
-			d.carYear = c.getString(4);
-			d.carCheckup = c.getInt(5) == 1;
-			d.lastTripDate = c.getString(6);
+			d.photo = c.getString(2);
+			d.carMake = c.getString(3);
+			d.carModel = c.getString(4);
+			d.carYear = c.getString(5);
+			d.carFuelLevel = c.getInt(6);
+			d.carCheckup = c.getInt(7) == 1;
+			d.lastTripDate = c.getString(8);
+			d.alerts = c.getInt(9);
+			d.latitude = c.getLong(10);
+			d.longitude = c.getLong(11);
+			d.address = c.getString(12);
+			d.grade = c.getString(13);
 				
 		}
 		c.close();
@@ -229,7 +242,7 @@ public class DriverActivity extends MainActivity{
 	}
 	
 	private void setupTab(Class<?> c, Bundle b, final String tag, String title, int counter) {
-		View tabview = createTabView(tabHost.getContext(), tag, title, counter);
+		View tabview = createTabView(tabHost.getContext(), tag, title.equals("") ? "C" : title, counter);
 	    TabSpec setContent = tabHost.newTabSpec(tag).setIndicator(tabview);
 	    tabHost.addTab(setContent, c, b);
 	}

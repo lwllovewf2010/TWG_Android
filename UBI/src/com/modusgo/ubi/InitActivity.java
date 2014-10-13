@@ -160,7 +160,8 @@ public class InitActivity extends FragmentActivity {
 					e.printStackTrace();
 				}
 				
-				return false;
+				//Offline mode, when network is not available
+				return true;
 			}
 			
 	        try {

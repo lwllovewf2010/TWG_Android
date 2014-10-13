@@ -1,5 +1,7 @@
 package com.modusgo.ubi;
 
+import java.util.ArrayList;
+
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,6 +33,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.modusgo.demo.R;
+import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.utils.Utils;
 import com.viewpagerindicator.CirclePageIndicator;
 
@@ -262,66 +265,24 @@ public class SignInActivity extends FragmentActivity {
 				e.putString(Constants.PREF_ROLE, responseJSON.getJSONObject("driver").optString("role"));
 			if(!responseJSON.isNull("device")){
 				JSONObject deviceJSON = responseJSON.getJSONObject("device");
-				e.putString(Constants.PREF_DEVICE_MEID, deviceJSON.getString("meid"));
-				e.putString(Constants.PREF_DEVICE_TYPE, deviceJSON.getString("type"));
-				e.putString(Constants.PREF_DEVICE_DATA_URL, deviceJSON.getString("data_url"));
-				e.putString(Constants.PREF_DEVICE_AUTH_KEY, deviceJSON.getString("auth_key"));
+				e.putString(Constants.PREF_DEVICE_MEID, deviceJSON.optString("meid"));
+				e.putString(Constants.PREF_DEVICE_TYPE, deviceJSON.optString("type"));
+				e.putString(Constants.PREF_DEVICE_DATA_URL, deviceJSON.optString("data_url"));
+				e.putString(Constants.PREF_DEVICE_AUTH_KEY, deviceJSON.optString("auth_key"));
 			}
 			e.commit();
 			
 			if(!responseJSON.isNull("vehicles")){
 				JSONArray vehiclesJSON = responseJSON.getJSONArray("vehicles");
-				DriversHelper dHelper = DriversHelper.getInstance();
-				
-				dHelper.drivers.clear();
+				ArrayList<Driver> drivers = new ArrayList<Driver>();
 				for (int i = 0; i < vehiclesJSON.length(); i++) {
 					JSONObject vehicleJSON = vehiclesJSON.getJSONObject(i);
-	
-					Driver d = new Driver();
-					d.id = vehicleJSON.getLong("id");
-					
-					if(vehicleJSON.isNull("driver")){
-						JSONObject driverJSON = vehicleJSON.getJSONObject("driver");
-						d.name = driverJSON.optString("name");
-						d.photo = driverJSON.optString("photo");
-						d.markerIcon = driverJSON.optString("icon");
-					}
-					
-					if(!vehicleJSON.isNull("car")){
-						JSONObject carJSON = vehicleJSON.getJSONObject("car");
-						d.carVIN = carJSON.optString("vin");
-						d.carMake = carJSON.optString("make");
-						d.carModel = carJSON.optString("model");
-						d.carYear = carJSON.optString("year");
-						d.carFuelLevel = carJSON.optInt("fuel_level", -1);
-						d.carCheckup = carJSON.optBoolean("checkup");
-					}
-					
-					if(!vehicleJSON.isNull("location")){
-						JSONObject locationJSON = vehicleJSON.getJSONObject("location");
-						d.latitude = locationJSON.optDouble("latitude");
-						d.longitude = locationJSON.optDouble("longitude");
-						d.address = locationJSON.optString("address");
-						d.lastTripDate = Utils.fixTimezoneZ(locationJSON.optString("last_trip_time","Undefined"));
-						d.lastTripId = locationJSON.optLong("last_trip_id");
-					}
-					
-					if(!vehicleJSON.isNull("stats")){
-						JSONObject statsJSON = vehicleJSON.getJSONObject("stats");
-						d.score = statsJSON.optInt("score");
-						d.grade = statsJSON.optString("grade");
-						d.totalTripsCount = statsJSON.optInt("trips");
-						d.totalDrivingTime = statsJSON.optInt("time");
-						d.totalDistance = statsJSON.optDouble("distance");
-						d.totalBraking = statsJSON.optInt("braking");
-						d.totalAcceleration = statsJSON.optInt("acceleration");
-						d.totalSpeeding = statsJSON.optInt("speeding");
-						d.totalSpeedingDistance = statsJSON.optDouble("speeding_distance");
-						d.alerts = statsJSON.optInt("new_alerts");
-					}
-					
-					dHelper.drivers.add(d);
+					drivers.add(Driver.fromJSON(vehicleJSON));
 				}
+				
+				DbHelper dbHelper = DbHelper.getInstance(SignInActivity.this);
+				dbHelper.saveDrivers(drivers);
+				dbHelper.close();
 			}
 			
 			startActivity(new Intent(SignInActivity.this, HomeActivity.class));
@@ -331,15 +292,16 @@ public class SignInActivity extends FragmentActivity {
 		
 		@Override
 		protected void onError(String message) {
-			layoutProgress.startAnimation(fadeOutProgress);
-			layoutFields.startAnimation(fadeInFields);
-			super.onError(message);
+			startActivity(new Intent(SignInActivity.this, HomeActivity.class));
+			finish();
+			//super.onError(message);
 		}
 		
 		@Override
 		protected void onError401() {
-			//disable
-			onError("Invalid login or password");
+			layoutProgress.startAnimation(fadeOutProgress);
+			layoutFields.startAnimation(fadeInFields);
+			super.onError("Invalid login or password");
 		}
 	}
 }

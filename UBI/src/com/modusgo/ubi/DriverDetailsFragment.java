@@ -5,10 +5,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
@@ -48,7 +44,6 @@ public class DriverDetailsFragment extends Fragment  implements ConnectionCallba
 OnConnectionFailedListener, LocationListener{
 	
 	Driver driver;
-	int driverIndex = 0;
 	SharedPreferences prefs;
 	
 	TextView tvName;
@@ -84,13 +79,6 @@ OnConnectionFailedListener, LocationListener{
 		((MainActivity)getActivity()).setActionBarTitle("DRIVER DETAIL");
 		
 		prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-		
-		if(savedInstanceState!=null){
-			driverIndex = savedInstanceState.getInt("id");
-		}
-		else if(getArguments()!=null){
-			driverIndex = getArguments().getInt("id");
-		}
 
 		driver = ((DriverActivity)getActivity()).driver;
 		
@@ -105,6 +93,7 @@ OnConnectionFailedListener, LocationListener{
 	    tvAlerts = (TextView)rootView.findViewById(R.id.tvAlertsCount);
 	    btnDistanceToCar = (View)tvDistanceToCar.getParent();
 	    rlLastTrip = rootView.findViewById(R.id.rlDate);
+	    
 	    
 	    try{
 			if(mMap!=null){
@@ -128,7 +117,7 @@ OnConnectionFailedListener, LocationListener{
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(getActivity(), FindMyCarActivity.class);
-				intent.putExtra("id", driverIndex);
+				intent.putExtra("id", driver.id);
 				startActivity(intent);			
 			}
 		});
@@ -138,7 +127,7 @@ OnConnectionFailedListener, LocationListener{
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(getActivity(), AlertsActivity.class);
-				intent.putExtra("id", driverIndex);
+				intent.putExtra("id", driver.id);
 				startActivity(intent);			
 			}
 		});
@@ -155,7 +144,7 @@ OnConnectionFailedListener, LocationListener{
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(getActivity(), MapActivity.class);
-				intent.putExtra("id", driverIndex);
+				intent.putExtra("id", driver.id);
 				startActivity(intent);	
 			}
 		});
@@ -230,7 +219,7 @@ OnConnectionFailedListener, LocationListener{
 				@Override
 				public void onClick(View v) {
 					Intent intent = new Intent(getActivity(), TripActivity.class);
-					intent.putExtra("id", driverIndex);
+					intent.putExtra("id", driver.id);
 					intent.putExtra(TripActivity.EXTRA_TRIP_ID, driver.lastTripId);
 					startActivity(intent);
 				}
@@ -357,10 +346,4 @@ OnConnectionFailedListener, LocationListener{
             mLocationClient.disconnect();
         }
     }
-    
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		outState.putInt("id", driverIndex);
-		super.onSaveInstanceState(outState);
-	}
 }

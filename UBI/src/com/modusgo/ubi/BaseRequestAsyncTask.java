@@ -48,7 +48,7 @@ public class BaseRequestAsyncTask extends AsyncTask<String, Void, JSONObject>{
 		catch(NullPointerException e){
 			e.printStackTrace();
 			status = 0;
-			message = "Connection error";
+			message = "Offline mode activated";
 			return null;
 		}
 		return Utils.getJSONObjectFromHttpResponse(result);
