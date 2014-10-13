@@ -6732,9 +6732,10 @@ com.modusgo.ubi.DiagnosticsTroubleCode:
     private static final long serialVersionUID
 com.modusgo.ubi.Driver:
     private static final long serialVersionUID
-    37:40:public Driver(java.lang.String,java.lang.String)
-    57:57:public java.lang.String getFirstName()
-    61:67:public java.lang.String getLastName()
+    public java.lang.String profileDate
+    public int harshEvents
+    49:49:public java.lang.String getFirstName()
+    53:59:public java.lang.String getLastName()
 com.modusgo.ubi.DriverActivity:
     public static final java.lang.String SAVED_DRIVER
     237:240:public android.view.animation.Animation fadeOutAnimation()

@@ -12900,7 +12900,7 @@ com.modusgo.ubi.DiagnosticsFragment$GetDiagnosticsTask -> com.modusgo.ubi.z:
     291:295:void onPreExecute() -> onPreExecute
     299:303:void onPostExecute(org.json.JSONObject) -> a
     307:308:org.json.JSONObject doInBackground(java.lang.String[]) -> a
-    313:386:void onSuccess(org.json.JSONObject) -> b
+    313:388:void onSuccess(org.json.JSONObject) -> b
 com.modusgo.ubi.DiagnosticsFragment$Maintenance -> com.modusgo.ubi.aa:
     java.lang.String created_at -> a
     java.lang.String description -> b
@@ -12929,29 +12929,32 @@ com.modusgo.ubi.DiagnosticsTroubleCode -> com.modusgo.ubi.ac:
 com.modusgo.ubi.Driver -> com.modusgo.ubi.ad:
     long id -> a
     java.lang.String name -> b
-    int imageId -> c
-    java.lang.String imageUrl -> d
-    java.lang.String vehicle -> e
-    java.lang.String VIN -> f
-    java.lang.String lastTripDate -> g
-    java.lang.String profileDate -> h
-    java.lang.String grade -> i
-    java.lang.String phone -> j
-    java.lang.String email -> k
-    long lastTripId -> l
-    int diags -> m
-    int alerts -> n
-    int tripsCount -> o
-    int harshEvents -> p
-    double latitude -> q
-    double longitude -> r
-    int fuelLeft -> s
-    java.lang.String address -> t
-    double distance -> u
-    int scoreInt -> v
-    int drivingTime -> w
-    java.lang.String markerIcon -> x
-    java.util.ArrayList tripsMap -> y
+    java.lang.String imageUrl -> c
+    java.lang.String markerIcon -> d
+    java.lang.String carVIN -> e
+    java.lang.String carMake -> f
+    java.lang.String carModel -> g
+    java.lang.String carYear -> h
+    int carFuelLevel -> i
+    boolean carCheckup -> j
+    int diags -> k
+    int alerts -> l
+    double latitude -> m
+    double longitude -> n
+    java.lang.String address -> o
+    java.lang.String lastTripDate -> p
+    long lastTripId -> q
+    int score -> r
+    java.lang.String grade -> s
+    int totalTripsCount -> t
+    int totalDrivingTime -> u
+    double totalDistance -> v
+    int totalBraking -> w
+    int totalAcceleration -> x
+    int totalSpeeding -> y
+    double totalSpeedingDistance -> z
+    java.util.ArrayList tripsMap -> A
+    63:63:java.lang.String getCarFullName() -> a
 com.modusgo.ubi.DriverActivity -> com.modusgo.ubi.DriverActivity:
     android.support.v4.app.FragmentTabHost tabHost -> q
     com.jeremyfeinstein.slidingmenu.lib.SlidingMenu menu -> n
@@ -13043,7 +13046,7 @@ com.modusgo.ubi.DriverDetailsFragment$5 -> com.modusgo.ubi.an:
 com.modusgo.ubi.DriverDetailsFragment$GetDriverTask -> com.modusgo.ubi.ao:
     com.modusgo.ubi.DriverDetailsFragment this$0 -> a
     368:368:org.json.JSONObject doInBackground(java.lang.String[]) -> a
-    374:418:void onSuccess(org.json.JSONObject) -> b
+    373:435:void onSuccess(org.json.JSONObject) -> b
 com.modusgo.ubi.DriversHelper -> com.modusgo.ubi.ap:
     com.modusgo.ubi.DriversHelper helper -> b
     java.util.ArrayList drivers -> a
@@ -13249,10 +13252,10 @@ com.modusgo.ubi.HomeActivity -> com.modusgo.ubi.HomeActivity:
     com.modusgo.ubi.DriversHelper dHelper -> o
     android.widget.ListView lvDrivers -> p
     android.widget.ProgressBar progressBar -> q
-    45:67:void onCreate(android.os.Bundle) -> onCreate
-    71:72:void up() -> m_
-    187:190:void onResume() -> onResume
-    276:277:void onSaveInstanceState(android.os.Bundle) -> onSaveInstanceState
+    45:74:void onCreate(android.os.Bundle) -> onCreate
+    78:79:void up() -> m_
+    194:197:void onResume() -> onResume
+    292:293:void onSaveInstanceState(android.os.Bundle) -> onSaveInstanceState
 com.modusgo.ubi.HomeActivity$DriversAdapter -> com.modusgo.ubi.bi:
     android.content.Context ctx -> a
     android.view.LayoutInflater lInflater -> b
@@ -13260,26 +13263,26 @@ com.modusgo.ubi.HomeActivity$DriversAdapter -> com.modusgo.ubi.bi:
     java.text.SimpleDateFormat sdfFrom -> d
     java.text.SimpleDateFormat sdfTo -> e
     com.modusgo.ubi.HomeActivity this$0 -> f
-    92:92:int getCount() -> getCount
-    97:97:java.lang.Object getItem(int) -> getItem
-    102:102:long getItemId(int) -> getItemId
-    108:176:android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
-    180:180:com.modusgo.ubi.Driver getDriver(int) -> a
-    74:74:com.modusgo.ubi.HomeActivity access$0(com.modusgo.ubi.HomeActivity$DriversAdapter) -> a
+    99:99:int getCount() -> getCount
+    104:104:java.lang.Object getItem(int) -> getItem
+    109:109:long getItemId(int) -> getItemId
+    115:183:android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
+    187:187:com.modusgo.ubi.Driver getDriver(int) -> a
+    81:81:com.modusgo.ubi.HomeActivity access$0(com.modusgo.ubi.HomeActivity$DriversAdapter) -> a
 com.modusgo.ubi.HomeActivity$DriversAdapter$1 -> com.modusgo.ubi.bj:
     com.modusgo.ubi.HomeActivity$DriversAdapter this$1 -> a
     int val$position -> b
-    156:159:void onClick(android.view.View) -> onClick
+    163:166:void onClick(android.view.View) -> onClick
 com.modusgo.ubi.HomeActivity$DriversAdapter$2 -> com.modusgo.ubi.bk:
     com.modusgo.ubi.HomeActivity$DriversAdapter this$1 -> a
     int val$position -> b
-    166:173:void onClick(android.view.View) -> onClick
+    173:180:void onClick(android.view.View) -> onClick
 com.modusgo.ubi.HomeActivity$GetDriversTask -> com.modusgo.ubi.bl:
     com.modusgo.ubi.HomeActivity this$0 -> a
-    200:203:void onPreExecute() -> onPreExecute
-    207:210:void onPostExecute(org.json.JSONObject) -> a
-    214:217:org.json.JSONObject doInBackground(java.lang.String[]) -> a
-    223:270:void onSuccess(org.json.JSONObject) -> b
+    207:210:void onPreExecute() -> onPreExecute
+    214:217:void onPostExecute(org.json.JSONObject) -> a
+    221:224:org.json.JSONObject doInBackground(java.lang.String[]) -> a
+    230:286:void onSuccess(org.json.JSONObject) -> b
 com.modusgo.ubi.InitActivity -> com.modusgo.ubi.InitActivity:
     android.view.View layoutProgress -> n
     android.view.View layoutFields -> o
@@ -13744,14 +13747,14 @@ com.modusgo.ubi.SignInActivity -> com.modusgo.ubi.SignInActivity:
     android.support.v4.view.ViewPager mPager -> s
     android.support.v4.view.PagerAdapter mPagerAdapter -> t
     android.content.SharedPreferences prefs -> r
-    50:97:void onCreate(android.os.Bundle) -> onCreate
-    204:206:android.view.animation.Animation getFadeInAnmation(android.view.View) -> a
-    210:212:android.view.animation.Animation getFadeOutAnmation(android.view.View) -> b
-    203:203:android.view.animation.Animation access$0(com.modusgo.ubi.SignInActivity,android.view.View) -> a
-    209:209:android.view.animation.Animation access$1(com.modusgo.ubi.SignInActivity,android.view.View) -> b
+    51:98:void onCreate(android.os.Bundle) -> onCreate
+    205:207:android.view.animation.Animation getFadeInAnmation(android.view.View) -> a
+    211:213:android.view.animation.Animation getFadeOutAnmation(android.view.View) -> b
+    204:204:android.view.animation.Animation access$0(com.modusgo.ubi.SignInActivity,android.view.View) -> a
+    210:210:android.view.animation.Animation access$1(com.modusgo.ubi.SignInActivity,android.view.View) -> b
 com.modusgo.ubi.SignInActivity$1 -> com.modusgo.ubi.dv:
     com.modusgo.ubi.SignInActivity this$0 -> a
-    77:78:void onClick(android.view.View) -> onClick
+    78:79:void onClick(android.view.View) -> onClick
 com.modusgo.ubi.SignInActivity$LoginTask -> com.modusgo.ubi.dw:
     android.view.animation.Animation fadeInProgress -> a
     android.view.animation.Animation fadeOutProgress -> b
@@ -13759,30 +13762,30 @@ com.modusgo.ubi.SignInActivity$LoginTask -> com.modusgo.ubi.dw:
     android.view.animation.Animation fadeOutFields -> j
     java.lang.String message -> k
     com.modusgo.ubi.SignInActivity this$0 -> l
-    235:239:void onPreExecute() -> onPreExecute
-    243:244:void onPostExecute(org.json.JSONObject) -> a
-    248:253:org.json.JSONObject doInBackground(java.lang.String[]) -> a
-    258:273:void onSuccess(org.json.JSONObject) -> b
-    277:280:void onError(java.lang.String) -> a
-    285:286:void onError401() -> a
+    236:240:void onPreExecute() -> onPreExecute
+    244:245:void onPostExecute(org.json.JSONObject) -> a
+    249:254:org.json.JSONObject doInBackground(java.lang.String[]) -> a
+    259:330:void onSuccess(org.json.JSONObject) -> b
+    334:337:void onError(java.lang.String) -> a
+    342:343:void onError401() -> a
 com.modusgo.ubi.SignInActivity$MyAnimationListener -> com.modusgo.ubi.dx:
     android.view.View view -> a
     boolean hideView -> b
     com.modusgo.ubi.SignInActivity this$0 -> c
-    191:195:void onAnimationEnd(android.view.animation.Animation) -> onAnimationEnd
-    198:198:void onAnimationRepeat(android.view.animation.Animation) -> onAnimationRepeat
-    200:200:void onAnimationStart(android.view.animation.Animation) -> onAnimationStart
+    192:196:void onAnimationEnd(android.view.animation.Animation) -> onAnimationEnd
+    199:199:void onAnimationRepeat(android.view.animation.Animation) -> onAnimationRepeat
+    201:201:void onAnimationStart(android.view.animation.Animation) -> onAnimationStart
 com.modusgo.ubi.SignInActivity$ScreenSlidePageFragment -> com.modusgo.ubi.dy:
     int imageResource -> P
     java.lang.String title -> Q
     java.lang.String description -> R
-    137:145:com.modusgo.ubi.SignInActivity$ScreenSlidePageFragment newInstance(int,java.lang.String,java.lang.String) -> a
-    153:157:void onCreate(android.os.Bundle) -> d
-    166:176:android.view.View onCreateView(android.view.LayoutInflater,android.view.ViewGroup,android.os.Bundle) -> a
+    138:146:com.modusgo.ubi.SignInActivity$ScreenSlidePageFragment newInstance(int,java.lang.String,java.lang.String) -> a
+    154:158:void onCreate(android.os.Bundle) -> d
+    167:177:android.view.View onCreateView(android.view.LayoutInflater,android.view.ViewGroup,android.os.Bundle) -> a
 com.modusgo.ubi.SignInActivity$ScreenSlidePagerAdapter -> com.modusgo.ubi.dz:
     com.modusgo.ubi.SignInActivity this$0 -> a
-    106:116:android.support.v4.app.Fragment getItem(int) -> a
-    122:122:int getCount() -> b
+    107:117:android.support.v4.app.Fragment getItem(int) -> a
+    123:123:int getCount() -> b
 com.modusgo.ubi.TitledFragment -> com.modusgo.ubi.ea:
     java.lang.String title -> Y
 com.modusgo.ubi.Trip -> com.modusgo.ubi.eb:
