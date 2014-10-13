@@ -148,7 +148,7 @@ public class ScoreFragment extends Fragment{
 			}
 		});
 		
-        new GetScoreTask(getActivity()).execute("drivers/"+driver.id+"/score.json");
+        new GetScoreTask(getActivity()).execute("vehicles/"+driver.id+"/score.json");
         
 		return rootView;
 	}

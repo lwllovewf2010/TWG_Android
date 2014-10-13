@@ -195,7 +195,7 @@ OnConnectionFailedListener, LocationListener{
 			tvFuel.setText("N/A");
 		}
 	    
-	    if(driver.diags<=0){
+	    if(driver.carCheckup){
 	    	tvDiagnostics.setText("");
 	    	tvDiagnostics.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_diagnostics_green_medium, 0, 0, 0);
 	    }else{
@@ -337,7 +337,7 @@ OnConnectionFailedListener, LocationListener{
     
     @Override
 	public void onResume() {
-	    new GetDriverTask(getActivity()).execute("drivers/"+driver.id+".json");
+	    new GetDriverTask(getActivity()).execute("vehicles/"+driver.id+".json");
         super.onResume();
     }
 
@@ -370,35 +370,50 @@ OnConnectionFailedListener, LocationListener{
 		
 		@Override
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
+			System.out.println(responseJSON);
 			
-			driver.name = responseJSON.optString("name");
-			driver.carModel = responseJSON.optString("model");
-			driver.carMake = responseJSON.optString("make");
-			driver.carYear = responseJSON.optString("year");
-			driver.carVIN = responseJSON.optString("vin");
-			driver.lastTripDate = responseJSON.isNull("last_trip") ? "Undefined" : Utils.fixTimezoneZ(responseJSON.optString("last_trip"));
-			driver.lastTripId = responseJSON.optLong("last_trip_id",-1);
-			driver.profileDate = Utils.fixTimezoneZ(responseJSON.optString("profile_date"));
-			driver.alerts = responseJSON.optInt("count_alerts");
-			driver.diags = responseJSON.optInt("count_diags");
+			JSONObject vehicleJSON = responseJSON.getJSONObject("vehicle");
 			
-			JSONObject locationJSON = responseJSON.optJSONObject("location");
-			if(locationJSON!=null){
-				driver.address = locationJSON.optString("address");
-				JSONObject mapJSON = locationJSON.getJSONObject("map");
-				if(mapJSON!=null){
-					driver.latitude = mapJSON.optDouble("latitude");
-					driver.longitude = mapJSON.optDouble("longitude");
-				}
-				else{
-					driver.latitude = 0;
-					driver.longitude = 0;
-				}
+			driver.id = vehicleJSON.getLong("id");
+			
+			if(!vehicleJSON.isNull("driver")){
+				JSONObject driverJSON = vehicleJSON.getJSONObject("driver");
+				driver.name = driverJSON.optString("name");
+				driver.imageUrl = driverJSON.optString("photo");
+				driver.markerIcon = driverJSON.optString("icon");
 			}
-			else{
-				driver.address = "Undefined";
-				driver.latitude = 0;
-				driver.longitude = 0;
+			
+			if(!vehicleJSON.isNull("car")){
+				JSONObject carJSON = vehicleJSON.getJSONObject("car");
+				driver.carVIN = carJSON.optString("vin");
+				driver.carMake = carJSON.optString("make");
+				driver.carModel = carJSON.optString("model");
+				driver.carYear = carJSON.optString("year");
+				driver.carFuelLevel = carJSON.optInt("fuel_level", -1);
+				driver.carCheckup = carJSON.optBoolean("checkup");
+			}
+			
+			if(!vehicleJSON.isNull("location")){
+				JSONObject locationJSON = vehicleJSON.getJSONObject("location");
+				driver.latitude = locationJSON.optDouble("latitude");
+				driver.longitude = locationJSON.optDouble("longitude");
+				driver.address = locationJSON.optString("address");
+				driver.lastTripDate = Utils.fixTimezoneZ(locationJSON.optString("last_trip_time","Undefined"));
+				driver.lastTripId = locationJSON.optLong("last_trip_id");
+			}
+			
+			if(!vehicleJSON.isNull("stats")){
+				JSONObject statsJSON = vehicleJSON.getJSONObject("stats");
+				driver.score = statsJSON.optInt("score");
+				driver.grade = statsJSON.optString("grade");
+				driver.totalTripsCount = statsJSON.optInt("trips");
+				driver.totalDrivingTime = statsJSON.optInt("time");
+				driver.totalDistance = statsJSON.optDouble("distance");
+				driver.totalBraking = statsJSON.optInt("braking");
+				driver.totalAcceleration = statsJSON.optInt("acceleration");
+				driver.totalSpeeding = statsJSON.optInt("speeding");
+				driver.totalSpeedingDistance = statsJSON.optDouble("speeding_distance");
+				driver.alerts = statsJSON.optInt("new_alerts");
 			}
 				
 			dHelper.setDriver(driverIndex, driver);

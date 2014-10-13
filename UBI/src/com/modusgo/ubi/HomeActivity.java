@@ -65,7 +65,7 @@ public class HomeActivity extends MainActivity{
 		
 		btnUp.setImageResource(R.drawable.ic_map);
 		
-		new GetDriversTask(this).execute("drivers.json");
+		new GetDriversTask(this).execute("vehicles.json");
 		
 		setButtonUpVisibility(false);
 		

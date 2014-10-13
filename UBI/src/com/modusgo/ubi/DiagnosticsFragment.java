@@ -105,7 +105,7 @@ public class DiagnosticsFragment extends Fragment{
 		tvStatus = (TextView) rootView.findViewById(R.id.tvStatus);
 		
 		
-		new GetDiagnosticsTask(getActivity()).execute("drivers/"+driver.id+"/diagnostics.json");
+		new GetDiagnosticsTask(getActivity()).execute("vehicles/"+driver.id+"/diagnostics.json");
 		
 		return rootView;
 	}
@@ -310,16 +310,18 @@ public class DiagnosticsFragment extends Fragment{
 		
 		@Override
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
-			String lastCheckup = Utils.fixTimezoneZ(responseJSON.getString("last_checkup"));
+			JSONObject diagnosticsJSON = responseJSON.getJSONObject("diagnostics");
+			
+			String lastCheckup = Utils.fixTimezoneZ(diagnosticsJSON.getString("last_checkup"));
 			try {
 				tvLastCheckup.setText(sdfTo.format(sdfFrom.parse(lastCheckup)));
 			} catch (ParseException e) {
 				tvLastCheckup.setText(lastCheckup);
 				e.printStackTrace();
 			}
-			tvStatus.setText(responseJSON.getString("status_diagnostics"));
+			tvStatus.setText(diagnosticsJSON.getString("status_diagnostics"));
 			
-			JSONArray dtcsJSON = responseJSON.getJSONArray("diagnostics_trouble_codes");
+			JSONArray dtcsJSON = diagnosticsJSON.getJSONArray("diagnostics_trouble_codes");
 			dtcs = new ArrayList<DiagnosticsTroubleCode>();
 			for (int i = 0; i < dtcsJSON.length(); i++) {
 				
@@ -340,7 +342,7 @@ public class DiagnosticsFragment extends Fragment{
 						dtc.getString("total_cost")));
 			}
 			
-			JSONArray recallsJSON = responseJSON.getJSONArray("recall_updates");
+			JSONArray recallsJSON = diagnosticsJSON.getJSONArray("recall_updates");
 			recalls = new ArrayList<Recall>();
 			for (int i = 0; i < recallsJSON.length(); i++) {
 				
@@ -355,7 +357,7 @@ public class DiagnosticsFragment extends Fragment{
 						recall.getString("recall_id")));
 			}
 			
-			JSONArray maintenancesJSON = responseJSON.getJSONArray("vehicle_maintenances");
+			JSONArray maintenancesJSON = diagnosticsJSON.getJSONArray("vehicle_maintenances");
 			maintenances = new ArrayList<Maintenance>();
 			for (int i = 0; i < maintenancesJSON.length(); i++) {
 				
@@ -369,7 +371,7 @@ public class DiagnosticsFragment extends Fragment{
 						maintenance.getString("price")));
 			}
 			
-			JSONArray warrantyInformationsJSON = responseJSON.getJSONArray("diagnostics_warranty_informations");
+			JSONArray warrantyInformationsJSON = diagnosticsJSON.getJSONArray("diagnostics_warranty_informations");
 			warrantyInformations = new ArrayList<WarrantyInformation>();
 			for (int i = 0; i < warrantyInformationsJSON.length(); i++) {
 				
