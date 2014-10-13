@@ -39,8 +39,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 public class TripsFragment extends Fragment{
 	
 	Driver driver;
-	DriversHelper dHelper;
-	int driverIndex = 0;
 	SharedPreferences prefs;
 	
 	ArrayList<ListItem> trips;
@@ -59,15 +57,7 @@ public class TripsFragment extends Fragment{
 		
 		((MainActivity)getActivity()).setActionBarTitle("TRIPS");
 
-		if(savedInstanceState!=null){
-			driverIndex = savedInstanceState.getInt("id");
-		}
-		else if(getArguments()!=null){
-			driverIndex = getArguments().getInt("id");
-		}
-
-		dHelper = DriversHelper.getInstance();
-		driver = dHelper.getDriverByIndex(driverIndex);
+		driver = ((DriverActivity)getActivity()).driver;
 		trips = driver.tripsMap;
 		
 		((TextView)rootView.findViewById(R.id.tvName)).setText(driver.name);
@@ -112,7 +102,7 @@ public class TripsFragment extends Fragment{
 		
 		cEnd = Calendar.getInstance();
 		
-		new GetTripsTask(getActivity()).execute("drivers/"+driver.id+"/trips.json");
+		new GetTripsTask(getActivity()).execute("vehicles/"+driver.id+"/trips.json");
 		
 		return rootView;
 	}
@@ -158,12 +148,6 @@ public class TripsFragment extends Fragment{
 		return builder.create();
 	}
 	
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		outState.putInt("id", driverIndex);
-		super.onSaveInstanceState(outState);
-	}
-	
 	class GetTripsTask extends BaseRequestAsyncTask{
 		
 		public GetTripsTask(Context context) {
@@ -205,7 +189,6 @@ public class TripsFragment extends Fragment{
 			
 			Calendar cPrev = Calendar.getInstance();
 			Calendar cNow = Calendar.getInstance();
-			int j = 0;
 			trips.clear();
 			
 			Random r = new Random();
@@ -440,7 +423,7 @@ public class TripsFragment extends Fragment{
 				@Override
 				public void onClick(View v) {
 					Intent intent = new Intent(getActivity(), TripActivity.class);
-					intent.putExtra("id", driverIndex);
+					intent.putExtra("id", driver.id);
 					intent.putExtra(TripActivity.EXTRA_TRIP_ID, t.id);
 					startActivity(intent);
 				}
