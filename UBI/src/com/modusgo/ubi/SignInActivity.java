@@ -262,10 +262,10 @@ public class SignInActivity extends FragmentActivity {
 				e.putString(Constants.PREF_ROLE, responseJSON.getJSONObject("driver").optString("role"));
 			if(!responseJSON.isNull("device")){
 				JSONObject deviceJSON = responseJSON.getJSONObject("device");
-				e.putString(Constants.PREF_DEVICE_MEID, deviceJSON.getString("meid"));
-				e.putString(Constants.PREF_DEVICE_TYPE, deviceJSON.getString("type"));
-				e.putString(Constants.PREF_DEVICE_DATA_URL, deviceJSON.getString("data_url"));
-				e.putString(Constants.PREF_DEVICE_AUTH_KEY, deviceJSON.getString("auth_key"));
+				e.putString(Constants.PREF_DEVICE_MEID, deviceJSON.optString("meid"));
+				e.putString(Constants.PREF_DEVICE_TYPE, deviceJSON.optString("type"));
+				e.putString(Constants.PREF_DEVICE_DATA_URL, deviceJSON.optString("data_url"));
+				e.putString(Constants.PREF_DEVICE_AUTH_KEY, deviceJSON.optString("auth_key"));
 			}
 			e.commit();
 			
