@@ -205,7 +205,6 @@ public class TripsFragment extends Fragment{
 			
 			Calendar cPrev = Calendar.getInstance();
 			Calendar cNow = Calendar.getInstance();
-			int j = 0;
 			trips.clear();
 			
 			Random r = new Random();
@@ -227,6 +226,9 @@ public class TripsFragment extends Fragment{
 						Utils.fixTimezoneZ(tipJSON.optString("start_time")), 
 						Utils.fixTimezoneZ(tipJSON.optString("end_time")), 
 						tipJSON.optDouble("mileage"));
+				
+				tripsDistance += t.distance;
+				tripsDurationInMinutes +=Utils.durationInMinutes(t.getStartDate(), t.getEndDate());
 				
 				switch (r.nextInt(5)) {
 				case 0:
@@ -271,11 +273,11 @@ public class TripsFragment extends Fragment{
 					}
 				}
 				else{
+					currentHeader.date = sdfDate.format(t.getStartDate());
+					currentHeader.total = "Totals: "+(int)Math.floor(tripsDurationInMinutes/60)+" hr " + tripsDurationInMinutes%60 + " min "+distanceFormat.format(tripsDistance)+" MI";
 					trips.add(currentHeader);
 				}
 
-				tripsDistance += t.distance;
-				tripsDurationInMinutes +=Utils.durationInMinutes(t.getStartDate(), t.getEndDate());
 				trips.add(t);
 				prevTrip = t;
 			}
