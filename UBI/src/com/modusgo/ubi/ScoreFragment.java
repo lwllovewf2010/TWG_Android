@@ -342,6 +342,7 @@ public class ScoreFragment extends Fragment{
 			System.out.println(json);
 			
 			String grade = json.optString("grade","X").toUpperCase(Locale.getDefault());
+			grade = grade.equals("NULL") ? "X" : grade;
 			String thisMonthMessage = "This month:\n";
 			tvScore.setText(grade);
 			if(grade.contains("A") || grade.contains("B")){
@@ -367,22 +368,31 @@ public class ScoreFragment extends Fragment{
 			
 			tvThisMonthMessage.setText(thisMonthMessage);
 			
-			JSONArray yearStatsJSON = json.getJSONArray("current_year_stats");
-			yearStats = new MonthStats[yearStatsJSON.length()];
-			
-			for (int i = 0; i < yearStats.length; i++) {
-				JSONObject monthStats = yearStatsJSON.getJSONObject(i);
-				yearStats[i] = new MonthStats(
-						monthStats.optInt("month"),
-						monthStats.optInt("score"),
-						monthStats.isNull("grade") ? "" : monthStats.optString("grade"));
+			if(json.has("current_year_stats")){
+				JSONArray yearStatsJSON = json.getJSONArray("current_year_stats");
+				yearStats = new MonthStats[yearStatsJSON.length()];
+				
+				for (int i = 0; i < yearStats.length; i++) {
+					JSONObject monthStats = yearStatsJSON.getJSONObject(i);
+					yearStats[i] = new MonthStats(
+							monthStats.optInt("month"),
+							monthStats.optInt("score"),
+							monthStats.optString("grade").equals("null") ? "" : monthStats.optString("grade"));
+				}
+				updateGraph();
 			}
-			updateGraph();
+			else{
+				yearStats = new MonthStats[12];
+				for (int i = 0; i < 12; i++) {
+					yearStats[i] = new MonthStats(i, 0, "");
+				}
+				updateGraph();
+			}
 			
 			Calendar c = Calendar.getInstance();
 			int currentMonth = c.get(Calendar.MONTH);
 			String lastMonthGrade = yearStats[currentMonth-1].grade;
-					
+			
 			if(!lastMonthGrade.equals("") && !grade.equals("X")){
 				tvLastMonthMessage.setText(lastMonthGrade+" Last Month");
 				if(gradeToNumber(grade)>gradeToNumber(lastMonthGrade)){
@@ -398,7 +408,7 @@ public class ScoreFragment extends Fragment{
 				tvLastMonthMessage.setText("N/A Last Month");
 				tvLastMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_gray));
 				imageLastMonthArrow.setVisibility(View.INVISIBLE);
-			}
+			}			
 			
 			SimpleDateFormat sdf = new SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault());
 			DecimalFormat df = new DecimalFormat("0.000");
@@ -406,48 +416,49 @@ public class ScoreFragment extends Fragment{
 			additionalData = new String[]{
 					Utils.convertTime(driver.lastTripDate, sdf), 
 					driver.carVIN, 
-					Utils.convertTime(json.getString("created"), sdf), 
-					Utils.convertTime(json.getString("startdate"), sdf), 
-					df.format(json.getDouble("summary_distance"))+" Miles", 
-					df.format(json.getDouble("summary_ead"))+" Miles"};
+					Utils.convertTime(json.optString("created"), sdf), 
+					Utils.convertTime(json.optString("startdate"), sdf), 
+					df.format(json.optDouble("summary_distance",0))+" Miles", 
+					df.format(json.optDouble("summary_ead",0))+" Miles"};
 			
 			
 			percentageData = new int[]{
-					json.getInt("score_pace"),
-					json.getInt("score_anticipation"),
-					json.getInt("score_aggression"),
-					json.getInt("score_smoothness"),
-					json.getInt("score_completeness"),
-					json.getInt("score_consistency")
+					json.optInt("score_pace"),
+					json.optInt("score_anticipation"),
+					json.optInt("score_aggression"),
+					json.optInt("score_smoothness"),
+					json.optInt("score_completeness"),
+					json.optInt("score_consistency")
 			};
 			
 			pieChartsData = new float[][]{
 					new float[]{
-							(float)json.getDouble("roadsettings_rural"),
-							(float)json.getDouble("roadsettings_suburban"),
-							(float)json.getDouble("roadsettings_urban")
+							(float)json.optDouble("roadsettings_rural"),
+							(float)json.optDouble("roadsettings_suburban"),
+							(float)json.optDouble("roadsettings_urban")
 					},new float[]{
-							(float)json.getDouble("roadtype_major"),
-							(float)json.getDouble("roadtype_local"),
-							(float)json.getDouble("roadtype_trunk"),
-							(float)json.getDouble("roadtype_minor")
+							(float)json.optDouble("roadtype_major"),
+							(float)json.optDouble("roadtype_local"),
+							(float)json.optDouble("roadtype_trunk"),
+							(float)json.optDouble("roadtype_minor")
 					},new float[]{
-							(float)json.getDouble("timeofday0"),
-							(float)json.getDouble("timeofday1"),
-							(float)json.getDouble("timeofday2"),
-							(float)json.getDouble("timeofday3"),
-							(float)json.getDouble("timeofday4"),
-							(float)json.getDouble("timeofday5")
+							(float)json.optDouble("timeofday0"),
+							(float)json.optDouble("timeofday1"),
+							(float)json.optDouble("timeofday2"),
+							(float)json.optDouble("timeofday3"),
+							(float)json.optDouble("timeofday4"),
+							(float)json.optDouble("timeofday5")
 					}};
 			
-			JSONObject jsonMarks = json.getJSONObject("road_env_analysis");
-			
-			JSONObject jsonStats = json.getJSONObject("road_env_stats");
-			
 			circlesData = new Bundle();
-			circlesData.putBundle("suburban", getPageBundle("suburban", jsonMarks, jsonStats));
-			circlesData.putBundle("urban", getPageBundle("urban", jsonMarks, jsonStats));
-			circlesData.putBundle("rural", getPageBundle("rural", jsonMarks, jsonStats));
+			if(json.has("road_env_analysis") && json.has("road_env_stats")){
+				JSONObject jsonMarks = json.getJSONObject("road_env_analysis");
+				JSONObject jsonStats = json.getJSONObject("road_env_stats");
+				
+				circlesData.putBundle("suburban", getPageBundle("suburban", jsonMarks, jsonStats));
+				circlesData.putBundle("urban", getPageBundle("urban", jsonMarks, jsonStats));
+				circlesData.putBundle("rural", getPageBundle("rural", jsonMarks, jsonStats));
+			}
 			
 			super.onSuccess(json);
 		}
