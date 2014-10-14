@@ -142,7 +142,7 @@ public class TripActivity extends MainActivity {
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(37.8430094,-95.0098992), 1);
         map.animateCamera(cameraUpdate);
         
-		new GetTripTask(this).execute("drivers/"+driver.id+"/trips/"+tripId+".json");
+		new GetTripTask(this).execute("vehicles/"+driver.id+"/trips/"+tripId+".json");
 	}
 	
 	private void updateActivity(){
@@ -159,27 +159,29 @@ public class TripActivity extends MainActivity {
 		
 		map.clear();
 		
-		PolylineOptions options = new PolylineOptions();
-		final Builder builder = LatLngBounds.builder();	
-		for (LatLng point : trip.route) {
-			options.add(point);
-			builder.include(point);
-		}
-
-		int color = Color.parseColor("#009900");
-		map.addPolyline(options.color(color).width(8).zIndex(1));
-
-		int colorSpeeding = Color.parseColor("#ef4136");
-		for (ArrayList<LatLng> route : trip.speedingRoute) {
-			PolylineOptions optionsSpeeding = new PolylineOptions();
-			for (LatLng point : route) {
-				optionsSpeeding.add(point);
+		if(trip.route.size()>0){
+			PolylineOptions options = new PolylineOptions();
+			final Builder builder = LatLngBounds.builder();	
+			for (LatLng point : trip.route) {
+				options.add(point);
+				builder.include(point);
 			}
-			map.addPolyline(optionsSpeeding.color(colorSpeeding).width(8).zIndex(2));
+	
+			int color = Color.parseColor("#009900");
+			map.addPolyline(options.color(color).width(8).zIndex(1));
+	
+			int colorSpeeding = Color.parseColor("#ef4136");
+			for (ArrayList<LatLng> route : trip.speedingRoute) {
+				PolylineOptions optionsSpeeding = new PolylineOptions();
+				for (LatLng point : route) {
+					optionsSpeeding.add(point);
+				}
+				map.addPolyline(optionsSpeeding.color(colorSpeeding).width(8).zIndex(2));
+			}
+			
+			tripCenterCameraUpdate = CameraUpdateFactory.newLatLngBounds(builder.build(), 150);
+	        map.animateCamera(tripCenterCameraUpdate);
 		}
-		
-		tripCenterCameraUpdate = CameraUpdateFactory.newLatLngBounds(builder.build(), 150);
-        map.animateCamera(tripCenterCameraUpdate);
         
         for (Point p : trip.points) {
         	for (EventType e : p.events) {
@@ -325,54 +327,65 @@ public class TripActivity extends MainActivity {
 		
 		@Override
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
-			
 			trip = new Trip(tripId, 0, Utils.fixTimezoneZ(responseJSON.getString("start_time")), Utils.fixTimezoneZ(responseJSON.getString("end_time")), responseJSON.getDouble("mileage"));
 			trip.averageSpeed = responseJSON.getDouble("avg_speed");
 			trip.maxSpeed = responseJSON.getDouble("max_speed");
-				
-			JSONArray routeJSON = responseJSON.getJSONArray("route");
-			for (int i = 0; i < routeJSON.length(); i++) {
-				JSONArray pointJSON = routeJSON.getJSONArray(i);
-				trip.route.add(new LatLng(pointJSON.getDouble(0), pointJSON.getDouble(1)));					
+			
+			if(responseJSON.has("route")){
+				JSONArray routeJSON = responseJSON.getJSONArray("route");
+				for (int i = 0; i < routeJSON.length(); i++) {
+					JSONArray pointJSON = routeJSON.getJSONArray(i);
+					trip.route.add(new LatLng(pointJSON.getDouble(0), pointJSON.getDouble(1)));					
+				}
 			}
 			
-			JSONArray speedingJSON = responseJSON.getJSONArray("speeding");
-			for (int i = 0; i < speedingJSON.length(); i++) {
-				JSONArray speedingRouteJSON = speedingJSON.getJSONObject(i).getJSONArray("route");
-				ArrayList<LatLng> speedingRoute = new ArrayList<LatLng>();
-				
-				for (int j = 0; j < speedingRouteJSON.length(); j++) {
-					JSONArray pointJSON = speedingRouteJSON.getJSONArray(j);
-					speedingRoute.add(new LatLng(pointJSON.getDouble(0), pointJSON.getDouble(1)));	
-				}
-				trip.speedingRoute.add(speedingRoute);				
-			}
-				
-			JSONArray pointsJSON = responseJSON.getJSONArray("points");
-			for (int i = 0; i < pointsJSON.length(); i++) {
-				JSONObject pointJSON = pointsJSON.getJSONObject(i);
-				JSONObject locationJSON = pointJSON.getJSONObject("location");
-				JSONArray eventsJSON = pointJSON.getJSONArray("events");
+			if(responseJSON.has("speeding")){
+				JSONArray speedingJSON = responseJSON.getJSONArray("speeding");
+				for (int i = 0; i < speedingJSON.length(); i++) {
+					JSONArray speedingRouteJSON = speedingJSON.getJSONObject(i).getJSONArray("route");
+					ArrayList<LatLng> speedingRoute = new ArrayList<LatLng>();
 					
-				ArrayList<EventType> events = new ArrayList<EventType>();
-				for (int j = 0; j < eventsJSON.length(); j++) {
-					EventType type = getEventType(eventsJSON.getString(j));
-					if(type!=null)
-						events.add(type);
+					for (int j = 0; j < speedingRouteJSON.length(); j++) {
+						JSONArray pointJSON = speedingRouteJSON.getJSONArray(j);
+						speedingRoute.add(new LatLng(pointJSON.optDouble(0,0), pointJSON.optDouble(1,0)));	
+					}
+					trip.speedingRoute.add(speedingRoute);				
 				}
-				
-				trip.points.add(new Point(new LatLng(locationJSON.getDouble("latitude"), locationJSON.getDouble("longitude")), events));
 			}
 			
-			JSONArray eventsJSON = responseJSON.getJSONArray("events");
-			for (int i = 0; i < eventsJSON.length(); i++) {
-				JSONObject eventJSON = eventsJSON.getJSONObject(i);
-				
-				EventType type = getEventType(eventJSON.getString("type"));
-				if(type!=null)
-					trip.events.add(new Event(type, eventJSON.getString("title"), eventJSON.getString("address")));					
+			if(responseJSON.has("points")){
+				JSONArray pointsJSON = responseJSON.getJSONArray("points");
+				for (int i = 0; i < pointsJSON.length(); i++) {
+					JSONObject pointJSON = pointsJSON.getJSONObject(i);
+					
+					if(pointJSON.has("location")){
+						JSONObject locationJSON = pointJSON.getJSONObject("location");
+						
+						ArrayList<EventType> events = new ArrayList<EventType>();
+						if(pointJSON.has("events")){
+							JSONArray eventsJSON = pointJSON.getJSONArray("events");	
+							for (int j = 0; j < eventsJSON.length(); j++) {
+								EventType type = getEventType(eventsJSON.optString(j));
+								if(!type.equals(""))
+									events.add(type);
+							}
+						}
+						trip.points.add(new Point(new LatLng(locationJSON.optDouble("latitude",0), locationJSON.optDouble("longitude",0)), events));				
+					}
+				}
 			}
-				
+			
+			if(responseJSON.has("events")){
+				JSONArray eventsJSON = responseJSON.getJSONArray("events");
+				for (int i = 0; i < eventsJSON.length(); i++) {
+					JSONObject eventJSON = eventsJSON.getJSONObject(i);
+					
+					EventType type = getEventType(eventJSON.optString("type"));
+					if(!type.equals(""))
+						trip.events.add(new Event(type, eventJSON.optString("title"), eventJSON.optString("address")));					
+				}
+			}
+			
 			updateActivity();
 			
 			super.onSuccess(responseJSON);
