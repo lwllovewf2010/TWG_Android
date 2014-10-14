@@ -320,6 +320,14 @@ public class MainActivity extends FragmentActivity {
     	mDrawerSelectedItem = item.num-1;
     	mDrawerList.setItemChecked(item.num-1, true);
     }
+    
+    public void setNavigationDrawerItemsUnselected(){
+    	mDrawerSelectedItem = -1;
+    	int menuItemsSize = MenuItems.values().length;
+    	for (int i = 0; i < menuItemsSize; i++) {
+        	mDrawerList.setItemChecked(i, false);	
+		}
+    }
 
    /* @Override
     public void setTitle(CharSequence title) {
