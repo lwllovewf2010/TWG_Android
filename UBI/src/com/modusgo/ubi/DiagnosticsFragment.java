@@ -105,7 +105,7 @@ public class DiagnosticsFragment extends Fragment{
 		tvStatus = (TextView) rootView.findViewById(R.id.tvStatus);
 		
 		
-		new GetDiagnosticsTask(getActivity()).execute("drivers/"+driver.id+"/diagnostics.json");
+		new GetDiagnosticsTask(getActivity()).execute("vehicles/"+driver.id+"/diagnostics.json");
 		
 		return rootView;
 	}
@@ -310,78 +310,103 @@ public class DiagnosticsFragment extends Fragment{
 		
 		@Override
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
-			String lastCheckup = Utils.fixTimezoneZ(responseJSON.getString("last_checkup"));
-			try {
-				tvLastCheckup.setText(sdfTo.format(sdfFrom.parse(lastCheckup)));
-			} catch (ParseException e) {
-				tvLastCheckup.setText(lastCheckup);
-				e.printStackTrace();
+			if(responseJSON.has("diagnostics")){
+				JSONObject diagnosticsJSON = responseJSON.getJSONObject("diagnostics");
+				
+				String lastCheckup = Utils.fixTimezoneZ(diagnosticsJSON.optString("last_checkup"));
+				try {
+					tvLastCheckup.setText(sdfTo.format(sdfFrom.parse(lastCheckup)));
+				} catch (ParseException e) {
+					tvLastCheckup.setText(lastCheckup);
+					e.printStackTrace();
+				}
+				tvStatus.setText(diagnosticsJSON.optString("status_diagnostics"));
+				
+				if(diagnosticsJSON.has("diagnostics_trouble_codes")){
+					Object dtcsObject = diagnosticsJSON.get("diagnostics_trouble_codes");
+					if(dtcsObject instanceof JSONArray){
+						JSONArray dtcsJSON = (JSONArray)dtcsObject;
+						dtcs = new ArrayList<DiagnosticsTroubleCode>();
+						for (int i = 0; i < dtcsJSON.length(); i++) {
+							
+							JSONObject dtc = dtcsJSON.getJSONObject(i);
+							
+							dtcs.add(new DiagnosticsTroubleCode(
+									dtc.optString("code"), 
+									dtc.optString("conditions"), 
+									Utils.fixTimezoneZ(dtc.optString("created_at")), 
+									dtc.optString("description"), 
+									dtc.optString("details"), 
+									dtc.optString("full_description"), 
+									dtc.optString("importance"), 
+									dtc.optString("labor_cost"), 
+									dtc.optString("labor_hours"), 
+									dtc.optString("parts"), 
+									dtc.optString("parts_cost"), 
+									dtc.optString("total_cost")));
+						}
+					}
+				}
+				
+				if(diagnosticsJSON.has("recall_updates")){
+					Object recallsObject = diagnosticsJSON.get("recall_updates");
+					if(recallsObject instanceof JSONArray){
+						JSONArray recallsJSON = (JSONArray)recallsObject;
+						recalls = new ArrayList<Recall>();
+						for (int i = 0; i < recallsJSON.length(); i++) {
+							
+							JSONObject recall = recallsJSON.getJSONObject(i);
+							
+							recalls.add(new Recall(
+									recall.optString("consequence"), 
+									recall.optString("corrective_action"), 
+									Utils.fixTimezoneZ(recall.optString("created_at")), 
+									recall.optString("defect_description"), 
+									recall.optString("description"), 
+									recall.optString("recall_id")));
+						}
+					}
+				}
+				
+				if(diagnosticsJSON.has("vehicle_maintenances")){
+					Object maintenancesObject = diagnosticsJSON.get("vehicle_maintenances");
+					if(maintenancesObject instanceof JSONArray){
+						JSONArray maintenancesJSON = (JSONArray) maintenancesObject;
+						maintenances = new ArrayList<Maintenance>();
+						for (int i = 0; i < maintenancesJSON.length(); i++) {
+							
+							JSONObject maintenance = maintenancesJSON.getJSONObject(i);
+							
+							maintenances.add(new Maintenance(
+									Utils.fixTimezoneZ(maintenance.optString("created_at")), 
+									maintenance.optString("description"), 
+									maintenance.optString("importance"), 
+									maintenance.optString("mileage"), 
+									maintenance.optString("price")));
+						}
+					}
+				}
+				
+				if(diagnosticsJSON.has("diagnostics_warranty_informations")){
+					Object warrantyInformationsObject = diagnosticsJSON.get("diagnostics_warranty_informations");
+					if(warrantyInformationsObject instanceof JSONArray){
+						JSONArray warrantyInformationsJSON = (JSONArray) warrantyInformationsObject;
+						warrantyInformations = new ArrayList<WarrantyInformation>();
+						for (int i = 0; i < warrantyInformationsJSON.length(); i++) {
+							
+							JSONObject warrantyInformation = warrantyInformationsJSON.getJSONObject(i);
+							
+							warrantyInformations.add(new WarrantyInformation(
+									warrantyInformation.optString("created_at"), 
+									warrantyInformation.optString("description"), 
+									warrantyInformation.optString("mileage")));
+						}
+					}
+				}
+				
+				updateInfo();
 			}
-			tvStatus.setText(responseJSON.getString("status_diagnostics"));
 			
-			JSONArray dtcsJSON = responseJSON.getJSONArray("diagnostics_trouble_codes");
-			dtcs = new ArrayList<DiagnosticsTroubleCode>();
-			for (int i = 0; i < dtcsJSON.length(); i++) {
-				
-				JSONObject dtc = dtcsJSON.getJSONObject(i);
-				
-				dtcs.add(new DiagnosticsTroubleCode(
-						dtc.getString("code"), 
-						dtc.getString("conditions"), 
-						Utils.fixTimezoneZ(dtc.getString("created_at")), 
-						dtc.getString("description"), 
-						dtc.getString("details"), 
-						dtc.getString("full_description"), 
-						dtc.getString("importance"), 
-						dtc.getString("labor_cost"), 
-						dtc.getString("labor_hours"), 
-						dtc.getString("parts"), 
-						dtc.getString("parts_cost"), 
-						dtc.getString("total_cost")));
-			}
-			
-			JSONArray recallsJSON = responseJSON.getJSONArray("recall_updates");
-			recalls = new ArrayList<Recall>();
-			for (int i = 0; i < recallsJSON.length(); i++) {
-				
-				JSONObject recall = recallsJSON.getJSONObject(i);
-				
-				recalls.add(new Recall(
-						recall.getString("consequence"), 
-						recall.getString("corrective_action"), 
-						Utils.fixTimezoneZ(recall.getString("created_at")), 
-						recall.getString("defect_description"), 
-						recall.getString("description"), 
-						recall.getString("recall_id")));
-			}
-			
-			JSONArray maintenancesJSON = responseJSON.getJSONArray("vehicle_maintenances");
-			maintenances = new ArrayList<Maintenance>();
-			for (int i = 0; i < maintenancesJSON.length(); i++) {
-				
-				JSONObject maintenance = maintenancesJSON.getJSONObject(i);
-				
-				maintenances.add(new Maintenance(
-						Utils.fixTimezoneZ(maintenance.getString("created_at")), 
-						maintenance.getString("description"), 
-						maintenance.getString("importance"), 
-						maintenance.getString("mileage"), 
-						maintenance.getString("price")));
-			}
-			
-			JSONArray warrantyInformationsJSON = responseJSON.getJSONArray("diagnostics_warranty_informations");
-			warrantyInformations = new ArrayList<WarrantyInformation>();
-			for (int i = 0; i < warrantyInformationsJSON.length(); i++) {
-				
-				JSONObject warrantyInformation = warrantyInformationsJSON.getJSONObject(i);
-				
-				warrantyInformations.add(new WarrantyInformation(
-						warrantyInformation.getString("created_at"), 
-						warrantyInformation.getString("description"), 
-						warrantyInformation.getString("mileage")));
-			}
-			
-			updateInfo();
 			super.onSuccess(responseJSON);
 		}
 	}

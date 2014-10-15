@@ -117,25 +117,25 @@ public class TripsFragment extends Fragment{
 						trips.clear();
 						switch (which) {
 						case 0:
-							new GetTripsTask(getActivity()).execute("drivers/"+driver.id+"/trips.json");
+							new GetTripsTask(getActivity()).execute("vehicles/"+driver.id+"/trips.json");
 							cStart.setTimeInMillis(System.currentTimeMillis());
 							cStart.add(Calendar.DAY_OF_YEAR, -7);
 							cEnd.setTimeInMillis(System.currentTimeMillis());
 							break;
 						case 1:
-							new GetTripsTask(getActivity()).execute("drivers/"+driver.id+"/trips.json");
+							new GetTripsTask(getActivity()).execute("vehicles/"+driver.id+"/trips.json");
 							cStart.setTimeInMillis(System.currentTimeMillis());
 							cStart.set(cStart.get(Calendar.YEAR), cStart.get(Calendar.MONTH), 1, 0, 0);
 							cEnd.setTimeInMillis(System.currentTimeMillis());
 							break;
 						case 2:
-							new GetTripsTask(getActivity()).execute("drivers/"+driver.id+"/trips.json");
+							new GetTripsTask(getActivity()).execute("vehicles/"+driver.id+"/trips.json");
 							cStart.setTimeInMillis(System.currentTimeMillis());
 							cStart.set(cStart.get(Calendar.YEAR), cStart.get(Calendar.MONTH)-1, 1, 0, 0);
 							cEnd.set(cStart.get(Calendar.YEAR), cStart.get(Calendar.MONTH)+1,1,23,59);
 							break;
 						case 3:
-							new GetTripsTask(getActivity()).execute("drivers/"+driver.id+"/trips.json");
+							new GetTripsTask(getActivity()).execute("vehicles/"+driver.id+"/trips.json");
 							cStart.set(2000, Calendar.JANUARY, 1, 0, 0);
 							cEnd.setTimeInMillis(System.currentTimeMillis());
 							break;
@@ -184,7 +184,7 @@ public class TripsFragment extends Fragment{
 		@Override
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
 			JSONArray tripsJSON = responseJSON.getJSONArray("trips");
-			
+			System.out.println(responseJSON);
 			SimpleDateFormat sdfDate = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
 			
 			Calendar cPrev = Calendar.getInstance();
@@ -205,11 +205,14 @@ public class TripsFragment extends Fragment{
 				
 				System.out.println("i = "+i);
 				Trip t = new Trip(
-						tipJSON.getLong("id"), 
-						tipJSON.getInt("total_harsh_events"), 
-						Utils.fixTimezoneZ(tipJSON.getString("start_time")), 
-						Utils.fixTimezoneZ(tipJSON.getString("end_time")), 
-						tipJSON.getDouble("mileage"));
+						tipJSON.optLong("id"), 
+						tipJSON.optInt("harsh_events_count"), 
+						Utils.fixTimezoneZ(tipJSON.optString("start_time")), 
+						Utils.fixTimezoneZ(tipJSON.optString("end_time")), 
+						tipJSON.optDouble("mileage"));
+				
+				tripsDistance += t.distance;
+				tripsDurationInMinutes +=Utils.durationInMinutes(t.getStartDate(), t.getEndDate());
 				
 				switch (r.nextInt(5)) {
 				case 0:
@@ -254,11 +257,11 @@ public class TripsFragment extends Fragment{
 					}
 				}
 				else{
+					currentHeader.date = sdfDate.format(t.getStartDate());
+					currentHeader.total = "Totals: "+(int)Math.floor(tripsDurationInMinutes/60)+" hr " + tripsDurationInMinutes%60 + " min "+distanceFormat.format(tripsDistance)+" MI";
 					trips.add(currentHeader);
 				}
 
-				tripsDistance += t.distance;
-				tripsDurationInMinutes +=Utils.durationInMinutes(t.getStartDate(), t.getEndDate());
 				trips.add(t);
 				prevTrip = t;
 			}

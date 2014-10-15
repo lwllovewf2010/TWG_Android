@@ -6732,13 +6732,14 @@ com.modusgo.ubi.DiagnosticsTroubleCode:
     private static final long serialVersionUID
 com.modusgo.ubi.Driver:
     private static final long serialVersionUID
-    37:40:public Driver(java.lang.String,java.lang.String)
-    57:57:public java.lang.String getFirstName()
-    61:67:public java.lang.String getLastName()
+    public java.lang.String profileDate
+    public int harshEvents
+    49:49:public java.lang.String getFirstName()
+    53:59:public java.lang.String getLastName()
 com.modusgo.ubi.DriverActivity:
     public static final java.lang.String SAVED_DRIVER
-    237:240:public android.view.animation.Animation fadeOutAnimation()
-    245:248:public android.view.animation.Animation fadeInAnimation()
+    243:246:public android.view.animation.Animation fadeOutAnimation()
+    251:254:public android.view.animation.Animation fadeInAnimation()
 com.modusgo.ubi.DriversHelper:
     23:24:public void setDrivers(java.util.ArrayList)
 com.modusgo.ubi.EducationActivity:
@@ -6750,7 +6751,7 @@ com.modusgo.ubi.FindMyCarActivity:
 com.modusgo.ubi.FindMyCarActivity$ErrorDialogFragment
 com.modusgo.ubi.MainActivity:
     private static final java.lang.String ATTRIBUTE_NAME_TEXT
-    388:390:public void showFeedbackActivity()
+    396:398:public void showFeedbackActivity()
 com.modusgo.ubi.MainActivity$MenuItems:
     61:61:public int toInt()
     65:65:public java.lang.String[] valuesString()
@@ -6807,7 +6808,7 @@ com.modusgo.ubi.customviews.CircularProgressBar$ProgressAnimationListener
 com.modusgo.ubi.customviews.PieChartView:
     private static final int START_ANGLE
 com.modusgo.ubi.customviews.PieChartView$PieSector:
-    150:150:public PieChartView$PieSector(com.modusgo.ubi.customviews.PieChartView)
+    155:155:public PieChartView$PieSector(com.modusgo.ubi.customviews.PieChartView)
 com.modusgo.ubi.utils.Utils:
     25:25:public Utils()
 com.nostra13.universalimageloader.cache.disc.DiscCacheAware:

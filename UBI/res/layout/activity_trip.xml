@@ -69,7 +69,6 @@
                         android:layout_marginLeft="20dp"
                         android:paddingBottom="18dp"
                         android:paddingTop="11dp"
-                        android:text="07/01/2014"
                         android:textColor="#3C454F"
                         android:textSize="10sp"
                         ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
@@ -100,7 +99,7 @@
                             android:layout_width="60dp"
                             android:layout_height="wrap_content"
                             android:gravity="right"
-                            android:text="05:00 PM"
+                            android:text="--:-- PM"
                             android:textColor="#697078"
                             android:textSize="12.5sp"
                             ubi:typeface="EncodeSansNormal-300-Light.ttf" />
@@ -123,7 +122,7 @@
                             android:layout_width="60dp"
                             android:layout_height="wrap_content"
                             android:layout_marginRight="17dp"
-                            android:text="05:00 PM"
+                            android:text="--:-- PM"
                             android:textColor="#697078"
                             android:textSize="12.5sp"
                             ubi:typeface="EncodeSansNormal-300-Light.ttf" />
@@ -162,7 +161,7 @@
                             android:id="@+id/tvAvgSpeed"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="17.1"
+                            android:text="N/A"
                             android:textColor="#00AEEF"
                             android:textSize="31sp"
                             ubi:typeface="EncodeSansNarrow-700-Bold.ttf" />
@@ -200,7 +199,7 @@
                             android:id="@+id/tvMaxSpeed"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="39.8"
+                            android:text="N/A"
                             android:textColor="#00AEEF"
                             android:textSize="31sp"
                             ubi:typeface="EncodeSansNarrow-700-Bold.ttf" />
@@ -238,7 +237,7 @@
                             android:id="@+id/tvDistance"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="21.8"
+                            android:text="N/A"
                             android:textColor="#00AEEF"
                             android:textSize="31sp"
                             ubi:typeface="EncodeSansNarrow-700-Bold.ttf" />

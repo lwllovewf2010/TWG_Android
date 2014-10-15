@@ -96,7 +96,7 @@ public class LimitsFragment extends Fragment {
 		llProgress = (LinearLayout)rootView.findViewById(R.id.llProgress);
 		content = (LinearLayout)rootView.findViewById(R.id.llContent);
 		
-		new GetLimitsTask(getActivity()).execute("drivers/"+driver.id+"/limits.json");
+		new GetLimitsTask(getActivity()).execute("vehicles/"+driver.id+"/limits.json");
 		
 		return rootView;
 	}
@@ -307,7 +307,7 @@ public class LimitsFragment extends Fragment {
 	@Override
 	public void onPause() {
 		if(groups!=null)
-			new SetLimitsTask(getActivity()).execute("drivers/"+driver.id+"/limits.json");
+			new SetLimitsTask(getActivity()).execute("vehicles/"+driver.id+"/limits.json");
 		super.onPause();
 	}
 

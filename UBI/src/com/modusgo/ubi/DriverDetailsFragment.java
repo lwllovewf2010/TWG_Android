@@ -194,7 +194,7 @@ OnConnectionFailedListener, LocationListener{
 			tvFuel.setText("N/A");
 		}
 	    
-	    if(driver.diags<=0){
+	    if(driver.carCheckup){
 	    	tvDiagnostics.setText("");
 	    	tvDiagnostics.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_diagnostics_green_medium, 0, 0, 0);
 	    }else{

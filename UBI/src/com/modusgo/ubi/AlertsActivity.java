@@ -93,7 +93,7 @@ public class AlertsActivity extends MainActivity {
 	
 	@Override
 	protected void onResume() {
-		new GetAlertsTask(this).execute("drivers/"+driver.id+"/alerts.json");
+		new GetAlertsTask(this).execute("vehicles/"+driver.id+"/alerts.json");
 		super.onResume();
 	}
 	
