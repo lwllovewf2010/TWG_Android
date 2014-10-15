@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
 
@@ -18,6 +19,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -32,6 +35,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.modusgo.demo.R;
+import com.modusgo.ubi.db.DbHelper;
+import com.modusgo.ubi.db.TripContract.TripEntry;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -41,7 +46,7 @@ public class TripsFragment extends Fragment{
 	Driver driver;
 	SharedPreferences prefs;
 	
-	ArrayList<ListItem> trips;
+	ArrayList<ListItem> tripListItems;
 	TripsAdapter adapter;
 	
 	LinearLayout llProgress;
@@ -58,7 +63,7 @@ public class TripsFragment extends Fragment{
 		((MainActivity)getActivity()).setActionBarTitle("TRIPS");
 
 		driver = ((DriverActivity)getActivity()).driver;
-		trips = driver.tripsMap;
+		tripListItems = new ArrayList<ListItem>();
 		
 		((TextView)rootView.findViewById(R.id.tvName)).setText(driver.name);
 		
@@ -99,8 +104,9 @@ public class TripsFragment extends Fragment{
 		
 		cStart = Calendar.getInstance();
 		cStart.add(Calendar.DAY_OF_YEAR, -7);
-		
 		cEnd = Calendar.getInstance();
+		
+		fillTripsListView(getTripsFromDb(cStart.getTime(), cEnd.getTime()));
 		
 		new GetTripsTask(getActivity()).execute("vehicles/"+driver.id+"/trips.json");
 		
@@ -114,30 +120,30 @@ public class TripsFragment extends Fragment{
 		builder.setTitle("Change time period").setItems(timePeriods,
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
-						trips.clear();
+						tripListItems.clear();
 						switch (which) {
 						case 0:
-							new GetTripsTask(getActivity()).execute("vehicles/"+driver.id+"/trips.json");
 							cStart.setTimeInMillis(System.currentTimeMillis());
 							cStart.add(Calendar.DAY_OF_YEAR, -7);
 							cEnd.setTimeInMillis(System.currentTimeMillis());
+							fillTripsListView(getTripsFromDb(cStart.getTime(), cEnd.getTime()));
 							break;
 						case 1:
-							new GetTripsTask(getActivity()).execute("vehicles/"+driver.id+"/trips.json");
 							cStart.setTimeInMillis(System.currentTimeMillis());
 							cStart.set(cStart.get(Calendar.YEAR), cStart.get(Calendar.MONTH), 1, 0, 0);
 							cEnd.setTimeInMillis(System.currentTimeMillis());
+							fillTripsListView(getTripsFromDb(cStart.getTime(), cEnd.getTime()));
 							break;
 						case 2:
-							new GetTripsTask(getActivity()).execute("vehicles/"+driver.id+"/trips.json");
 							cStart.setTimeInMillis(System.currentTimeMillis());
 							cStart.set(cStart.get(Calendar.YEAR), cStart.get(Calendar.MONTH)-1, 1, 0, 0);
 							cEnd.set(cStart.get(Calendar.YEAR), cStart.get(Calendar.MONTH)+1,1,23,59);
+							fillTripsListView(getTripsFromDb(cStart.getTime(), cEnd.getTime()));
 							break;
 						case 3:
-							new GetTripsTask(getActivity()).execute("vehicles/"+driver.id+"/trips.json");
 							cStart.set(2000, Calendar.JANUARY, 1, 0, 0);
 							cEnd.setTimeInMillis(System.currentTimeMillis());
+							fillTripsListView(getTripsFromDb(cStart.getTime(), cEnd.getTime()));
 							break;
 
 						default:
@@ -148,6 +154,127 @@ public class TripsFragment extends Fragment{
 		return builder.create();
 	}
 	
+	private ArrayList<Trip> getTripsFromDb(Date startDate, Date endDate){
+		DbHelper dbHelper = DbHelper.getInstance(getActivity());
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		
+		SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);
+		
+		Cursor c = db.query(TripEntry.TABLE_NAME, 
+				new String[]{
+				TripEntry._ID,
+				TripEntry.COLUMN_NAME_EVENTS_COUNT,
+				TripEntry.COLUMN_NAME_START_TIME,
+				TripEntry.COLUMN_NAME_END_TIME,
+				TripEntry.COLUMN_NAME_DISTANCE}, 
+				"datetime(" + TripEntry.COLUMN_NAME_START_TIME + ")>=datetime('"+ Utils.fixTimeZoneColon(sdf.format(startDate)) + "') AND " +
+				"datetime(" + TripEntry.COLUMN_NAME_START_TIME + ")<=datetime('"+ Utils.fixTimeZoneColon(sdf.format(endDate)) + "')", null, null, null, "datetime("+TripEntry.COLUMN_NAME_START_TIME+") DESC");
+		
+		System.out.println("trips "+c.getCount());
+		
+		ArrayList<Trip> trips = new ArrayList<Trip>();
+		if(c.moveToFirst()){
+			while(!c.isAfterLast()){
+				trips.add(new Trip(
+						c.getLong(0), 
+						c.getInt(1), 
+						c.getString(2), 
+						c.getString(3), 
+						c.getDouble(4)));
+				c.moveToNext();
+			}
+		}
+		c.close();
+		db.close();
+		dbHelper.close();
+		
+		System.out.println("trips array "+trips.size());
+		
+		return trips;
+	}
+	
+	private void fillTripsListView(ArrayList<Trip> trips){
+		
+		SimpleDateFormat sdfDate = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
+		
+		Calendar cPrev = Calendar.getInstance();
+		Calendar cNow = Calendar.getInstance();
+		tripListItems.clear();
+		
+		Random r = new Random();
+		TripListHeader currentHeader = new TripListHeader("", "");
+		Trip prevTrip = null;
+		int tripsCount = trips.size();
+		float tripsDistance = 0;
+		int tripsDurationInMinutes = 0;
+		
+		DecimalFormat distanceFormat = new DecimalFormat("0.0");
+		
+		for (int i = 0; i < tripsCount; i++) {
+			Trip t = trips.get(i);
+			
+			switch (r.nextInt(5)) {
+			case 0:
+				t.grade = "A";
+				break;
+			case 1:
+				t.grade = "B";
+				break;
+			case 2:
+				t.grade = "C+";
+				break;
+			case 3:
+				t.grade = "C";
+				break;
+			case 4:
+				t.grade = "E";
+				break;
+			case 5:
+				t.grade = "F";
+				break;
+
+			default:
+				break;
+			}
+			
+			if(prevTrip!=null){
+				
+				cPrev.setTime(prevTrip.getStartDate());
+				cNow.setTime(t.getStartDate());
+				
+				if(cNow.get(Calendar.YEAR) != cPrev.get(Calendar.YEAR) || 
+						(cNow.get(Calendar.YEAR) == cPrev.get(Calendar.YEAR) && cNow.get(Calendar.DAY_OF_YEAR) != cPrev.get(Calendar.DAY_OF_YEAR))){
+					
+					currentHeader.date = sdfDate.format(prevTrip.getStartDate());
+					currentHeader.total = "Totals: "+(int)Math.floor(tripsDurationInMinutes/60)+" hr " + tripsDurationInMinutes%60 + " min "+distanceFormat.format(tripsDistance)+" MI";
+					currentHeader = new TripListHeader("", "");
+
+					System.out.println(tripsDurationInMinutes);
+					tripsDistance = 0;
+					tripsDurationInMinutes = 0;
+					tripListItems.add(currentHeader);
+				}
+				if (i == tripsCount-1){
+					tripsDistance += t.distance;
+					tripsDurationInMinutes += Utils.durationInMinutes(t.getStartDate(), t.getEndDate());
+					currentHeader.date = sdfDate.format(t.getStartDate());
+					currentHeader.total = "Totals: "+(int)Math.floor(tripsDurationInMinutes/60)+" hr " + tripsDurationInMinutes%60 + " min "+distanceFormat.format(tripsDistance)+" MI";
+				}
+				//System.out.println(i);
+			}
+			else{
+				tripListItems.add(currentHeader);
+			}
+
+			tripsDistance += t.distance;
+			tripsDurationInMinutes += Utils.durationInMinutes(t.getStartDate(), t.getEndDate());
+			
+			tripListItems.add(t);
+			prevTrip = t;
+		}
+		adapter.notifyDataSetChanged();
+	}
+	
 	class GetTripsTask extends BaseRequestAsyncTask{
 		
 		public GetTripsTask(Context context) {
@@ -156,7 +283,7 @@ public class TripsFragment extends Fragment{
 		
 		@Override
 		protected void onPreExecute() {
-			if(trips.size()==0){
+			if(tripListItems.size()==0){
 				llProgress.setVisibility(View.VISIBLE);
 				lv.setVisibility(View.GONE);
 			}
@@ -166,7 +293,8 @@ public class TripsFragment extends Fragment{
 		@Override
 		protected JSONObject doInBackground(String... params) {
 			SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);
-			
+			cStart.setTimeInMillis(0);
+			cEnd.setTimeInMillis(System.currentTimeMillis());
 	        requestParams.add(new BasicNameValuePair("page", "1"));
 	        requestParams.add(new BasicNameValuePair("per_page", "1000"));
 	        requestParams.add(new BasicNameValuePair("start_time", sdf.format(cStart.getTime())));
@@ -185,20 +313,8 @@ public class TripsFragment extends Fragment{
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
 			JSONArray tripsJSON = responseJSON.getJSONArray("trips");
 			System.out.println(responseJSON);
-			SimpleDateFormat sdfDate = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
 			
-			Calendar cPrev = Calendar.getInstance();
-			Calendar cNow = Calendar.getInstance();
-			trips.clear();
-			
-			Random r = new Random();
-			TripListHeader currentHeader = new TripListHeader("", "");
-			Trip prevTrip = null;
-			int tripsCount = tripsJSON.length();
-			float tripsDistance = 0;
-			int tripsDurationInMinutes = 0;
-			
-			DecimalFormat distanceFormat = new DecimalFormat("0.0");
+			ArrayList<Trip> trips = new ArrayList<Trip>();
 			
 			for (int i = 0; i < tripsJSON.length(); i++) {
 				JSONObject tipJSON = tripsJSON.getJSONObject(i);
@@ -210,70 +326,17 @@ public class TripsFragment extends Fragment{
 						Utils.fixTimezoneZ(tipJSON.optString("start_time")), 
 						Utils.fixTimezoneZ(tipJSON.optString("end_time")), 
 						tipJSON.optDouble("mileage"));
-				
-				tripsDistance += t.distance;
-				tripsDurationInMinutes +=Utils.durationInMinutes(t.getStartDate(), t.getEndDate());
-				
-				switch (r.nextInt(5)) {
-				case 0:
-					t.grade = "A";
-					break;
-				case 1:
-					t.grade = "B";
-					break;
-				case 2:
-					t.grade = "C+";
-					break;
-				case 3:
-					t.grade = "C";
-					break;
-				case 4:
-					t.grade = "E";
-					break;
-				case 5:
-					t.grade = "F";
-					break;
-
-				default:
-					break;
-				}
-				
-				if(prevTrip!=null){
-					
-					cPrev.setTime(prevTrip.getStartDate());
-					cNow.setTime(t.getStartDate());
-					
-					if(cNow.get(Calendar.YEAR) != cPrev.get(Calendar.YEAR) || 
-							(cNow.get(Calendar.YEAR) == cPrev.get(Calendar.YEAR) && cNow.get(Calendar.DAY_OF_YEAR) != cPrev.get(Calendar.DAY_OF_YEAR))){
-						
-						currentHeader.date = sdfDate.format(prevTrip.getStartDate());
-						currentHeader.total = "Totals: "+(int)Math.floor(tripsDurationInMinutes/60)+" hr " + tripsDurationInMinutes%60 + " min "+distanceFormat.format(tripsDistance)+" MI";
-						currentHeader = new TripListHeader("", "");
-						trips.add(currentHeader);
-					}
-					else if (i == tripsCount-1){
-						currentHeader.date = sdfDate.format(prevTrip.getStartDate());
-						currentHeader.total = "Totals: "+(int)Math.floor(tripsDurationInMinutes/60)+" hr " + tripsDurationInMinutes%60 + " min "+distanceFormat.format(tripsDistance)+" MI";
-					}
-				}
-				else{
-					currentHeader.date = sdfDate.format(t.getStartDate());
-					currentHeader.total = "Totals: "+(int)Math.floor(tripsDurationInMinutes/60)+" hr " + tripsDurationInMinutes%60 + " min "+distanceFormat.format(tripsDistance)+" MI";
-					trips.add(currentHeader);
-				}
-
 				trips.add(t);
-				prevTrip = t;
 			}
 			
-//			if(tripsMap.size()==0 && trips.size()>0){
-//				tripsMap.put(sdfDate.format(trips.get(0).getStartDate()), trips);
-//			}
-			System.out.println("trips count = "+trips.size());
+			DbHelper dbHelper = DbHelper.getInstance(getActivity());
+			dbHelper.saveTrips(trips);
+
+			cStart.setTimeInMillis(System.currentTimeMillis());
+			cStart.add(Calendar.DAY_OF_YEAR, -7);
+			cEnd.setTimeInMillis(System.currentTimeMillis());
 			
-			driver.tripsMap = trips;
-			
-			adapter.notifyDataSetChanged();
+			fillTripsListView(getTripsFromDb(cStart.getTime(), cEnd.getTime()));
 			
 			super.onSuccess(responseJSON);
 		}
@@ -306,7 +369,7 @@ public class TripsFragment extends Fragment{
 		
 		@Override
 		public int getCount() {
-			return trips.size();
+			return tripListItems.size();
 		}
 
 		@Override
@@ -326,7 +389,7 @@ public class TripsFragment extends Fragment{
 		
 		@Override
 		public int getItemViewType(int position) {
-			if(trips.get(position) instanceof Trip)
+			if(tripListItems.get(position) instanceof Trip)
 				return TRIP_ITEM;
 			else
 				return HEADER_ITEM;
@@ -351,7 +414,7 @@ public class TripsFragment extends Fragment{
 		
 		private View getHeaderView(int position, View convertView, ViewGroup parent){
 			ViewHolderHeader holder;
-			TripListHeader h = (TripListHeader) trips.get(position);
+			TripListHeader h = (TripListHeader) tripListItems.get(position);
 			View view = convertView;
 			if(view==null){
 				view = lInflater.inflate(R.layout.trips_list_header, parent, false);
@@ -372,7 +435,7 @@ public class TripsFragment extends Fragment{
 		
 		private View getTripView(int position, View convertView, ViewGroup parent){
 			ViewHolderTrip holder;
-			final Trip t = (Trip)trips.get(position);
+			final Trip t = (Trip)tripListItems.get(position);
 			
 			View view = convertView;
 			if(view==null){

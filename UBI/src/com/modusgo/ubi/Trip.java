@@ -12,11 +12,11 @@ import com.google.android.gms.maps.model.LatLng;
 public class Trip extends ListItem implements Serializable{
 	
 	private static final long serialVersionUID = 2355015935997524870L;
-	long id;
-	int eventsCount;
-	private Date startDate;
-	private Date endDate;
-	double distance;
+	public long id;
+	public int eventsCount;
+	public String startDate;
+	public String endDate;
+	public double distance;
 	double averageSpeed;
 	double maxSpeed;
 	ArrayList<LatLng> route;
@@ -35,35 +35,42 @@ public class Trip extends ListItem implements Serializable{
 		super();
 		this.id = id;
 		this.eventsCount = eventsCount;
+		this.startDate = startDate;
+		this.endDate = endDate;
 		route = new ArrayList<LatLng>();
 		points = new ArrayList<Point>();
 		speedingRoute = new ArrayList<ArrayList<LatLng>>();
 		events = new ArrayList<Event>();
 		
-		try {
-			this.startDate = sdfFrom.parse(startDate);
-			this.endDate = sdfFrom.parse(endDate);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		
 		this.distance = distance;
 	}
 	
 	public String getStartDateString() {
-		return sdfTo.format(startDate);
+		return sdfTo.format(getStartDate());
 	}
 	
 	public Date getStartDate() {
-		return startDate;
+		Date date = null;
+		try {
+			date = sdfFrom.parse(startDate);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return date;
 	}
 	
 	public String getEndDateString() {
-		return sdfTo.format(endDate);
+		return sdfTo.format(getEndDate());
 	}
 	
 	public Date getEndDate() {
-		return endDate;
+		Date date = null;
+		try {
+			date = sdfFrom.parse(endDate);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return date;
 	}
 	
 	static class Point {

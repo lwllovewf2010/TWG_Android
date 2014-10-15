@@ -145,6 +145,7 @@ public class DriverActivity extends MainActivity{
 				
 		}
 		c.close();
+		db.close();
 		dbHelper.close();
 		return d;
 	}

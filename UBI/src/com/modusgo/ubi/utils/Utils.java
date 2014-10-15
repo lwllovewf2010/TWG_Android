@@ -114,6 +114,11 @@ public class Utils {
 		return datetime.replace("Z", "-00:00");
 	}
 	
+	public static String fixTimeZoneColon(String oldDate){
+		int length = oldDate.length();
+		return oldDate.substring(0, length - 2) + ':' + oldDate.substring(length - 2);
+	}
+	
 	public static String convertTime(String date, SimpleDateFormat sdfTo){
 		SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
 		try {

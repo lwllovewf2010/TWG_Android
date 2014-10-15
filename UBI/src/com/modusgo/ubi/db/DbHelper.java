@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 
 import com.modusgo.ubi.Driver;
+import com.modusgo.ubi.Trip;
+import com.modusgo.ubi.db.TripContract.TripEntry;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 
 public class DbHelper extends SQLiteOpenHelper {
@@ -44,11 +46,20 @@ public class DbHelper extends SQLiteOpenHelper {
 	    VehicleEntry.COLUMN_NAME_TOTAL_SPEEDING + INT_TYPE + COMMA_SEP +
 	    VehicleEntry.COLUMN_NAME_TOTAL_SPEEDING_DISTANCE + FLOAT_TYPE + COMMA_SEP +
 	    VehicleEntry.COLUMN_NAME_ALERTS + INT_TYPE + " ); ";
+	
+	private static final String SQL_CREATE_ENTRIES_2 =
+		    "CREATE TABLE " + TripEntry.TABLE_NAME + " (" +
+		    TripEntry._ID + " INTEGER PRIMARY KEY," +
+		    TripEntry.COLUMN_NAME_EVENTS_COUNT + INT_TYPE + COMMA_SEP +
+		    TripEntry.COLUMN_NAME_START_TIME + TEXT_TYPE + COMMA_SEP +
+		    TripEntry.COLUMN_NAME_END_TIME + TEXT_TYPE + COMMA_SEP +
+		    TripEntry.COLUMN_NAME_DISTANCE + FLOAT_TYPE + " ); ";
 
 	private static final String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + VehicleEntry.TABLE_NAME;
+	private static final String SQL_DELETE_ENTRIES_2 = "DROP TABLE IF EXISTS " + TripEntry.TABLE_NAME;
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 1;
+	public static final int DATABASE_VERSION = 2;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;
@@ -69,12 +80,15 @@ public class DbHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		//One sql create request for each table
 	    db.execSQL(SQL_CREATE_ENTRIES);
+	    db.execSQL(SQL_CREATE_ENTRIES_2);
 	}
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 	    // This database is only a cache for online data, so its upgrade policy is
 	    // to simply to discard the data and start over
 	    db.execSQL(SQL_DELETE_ENTRIES);
 	    db.execSQL(SQL_CREATE_ENTRIES);
+	    db.execSQL(SQL_DELETE_ENTRIES_2);
+	    db.execSQL(SQL_CREATE_ENTRIES_2);
 	}
 	public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 	    onUpgrade(db, oldVersion, newVersion);
@@ -161,6 +175,50 @@ public class DbHelper extends SQLiteOpenHelper {
 	        database.setTransactionSuccessful();	
 		    database.endTransaction();
 		    removeStatement.close();
+		}
+		
+		database.close();
+		
+	}
+	
+	public void saveTrips(ArrayList<Trip> trips){
+		SQLiteDatabase database = sInstance.getWritableDatabase();
+		
+		if(database!=null && trips!=null){
+			String sql = "INSERT OR REPLACE INTO "+ TripEntry.TABLE_NAME +" ("
+					+ TripEntry._ID +","
+					+ TripEntry.COLUMN_NAME_EVENTS_COUNT +","
+					+ TripEntry.COLUMN_NAME_START_TIME +","
+					+ TripEntry.COLUMN_NAME_END_TIME +","
+					+ TripEntry.COLUMN_NAME_DISTANCE +""
+					+ ") VALUES (?,?,?,?,?);";
+			
+			SQLiteStatement statement = database.compileStatement(sql);
+		    database.beginTransaction();
+//		    String ids = "";
+		    for (int i = 0; i < trips.size(); i++) {
+		    	Trip trip = trips.get(i);
+//		    	ids+= i!=trips.size()-1 ? trip.id+"," : trip.id;
+		    	statement.clearBindings();
+		    	statement.bindLong(1, trip.id);
+		    	statement.bindLong(2, trip.eventsCount);
+		    	statement.bindString(3, trip.startDate);
+		    	statement.bindString(4, trip.endDate);
+		    	statement.bindDouble(5, trip.distance);
+		    	statement.execute();
+			}
+		    
+		    database.setTransactionSuccessful();	
+		    database.endTransaction();
+		    statement.close();
+
+//		    SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+TripEntry.TABLE_NAME+" WHERE "+TripEntry._ID+" NOT IN (" + ids + ")");
+//		    database.beginTransaction();
+//		    removeStatement.clearBindings();
+//	        removeStatement.execute();
+//	        database.setTransactionSuccessful();	
+//		    database.endTransaction();
+//		    removeStatement.close();
 		}
 		
 		database.close();

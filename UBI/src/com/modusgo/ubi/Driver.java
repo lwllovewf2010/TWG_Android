@@ -45,8 +45,6 @@ public class Driver implements Serializable{
 	public String profileDate = "";
 	public int harshEvents;
 	
-	public ArrayList<ListItem> tripsMap = new ArrayList<ListItem>();
-	
 	public Driver(){
 	}
 	
