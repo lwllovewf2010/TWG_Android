@@ -31,17 +31,18 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.modusgo.demo.R;
+import com.modusgo.ubi.customviews.GoogleMapFragment;
+import com.modusgo.ubi.customviews.GoogleMapFragment.OnMapReadyListener;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class DriverDetailsFragment extends Fragment  implements ConnectionCallbacks,
-OnConnectionFailedListener, LocationListener{
+OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	
 	Driver driver;
 	SharedPreferences prefs;
@@ -59,6 +60,7 @@ OnConnectionFailedListener, LocationListener{
 	View btnDistanceToCar;
 	View rlLastTrip;
 
+	private GoogleMapFragment mMapFragment;
     private GoogleMap mMap;
     
     private LocationClient mLocationClient;
@@ -152,6 +154,13 @@ OnConnectionFailedListener, LocationListener{
 		return rootView;
 	}
 	
+	@Override
+    public void onMapReady() {
+        mMap = mMapFragment.getMap();
+        if(mMap!=null)
+        	setUpMap();
+    }
+	
 	private void updateFragment(){
 		tvName.setText(driver.name);
 	    tvVehicle.setText(driver.getCarFullName());
@@ -232,16 +241,8 @@ OnConnectionFailedListener, LocationListener{
 	private void setUpMapIfNeeded() {
 		// Do a null check to confirm that we have not already instantiated the map.
 	    if (mMap == null) {
-	        // Try to obtain the map from the SupportMapFragment.
-	    	try {
-	    		mMap = ((SupportMapFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
-		        // Check if we were successful in obtaining the map.
-		        if (mMap != null)
-		            setUpMap();
-			} catch (NullPointerException e) {
-				e.printStackTrace();
-			}
-	        
+			mMapFragment = new GoogleMapFragment();
+		    getChildFragmentManager().beginTransaction().replace(R.id.mapContainer, mMapFragment).commitAllowingStateLoss();
 	    }
     }
 
@@ -253,24 +254,6 @@ OnConnectionFailedListener, LocationListener{
     	}
     	
     	mMap.getUiSettings().setZoomControlsEnabled(false);
-    }
-    
-    /**** The mapfragment's id must be removed from the FragmentManager
-     **** or else if the same it is passed on the next time then 
-     **** app will crash ****/
-    @Override
-    public void onDestroyView() {
-        if (mMap != null) {
-        	try{
-	            getActivity().getSupportFragmentManager().beginTransaction()
-	                .remove(getActivity().getSupportFragmentManager().findFragmentById(R.id.map)).commitAllowingStateLoss();
-        	}
-        	catch(IllegalStateException e){
-        		e.printStackTrace();
-        	}
-            mMap = null;
-        }
-        super.onDestroyView();
     }
 	
     private void setUpLocationClientIfNeeded() {
