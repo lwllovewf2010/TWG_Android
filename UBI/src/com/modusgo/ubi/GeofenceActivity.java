@@ -33,6 +33,8 @@ import com.google.android.gms.maps.model.LatLngBounds.Builder;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.modusgo.demo.R;
+import com.modusgo.ubi.db.DbHelper;
+import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -40,8 +42,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 public class GeofenceActivity extends MainActivity {
 
 	Driver driver;
-	DriversHelper dHelper;
-	int driverIndex = 0;
+	long driverId = 0;
 	
 	MapView mapView;
     GoogleMap map;
@@ -62,14 +63,15 @@ public class GeofenceActivity extends MainActivity {
 		setActionBarTitle("TRIP DETAILS");
 		
 		if(savedInstanceState!=null){
-			driverIndex = savedInstanceState.getInt("id");
+			driverId = savedInstanceState.getLong(VehicleEntry._ID);
 		}
 		else if(getIntent()!=null){
-			driverIndex = getIntent().getIntExtra("id",0);
+			driverId = getIntent().getLongExtra(VehicleEntry._ID,0);
 		}
 
-		dHelper = DriversHelper.getInstance();
-		driver = dHelper.getDriverByIndex(driverIndex);
+		DbHelper dHelper = DbHelper.getInstance(this);
+		driver = dHelper.getDriverShort(driverId);
+		dHelper.close();
 		
 		((TextView)findViewById(R.id.tvName)).setText(driver.name);
 		
@@ -269,7 +271,7 @@ public class GeofenceActivity extends MainActivity {
 	
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-		outState.putInt("id", driverIndex);
+		outState.putLong(VehicleEntry._ID, driverId);
 		super.onSaveInstanceState(outState);
 	}
 	

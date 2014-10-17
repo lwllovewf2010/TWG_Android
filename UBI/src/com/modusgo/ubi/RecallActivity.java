@@ -17,14 +17,15 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.modusgo.demo.R;
+import com.modusgo.ubi.db.DbHelper;
+import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 
 public class RecallActivity extends MainActivity {
 	
 	public static final String EXTRA_RECALL = "recallInfo";
 	
 	Driver driver;
-	DriversHelper dHelper;
-	int driverIndex = 0;
+	long driverId = 0;
 	
 	Recall recall;
     
@@ -44,16 +45,17 @@ public class RecallActivity extends MainActivity {
 		getActionBar().getCustomView().setBackgroundColor(Color.parseColor("#ef4136"));
 		
 		if(savedInstanceState!=null){
-			driverIndex = savedInstanceState.getInt("id");
+			driverId = savedInstanceState.getLong(VehicleEntry._ID);
 			recall = (Recall) savedInstanceState.getSerializable(EXTRA_RECALL);
 		}
 		else if(getIntent()!=null){
-			driverIndex = getIntent().getIntExtra("id",0);
+			driverId = getIntent().getLongExtra(VehicleEntry._ID,0);
 			recall = (Recall) getIntent().getSerializableExtra(EXTRA_RECALL);
 		}
 
-		dHelper = DriversHelper.getInstance();
-		driver = dHelper.getDriverByIndex(driverIndex);
+		DbHelper dHelper = DbHelper.getInstance(this);
+		driver = dHelper.getDriverShort(driverId);
+		dHelper.close();
 
 		tvCode = (TextView) findViewById(R.id.tvCode);
 		tvDate = (TextView) findViewById(R.id.tvDate);
@@ -118,7 +120,7 @@ public class RecallActivity extends MainActivity {
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-		outState.putInt("id", driverIndex);
+		outState.putLong(VehicleEntry._ID, driverId);
 		outState.putSerializable(EXTRA_RECALL, recall);
 		super.onSaveInstanceState(outState);
 	}

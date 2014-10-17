@@ -32,8 +32,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 public class DiagnosticsFragment extends Fragment{
 
 	Driver driver;
-	DriversHelper dHelper;
-	int driverIndex = 0;
 
 	ScrollView svContent;
 	LinearLayout llInfo;
@@ -57,15 +55,7 @@ public class DiagnosticsFragment extends Fragment{
 		
 		((MainActivity)getActivity()).setActionBarTitle("DIAGNOSTICS");
 		
-		if(savedInstanceState!=null){
-			driverIndex = savedInstanceState.getInt("id");
-		}
-		else if(getArguments()!=null){
-			driverIndex = getArguments().getInt("id");
-		}
-
-		dHelper = DriversHelper.getInstance();
-		driver = dHelper.getDriverByIndex(driverIndex);
+		driver = ((DriverActivity)getActivity()).driver;
 		
 		((TextView)rootView.findViewById(R.id.tvName)).setText(driver.name);
 		
@@ -237,12 +227,6 @@ public class DiagnosticsFragment extends Fragment{
 			}
 		}
 		
-	}
-	
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		outState.putInt("id", driverIndex);
-		super.onSaveInstanceState(outState);
 	}
 	
 	class Maintenance {

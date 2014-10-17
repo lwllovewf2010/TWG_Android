@@ -32,14 +32,13 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.modusgo.demo.R;
+import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class LimitsFragment extends Fragment {
 	
 	Driver driver;
-	DriversHelper dHelper;
-	int driverIndex = 0;
 	
 	LinearLayout content;
 	LinearLayout llProgress;
@@ -57,15 +56,7 @@ public class LimitsFragment extends Fragment {
 		
 		((MainActivity) getActivity()).setActionBarTitle("LIMITS");
 		
-		if(savedInstanceState!=null){
-			driverIndex = savedInstanceState.getInt("id");
-		}
-		else if(getArguments()!=null){
-			driverIndex = getArguments().getInt("id");
-		}
-		
-		dHelper = DriversHelper.getInstance();
-		driver = dHelper.getDriverByIndex(driverIndex);
+		driver = ((DriverActivity)getActivity()).driver;
 		
 		((TextView)rootView.findViewById(R.id.tvName)).setText(driver.name);
 		
@@ -230,7 +221,7 @@ public class LimitsFragment extends Fragment {
 							public void onClick(View v) {
 								showSavedToast = false;
 								Intent i = new Intent(getActivity(), c.linkActivityClass);
-								i.putExtra("id", driverIndex);
+								i.putExtra(VehicleEntry._ID, driver.id);
 								startActivity(i);
 							}
 						});
@@ -290,12 +281,6 @@ public class LimitsFragment extends Fragment {
 	    String strMntToShow = datetime.get(Calendar.MINUTE)<10 ? "0"+datetime.get(Calendar.MINUTE) : ""+datetime.get(Calendar.MINUTE); 
 
 	    return strHrsToShow+":"+strMntToShow+" "+am_pm;
-	}
-	
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		outState.putInt("id", driverIndex);
-		super.onSaveInstanceState(outState);
 	}
 	
 	@Override

@@ -2,6 +2,8 @@ package com.modusgo.ubi;
 
 import java.util.ArrayList;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
@@ -18,6 +20,8 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.LatLngBounds.Builder;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.modusgo.demo.R;
+import com.modusgo.ubi.db.DbHelper;
+import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -26,7 +30,6 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 public class DriversLocationsActivity extends MainActivity {
 
 	ArrayList<Driver> drivers;
-	DriversHelper dHelper;
 	
 	MapView mapView;
     GoogleMap map;
@@ -38,8 +41,7 @@ public class DriversLocationsActivity extends MainActivity {
 		
 		setActionBarTitle("Drivers Locations");
 
-		dHelper = DriversHelper.getInstance();
-		drivers = dHelper.getDrivers();
+		drivers = getDrivers();
 		
 		// Gets the MapView from the XML layout and creates it
         mapView = (MapView) findViewById(R.id.mapview);
@@ -76,6 +78,44 @@ public class DriversLocationsActivity extends MainActivity {
 
 	}
 	
+	private ArrayList<Driver> getDrivers(){
+		DbHelper dHelper = DbHelper.getInstance(this);
+		SQLiteDatabase db = dHelper.getReadableDatabase();
+		Cursor c = db.query(VehicleEntry.TABLE_NAME, 
+				new String[]{
+				VehicleEntry._ID,
+				VehicleEntry.COLUMN_NAME_DRIVER_NAME,
+				VehicleEntry.COLUMN_NAME_DRIVER_PHOTO,
+				VehicleEntry.COLUMN_NAME_DRIVER_MARKER_ICON,
+				VehicleEntry.COLUMN_NAME_LATITUDE,
+				VehicleEntry.COLUMN_NAME_LONGITUDE,
+				VehicleEntry.COLUMN_NAME_ADDRESS}, 
+				null, null, null, null, null);
+		
+		ArrayList<Driver> drivers = new ArrayList<Driver>();
+		if(c.moveToFirst()){
+			while(!c.isAfterLast()){
+				Driver d = new Driver();
+				System.out.println("hello");
+				
+				d.id = c.getLong(0);
+				d.name = c.getString(1);
+				d.photo = c.getString(2);
+				d.markerIcon = c.getString(3);
+				d.latitude = c.getDouble(4);
+				d.longitude = c.getDouble(5);
+				d.address = c.getString(6);
+				drivers.add(d);
+				
+				c.moveToNext();
+			}
+		}
+		c.close();
+		db.close();
+		dHelper.close();
+		return drivers;
+	}
+	
 	private void addDriversToMap(){
 		Builder builder = LatLngBounds.builder();
 		
@@ -102,7 +142,10 @@ public class DriversLocationsActivity extends MainActivity {
 				
 				@Override
 				public void onLoadingComplete(String arg0, View arg1, Bitmap bitmap) {
-					map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromBitmap(bitmap)).title(address));
+					if(bitmap!=null)
+						map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromBitmap(bitmap)).title(address));
+					else
+						map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_car)).title(address));
 				}
 				
 				@Override

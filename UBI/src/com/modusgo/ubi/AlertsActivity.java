@@ -26,6 +26,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.modusgo.demo.R;
+import com.modusgo.ubi.db.DbHelper;
+import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -34,8 +36,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 public class AlertsActivity extends MainActivity {
 	
 	Driver driver;
-	DriversHelper dHelper;
-	int driverIndex = 0;
+	long driverId = 0;
 	
     ListView lvAlerts;
     LinearLayout llProgress;
@@ -51,14 +52,15 @@ public class AlertsActivity extends MainActivity {
 		setActionBarTitle("ALERTS");
 		
 		if(savedInstanceState!=null){
-			driverIndex = savedInstanceState.getInt("id");
+			driverId = savedInstanceState.getLong(VehicleEntry._ID);
 		}
 		else if(getIntent()!=null){
-			driverIndex = getIntent().getIntExtra("id",0);
+			driverId = getIntent().getLongExtra(VehicleEntry._ID,0);
 		}
 
-		dHelper = DriversHelper.getInstance();
-		driver = dHelper.getDriverByIndex(driverIndex);
+		DbHelper dHelper = DbHelper.getInstance(this);
+		driver = dHelper.getDriverShort(driverId);
+		dHelper.close();
 		
 		((TextView)findViewById(R.id.tvName)).setText(driver.name);
 		
@@ -99,7 +101,7 @@ public class AlertsActivity extends MainActivity {
 	
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-		outState.putInt("id", driverIndex);
+		outState.putLong(VehicleEntry._ID, driverId);
 		super.onSaveInstanceState(outState);
 	}
 	
@@ -189,7 +191,7 @@ public class AlertsActivity extends MainActivity {
 				public void onClick(View v) {
 					new MarkAlertViewedTask(AlertsActivity.this, alert.id).execute("drivers/"+driver.id+"/alerts/"+alert.id+"/hide.json");
 					Intent intent = new Intent(AlertsActivity.this, TripActivity.class);
-					intent.putExtra("id", driverIndex);
+					intent.putExtra("id", driverId);
 					intent.putExtra(TripActivity.EXTRA_TRIP_ID, alert.tripId);
 					startActivity(intent);	
 				}

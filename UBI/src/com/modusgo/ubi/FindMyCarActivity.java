@@ -40,6 +40,8 @@ import com.google.android.gms.maps.model.LatLngBounds.Builder;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.modusgo.demo.R;
+import com.modusgo.ubi.db.DbHelper;
+import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.modusgo.ubi.utils.Utils;
 
 public class FindMyCarActivity extends MainActivity implements ConnectionCallbacks,
@@ -58,8 +60,7 @@ OnConnectionFailedListener, LocationListener {
 	public static final String EXTRA_POINTS = "points";
 	
 	Driver driver;
-	DriversHelper dHelper;
-	int driverIndex = 0;
+	long driverId = 0;
 	
 	MapView mapView;
     GoogleMap map;
@@ -83,14 +84,15 @@ OnConnectionFailedListener, LocationListener {
 		setActionBarTitle("FIND MY CAR");
 		
 		if(savedInstanceState!=null){
-			driverIndex = savedInstanceState.getInt("id");
+			driverId = savedInstanceState.getLong(VehicleEntry._ID);
 		}
 		else if(getIntent()!=null){
-			driverIndex = getIntent().getIntExtra("id",0);
+			driverId = getIntent().getLongExtra(VehicleEntry._ID,0);
 		}
 
-		dHelper = DriversHelper.getInstance();
-		driver = dHelper.getDriverByIndex(driverIndex);
+		DbHelper dHelper = DbHelper.getInstance(this);
+		driver = dHelper.getDriverShort(driverId);
+		dHelper.close();
 		
 		points = new ArrayList<LatLng>();
 		
@@ -250,7 +252,7 @@ OnConnectionFailedListener, LocationListener {
     
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-		outState.putInt("id", driverIndex);
+		outState.putLong(VehicleEntry._ID, driverId);
 		super.onSaveInstanceState(outState);
 	}
 	

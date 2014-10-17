@@ -45,6 +45,7 @@ import com.google.android.gms.maps.model.LatLngBounds.Builder;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.ui.IconGenerator;
 import com.modusgo.demo.R;
+import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 
 public class FindMechanicActivity extends MainActivity implements ConnectionCallbacks,
 OnConnectionFailedListener, LocationListener{
@@ -53,7 +54,7 @@ OnConnectionFailedListener, LocationListener{
 	
 	//Driver driver;
 	//DriversHelper dHelper;
-	int driverIndex = 0;
+	long driverId = 0;
 	
 	MapView mapView;
     GoogleMap map;
@@ -81,10 +82,10 @@ OnConnectionFailedListener, LocationListener{
 		setActionBarTitle("Find Mechanic");
 		
 		if(savedInstanceState!=null){
-			driverIndex = savedInstanceState.getInt("id");
+			driverId = savedInstanceState.getInt(VehicleEntry._ID);
 		}
 		else if(getIntent()!=null){
-			driverIndex = getIntent().getIntExtra("id",0);
+			driverId = getIntent().getIntExtra(VehicleEntry._ID,0);
 		}
 
 		//dHelper = DriversHelper.getInstance();
@@ -142,7 +143,7 @@ OnConnectionFailedListener, LocationListener{
 	
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-		outState.putInt("id", driverIndex);
+		outState.putLong(VehicleEntry._ID, driverId);
 		super.onSaveInstanceState(outState);
 	}
 	
