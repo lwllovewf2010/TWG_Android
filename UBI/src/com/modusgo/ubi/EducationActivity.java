@@ -11,10 +11,6 @@ public class EducationActivity extends MainActivity {
 	
 	public static final String SAVED_STRING_RESOURCE = "stringResource";
 	
-	Driver driver;
-	DriversHelper dHelper;
-	int driverIndex = 0;
-	
 	TextView tvContent;
 	int infoStringResource;
     
@@ -27,17 +23,12 @@ public class EducationActivity extends MainActivity {
 		getActionBar().getCustomView().setBackgroundColor(Color.parseColor("#00aeef"));
 		
 		if(savedInstanceState!=null){
-			driverIndex = savedInstanceState.getInt("id");
 			infoStringResource = savedInstanceState.getInt(SAVED_STRING_RESOURCE);
 		}
 		else if(getIntent()!=null){
-			driverIndex = getIntent().getIntExtra("id", 0);
 			infoStringResource = getIntent().getIntExtra(SAVED_STRING_RESOURCE, 0);
 		}
 
-		dHelper = DriversHelper.getInstance();
-		driver = dHelper.getDriverByIndex(driverIndex);
-		
 		tvContent = (TextView) findViewById(R.id.tvContent);
 		tvContent.setText(Html.fromHtml(getResources().getString(infoStringResource)));
         
@@ -51,7 +42,6 @@ public class EducationActivity extends MainActivity {
     
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-		outState.putInt("id", driverIndex);
 		outState.putInt(SAVED_STRING_RESOURCE, infoStringResource);
 		super.onSaveInstanceState(outState);
 	}
