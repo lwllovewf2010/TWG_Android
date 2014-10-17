@@ -12,6 +12,8 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -25,6 +27,7 @@ import android.widget.TextView;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMapLoadedCallback;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -38,6 +41,9 @@ import com.modusgo.ubi.Trip.Event;
 import com.modusgo.ubi.Trip.EventType;
 import com.modusgo.ubi.Trip.Point;
 import com.modusgo.ubi.db.DbHelper;
+import com.modusgo.ubi.db.PointContract.PointEntry;
+import com.modusgo.ubi.db.RouteContract.RouteEntry;
+import com.modusgo.ubi.db.TripContract.TripEntry;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -145,10 +151,97 @@ public class TripActivity extends MainActivity {
 	        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(37.8430094,-95.0098992), 1);
 	        map.animateCamera(cameraUpdate);
         }
-		new GetTripTask(this).execute("vehicles/"+driver.id+"/trips/"+tripId+".json");
+        
+        trip = getTripFromDB();
+        
+        if(trip==null || (trip!=null && trip.route.size()==0))
+        	new GetTripTask(this).execute("vehicles/"+driver.id+"/trips/"+tripId+".json");
+        else{
+        	updateActivity();
+        }
+	}
+	
+	private Trip getTripFromDB(){
+		DbHelper dbHelper = DbHelper.getInstance(this);
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		Cursor c = db.query(TripEntry.TABLE_NAME, 
+				new String[]{
+				TripEntry._ID,
+				TripEntry.COLUMN_NAME_EVENTS_COUNT,
+				TripEntry.COLUMN_NAME_START_TIME,
+				TripEntry.COLUMN_NAME_END_TIME,
+				TripEntry.COLUMN_NAME_DISTANCE,
+				TripEntry.COLUMN_NAME_AVG_SPEED,
+				TripEntry.COLUMN_NAME_MAX_SPEED}, 
+				TripEntry._ID+" = ?", new String[]{Long.toString(tripId)}, null, null, null);
+		
+		Trip t = null;
+		
+		if(c.moveToFirst()){
+			t = new Trip(c.getLong(0), c.getInt(1), c.getString(2), c.getString(3), c.getFloat(4));
+			t.averageSpeed = c.getFloat(5);
+			t.maxSpeed = c.getFloat(6);
+		}
+		c.close();
+		
+		if(t!=null){
+			c = db.query(RouteEntry.TABLE_NAME, 
+					new String[]{
+					RouteEntry._ID,
+					RouteEntry.COLUMN_NAME_LATITUDE,
+					RouteEntry.COLUMN_NAME_LONGITUDE}, 
+					RouteEntry.COLUMN_NAME_TRIP_ID+" = ?", new String[]{Long.toString(tripId)}, null, null, RouteEntry._ID+" ASC");
+			if(c.moveToFirst()){
+				while (!c.isAfterLast()) {
+					t.route.add(new LatLng(c.getDouble(1), c.getDouble(2)));
+					c.moveToNext();
+				}
+			}
+			c.close();
+			
+			c = db.query(PointEntry.TABLE_NAME, 
+					new String[]{
+					PointEntry._ID,
+					PointEntry.COLUMN_NAME_LATITUDE,
+					PointEntry.COLUMN_NAME_LONGITUDE,
+					PointEntry.COLUMN_NAME_EVENTS}, 
+					PointEntry.COLUMN_NAME_TRIP_ID+" = ?", new String[]{Long.toString(tripId)}, null, null, PointEntry._ID+" ASC");
+			if(c.moveToFirst()){
+				while (!c.isAfterLast()) {
+					
+					String eventsStr = c.getString(3);
+					String[] eventsArr = eventsStr.split(" ");
+					ArrayList<EventType> events = new ArrayList<EventType>();
+					for (String string : eventsArr) {
+						events.add(EventType.valueOf(string));
+					}
+					
+					t.points.add(new Point(new LatLng(c.getDouble(1), c.getDouble(2)), events));
+					c.moveToNext();
+				}
+			}
+			c.close();
+		}
+		
+		db.close();
+		dbHelper.close();
+		
+		return t;
 	}
 	
 	private void updateActivity(){
+		if(map!=null){
+			map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
+				@Override
+				public void onMapLoaded() {
+					updateMap();					
+				}
+			});
+		}
+		updateLabels();
+	}
+	
+	private void updateLabels(){
 		SimpleDateFormat sdfDate = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
 		
 		tvDate.setText(sdfDate.format(trip.getStartDate()));
@@ -159,64 +252,6 @@ public class TripActivity extends MainActivity {
 		tvAvgSpeed.setText(df.format(trip.averageSpeed));
 		tvMaxSpeed.setText(df.format(trip.maxSpeed));
 		tvDistance.setText(df.format(trip.distance));
-		
-		if(map!=null){
-			map.clear();
-			
-			if(trip.route.size()>0){
-				PolylineOptions options = new PolylineOptions();
-				final Builder builder = LatLngBounds.builder();	
-				for (LatLng point : trip.route) {
-					options.add(point);
-					builder.include(point);
-				}
-		
-				int color = Color.parseColor("#009900");
-				map.addPolyline(options.color(color).width(8).zIndex(1));
-		
-				int colorSpeeding = Color.parseColor("#ef4136");
-				for (ArrayList<LatLng> route : trip.speedingRoute) {
-					PolylineOptions optionsSpeeding = new PolylineOptions();
-					for (LatLng point : route) {
-						optionsSpeeding.add(point);
-					}
-					map.addPolyline(optionsSpeeding.color(colorSpeeding).width(8).zIndex(2));
-				}
-				
-				tripCenterCameraUpdate = CameraUpdateFactory.newLatLngBounds(builder.build(), 150);
-		        map.animateCamera(tripCenterCameraUpdate);
-			}
-	        
-	        for (Point p : trip.points) {
-	        	for (EventType e : p.events) {
-					switch (e) {
-					case START:
-						map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_start)));
-						break;
-					case STOP:
-						map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_finish)));
-						break;
-					case HARSH_BRAKING:
-						map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_brake)));
-						break;
-					case HARSH_ACCELERATION:
-						map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_accel)));
-						break;
-					case PHONE_USAGE:
-						map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_phone)));
-						break;
-					case APP_USAGE:
-						map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_app)));
-						break;
-					case SPEEDING:
-						map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_speeding)));
-						break;
-					default:
-						break;
-					}
-				}
-			}
-		}
         
         llEventsList.removeAllViews();
         
@@ -274,7 +309,67 @@ public class TripActivity extends MainActivity {
 			
 			llEventsList.addView(eventItem);
 		}
-
+	}
+	
+	private void updateMap(){
+		if(map!=null){
+			map.clear();
+			
+			if(trip.route.size()>0){
+				PolylineOptions options = new PolylineOptions();
+				final Builder builder = LatLngBounds.builder();	
+				for (LatLng point : trip.route) {
+					options.add(point);
+					builder.include(point);
+					System.out.println("point "+point.latitude);
+				}
+		
+				int color = Color.parseColor("#009900");
+				map.addPolyline(options.color(color).width(8).zIndex(1));
+		
+				int colorSpeeding = Color.parseColor("#ef4136");
+				for (ArrayList<LatLng> route : trip.speedingRoute) {
+					PolylineOptions optionsSpeeding = new PolylineOptions();
+					for (LatLng point : route) {
+						optionsSpeeding.add(point);
+					}
+					map.addPolyline(optionsSpeeding.color(colorSpeeding).width(8).zIndex(2));
+				}
+				
+				tripCenterCameraUpdate = CameraUpdateFactory.newLatLngBounds(builder.build(), 150);
+		        map.animateCamera(tripCenterCameraUpdate);
+			}
+	        
+	        for (Point p : trip.points) {
+	        	for (EventType e : p.events) {
+					switch (e) {
+					case START:
+						map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_start)));
+						break;
+					case STOP:
+						map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_finish)));
+						break;
+					case HARSH_BRAKING:
+						map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_brake)));
+						break;
+					case HARSH_ACCELERATION:
+						map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_accel)));
+						break;
+					case PHONE_USAGE:
+						map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_phone)));
+						break;
+					case APP_USAGE:
+						map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_app)));
+						break;
+					case SPEEDING:
+						map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_speeding)));
+						break;
+					default:
+						break;
+					}
+				}
+			}
+		}
 	}
 	
 	@Override
@@ -331,7 +426,9 @@ public class TripActivity extends MainActivity {
 		
 		@Override
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
-			trip = new Trip(tripId, 0, Utils.fixTimezoneZ(responseJSON.getString("start_time")), Utils.fixTimezoneZ(responseJSON.getString("end_time")), responseJSON.getDouble("mileage"));
+			if(trip==null)
+				trip = new Trip(tripId, 0, Utils.fixTimezoneZ(responseJSON.getString("start_time")), Utils.fixTimezoneZ(responseJSON.getString("end_time")), responseJSON.getDouble("mileage"));
+			
 			trip.averageSpeed = responseJSON.getDouble("avg_speed");
 			trip.maxSpeed = responseJSON.getDouble("max_speed");
 			
@@ -389,6 +486,12 @@ public class TripActivity extends MainActivity {
 						trip.events.add(new Event(type, eventJSON.optString("title"), eventJSON.optString("address")));					
 				}
 			}
+			
+			DbHelper dHelper = DbHelper.getInstance(TripActivity.this);
+			dHelper.saveTrip(trip);
+			dHelper.saveRoute(trip.id, trip.route);
+			dHelper.savePoints(trip.id, trip.points);
+			dHelper.close();			
 			
 			updateActivity();
 			

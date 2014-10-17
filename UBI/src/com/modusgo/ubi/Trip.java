@@ -17,8 +17,8 @@ public class Trip extends ListItem implements Serializable{
 	public String startDate;
 	public String endDate;
 	public double distance;
-	double averageSpeed;
-	double maxSpeed;
+	public double averageSpeed;
+	public double maxSpeed;
 	ArrayList<LatLng> route;
 	ArrayList<Point> points;
 	ArrayList<ArrayList<LatLng>> speedingRoute;
@@ -73,7 +73,7 @@ public class Trip extends ListItem implements Serializable{
 		return date;
 	}
 	
-	static class Point {
+	static public class Point {
 		
 		LatLng location;
 		ArrayList<EventType> events;
@@ -82,6 +82,23 @@ public class Trip extends ListItem implements Serializable{
 			super();
 			this.location = location;
 			this.events = events;
+		}
+		
+		public double getLatitude(){
+			return location.latitude;
+		}
+		
+		public double getLongitude(){
+			return location.longitude;
+		}
+		
+		public String getEventsString(){
+			String eventsStr = "";
+			for (EventType ev : events) {
+				eventsStr+=ev.toString()+" ";
+			}
+			
+			return eventsStr.substring(0, eventsStr.length()-1);
 		}
 	}
 	

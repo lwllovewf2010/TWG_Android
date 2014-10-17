@@ -15,5 +15,7 @@ public class TripContract {
 		public static final String COLUMN_NAME_START_TIME = "start_time";
 		public static final String COLUMN_NAME_END_TIME = "end_time";
 		public static final String COLUMN_NAME_DISTANCE = "distance";
+		public static final String COLUMN_NAME_AVG_SPEED = "avg_speed";
+		public static final String COLUMN_NAME_MAX_SPEED = "max_speed";
 	}
 }

@@ -8,8 +8,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.modusgo.ubi.Driver;
 import com.modusgo.ubi.Trip;
+import com.modusgo.ubi.Trip.Point;
+import com.modusgo.ubi.db.PointContract.PointEntry;
+import com.modusgo.ubi.db.RouteContract.RouteEntry;
 import com.modusgo.ubi.db.TripContract.TripEntry;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 
@@ -54,13 +58,32 @@ public class DbHelper extends SQLiteOpenHelper {
 		    TripEntry.COLUMN_NAME_EVENTS_COUNT + INT_TYPE + COMMA_SEP +
 		    TripEntry.COLUMN_NAME_START_TIME + TEXT_TYPE + COMMA_SEP +
 		    TripEntry.COLUMN_NAME_END_TIME + TEXT_TYPE + COMMA_SEP +
-		    TripEntry.COLUMN_NAME_DISTANCE + FLOAT_TYPE + " ); ";
+		    TripEntry.COLUMN_NAME_DISTANCE + FLOAT_TYPE + COMMA_SEP +
+		    TripEntry.COLUMN_NAME_AVG_SPEED + FLOAT_TYPE + COMMA_SEP +
+		    TripEntry.COLUMN_NAME_MAX_SPEED + FLOAT_TYPE + " ); ";
+	
+	private static final String SQL_CREATE_ENTRIES_3 =
+		    "CREATE TABLE " + RouteEntry.TABLE_NAME + " (" +
+		    RouteEntry._ID + " INTEGER PRIMARY KEY," +
+		    RouteEntry.COLUMN_NAME_TRIP_ID + INT_TYPE + COMMA_SEP +
+		    RouteEntry.COLUMN_NAME_LATITUDE + FLOAT_TYPE + COMMA_SEP +
+		    RouteEntry.COLUMN_NAME_LONGITUDE + FLOAT_TYPE +  " ); ";
+	
+	private static final String SQL_CREATE_ENTRIES_4 =
+		    "CREATE TABLE " + PointEntry.TABLE_NAME + " (" +
+		    PointEntry._ID + " INTEGER PRIMARY KEY," +
+		    PointEntry.COLUMN_NAME_TRIP_ID + INT_TYPE + COMMA_SEP +
+		    PointEntry.COLUMN_NAME_LATITUDE + FLOAT_TYPE + COMMA_SEP +
+		    PointEntry.COLUMN_NAME_LONGITUDE + FLOAT_TYPE + COMMA_SEP +
+		    PointEntry.COLUMN_NAME_EVENTS + TEXT_TYPE +  " ); ";
 
 	private static final String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + VehicleEntry.TABLE_NAME;
 	private static final String SQL_DELETE_ENTRIES_2 = "DROP TABLE IF EXISTS " + TripEntry.TABLE_NAME;
+	private static final String SQL_DELETE_ENTRIES_3 = "DROP TABLE IF EXISTS " + RouteEntry.TABLE_NAME;
+	private static final String SQL_DELETE_ENTRIES_4 = "DROP TABLE IF EXISTS " + PointEntry.TABLE_NAME;
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 2;
+	public static final int DATABASE_VERSION = 3;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;
@@ -82,6 +105,8 @@ public class DbHelper extends SQLiteOpenHelper {
 		//One sql create request for each table
 	    db.execSQL(SQL_CREATE_ENTRIES);
 	    db.execSQL(SQL_CREATE_ENTRIES_2);
+	    db.execSQL(SQL_CREATE_ENTRIES_3);
+	    db.execSQL(SQL_CREATE_ENTRIES_4);
 	}
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 	    // This database is only a cache for online data, so its upgrade policy is
@@ -90,6 +115,10 @@ public class DbHelper extends SQLiteOpenHelper {
 	    db.execSQL(SQL_CREATE_ENTRIES);
 	    db.execSQL(SQL_DELETE_ENTRIES_2);
 	    db.execSQL(SQL_CREATE_ENTRIES_2);
+	    db.execSQL(SQL_DELETE_ENTRIES_3);
+	    db.execSQL(SQL_CREATE_ENTRIES_3);
+	    db.execSQL(SQL_DELETE_ENTRIES_4);
+	    db.execSQL(SQL_CREATE_ENTRIES_4);
 	}
 	public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 	    onUpgrade(db, oldVersion, newVersion);
@@ -203,6 +232,12 @@ public class DbHelper extends SQLiteOpenHelper {
 		
 	}
 	
+	public void saveTrip(Trip trip){
+		ArrayList<Trip> trips = new ArrayList<Trip>();
+		trips.add(trip);
+		saveTrips(trips);
+	}
+	
 	public void saveTrips(ArrayList<Trip> trips){
 		SQLiteDatabase database = sInstance.getWritableDatabase();
 		
@@ -212,8 +247,12 @@ public class DbHelper extends SQLiteOpenHelper {
 					+ TripEntry.COLUMN_NAME_EVENTS_COUNT +","
 					+ TripEntry.COLUMN_NAME_START_TIME +","
 					+ TripEntry.COLUMN_NAME_END_TIME +","
-					+ TripEntry.COLUMN_NAME_DISTANCE +""
-					+ ") VALUES (?,?,?,?,?);";
+					+ TripEntry.COLUMN_NAME_DISTANCE +","
+					+ TripEntry.COLUMN_NAME_AVG_SPEED +","
+					+ TripEntry.COLUMN_NAME_MAX_SPEED +""
+					+ ") VALUES (?,?,?,?,?," +
+					"(SELECT IFNULL(NULLIF((SELECT "+TripEntry.COLUMN_NAME_AVG_SPEED+" FROM trips WHERE "+TripEntry._ID+" IS ?),0),?))," +
+					"(SELECT IFNULL(NULLIF((SELECT "+TripEntry.COLUMN_NAME_MAX_SPEED+" FROM trips WHERE "+TripEntry._ID+" IS ?),0),?)));";
 			
 			SQLiteStatement statement = database.compileStatement(sql);
 		    database.beginTransaction();
@@ -227,6 +266,10 @@ public class DbHelper extends SQLiteOpenHelper {
 		    	statement.bindString(3, trip.startDate);
 		    	statement.bindString(4, trip.endDate);
 		    	statement.bindDouble(5, trip.distance);
+		    	statement.bindDouble(6, trip.id);
+		    	statement.bindDouble(7, trip.averageSpeed);
+		    	statement.bindDouble(8, trip.id);
+		    	statement.bindDouble(9, trip.maxSpeed);
 		    	statement.execute();
 			}
 		    
@@ -245,6 +288,80 @@ public class DbHelper extends SQLiteOpenHelper {
 		
 		database.close();
 		
+	}
+	
+	public void saveRoute(long tripId, ArrayList<LatLng> route){
+		SQLiteDatabase database = sInstance.getWritableDatabase();
+		
+		if(database!=null && route!=null){
+			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+RouteEntry.TABLE_NAME+" WHERE "+RouteEntry.COLUMN_NAME_TRIP_ID+" = "+tripId);
+		    database.beginTransaction();
+		    removeStatement.clearBindings();
+	        removeStatement.execute();
+	        database.setTransactionSuccessful();	
+		    database.endTransaction();
+		    removeStatement.close();
+			
+			String sql = "INSERT INTO "+ RouteEntry.TABLE_NAME +" ("
+					+ RouteEntry.COLUMN_NAME_TRIP_ID +","
+					+ RouteEntry.COLUMN_NAME_LATITUDE +","
+					+ RouteEntry.COLUMN_NAME_LONGITUDE
+					+ ") VALUES (?,?,?);";
+			
+			SQLiteStatement statement = database.compileStatement(sql);
+		    database.beginTransaction();
+		    for (LatLng loc : route) {
+		    	statement.clearBindings();
+		    	statement.bindLong(1, tripId);
+		    	statement.bindDouble(2, loc.latitude);
+		    	statement.bindDouble(3, loc.longitude);
+		    	statement.execute();
+			}
+		    
+		    database.setTransactionSuccessful();	
+		    database.endTransaction();
+		    statement.close();
+		}
+		
+		database.close();
+	}
+	
+	public void savePoints(long tripId, ArrayList<Point> points){
+		SQLiteDatabase database = sInstance.getWritableDatabase();
+		
+		if(database!=null && points!=null){
+			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+PointEntry.TABLE_NAME+" WHERE "+PointEntry.COLUMN_NAME_TRIP_ID+" = "+tripId);
+		    database.beginTransaction();
+		    removeStatement.clearBindings();
+	        removeStatement.execute();
+	        database.setTransactionSuccessful();	
+		    database.endTransaction();
+		    removeStatement.close();
+			
+			String sql = "INSERT INTO "+ PointEntry.TABLE_NAME +" ("
+					+ PointEntry.COLUMN_NAME_TRIP_ID +","
+					+ PointEntry.COLUMN_NAME_LATITUDE +","
+					+ PointEntry.COLUMN_NAME_LONGITUDE +","
+					+ PointEntry.COLUMN_NAME_EVENTS
+					+ ") VALUES (?,?,?,?);";
+			
+			SQLiteStatement statement = database.compileStatement(sql);
+		    database.beginTransaction();
+		    for (Point p : points) {
+		    	statement.clearBindings();
+		    	statement.bindLong(1, tripId);
+		    	statement.bindDouble(2, p.getLatitude());
+		    	statement.bindDouble(3, p.getLongitude());
+		    	statement.bindString(4, p.getEventsString());
+		    	statement.execute();
+			}
+		    
+		    database.setTransactionSuccessful();	
+		    database.endTransaction();
+		    statement.close();
+		}
+		
+		database.close();
 	}
 	
 }
