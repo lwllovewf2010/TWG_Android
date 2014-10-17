@@ -115,6 +115,7 @@ public class DriverActivity extends MainActivity{
 				VehicleEntry.COLUMN_NAME_CAR_MAKE,
 				VehicleEntry.COLUMN_NAME_CAR_MODEL,
 				VehicleEntry.COLUMN_NAME_CAR_YEAR,
+				VehicleEntry.COLUMN_NAME_CAR_VIN,
 				VehicleEntry.COLUMN_NAME_CAR_FUEL,
 				VehicleEntry.COLUMN_NAME_CAR_CHECKUP,
 				VehicleEntry.COLUMN_NAME_LAST_TRIP_DATE,
@@ -134,14 +135,15 @@ public class DriverActivity extends MainActivity{
 			d.carMake = c.getString(3);
 			d.carModel = c.getString(4);
 			d.carYear = c.getString(5);
-			d.carFuelLevel = c.getInt(6);
-			d.carCheckup = c.getInt(7) == 1;
-			d.lastTripDate = c.getString(8);
-			d.alerts = c.getInt(9);
-			d.latitude = c.getLong(10);
-			d.longitude = c.getLong(11);
-			d.address = c.getString(12);
-			d.grade = c.getString(13);
+			d.carVIN = c.getString(6);
+			d.carFuelLevel = c.getInt(7);
+			d.carCheckup = c.getInt(8) == 1;
+			d.lastTripDate = c.getString(9);
+			d.alerts = c.getInt(10);
+			d.latitude = c.getLong(11);
+			d.longitude = c.getLong(12);
+			d.address = c.getString(13);
+			d.grade = c.getString(14);
 				
 		}
 		c.close();

@@ -13,14 +13,15 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.modusgo.demo.R;
+import com.modusgo.ubi.db.DbHelper;
+import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 
 public class ScoreCirclesActivity extends MainActivity{
 
 	public static final String SAVED_CIRCLES_BUNDLE = "circlesBundle";
 	
 	Driver driver;
-	DriversHelper dHelper;
-	int driverIndex = 0;
+	long driverId = 0;
 
 	Bundle circlesData;
 	RadioGroup rgCircles;
@@ -33,16 +34,17 @@ public class ScoreCirclesActivity extends MainActivity{
 		setActionBarTitle("Behaviors");
 		
 		if(savedInstanceState!=null){
-			driverIndex = savedInstanceState.getInt("id");
+			driverId = savedInstanceState.getLong(VehicleEntry._ID);
 			circlesData = savedInstanceState.getBundle(SAVED_CIRCLES_BUNDLE);
 		}
 		else if(getIntent()!=null){
-			driverIndex = getIntent().getIntExtra("id",0);
+			driverId = getIntent().getLongExtra(VehicleEntry._ID,0);
 			circlesData = getIntent().getBundleExtra(SAVED_CIRCLES_BUNDLE);
 		}
 
-		dHelper = DriversHelper.getInstance();
-		driver = dHelper.getDriverByIndex(driverIndex);
+		DbHelper dHelper = DbHelper.getInstance(this);
+		driver = dHelper.getDriverShort(driverId);
+		dHelper.close();
 		
 		rgCircles = (RadioGroup) findViewById(R.id.radioGroupCircles);
         
@@ -99,7 +101,7 @@ public class ScoreCirclesActivity extends MainActivity{
 	
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
-		outState.putInt("id", driverIndex);
+		outState.putLong(VehicleEntry._ID, driverId);
 		outState.putBundle(SAVED_CIRCLES_BUNDLE, circlesData);
 		super.onSaveInstanceState(outState);
 	}

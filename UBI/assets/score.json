@@ -1,0 +1,315 @@
+{
+  "status": "success",
+  "created": "Undefined",
+  "last_trip_date": "Undefined",
+  "road_env_analysis": {
+    "rural": {
+      "trunk": {
+        "pace": "unknown",
+        "cornering": "unknown",
+        "roadacceleration": "unknown",
+        "roadbrake": "unknown",
+        "junctionacceleration": "unknown",
+        "junctionbrake": "unknown"
+      },
+      "major": {
+        "pace": "unknown",
+        "cornering": "unknown",
+        "roadacceleration": "unknown",
+        "roadbrake": "unknown",
+        "junctionacceleration": "unknown",
+        "junctionbrake": "unknown"
+      },
+      "minor": {
+        "pace": "unknown",
+        "cornering": "unknown",
+        "roadacceleration": "unknown",
+        "roadbrake": "unknown",
+        "junctionacceleration": "unknown",
+        "junctionbrake": "unknown"
+      },
+      "local": {
+        "pace": "unknown",
+        "cornering": "unknown",
+        "roadacceleration": "unknown",
+        "roadbrake": "unknown",
+        "junctionacceleration": "unknown",
+        "junctionbrake": "unknown"
+      }
+    },
+    "suburban": {
+      "trunk": {
+        "pace": "unknown",
+        "cornering": "unknown",
+        "roadacceleration": "unknown",
+        "roadbrake": "unknown",
+        "junctionacceleration": "unknown",
+        "junctionbrake": "unknown"
+      },
+      "major": {
+        "pace": "unknown",
+        "cornering": "unknown",
+        "roadacceleration": "unknown",
+        "roadbrake": "unknown",
+        "junctionacceleration": "unknown",
+        "junctionbrake": "unknown"
+      },
+      "minor": {
+        "pace": "unknown",
+        "cornering": "unknown",
+        "roadacceleration": "unknown",
+        "roadbrake": "unknown",
+        "junctionacceleration": "unknown",
+        "junctionbrake": "unknown"
+      },
+      "local": {
+        "pace": "unknown",
+        "cornering": "unknown",
+        "roadacceleration": "unknown",
+        "roadbrake": "unknown",
+        "junctionacceleration": "unknown",
+        "junctionbrake": "unknown"
+      }
+    },
+    "urban": {
+      "trunk": {
+        "pace": "unknown",
+        "cornering": "unknown",
+        "roadacceleration": "unknown",
+        "roadbrake": "unknown",
+        "junctionacceleration": "unknown",
+        "junctionbrake": "unknown"
+      },
+      "major": {
+        "pace": "unknown",
+        "cornering": "unknown",
+        "roadacceleration": "unknown",
+        "roadbrake": "unknown",
+        "junctionacceleration": "unknown",
+        "junctionbrake": "unknown"
+      },
+      "minor": {
+        "pace": "unknown",
+        "cornering": "unknown",
+        "roadacceleration": "unknown",
+        "roadbrake": "unknown",
+        "junctionacceleration": "unknown",
+        "junctionbrake": "unknown"
+      },
+      "local": {
+        "pace": "unknown",
+        "cornering": "unknown",
+        "roadacceleration": "unknown",
+        "roadbrake": "unknown",
+        "junctionacceleration": "unknown",
+        "junctionbrake": "unknown"
+      }
+    }
+  },
+  "road_env_stats": {
+    "rural": {
+      "trunk": {
+        "distance": "0.0",
+        "pace": "0.0",
+        "cornering": "0.0",
+        "roadacceleration": "0.0",
+        "roadbrake": "0.0",
+        "junctionacceleration": "0.0",
+        "junctionbrake": "0.0"
+      },
+      "major": {
+        "distance": "0.0",
+        "pace": "0.0",
+        "cornering": "0.0",
+        "roadacceleration": "0.0",
+        "roadbrake": "0.0",
+        "junctionacceleration": "0.0",
+        "junctionbrake": "0.0"
+      },
+      "minor": {
+        "distance": "0.0",
+        "pace": "0.0",
+        "cornering": "0.0",
+        "roadacceleration": "0.0",
+        "roadbrake": "0.0",
+        "junctionacceleration": "0.0",
+        "junctionbrake": "0.0"
+      },
+      "local": {
+        "distance": "0.0",
+        "pace": "0.0",
+        "cornering": "0.0",
+        "roadacceleration": "0.0",
+        "roadbrake": "0.0",
+        "junctionacceleration": "0.0",
+        "junctionbrake": "0.0"
+      }
+    },
+    "suburban": {
+      "trunk": {
+        "distance": "0.0",
+        "pace": "0.0",
+        "cornering": "0.0",
+        "roadacceleration": "0.0",
+        "roadbrake": "0.0",
+        "junctionacceleration": "0.0",
+        "junctionbrake": "0.0"
+      },
+      "major": {
+        "distance": "0.0",
+        "pace": "0.0",
+        "cornering": "0.0",
+        "roadacceleration": "0.0",
+        "roadbrake": "0.0",
+        "junctionacceleration": "0.0",
+        "junctionbrake": "0.0"
+      },
+      "minor": {
+        "distance": "0.0",
+        "pace": "0.0",
+        "cornering": "0.0",
+        "roadacceleration": "0.0",
+        "roadbrake": "0.0",
+        "junctionacceleration": "0.0",
+        "junctionbrake": "0.0"
+      },
+      "local": {
+        "distance": "0.0",
+        "pace": "0.0",
+        "cornering": "0.0",
+        "roadacceleration": "0.0",
+        "roadbrake": "0.0",
+        "junctionacceleration": "0.0",
+        "junctionbrake": "0.0"
+      }
+    },
+    "urban": {
+      "trunk": {
+        "distance": "0.0",
+        "pace": "0.0",
+        "cornering": "0.0",
+        "roadacceleration": "0.0",
+        "roadbrake": "0.0",
+        "junctionacceleration": "0.0",
+        "junctionbrake": "0.0"
+      },
+      "major": {
+        "distance": "0.0",
+        "pace": "0.0",
+        "cornering": "0.0",
+        "roadacceleration": "0.0",
+        "roadbrake": "0.0",
+        "junctionacceleration": "0.0",
+        "junctionbrake": "0.0"
+      },
+      "minor": {
+        "distance": "0.0",
+        "pace": "0.0",
+        "cornering": "0.0",
+        "roadacceleration": "0.0",
+        "roadbrake": "0.0",
+        "junctionacceleration": "0.0",
+        "junctionbrake": "0.0"
+      },
+      "local": {
+        "distance": "0.0",
+        "pace": "0.0",
+        "cornering": "0.0",
+        "roadacceleration": "0.0",
+        "roadbrake": "0.0",
+        "junctionacceleration": "0.0",
+        "junctionbrake": "0.0"
+      }
+    }
+  },
+  "grade": null,
+  "roadsettings_rural": 0,
+  "roadsettings_suburban": 0,
+  "roadsettings_urban": 0,
+  "roadtype_trunk": 0,
+  "roadtype_major": 0,
+  "roadtype_minor": 0,
+  "roadtype_local": 0,
+  "score_pace": 0,
+  "score_anticipation": 0,
+  "score_aggression": 0,
+  "score_smoothness": 0,
+  "score_completeness": 0,
+  "score_consistency": 0,
+  "score_expert": 0,
+  "timeofday0": 0,
+  "timeofday1": 0,
+  "timeofday2": 0,
+  "timeofday3": 0,
+  "timeofday4": 0,
+  "timeofday5": 0,
+  "summary_distance": 0,
+  "summary_policy-distance": 0,
+  "summary_familiar": 0,
+  "summary_ead": 0,
+  "summary_trip-count": 0,
+  "startdate": "Undefined",
+  "enddate": "Undefined",
+  "current_year_stats": [
+    {
+      "month": 1,
+      "score": null,
+      "grade": null
+    },
+    {
+      "month": 2,
+      "score": null,
+      "grade": null
+    },
+    {
+      "month": 3,
+      "score": null,
+      "grade": null
+    },
+    {
+      "month": 4,
+      "score": null,
+      "grade": null
+    },
+    {
+      "month": 5,
+      "score": null,
+      "grade": null
+    },
+    {
+      "month": 6,
+      "score": null,
+      "grade": null
+    },
+    {
+      "month": 7,
+      "score": null,
+      "grade": null
+    },
+    {
+      "month": 8,
+      "score": null,
+      "grade": null
+    },
+    {
+      "month": 9,
+      "score": null,
+      "grade": null
+    },
+    {
+      "month": 10,
+      "score": null,
+      "grade": null
+    },
+    {
+      "month": 11,
+      "score": null,
+      "grade": null
+    },
+    {
+      "month": 12,
+      "score": null,
+      "grade": null
+    }
+  ]
+}

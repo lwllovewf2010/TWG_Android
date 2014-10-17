@@ -16,12 +16,13 @@ import android.widget.TextView;
 
 import com.modusgo.demo.R;
 import com.modusgo.ubi.customviews.ExpandableHeightGridView;
+import com.modusgo.ubi.db.DbHelper;
+import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 
 public class ScoreInfoActivity extends MainActivity{
 	
 	Driver driver;
-	DriversHelper dHelper;
-	int driverIndex = 0;
+	long driverId = 0;
 	
 	private static final String ATTRIBUTE_NAME_VALUE = "value";
 	private static final String ATTRIBUTE_NAME_TITLE = "title";
@@ -44,18 +45,19 @@ public class ScoreInfoActivity extends MainActivity{
 		setActionBarTitle("Score Stats");
 		
 		if(savedInstanceState!=null){
-			driverIndex = savedInstanceState.getInt("id");
+			driverId = savedInstanceState.getLong(VehicleEntry._ID);
 			additionalData = savedInstanceState.getStringArray(SAVED_ADDITIONAL_DATA);
 			percentageData = savedInstanceState.getIntArray(SAVED_PERCENTAGE_DATA);
 		}
 		else if(getIntent()!=null){
-			driverIndex = getIntent().getIntExtra("id", 0);
+			driverId = getIntent().getLongExtra(VehicleEntry._ID, 0);
 			additionalData = getIntent().getStringArrayExtra(SAVED_ADDITIONAL_DATA);
 			percentageData = getIntent().getIntArrayExtra(SAVED_PERCENTAGE_DATA);
 		}
 
-		dHelper = DriversHelper.getInstance();
-		driver = dHelper.getDriverByIndex(driverIndex);
+		DbHelper dHelper = DbHelper.getInstance(this);
+		driver = dHelper.getDriverShort(driverId);
+		dHelper.close();
 		
 		ExpandableHeightGridView gvPercentData = (ExpandableHeightGridView) findViewById(R.id.gvPercentData);
 		//gvPercentData.setColumnWidth(100);
@@ -143,7 +145,7 @@ public class ScoreInfoActivity extends MainActivity{
 	
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
-		outState.putInt("id", driverIndex);
+		outState.putLong(VehicleEntry._ID, driverId);
 		outState.putStringArray(SAVED_ADDITIONAL_DATA, additionalData);
 		outState.putIntArray(SAVED_PERCENTAGE_DATA, percentageData);
 		super.onSaveInstanceState(outState);

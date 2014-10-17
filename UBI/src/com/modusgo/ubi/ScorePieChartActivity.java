@@ -12,6 +12,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.modusgo.demo.R;
+import com.modusgo.ubi.db.DbHelper;
+import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 
 public class ScorePieChartActivity extends MainActivity{
 
@@ -20,8 +22,7 @@ public class ScorePieChartActivity extends MainActivity{
 	public static final String SAVED_PIE_CHART_TIME_OF_DAY = "pieChartTimeOfDay";
 	
 	Driver driver;
-	DriversHelper dHelper;
-	int driverIndex = 0;
+	long driverId = 0;
 
 	float[] pieChartRoadSettings;
 	float[] pieChartRoadType;
@@ -36,20 +37,21 @@ public class ScorePieChartActivity extends MainActivity{
 		setActionBarTitle("Time/Road Charts");
 		
 		if(savedInstanceState!=null){
-			driverIndex = savedInstanceState.getInt("id");
+			driverId = savedInstanceState.getLong(VehicleEntry._ID);
 			pieChartRoadSettings = savedInstanceState.getFloatArray(SAVED_PIE_CHART_ROAD_SETTINGS);
 			pieChartRoadType = savedInstanceState.getFloatArray(SAVED_PIE_CHART_ROAD_TYPE);
 			pieChartTimeOfDay = savedInstanceState.getFloatArray(SAVED_PIE_CHART_TIME_OF_DAY);
 		}
 		else if(getIntent()!=null){
-			driverIndex = getIntent().getIntExtra("id",0);
+			driverId = getIntent().getLongExtra(VehicleEntry._ID,0);
 			pieChartRoadSettings = getIntent().getFloatArrayExtra(SAVED_PIE_CHART_ROAD_SETTINGS);
 			pieChartRoadType = getIntent().getFloatArrayExtra(SAVED_PIE_CHART_ROAD_TYPE);
 			pieChartTimeOfDay = getIntent().getFloatArrayExtra(SAVED_PIE_CHART_TIME_OF_DAY);
 		}
 
-		dHelper = DriversHelper.getInstance();
-		driver = dHelper.getDriverByIndex(driverIndex);
+		DbHelper dHelper = DbHelper.getInstance(this);
+		driver = dHelper.getDriverShort(driverId);
+		dHelper.close();
 		
 		rgPieCharts = (RadioGroup) findViewById(R.id.radioGroupPieCharts);
 		updatePieCharts(pieChartRoadSettings, pieChartRoadType, pieChartTimeOfDay);
@@ -128,7 +130,7 @@ public class ScorePieChartActivity extends MainActivity{
 	
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
-		outState.putInt("id", driverIndex);
+		outState.putLong(VehicleEntry._ID, driverId);
 		outState.putFloatArray(SAVED_PIE_CHART_ROAD_SETTINGS, pieChartRoadSettings);
 		outState.putFloatArray(SAVED_PIE_CHART_ROAD_TYPE, pieChartRoadType);
 		outState.putFloatArray(SAVED_PIE_CHART_TIME_OF_DAY, pieChartTimeOfDay);

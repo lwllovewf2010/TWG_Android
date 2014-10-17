@@ -28,6 +28,7 @@ import android.widget.TextView;
 import com.echo.holographlibrary.Bar;
 import com.echo.holographlibrary.BarGraph;
 import com.modusgo.demo.R;
+import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -37,8 +38,6 @@ public class ScoreFragment extends Fragment{
 	private final String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 	
 	Driver driver;
-	DriversHelper dHelper;
-	int driverIndex = 0;
 	
 	View llProgress;
 	View llContent;
@@ -62,15 +61,7 @@ public class ScoreFragment extends Fragment{
 		
 		((MainActivity)getActivity()).setActionBarTitle("SCORE");
 		
-		if(savedInstanceState!=null){
-			driverIndex = savedInstanceState.getInt("id");
-		}
-		else if(getArguments()!=null){
-			driverIndex = getArguments().getInt("id");
-		}
-
-		dHelper = DriversHelper.getInstance();
-		driver = dHelper.getDriverByIndex(driverIndex);
+		driver = ((DriverActivity)getActivity()).driver;
 		
 		((TextView)rootView.findViewById(R.id.tvName)).setText(driver.name);
 		
@@ -121,6 +112,7 @@ public class ScoreFragment extends Fragment{
 				Intent i = new Intent(getActivity(), ScoreInfoActivity.class);
 				i.putExtra(ScoreInfoActivity.SAVED_ADDITIONAL_DATA, additionalData);
 				i.putExtra(ScoreInfoActivity.SAVED_PERCENTAGE_DATA, percentageData);
+				i.putExtra(VehicleEntry._ID, driver.id);
 				startActivity(i);
 				getActivity().overridePendingTransition(R.anim.flip_in,R.anim.flip_out);
 			}
@@ -130,9 +122,12 @@ public class ScoreFragment extends Fragment{
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(getActivity(), ScorePieChartActivity.class);
-				i.putExtra(ScorePieChartActivity.SAVED_PIE_CHART_ROAD_SETTINGS, pieChartsData[0]);
-				i.putExtra(ScorePieChartActivity.SAVED_PIE_CHART_ROAD_TYPE, pieChartsData[1]);
-				i.putExtra(ScorePieChartActivity.SAVED_PIE_CHART_TIME_OF_DAY, pieChartsData[2]);
+				if(pieChartsData!=null && pieChartsData.length>=3){
+					i.putExtra(ScorePieChartActivity.SAVED_PIE_CHART_ROAD_SETTINGS, pieChartsData[0]);
+					i.putExtra(ScorePieChartActivity.SAVED_PIE_CHART_ROAD_TYPE, pieChartsData[1]);
+					i.putExtra(ScorePieChartActivity.SAVED_PIE_CHART_TIME_OF_DAY, pieChartsData[2]);
+				}
+				i.putExtra(VehicleEntry._ID, driver.id);
 				startActivity(i);
 				getActivity().overridePendingTransition(R.anim.flip_in,R.anim.flip_out);
 			}
@@ -239,12 +234,6 @@ public class ScoreFragment extends Fragment{
 		
 	}
 	
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		outState.putInt("id", driverIndex);
-		super.onSaveInstanceState(outState);
-	}
-	
 	private int gradeToNumber(String grade){
 		switch (grade) {
 		case "A+":
@@ -335,6 +324,17 @@ public class ScoreFragment extends Fragment{
 			llContent.setVisibility(View.VISIBLE);
 			llProgress.setVisibility(View.GONE);
 			super.onPostExecute(result);
+		}
+		
+		@Override
+		protected void onError(String message) {
+			try{
+				onSuccess(Utils.getJSONObjectFromAssets(getActivity(), "score.json"));
+			}
+			catch(JSONException e){
+				e.printStackTrace();
+			}
+			super.onError(message);
 		}
 		
 		@Override
