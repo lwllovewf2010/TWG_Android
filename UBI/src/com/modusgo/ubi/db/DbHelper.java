@@ -3,6 +3,7 @@ package com.modusgo.ubi.db;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
@@ -92,6 +93,27 @@ public class DbHelper extends SQLiteOpenHelper {
 	}
 	public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 	    onUpgrade(db, oldVersion, newVersion);
+	}
+	
+	public Driver getDriverShort(long id){
+		SQLiteDatabase db = sInstance.getReadableDatabase();
+		Cursor c = db.query(VehicleEntry.TABLE_NAME, 
+				new String[]{
+				VehicleEntry._ID,
+				VehicleEntry.COLUMN_NAME_DRIVER_NAME,
+				VehicleEntry.COLUMN_NAME_DRIVER_PHOTO}, 
+				VehicleEntry._ID+" = ?", new String[]{Long.toString(id)}, null, null, null);
+		
+		Driver d = new Driver();
+		
+		if(c.moveToFirst()){
+			d.id = c.getLong(0);
+			d.name = c.getString(1);
+			d.photo = c.getString(2);
+		}
+		c.close();
+		db.close();
+		return d;
 	}
 	
 	public void saveDrivers(ArrayList<Driver> drivers){

@@ -37,6 +37,8 @@ import com.modusgo.demo.R;
 import com.modusgo.ubi.Trip.Event;
 import com.modusgo.ubi.Trip.EventType;
 import com.modusgo.ubi.Trip.Point;
+import com.modusgo.ubi.db.DbHelper;
+import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -46,8 +48,7 @@ public class TripActivity extends MainActivity {
 	public static final String EXTRA_TRIP_ID = "tripId";
 	
 	Driver driver;
-	DriversHelper dHelper;
-	int driverIndex = 0;
+	long driverId = 0;
 	
 	MapView mapView;
     GoogleMap map;
@@ -77,16 +78,17 @@ public class TripActivity extends MainActivity {
 		setActionBarTitle("TRIP DETAILS");
 		
 		if(savedInstanceState!=null){
-			driverIndex = savedInstanceState.getInt("id");
+			driverId = savedInstanceState.getLong(VehicleEntry._ID);
 			tripId = savedInstanceState.getLong(EXTRA_TRIP_ID);
 		}
 		else if(getIntent()!=null){
-			driverIndex = getIntent().getIntExtra("id",0);
+			driverId = getIntent().getLongExtra(VehicleEntry._ID,0);
 			tripId = getIntent().getLongExtra(EXTRA_TRIP_ID,0);
 		}
 
-		dHelper = DriversHelper.getInstance();
-		driver = dHelper.getDriverByIndex(driverIndex);
+		DbHelper dHelper = DbHelper.getInstance(this);
+		driver = dHelper.getDriverShort(driverId);
+		dHelper.close();
 		
 		((TextView)findViewById(R.id.tvName)).setText(driver.name);
 		
@@ -134,14 +136,15 @@ public class TripActivity extends MainActivity {
 
         // Gets to GoogleMap from the MapView and does initialization stuff
         map = mapView.getMap();
-        map.getUiSettings().setMyLocationButtonEnabled(false);
-
-        MapsInitializer.initialize(this);
-
-        // Updates the location and zoom of the MapView
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(37.8430094,-95.0098992), 1);
-        map.animateCamera(cameraUpdate);
-        
+        if(map!=null){
+	        map.getUiSettings().setMyLocationButtonEnabled(false);
+	
+	        MapsInitializer.initialize(this);
+	
+	        // Updates the location and zoom of the MapView
+	        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(37.8430094,-95.0098992), 1);
+	        map.animateCamera(cameraUpdate);
+        }
 		new GetTripTask(this).execute("vehicles/"+driver.id+"/trips/"+tripId+".json");
 	}
 	
@@ -157,58 +160,60 @@ public class TripActivity extends MainActivity {
 		tvMaxSpeed.setText(df.format(trip.maxSpeed));
 		tvDistance.setText(df.format(trip.distance));
 		
-		map.clear();
-		
-		if(trip.route.size()>0){
-			PolylineOptions options = new PolylineOptions();
-			final Builder builder = LatLngBounds.builder();	
-			for (LatLng point : trip.route) {
-				options.add(point);
-				builder.include(point);
-			}
-	
-			int color = Color.parseColor("#009900");
-			map.addPolyline(options.color(color).width(8).zIndex(1));
-	
-			int colorSpeeding = Color.parseColor("#ef4136");
-			for (ArrayList<LatLng> route : trip.speedingRoute) {
-				PolylineOptions optionsSpeeding = new PolylineOptions();
-				for (LatLng point : route) {
-					optionsSpeeding.add(point);
-				}
-				map.addPolyline(optionsSpeeding.color(colorSpeeding).width(8).zIndex(2));
-			}
+		if(map!=null){
+			map.clear();
 			
-			tripCenterCameraUpdate = CameraUpdateFactory.newLatLngBounds(builder.build(), 150);
-	        map.animateCamera(tripCenterCameraUpdate);
-		}
-        
-        for (Point p : trip.points) {
-        	for (EventType e : p.events) {
-				switch (e) {
-				case START:
-					map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_start)));
-					break;
-				case STOP:
-					map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_finish)));
-					break;
-				case HARSH_BRAKING:
-					map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_brake)));
-					break;
-				case HARSH_ACCELERATION:
-					map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_accel)));
-					break;
-				case PHONE_USAGE:
-					map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_phone)));
-					break;
-				case APP_USAGE:
-					map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_app)));
-					break;
-				case SPEEDING:
-					map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_speeding)));
-					break;
-				default:
-					break;
+			if(trip.route.size()>0){
+				PolylineOptions options = new PolylineOptions();
+				final Builder builder = LatLngBounds.builder();	
+				for (LatLng point : trip.route) {
+					options.add(point);
+					builder.include(point);
+				}
+		
+				int color = Color.parseColor("#009900");
+				map.addPolyline(options.color(color).width(8).zIndex(1));
+		
+				int colorSpeeding = Color.parseColor("#ef4136");
+				for (ArrayList<LatLng> route : trip.speedingRoute) {
+					PolylineOptions optionsSpeeding = new PolylineOptions();
+					for (LatLng point : route) {
+						optionsSpeeding.add(point);
+					}
+					map.addPolyline(optionsSpeeding.color(colorSpeeding).width(8).zIndex(2));
+				}
+				
+				tripCenterCameraUpdate = CameraUpdateFactory.newLatLngBounds(builder.build(), 150);
+		        map.animateCamera(tripCenterCameraUpdate);
+			}
+	        
+	        for (Point p : trip.points) {
+	        	for (EventType e : p.events) {
+					switch (e) {
+					case START:
+						map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_start)));
+						break;
+					case STOP:
+						map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_finish)));
+						break;
+					case HARSH_BRAKING:
+						map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_brake)));
+						break;
+					case HARSH_ACCELERATION:
+						map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_accel)));
+						break;
+					case PHONE_USAGE:
+						map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_phone)));
+						break;
+					case APP_USAGE:
+						map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_app)));
+						break;
+					case SPEEDING:
+						map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_speeding)));
+						break;
+					default:
+						break;
+					}
 				}
 			}
 		}
@@ -274,7 +279,7 @@ public class TripActivity extends MainActivity {
 	
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-		outState.putInt("id", driverIndex);
+		outState.putLong(VehicleEntry._ID, driverId);
 		outState.putLong(EXTRA_TRIP_ID, tripId);
 		super.onSaveInstanceState(outState);
 	}
@@ -319,7 +324,6 @@ public class TripActivity extends MainActivity {
 
 		@Override
 		protected JSONObject doInBackground(String... params) {
-	        requestParams.add(new BasicNameValuePair("driver_id", ""+driver.id));
 	        requestParams.add(new BasicNameValuePair("trip_id", ""+tripId));
 	        
 			return super.doInBackground(params);

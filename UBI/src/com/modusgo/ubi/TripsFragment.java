@@ -37,6 +37,7 @@ import android.widget.TextView;
 import com.modusgo.demo.R;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.TripContract.TripEntry;
+import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -489,7 +490,7 @@ public class TripsFragment extends Fragment{
 				@Override
 				public void onClick(View v) {
 					Intent intent = new Intent(getActivity(), TripActivity.class);
-					intent.putExtra("id", driver.id);
+					intent.putExtra(VehicleEntry._ID, driver.id);
 					intent.putExtra(TripActivity.EXTRA_TRIP_ID, t.id);
 					startActivity(intent);
 				}
