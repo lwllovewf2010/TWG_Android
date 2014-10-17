@@ -1,6 +1,5 @@
 android.support.v4.app.BackStackState
 android.support.v4.app.BackStackState: android.os.Parcelable$Creator CREATOR
-android.support.v4.app.Fragment: Fragment()
 android.support.v4.app.Fragment$SavedState
 android.support.v4.app.Fragment$SavedState: android.os.Parcelable$Creator CREATOR
 android.support.v4.app.FragmentActivity: FragmentActivity()
@@ -1512,8 +1511,6 @@ com.google.android.gms.maps.MapView: com.google.android.gms.maps.GoogleMap getMa
 com.google.android.gms.maps.StreetViewPanoramaOptions
 com.google.android.gms.maps.StreetViewPanoramaOptions: com.google.android.gms.maps.StreetViewPanoramaOptionsCreator CREATOR
 com.google.android.gms.maps.StreetViewPanoramaView: com.google.android.gms.maps.StreetViewPanorama getStreetViewPanorama()
-com.google.android.gms.maps.SupportMapFragment
-com.google.android.gms.maps.SupportMapFragment: SupportMapFragment()
 com.google.android.gms.maps.model.CameraPosition
 com.google.android.gms.maps.model.CameraPosition: com.google.android.gms.maps.model.CameraPositionCreator CREATOR
 com.google.android.gms.maps.model.CircleOptions
@@ -2755,7 +2752,7 @@ com.modusgo.demo.R$id: int llTime
 com.modusgo.demo.R$id: int llValue
 com.modusgo.demo.R$id: int loginFields
 com.modusgo.demo.R$id: int loginProgress
-com.modusgo.demo.R$id: int map
+com.modusgo.demo.R$id: int mapContainer
 com.modusgo.demo.R$id: int mapview
 com.modusgo.demo.R$id: int margin
 com.modusgo.demo.R$id: int markers

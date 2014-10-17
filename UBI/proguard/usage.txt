@@ -68,6 +68,7 @@ android.support.v4.app.BackStackRecord:
     357:360:public java.lang.CharSequence getBreadCrumbShortTitle()
     379:380:public android.support.v4.app.FragmentTransaction add(android.support.v4.app.Fragment,java.lang.String)
     384:385:public android.support.v4.app.FragmentTransaction add(int,android.support.v4.app.Fragment)
+    434:439:public android.support.v4.app.FragmentTransaction remove(android.support.v4.app.Fragment)
     443:448:public android.support.v4.app.FragmentTransaction hide(android.support.v4.app.Fragment)
     452:457:public android.support.v4.app.FragmentTransaction show(android.support.v4.app.Fragment)
     492:493:public android.support.v4.app.FragmentTransaction setTransition(int)
@@ -101,8 +102,6 @@ android.support.v4.app.Fragment:
     625:625:public final java.lang.String getString(int)
     638:638:public final varargs java.lang.String getString(int,java.lang.Object[])
     652:652:public final android.support.v4.app.FragmentManager getFragmentManager()
-    660:672:public final android.support.v4.app.FragmentManager getChildFragmentManager()
-    680:680:public final android.support.v4.app.Fragment getParentFragment()
     705:705:public final boolean isRemoving()
     716:716:public final boolean isInLayout()
     724:724:public final boolean isResumed()
@@ -135,6 +134,7 @@ android.support.v4.app.FragmentActivity$FragmentTag:
 android.support.v4.app.FragmentManager:
     public static final int POP_BACK_STACK_INCLUSIVE
     146:146:public android.support.v4.app.FragmentTransaction openTransaction()
+    public abstract android.support.v4.app.Fragment findFragmentById(int)
     public abstract boolean popBackStackImmediate()
     public abstract void popBackStack(java.lang.String,int)
     public abstract boolean popBackStackImmediate(java.lang.String,int)
@@ -196,6 +196,7 @@ android.support.v4.app.FragmentTransaction:
     public abstract android.support.v4.app.FragmentTransaction add(android.support.v4.app.Fragment,java.lang.String)
     public abstract android.support.v4.app.FragmentTransaction add(int,android.support.v4.app.Fragment)
     public abstract android.support.v4.app.FragmentTransaction replace(int,android.support.v4.app.Fragment,java.lang.String)
+    public abstract android.support.v4.app.FragmentTransaction remove(android.support.v4.app.Fragment)
     public abstract android.support.v4.app.FragmentTransaction hide(android.support.v4.app.Fragment)
     public abstract android.support.v4.app.FragmentTransaction show(android.support.v4.app.Fragment)
     public abstract boolean isEmpty()
@@ -6725,23 +6726,22 @@ com.modusgo.ubi.Constants:
     public static final java.lang.String REGISTRATION_BY_CODE_URL
     public static final java.lang.String PREF_REG_CODE
     3:3:public Constants()
-com.modusgo.ubi.DbHelper
 com.modusgo.ubi.DiagnosticDetailActivity:
     public static final java.lang.String EXTRA_DTC
 com.modusgo.ubi.DiagnosticsTroubleCode:
     private static final long serialVersionUID
 com.modusgo.ubi.Driver:
     private static final long serialVersionUID
-    public java.lang.String profileDate
     public int harshEvents
-    49:49:public java.lang.String getFirstName()
-    53:59:public java.lang.String getLastName()
+    52:52:public java.lang.String getFirstName()
+    56:62:public java.lang.String getLastName()
 com.modusgo.ubi.DriverActivity:
     public static final java.lang.String SAVED_DRIVER
-    243:246:public android.view.animation.Animation fadeOutAnimation()
-    251:254:public android.view.animation.Animation fadeInAnimation()
+    293:296:public android.view.animation.Animation fadeOutAnimation()
+    301:304:public android.view.animation.Animation fadeInAnimation()
 com.modusgo.ubi.DriversHelper:
     23:24:public void setDrivers(java.util.ArrayList)
+    43:44:public void setDriver(int,com.modusgo.ubi.Driver)
 com.modusgo.ubi.EducationActivity:
     public static final java.lang.String SAVED_STRING_RESOURCE
 com.modusgo.ubi.FindMechanicActivity:
@@ -6809,8 +6809,31 @@ com.modusgo.ubi.customviews.PieChartView:
     private static final int START_ANGLE
 com.modusgo.ubi.customviews.PieChartView$PieSector:
     155:155:public PieChartView$PieSector(com.modusgo.ubi.customviews.PieChartView)
+com.modusgo.ubi.db.DbHelper:
+    private static final java.lang.String TEXT_TYPE
+    private static final java.lang.String INT_TYPE
+    private static final java.lang.String FLOAT_TYPE
+    private static final java.lang.String COMMA_SEP
+    private static final java.lang.String SQL_CREATE_ENTRIES
+    private static final java.lang.String SQL_CREATE_ENTRIES_2
+    private static final java.lang.String SQL_CREATE_ENTRIES_3
+    private static final java.lang.String SQL_CREATE_ENTRIES_4
+    private static final java.lang.String SQL_DELETE_ENTRIES
+    private static final java.lang.String SQL_DELETE_ENTRIES_2
+    private static final java.lang.String SQL_DELETE_ENTRIES_3
+    private static final java.lang.String SQL_DELETE_ENTRIES_4
+    public static final int DATABASE_VERSION
+    public static final java.lang.String DATABASE_NAME
+com.modusgo.ubi.db.PointContract
+com.modusgo.ubi.db.PointContract$PointEntry
+com.modusgo.ubi.db.RouteContract
+com.modusgo.ubi.db.RouteContract$RouteEntry
+com.modusgo.ubi.db.TripContract
+com.modusgo.ubi.db.TripContract$TripEntry
+com.modusgo.ubi.db.VehicleContract
+com.modusgo.ubi.db.VehicleContract$VehicleEntry
 com.modusgo.ubi.utils.Utils:
-    25:25:public Utils()
+    26:26:public Utils()
 com.nostra13.universalimageloader.cache.disc.DiscCacheAware:
     public abstract java.io.File getDirectory()
     public abstract boolean remove(java.lang.String)
