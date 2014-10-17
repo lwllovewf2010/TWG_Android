@@ -130,7 +130,9 @@ public class DbHelper extends SQLiteOpenHelper {
 				new String[]{
 				VehicleEntry._ID,
 				VehicleEntry.COLUMN_NAME_DRIVER_NAME,
-				VehicleEntry.COLUMN_NAME_DRIVER_PHOTO}, 
+				VehicleEntry.COLUMN_NAME_DRIVER_PHOTO,
+				VehicleEntry.COLUMN_NAME_LATITUDE,
+				VehicleEntry.COLUMN_NAME_LONGITUDE}, 
 				VehicleEntry._ID+" = ?", new String[]{Long.toString(id)}, null, null, null);
 		
 		Driver d = new Driver();
@@ -139,6 +141,8 @@ public class DbHelper extends SQLiteOpenHelper {
 			d.id = c.getLong(0);
 			d.name = c.getString(1);
 			d.photo = c.getString(2);
+			d.latitude = c.getDouble(3);
+			d.longitude = c.getDouble(4);
 		}
 		c.close();
 		db.close();

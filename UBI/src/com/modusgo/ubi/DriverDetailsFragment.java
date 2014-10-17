@@ -37,6 +37,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.modusgo.demo.R;
 import com.modusgo.ubi.customviews.GoogleMapFragment;
 import com.modusgo.ubi.customviews.GoogleMapFragment.OnMapReadyListener;
+import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -119,7 +120,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(getActivity(), FindMyCarActivity.class);
-				intent.putExtra("id", driver.id);
+				intent.putExtra(VehicleEntry._ID, driver.id);
 				startActivity(intent);			
 			}
 		});
@@ -129,7 +130,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(getActivity(), AlertsActivity.class);
-				intent.putExtra("id", driver.id);
+				intent.putExtra(VehicleEntry._ID, driver.id);
 				startActivity(intent);			
 			}
 		});
@@ -146,7 +147,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(getActivity(), MapActivity.class);
-				intent.putExtra("id", driver.id);
+				intent.putExtra(VehicleEntry._ID, driver.id);
 				startActivity(intent);	
 			}
 		});
@@ -228,7 +229,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 				@Override
 				public void onClick(View v) {
 					Intent intent = new Intent(getActivity(), TripActivity.class);
-					intent.putExtra("id", driver.id);
+					intent.putExtra(VehicleEntry._ID, driver.id);
 					intent.putExtra(TripActivity.EXTRA_TRIP_ID, driver.lastTripId);
 					startActivity(intent);
 				}
