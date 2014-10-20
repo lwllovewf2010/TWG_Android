@@ -25,7 +25,7 @@ public class Trip extends ListItem implements Serializable{
 	ArrayList<Event> events;
 	String grade;
 	
-	enum EventType {START, STOP, HARSH_BRAKING, HARSH_ACCELERATION, SPEEDING, PHONE_USAGE, APP_USAGE};
+	public enum EventType {START, STOP, HARSH_BRAKING, HARSH_ACCELERATION, SPEEDING, PHONE_USAGE, APP_USAGE};
 	
 	private static SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
 	private static SimpleDateFormat sdfTo = new SimpleDateFormat("hh:mm a", Locale.getDefault());
@@ -102,11 +102,11 @@ public class Trip extends ListItem implements Serializable{
 		}
 	}
 	
-	static class Event {
+	static public class Event {
 		
-		EventType type;
-		String title;
-		String address;
+		public EventType type;
+		public String title;
+		public String address;
 		
 		public Event(EventType type, String title, String address) {
 			super();

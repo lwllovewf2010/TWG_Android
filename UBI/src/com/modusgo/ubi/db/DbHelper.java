@@ -11,7 +11,9 @@ import android.database.sqlite.SQLiteStatement;
 import com.google.android.gms.maps.model.LatLng;
 import com.modusgo.ubi.Driver;
 import com.modusgo.ubi.Trip;
+import com.modusgo.ubi.Trip.Event;
 import com.modusgo.ubi.Trip.Point;
+import com.modusgo.ubi.db.EventContract.EventEntry;
 import com.modusgo.ubi.db.PointContract.PointEntry;
 import com.modusgo.ubi.db.RouteContract.RouteEntry;
 import com.modusgo.ubi.db.TripContract.TripEntry;
@@ -76,14 +78,23 @@ public class DbHelper extends SQLiteOpenHelper {
 		    PointEntry.COLUMN_NAME_LATITUDE + FLOAT_TYPE + COMMA_SEP +
 		    PointEntry.COLUMN_NAME_LONGITUDE + FLOAT_TYPE + COMMA_SEP +
 		    PointEntry.COLUMN_NAME_EVENTS + TEXT_TYPE +  " ); ";
+	
+	private static final String SQL_CREATE_ENTRIES_5 =
+		    "CREATE TABLE " + EventEntry.TABLE_NAME + " (" +
+		    EventEntry._ID + " INTEGER PRIMARY KEY," +
+		    EventEntry.COLUMN_NAME_TRIP_ID + INT_TYPE + COMMA_SEP +
+		    EventEntry.COLUMN_NAME_TYPE + TEXT_TYPE + COMMA_SEP +
+		    EventEntry.COLUMN_NAME_TITLE + TEXT_TYPE + COMMA_SEP +
+		    EventEntry.COLUMN_NAME_ADDRESS + TEXT_TYPE +  " ); ";
 
 	private static final String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + VehicleEntry.TABLE_NAME;
 	private static final String SQL_DELETE_ENTRIES_2 = "DROP TABLE IF EXISTS " + TripEntry.TABLE_NAME;
 	private static final String SQL_DELETE_ENTRIES_3 = "DROP TABLE IF EXISTS " + RouteEntry.TABLE_NAME;
 	private static final String SQL_DELETE_ENTRIES_4 = "DROP TABLE IF EXISTS " + PointEntry.TABLE_NAME;
+	private static final String SQL_DELETE_ENTRIES_5 = "DROP TABLE IF EXISTS " + EventEntry.TABLE_NAME;
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 3;
+	public static final int DATABASE_VERSION = 4;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;
@@ -107,6 +118,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	    db.execSQL(SQL_CREATE_ENTRIES_2);
 	    db.execSQL(SQL_CREATE_ENTRIES_3);
 	    db.execSQL(SQL_CREATE_ENTRIES_4);
+	    db.execSQL(SQL_CREATE_ENTRIES_5);
 	}
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 	    // This database is only a cache for online data, so its upgrade policy is
@@ -119,6 +131,8 @@ public class DbHelper extends SQLiteOpenHelper {
 	    db.execSQL(SQL_CREATE_ENTRIES_3);
 	    db.execSQL(SQL_DELETE_ENTRIES_4);
 	    db.execSQL(SQL_CREATE_ENTRIES_4);
+	    db.execSQL(SQL_DELETE_ENTRIES_5);
+	    db.execSQL(SQL_CREATE_ENTRIES_5);
 	}
 	public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 	    onUpgrade(db, oldVersion, newVersion);
@@ -357,6 +371,44 @@ public class DbHelper extends SQLiteOpenHelper {
 		    	statement.bindDouble(2, p.getLatitude());
 		    	statement.bindDouble(3, p.getLongitude());
 		    	statement.bindString(4, p.getEventsString());
+		    	statement.execute();
+			}
+		    
+		    database.setTransactionSuccessful();	
+		    database.endTransaction();
+		    statement.close();
+		}
+		
+		database.close();
+	}
+	
+	public void saveEvents(long tripId, ArrayList<Event> events){
+		SQLiteDatabase database = sInstance.getWritableDatabase();
+		
+		if(database!=null && events!=null){
+			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+EventEntry.TABLE_NAME+" WHERE "+EventEntry.COLUMN_NAME_TRIP_ID+" = "+tripId);
+		    database.beginTransaction();
+		    removeStatement.clearBindings();
+	        removeStatement.execute();
+	        database.setTransactionSuccessful();	
+		    database.endTransaction();
+		    removeStatement.close();
+			
+			String sql = "INSERT INTO "+ EventEntry.TABLE_NAME +" ("
+					+ EventEntry.COLUMN_NAME_TRIP_ID +","
+					+ EventEntry.COLUMN_NAME_TYPE +","
+					+ EventEntry.COLUMN_NAME_TITLE +","
+					+ EventEntry.COLUMN_NAME_ADDRESS
+					+ ") VALUES (?,?,?,?);";
+			
+			SQLiteStatement statement = database.compileStatement(sql);
+		    database.beginTransaction();
+		    for (Event e : events) {
+		    	statement.clearBindings();
+		    	statement.bindLong(1, tripId);
+		    	statement.bindString(2, e.type.toString());
+		    	statement.bindString(3, e.title);
+		    	statement.bindString(4, e.address);
 		    	statement.execute();
 			}
 		    

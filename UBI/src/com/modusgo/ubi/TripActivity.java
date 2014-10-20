@@ -41,6 +41,7 @@ import com.modusgo.ubi.Trip.Event;
 import com.modusgo.ubi.Trip.EventType;
 import com.modusgo.ubi.Trip.Point;
 import com.modusgo.ubi.db.DbHelper;
+import com.modusgo.ubi.db.EventContract.EventEntry;
 import com.modusgo.ubi.db.PointContract.PointEntry;
 import com.modusgo.ubi.db.RouteContract.RouteEntry;
 import com.modusgo.ubi.db.TripContract.TripEntry;
@@ -217,6 +218,21 @@ public class TripActivity extends MainActivity {
 					}
 					
 					t.points.add(new Point(new LatLng(c.getDouble(1), c.getDouble(2)), events));
+					c.moveToNext();
+				}
+			}
+			c.close();
+			
+			c = db.query(EventEntry.TABLE_NAME, 
+					new String[]{
+					EventEntry._ID,
+					EventEntry.COLUMN_NAME_TYPE,
+					EventEntry.COLUMN_NAME_TITLE,
+					EventEntry.COLUMN_NAME_ADDRESS}, 
+					EventEntry.COLUMN_NAME_TRIP_ID+" = ?", new String[]{Long.toString(tripId)}, null, null, EventEntry._ID+" ASC");
+			if(c.moveToFirst()){
+				while (!c.isAfterLast()) {
+					t.events.add(new Event(EventType.valueOf(c.getString(1)), c.getString(2),  c.getString(3)));
 					c.moveToNext();
 				}
 			}
@@ -491,6 +507,7 @@ public class TripActivity extends MainActivity {
 			dHelper.saveTrip(trip);
 			dHelper.saveRoute(trip.id, trip.route);
 			dHelper.savePoints(trip.id, trip.points);
+			dHelper.saveEvents(trip.id, trip.events);
 			dHelper.close();			
 			
 			updateActivity();
