@@ -33,8 +33,16 @@ public class InitActivity extends FragmentActivity {
 	View layoutFields;
 	EditText editClientId;
 	TextView tvError;
+	TextView tvProgress;
+	
+	Animation fadeInProgress;
+	Animation fadeOutProgress;
+	Animation fadeInFields;
+	Animation fadeOutFields;
 	
 	SharedPreferences prefs;
+	
+	String clientId;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -51,21 +59,25 @@ public class InitActivity extends FragmentActivity {
 		ImageLoader.getInstance().init(config);
 	    
 	    prefs = PreferenceManager.getDefaultSharedPreferences(InitActivity.this);
-	    String clientId = prefs.getString(Constants.PREF_CLIENT_ID, "");
+	    clientId = prefs.getString(Constants.PREF_CLIENT_ID, "");
 	    
 	    layoutFields = findViewById(R.id.llFields);
 	    layoutProgress = findViewById(R.id.rlProgress);
 	    tvError = (TextView) findViewById(R.id.tvError);
+	    tvProgress = (TextView) findViewById(R.id.tvProgress);
 	    editClientId = (EditText)findViewById(R.id.editClientId);
+	    
+	    fadeInProgress = getFadeInAnmation(layoutProgress);
+		fadeOutProgress = getFadeOutAnmation(layoutProgress);
+		fadeInFields = getFadeInAnmation(layoutFields);
+		fadeOutFields = getFadeOutAnmation(layoutFields);
+	    
 	    editClientId.setText(clientId);
 	    
 	    if(!clientId.equals("")){
 		    layoutFields.setVisibility(View.GONE);
 	    	new ServerCheckTask().execute();
-//	    	startActivity(new Intent(InitActivity.this, SignInActivity.class));
-//			finish();
 	    }
-	    
 	    
 	    Button btnSubmit = (Button)findViewById(R.id.btnSubmit);
 	    
@@ -119,26 +131,17 @@ public class InitActivity extends FragmentActivity {
 	
 	class ServerCheckTask extends AsyncTask<Void, Void, Boolean>{
 
-		Animation fadeInProgress;
-		Animation fadeOutProgress;
-		Animation fadeInFields;
-		Animation fadeOutFields;
 		JSONArray welcomeScreens = null;
 		int status;
 		String message = "Client ID not found or server is unavailable";
 		
-		public ServerCheckTask() {
-			fadeInProgress = getFadeInAnmation(layoutProgress);
-			fadeOutProgress = getFadeOutAnmation(layoutProgress);
-			fadeInFields = getFadeInAnmation(layoutFields);
-			fadeOutFields = getFadeOutAnmation(layoutFields);
-		}
-		
 		@Override
 		protected void onPreExecute() {
-			layoutProgress.setVisibility(View.VISIBLE);
-			layoutProgress.startAnimation(fadeInProgress);
-			layoutFields.startAnimation(fadeOutFields);
+			if(layoutProgress.getVisibility()==View.GONE){
+				layoutProgress.setVisibility(View.VISIBLE);
+				layoutProgress.startAnimation(fadeInProgress);
+				layoutFields.startAnimation(fadeOutFields);
+			}
 			super.onPreExecute();
 		}
 		
@@ -160,8 +163,7 @@ public class InitActivity extends FragmentActivity {
 					e.printStackTrace();
 				}
 				
-				//Offline mode, when network is not available
-				return true;
+				return false;
 			}
 			
 	        try {
@@ -211,10 +213,16 @@ public class InitActivity extends FragmentActivity {
 				finish();
 			}
 			else{
-				layoutFields.setVisibility(View.VISIBLE);
-				layoutProgress.startAnimation(fadeOutProgress);
-				layoutFields.startAnimation(fadeInFields);
-				tvError.setText(message);
+				if(!clientId.equals("")){
+					tvProgress.setText("Check your internet connection...");
+					new ServerCheckTask().execute();
+				}
+				else{
+					layoutFields.setVisibility(View.VISIBLE);
+					layoutProgress.startAnimation(fadeOutProgress);
+					layoutFields.startAnimation(fadeInFields);
+					tvError.setText(message);
+				}
 			}
 			
 			super.onPostExecute(result);
