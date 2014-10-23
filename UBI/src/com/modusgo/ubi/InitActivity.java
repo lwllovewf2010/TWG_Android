@@ -26,6 +26,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.modusgo.demo.R;
+import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.utils.RequestGet;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
@@ -190,6 +191,20 @@ public class InitActivity extends FragmentActivity {
 						
 						if(!infoJSON.isNull("welcome"))
 							welcomeScreens = infoJSON.getJSONArray("welcome");
+						
+						if(responseJSON.has("vehicles")){
+							JSONArray vehiclesJSON = responseJSON.getJSONArray("vehicles");
+							ArrayList<Driver> drivers = new ArrayList<Driver>();
+							for (int i = 0; i < vehiclesJSON.length(); i++) {
+								JSONObject vehicleJSON = vehiclesJSON.getJSONObject(i);
+								drivers.add(Driver.fromJSON(vehicleJSON));
+							}
+							
+							DbHelper dbHelper = DbHelper.getInstance(InitActivity.this);
+							dbHelper.saveDrivers(drivers);
+							dbHelper.close();
+						}
+						
 						return true;
 					}
 	        	}

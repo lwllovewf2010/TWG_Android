@@ -61,19 +61,17 @@ public class HomeActivity extends MainActivity{
 		
 		btnUp.setImageResource(R.drawable.ic_map);
 		
-		new GetDriversTask(this).execute("vehicles.json");
-		
 		setButtonUpVisibility(false);
 		
 		if(!prefs.getString(Constants.PREF_REG_CODE, "").equals(""))
 			startService(new Intent(this, TrackingStatusService.class));
 		
-//		if(drivers.size()==1){
-//			Intent i = new Intent(this, DriverActivity.class);
-//			i.putExtra("id", 0);
-//			startActivity(i);
-//			finish();
-//		}
+		if(drivers.size()==1){
+			Intent i = new Intent(this, DriverActivity.class);
+			i.putExtra(VehicleEntry._ID, drivers.get(0).id);
+			startActivity(i);
+			finish();
+		}
 	}
 	
 	@Override
@@ -281,11 +279,4 @@ public class HomeActivity extends MainActivity{
 			super.onSuccess(responseJSON);
 		}
 	}
-	
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		//outState.putSerializable(SAVED_DRIVERS, drivers);
-		super.onSaveInstanceState(outState);
-	}
-
 }
