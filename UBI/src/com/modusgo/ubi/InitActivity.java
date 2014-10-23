@@ -1,6 +1,11 @@
 package com.modusgo.ubi;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -135,6 +140,8 @@ public class InitActivity extends FragmentActivity {
 		int status;
 		String message = "Client ID not found or server is unavailable";
 		
+		protected List<NameValuePair> requestParams = new ArrayList<NameValuePair>();
+		
 		@Override
 		protected void onPreExecute() {
 			if(layoutProgress.getVisibility()==View.GONE){
@@ -149,8 +156,10 @@ public class InitActivity extends FragmentActivity {
 		protected Boolean doInBackground(Void... params) {
 			
 			String clientId = editClientId.getText().toString();
+
+	        requestParams.add(new BasicNameValuePair("auth_key", prefs.getString(Constants.PREF_AUTH_KEY, "")));
 			
-			HttpResponse result = new RequestGet(Constants.API_BASE_URL_PREFIX+clientId+Constants.API_BASE_URL_POSTFIX+"info").execute();
+			HttpResponse result = new RequestGet(Constants.API_BASE_URL_PREFIX+clientId+Constants.API_BASE_URL_POSTFIX+"info.json", requestParams).execute();
 			if(result==null){
 				status = 0;
 				//message = "Connection error";
@@ -175,14 +184,12 @@ public class InitActivity extends FragmentActivity {
 						prefs.edit().putString(Constants.PREF_CLIENT_ID, clientId).commit();
 						JSONObject infoJSON = responseJSON.getJSONObject("info");
 						
+						if(responseJSON.optString("auth_key").equals("")){
+							prefs.edit().putString(Constants.PREF_AUTH_KEY, "").commit();
+						}	
+						
 						if(!infoJSON.isNull("welcome"))
 							welcomeScreens = infoJSON.getJSONArray("welcome");
-//						else{
-//							welcomeScreens = new JSONArray("[{page_id: \"unique_identifator_of_page\",content_type:\"image\",title: \"Some title of the page\"," +
-//						"image: \"http://fbrest.edgecaching.net/tpr-theme-img/concept_girl.png\"},{page_id: \"v2\", content_type: \"text\", confirm: \"popup\", " +
-//						"confirm_text: \"I agree terms of services\", title: \"Whats new ?\", body: \"Improved search :)\"}]");
-//						System.out.println(welcomeScreens);
-//						}
 						return true;
 					}
 	        	}
