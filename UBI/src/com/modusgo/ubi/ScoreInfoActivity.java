@@ -1,10 +1,16 @@
 package com.modusgo.ubi;
 
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +23,10 @@ import android.widget.TextView;
 import com.modusgo.demo.R;
 import com.modusgo.ubi.customviews.ExpandableHeightGridView;
 import com.modusgo.ubi.db.DbHelper;
+import com.modusgo.ubi.db.ScoreGraphContract.ScoreGraphEntry;
+import com.modusgo.ubi.db.ScorePercentageContract.ScorePercentageEntry;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
+import com.modusgo.ubi.utils.Utils;
 
 public class ScoreInfoActivity extends MainActivity{
 	
@@ -34,8 +43,6 @@ public class ScoreInfoActivity extends MainActivity{
 	SimpleAdapter percentInfoAdapter;
 
 	ArrayList<Map<String, Object>> percentInfoData;
-	String[] additionalData;
-	int[] percentageData;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -46,25 +53,19 @@ public class ScoreInfoActivity extends MainActivity{
 		
 		if(savedInstanceState!=null){
 			driverId = savedInstanceState.getLong(VehicleEntry._ID);
-			additionalData = savedInstanceState.getStringArray(SAVED_ADDITIONAL_DATA);
-			percentageData = savedInstanceState.getIntArray(SAVED_PERCENTAGE_DATA);
 		}
 		else if(getIntent()!=null){
 			driverId = getIntent().getLongExtra(VehicleEntry._ID, 0);
-			additionalData = getIntent().getStringArrayExtra(SAVED_ADDITIONAL_DATA);
-			percentageData = getIntent().getIntArrayExtra(SAVED_PERCENTAGE_DATA);
 		}
 
-		DbHelper dHelper = DbHelper.getInstance(this);
-		driver = dHelper.getDriverShort(driverId);
-		dHelper.close();
+		driver = getDriverFromDb(driverId);
 		
 		ExpandableHeightGridView gvPercentData = (ExpandableHeightGridView) findViewById(R.id.gvPercentData);
 		//gvPercentData.setColumnWidth(100);
 		gvPercentData.setNumColumns(3);
 		
 		percentInfoData = new ArrayList<Map<String, Object>>();
-		updatePercentInfoAdapter(percentageData);
+		updatePercentInfoAdapter();
 		gvPercentData.setAdapter(percentInfoAdapter);
 		gvPercentData.setAdditionalTextExpand(1, 12.5f);
 		gvPercentData.setExpanded(true);
@@ -103,21 +104,63 @@ public class ScoreInfoActivity extends MainActivity{
 		});
 		
 		llAdditionalData = (LinearLayout) findViewById(R.id.llValue);
-		fillAdditionalInfo(additionalData);
+		fillAdditionalInfo();
         
 	}
 	
-	private void updatePercentInfoAdapter(int[] values){
-		String[] titles = new String[]{"Use of speed", "Anticipation", "Aggression", "Smoothness", "Completeness", "Consistency"};
+	private Driver getDriverFromDb(long id){
+		DbHelper dHelper = DbHelper.getInstance(this);
+		SQLiteDatabase db = dHelper.getReadableDatabase();
+		Cursor c = db.query(VehicleEntry.TABLE_NAME, 
+				new String[]{
+				VehicleEntry._ID,
+				VehicleEntry.COLUMN_NAME_DRIVER_NAME,
+				VehicleEntry.COLUMN_NAME_DRIVER_PHOTO,
+				VehicleEntry.COLUMN_NAME_CAR_VIN,
+				VehicleEntry.COLUMN_NAME_LAST_TRIP_DATE}, 
+				VehicleEntry._ID+" = ?", new String[]{Long.toString(id)}, null, null, null);
+		
+		Driver d = new Driver();
+		
+		if(c.moveToFirst()){
+			d.id = c.getLong(0);
+			d.name = c.getString(1);
+			d.photo = c.getString(2);
+			d.carVIN = c.getString(3);
+			d.lastTripDate = c.getString(4);
+		}
+		c.close();
+		db.close();
+		dHelper.close();
+		return d;
+	}
+	
+	private void updatePercentInfoAdapter(){
+		DbHelper dbHelper = DbHelper.getInstance(this);
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		
+		Cursor c = db.query(ScorePercentageEntry.TABLE_NAME, 
+				new String[]{
+				ScorePercentageEntry._ID,
+				ScorePercentageEntry.COLUMN_NAME_STAT_NAME,
+				ScorePercentageEntry.COLUMN_NAME_STAT_VALUE}, 
+				ScorePercentageEntry.COLUMN_NAME_DRIVER_ID + " = " + driver.id, null, null, null, ScoreGraphEntry._ID+" ASC");
 		
 		percentInfoData.clear();
 		Map<String, Object> m;
-		for (int i = 0; i < titles.length; i++) {
-			m = new HashMap<String, Object>();
-			m.put(ATTRIBUTE_NAME_VALUE, values[i]);
-			m.put(ATTRIBUTE_NAME_TITLE, titles[i]);
-			percentInfoData.add(m);
+		
+		if(c.moveToFirst()){
+			while(!c.isAfterLast()){
+				m = new HashMap<String, Object>();
+				m.put(ATTRIBUTE_NAME_TITLE, c.getString(1));
+				m.put(ATTRIBUTE_NAME_VALUE, c.getInt(2));
+				percentInfoData.add(m);
+				c.moveToNext();
+			}
 		}
+		c.close();
+		db.close();
+		dbHelper.close();
 		
 		String[] from = new String[]{ATTRIBUTE_NAME_VALUE, ATTRIBUTE_NAME_TITLE};
 		int[] to = new int[]{R.id.tvPercentValue, R.id.tvTitle};
@@ -128,26 +171,36 @@ public class ScoreInfoActivity extends MainActivity{
 			percentInfoAdapter.notifyDataSetChanged();
 	}
 	
-	private void fillAdditionalInfo(String[] values){
-		String[] titles = new String[]{"Last trip", "VIN", "Profile date", "Start date", "Profile driving miles", "Estimated annual driving"};
+	private void fillAdditionalInfo(){
+		SimpleDateFormat sdf = new SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault());
+		DecimalFormat df = new DecimalFormat("0.000");
+		
+		LinkedHashMap<String, String> infoFields = new LinkedHashMap<String, String>();
+		infoFields.put("Last trip", Utils.convertTime(driver.lastTripDate, sdf));
+		infoFields.put("VIN", driver.carVIN);
+		infoFields.put("Profile date", "N/A");
+		infoFields.put("Start date", "N/A");
+		infoFields.put("Profile driving miles", df.format(driver.totalDistance)+" Miles");
+		infoFields.put("Estimated annual driving", "N/A");
 		
 		LayoutInflater inflater = getLayoutInflater();
 		
-		for (int i = 0; i < titles.length; i++) {
-			LinearLayout item = (LinearLayout)inflater.inflate(R.layout.score_additional_info_item, llAdditionalData, false);
+		for (LinkedHashMap.Entry<String, String> entry : infoFields.entrySet()) {
+	        String title = entry.getKey();
+	        String value = entry.getValue();
+	        
+	        LinearLayout item = (LinearLayout)inflater.inflate(R.layout.score_additional_info_item, llAdditionalData, false);
 			TextView tvTitle = (TextView)item.findViewById(R.id.tvTitle);
 			tvTitle.setAllCaps(true);
-			tvTitle.setText(titles[i]);
-			((TextView)item.findViewById(R.id.tvValue)).setText(values[i]);
+			tvTitle.setText(title);
+			((TextView)item.findViewById(R.id.tvValue)).setText(value);
 			llAdditionalData.addView(item);
-		}
+	    }
 	}
 	
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		outState.putLong(VehicleEntry._ID, driverId);
-		outState.putStringArray(SAVED_ADDITIONAL_DATA, additionalData);
-		outState.putIntArray(SAVED_PERCENTAGE_DATA, percentageData);
 		super.onSaveInstanceState(outState);
 	}
 	

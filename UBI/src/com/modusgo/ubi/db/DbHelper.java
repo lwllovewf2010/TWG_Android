@@ -1,6 +1,7 @@
 package com.modusgo.ubi.db;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -10,12 +11,15 @@ import android.database.sqlite.SQLiteStatement;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.modusgo.ubi.Driver;
+import com.modusgo.ubi.ScoreFragment.MonthStats;
 import com.modusgo.ubi.Trip;
 import com.modusgo.ubi.Trip.Event;
 import com.modusgo.ubi.Trip.Point;
 import com.modusgo.ubi.db.EventContract.EventEntry;
 import com.modusgo.ubi.db.PointContract.PointEntry;
 import com.modusgo.ubi.db.RouteContract.RouteEntry;
+import com.modusgo.ubi.db.ScoreGraphContract.ScoreGraphEntry;
+import com.modusgo.ubi.db.ScorePercentageContract.ScorePercentageEntry;
 import com.modusgo.ubi.db.TripContract.TripEntry;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 
@@ -86,15 +90,32 @@ public class DbHelper extends SQLiteOpenHelper {
 		    EventEntry.COLUMN_NAME_TYPE + TEXT_TYPE + COMMA_SEP +
 		    EventEntry.COLUMN_NAME_TITLE + TEXT_TYPE + COMMA_SEP +
 		    EventEntry.COLUMN_NAME_ADDRESS + TEXT_TYPE +  " ); ";
+	
+	private static final String SQL_CREATE_ENTRIES_6 =
+		    "CREATE TABLE " + ScoreGraphEntry.TABLE_NAME + " (" +
+		    ScoreGraphEntry._ID + " INTEGER PRIMARY KEY," +
+		    ScoreGraphEntry.COLUMN_NAME_DRIVER_ID + INT_TYPE + COMMA_SEP +
+		    ScoreGraphEntry.COLUMN_NAME_MONTH + INT_TYPE + COMMA_SEP +
+		    ScoreGraphEntry.COLUMN_NAME_SCORE + INT_TYPE + COMMA_SEP +
+		    ScoreGraphEntry.COLUMN_NAME_GRADE + TEXT_TYPE +  " ); ";
+	
+	private static final String SQL_CREATE_ENTRIES_7 =
+		    "CREATE TABLE " + ScorePercentageEntry.TABLE_NAME + " (" +
+		    ScorePercentageEntry._ID + " INTEGER PRIMARY KEY," +
+		    ScorePercentageEntry.COLUMN_NAME_DRIVER_ID + INT_TYPE + COMMA_SEP +
+		    ScorePercentageEntry.COLUMN_NAME_STAT_NAME + TEXT_TYPE + COMMA_SEP +
+		    ScorePercentageEntry.COLUMN_NAME_STAT_VALUE + INT_TYPE +  " ); ";
 
 	private static final String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + VehicleEntry.TABLE_NAME;
 	private static final String SQL_DELETE_ENTRIES_2 = "DROP TABLE IF EXISTS " + TripEntry.TABLE_NAME;
 	private static final String SQL_DELETE_ENTRIES_3 = "DROP TABLE IF EXISTS " + RouteEntry.TABLE_NAME;
 	private static final String SQL_DELETE_ENTRIES_4 = "DROP TABLE IF EXISTS " + PointEntry.TABLE_NAME;
 	private static final String SQL_DELETE_ENTRIES_5 = "DROP TABLE IF EXISTS " + EventEntry.TABLE_NAME;
+	private static final String SQL_DELETE_ENTRIES_6 = "DROP TABLE IF EXISTS " + ScoreGraphEntry.TABLE_NAME;
+	private static final String SQL_DELETE_ENTRIES_7 = "DROP TABLE IF EXISTS " + ScorePercentageEntry.TABLE_NAME;
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 4;
+	public static final int DATABASE_VERSION = 6;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;
@@ -119,6 +140,8 @@ public class DbHelper extends SQLiteOpenHelper {
 	    db.execSQL(SQL_CREATE_ENTRIES_3);
 	    db.execSQL(SQL_CREATE_ENTRIES_4);
 	    db.execSQL(SQL_CREATE_ENTRIES_5);
+	    db.execSQL(SQL_CREATE_ENTRIES_6);
+	    db.execSQL(SQL_CREATE_ENTRIES_7);
 	}
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 	    // This database is only a cache for online data, so its upgrade policy is
@@ -133,6 +156,10 @@ public class DbHelper extends SQLiteOpenHelper {
 	    db.execSQL(SQL_CREATE_ENTRIES_4);
 	    db.execSQL(SQL_DELETE_ENTRIES_5);
 	    db.execSQL(SQL_CREATE_ENTRIES_5);
+	    db.execSQL(SQL_DELETE_ENTRIES_6);
+	    db.execSQL(SQL_CREATE_ENTRIES_6);
+	    db.execSQL(SQL_DELETE_ENTRIES_7);
+	    db.execSQL(SQL_CREATE_ENTRIES_7);
 	}
 	public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 	    onUpgrade(db, oldVersion, newVersion);
@@ -411,6 +438,84 @@ public class DbHelper extends SQLiteOpenHelper {
 		    	statement.bindString(4, e.address);
 		    	statement.execute();
 			}
+		    
+		    database.setTransactionSuccessful();	
+		    database.endTransaction();
+		    statement.close();
+		}
+		
+		database.close();
+	}
+	
+	public void saveScoreGraph(long driverId, MonthStats[] yearStats){
+		SQLiteDatabase database = sInstance.getWritableDatabase();
+		
+		if(database!=null && yearStats!=null){
+			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+ScoreGraphEntry.TABLE_NAME+" WHERE "+ScoreGraphEntry.COLUMN_NAME_DRIVER_ID+" = "+driverId);
+		    database.beginTransaction();
+		    removeStatement.clearBindings();
+	        removeStatement.execute();
+	        database.setTransactionSuccessful();	
+		    database.endTransaction();
+		    removeStatement.close();
+			
+			String sql = "INSERT INTO "+ ScoreGraphEntry.TABLE_NAME +" ("
+					+ ScoreGraphEntry.COLUMN_NAME_DRIVER_ID +","
+					+ ScoreGraphEntry.COLUMN_NAME_MONTH +","
+					+ ScoreGraphEntry.COLUMN_NAME_SCORE +","
+					+ ScoreGraphEntry.COLUMN_NAME_GRADE
+					+ ") VALUES (?,?,?,?);";
+			
+			SQLiteStatement statement = database.compileStatement(sql);
+		    database.beginTransaction();
+		    for (MonthStats ms : yearStats) {
+		    	statement.clearBindings();
+		    	statement.bindLong(1, driverId);
+		    	statement.bindLong(2, ms.month);
+		    	statement.bindLong(3, ms.score);
+		    	statement.bindString(4, ms.grade);
+		    	statement.execute();
+			}
+		    
+		    database.setTransactionSuccessful();	
+		    database.endTransaction();
+		    statement.close();
+		}
+		
+		database.close();
+	}
+	
+	public void saveScorePercentage(long driverId, LinkedHashMap<String, Integer> valuesMap){
+		SQLiteDatabase database = sInstance.getWritableDatabase();
+		
+		if(database!=null && valuesMap!=null){
+			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+ScorePercentageEntry.TABLE_NAME+" WHERE "+ScorePercentageEntry.COLUMN_NAME_DRIVER_ID+" = "+driverId);
+		    database.beginTransaction();
+		    removeStatement.clearBindings();
+	        removeStatement.execute();
+	        database.setTransactionSuccessful();	
+		    database.endTransaction();
+		    removeStatement.close();
+			
+			String sql = "INSERT INTO "+ ScorePercentageEntry.TABLE_NAME +" ("
+					+ ScorePercentageEntry.COLUMN_NAME_DRIVER_ID +","
+					+ ScorePercentageEntry.COLUMN_NAME_STAT_NAME +","
+					+ ScorePercentageEntry.COLUMN_NAME_STAT_VALUE
+					+ ") VALUES (?,?,?);";
+			
+			SQLiteStatement statement = database.compileStatement(sql);
+		    database.beginTransaction();
+		    
+		    for (LinkedHashMap.Entry<String, Integer> entry : valuesMap.entrySet()) {
+		        String key = entry.getKey();
+		        int value = entry.getValue();
+		        
+		        statement.clearBindings();
+		    	statement.bindLong(1, driverId);
+		    	statement.bindString(2, key);
+		    	statement.bindLong(3, value);
+		    	statement.execute();
+		    }
 		    
 		    database.setTransactionSuccessful();	
 		    database.endTransaction();
