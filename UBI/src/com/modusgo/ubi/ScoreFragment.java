@@ -34,7 +34,6 @@ import com.modusgo.ubi.ScorePieChartActivity.PieChartTab;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.ScoreGraphContract.ScoreGraphEntry;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
-import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -384,8 +383,8 @@ public class ScoreFragment extends Fragment{
 		
 		@Override
 		protected void onPreExecute() {
-			llContent.setVisibility(View.GONE);
-			llProgress.setVisibility(View.VISIBLE);
+//			llContent.setVisibility(View.GONE);
+//			llProgress.setVisibility(View.VISIBLE);
 			super.onPreExecute();
 		}
 		
@@ -398,19 +397,13 @@ public class ScoreFragment extends Fragment{
 		
 		@Override
 		protected void onPostExecute(JSONObject result) {
-			llContent.setVisibility(View.VISIBLE);
-			llProgress.setVisibility(View.GONE);
+//			llContent.setVisibility(View.VISIBLE);
+//			llProgress.setVisibility(View.GONE);
 			super.onPostExecute(result);
 		}
 		
 		@Override
 		protected void onError(String message) {
-			try{
-				onSuccess(Utils.getJSONObjectFromAssets(getActivity(), "score.json"));
-			}
-			catch(JSONException e){
-				e.printStackTrace();
-			}
 			super.onError(message);
 		}
 		
