@@ -2864,6 +2864,7 @@ com.modusgo.demo.R$id: int tvPasswordError
 com.modusgo.demo.R$id: int tvPercentSign
 com.modusgo.demo.R$id: int tvPercentValue
 com.modusgo.demo.R$id: int tvPhone
+com.modusgo.demo.R$id: int tvProgress
 com.modusgo.demo.R$id: int tvRadius
 com.modusgo.demo.R$id: int tvReviewCount
 com.modusgo.demo.R$id: int tvScore
