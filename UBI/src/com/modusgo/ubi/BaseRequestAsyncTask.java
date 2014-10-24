@@ -48,7 +48,7 @@ public class BaseRequestAsyncTask extends AsyncTask<String, Void, JSONObject>{
 		catch(NullPointerException e){
 			e.printStackTrace();
 			status = 0;
-			message = "Offline mode activated";
+			message = "";
 			return null;
 		}
 		return Utils.getJSONObjectFromHttpResponse(result);
@@ -83,7 +83,8 @@ public class BaseRequestAsyncTask extends AsyncTask<String, Void, JSONObject>{
 	}
 	
 	protected void onError(String message) {
-		Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+		if(!message.equals(""))
+			Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
 	}
 	
 	protected void onSuccess(JSONObject responseJSON) throws JSONException {
