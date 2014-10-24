@@ -1,8 +1,9 @@
 package com.modusgo.ubi;
 
 import java.util.ArrayList;
-import java.util.Set;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,6 +15,8 @@ import android.widget.RadioGroup;
 
 import com.modusgo.demo.R;
 import com.modusgo.ubi.db.DbHelper;
+import com.modusgo.ubi.db.ScoreCirclesContract.ScoreCirclesEntry;
+import com.modusgo.ubi.db.ScorePieChartContract.ScorePieChartEntry;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 
 public class ScoreCirclesActivity extends MainActivity{
@@ -48,31 +51,95 @@ public class ScoreCirclesActivity extends MainActivity{
 		
 		rgCircles = (RadioGroup) findViewById(R.id.radioGroupCircles);
         
-		Set<String> bundleKeys = circlesData.keySet();
-		Bundle[] b = new Bundle[bundleKeys.size()];
-		int i = 0;
-		for (String key : bundleKeys) {
-			b[i] = circlesData.getBundle(key);
-			i++;
-		}
-		
-		updateCircles(b);
+		updateCircles();
 	}
 	
-	private void updateCircles(Bundle bundles[]) {
+	private void updateCircles() {
         ArrayList<Fragment> circleFragments = new ArrayList<>();
         
         LayoutInflater inflater = getLayoutInflater();
         
-        for (int i = 0; i < bundles.length; i++) {
+        DbHelper dbHelper = DbHelper.getInstance(this);
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		
+		Cursor c = db.query(ScoreCirclesEntry.TABLE_NAME, 
+				new String[]{
+				ScoreCirclesEntry.COLUMN_NAME_TAB}, 
+				ScoreCirclesEntry.COLUMN_NAME_DRIVER_ID + " = " + driver.id, null, ScoreCirclesEntry.COLUMN_NAME_TAB, null, ScoreCirclesEntry._ID+" ASC");
+		
+		String circlesTabs[] = new String[c.getCount()];
+		
+		if(c.moveToFirst()){
+			int i = 0;
+			while(!c.isAfterLast()){
+				circlesTabs[i] = c.getString(0);
+				i++;
+				c.moveToNext();
+			}
+		}
+		c.close();
+        
+        
+        for (int i = 0; i < circlesTabs.length; i++) {
+        	
+        	ArrayList<CirclesSection> sections = new ArrayList<CirclesSection>();
+        	
+        	c = db.query(ScoreCirclesEntry.TABLE_NAME, 
+    				new String[]{
+    				ScoreCirclesEntry.COLUMN_NAME_SECTION}, 
+    				ScoreCirclesEntry.COLUMN_NAME_DRIVER_ID + " = ? AND " + ScoreCirclesEntry.COLUMN_NAME_TAB + " = ?",
+    				new String[]{Long.toString(driver.id), circlesTabs[i]},
+    				ScoreCirclesEntry.COLUMN_NAME_SECTION, null, ScoreCirclesEntry._ID+" ASC");
+    		
+    		String sectionTitles[] = new String[c.getCount()];
+    		
+    		if(c.moveToFirst()){
+    			int j = 0;
+    			while(!c.isAfterLast()){
+    				sectionTitles[j] = c.getString(0);
+    				j++;
+    				c.moveToNext();
+    			}
+    		}
+    		c.close();
+    		
+    		for (int j = 0; j < sectionTitles.length; j++) {
+    			c = db.query(ScoreCirclesEntry.TABLE_NAME, 
+        				new String[]{
+            			ScoreCirclesEntry._ID,
+            			ScoreCirclesEntry.COLUMN_NAME_MARK,
+            			ScoreCirclesEntry.COLUMN_NAME_DISTANCE},
+            			ScoreCirclesEntry.COLUMN_NAME_DRIVER_ID + " = ? AND " + ScoreCirclesEntry.COLUMN_NAME_TAB + " = ? AND " + ScoreCirclesEntry.COLUMN_NAME_SECTION + " = ?",
+            			new String[]{Long.toString(driver.id), circlesTabs[i], sectionTitles[j]},
+            			null, null, ScorePieChartEntry._ID+" ASC");
+        		
+                int piecesCount = c.getCount();
+                int[] marks = new int[piecesCount];
+                double[] distances = new double[piecesCount];
+                
+        		if(c.moveToFirst()){
+        			int k = 0;
+        			while(!c.isAfterLast()){
+        				marks[k] = c.getInt(1);
+        				distances[k] = c.getDouble(2);
+        				k++;
+        				c.moveToNext();
+        			}
+        		}
+        		c.close();
+        		sections.add(new CirclesSection(sectionTitles[j], marks, distances));
+			}        	
+        	
         	RadioButton rb = (RadioButton)inflater.inflate(R.layout.radio_tab, rgCircles, false);
-        	rb.setText(bundles[i].getString(CirclesFragment.SAVED_TITLE));
+        	rb.setText(circlesTabs[i]);
             rb.setBackgroundResource(R.drawable.radio_tab_bg_selector);
             Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/EncodeSansNormal-600-SemiBold.ttf");
             rb.setTypeface(tf);
             
             final Fragment fragment = new CirclesFragment();
-            fragment.setArguments(bundles[i]);
+            Bundle b = new Bundle();
+            b.putSerializable(CirclesFragment.SAVED_SECTIONS, sections);
+            fragment.setArguments(b);
             circleFragments.add(fragment);
             
             rb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -116,6 +183,20 @@ public class ScoreCirclesActivity extends MainActivity{
 	public void onBackPressed() {
 		super.onBackPressed();
 		overridePendingTransition(R.anim.flip_in,R.anim.flip_out);
+	}
+	
+	public static class CirclesSection{
+		
+		public String sectionName;
+		public int[] marks;
+		public double[] distances;
+		
+		public CirclesSection(String sectionName, int[] marks, double[] distances) {
+			super();
+			this.sectionName = sectionName;
+			this.marks = marks;
+			this.distances = distances;
+		}
 	}
 
 }

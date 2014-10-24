@@ -11,6 +11,7 @@ import android.database.sqlite.SQLiteStatement;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.modusgo.ubi.Driver;
+import com.modusgo.ubi.ScoreCirclesActivity.CirclesSection;
 import com.modusgo.ubi.ScoreFragment.MonthStats;
 import com.modusgo.ubi.ScorePieChartActivity.PieChartTab;
 import com.modusgo.ubi.Trip;
@@ -19,6 +20,7 @@ import com.modusgo.ubi.Trip.Point;
 import com.modusgo.ubi.db.EventContract.EventEntry;
 import com.modusgo.ubi.db.PointContract.PointEntry;
 import com.modusgo.ubi.db.RouteContract.RouteEntry;
+import com.modusgo.ubi.db.ScoreCirclesContract.ScoreCirclesEntry;
 import com.modusgo.ubi.db.ScoreGraphContract.ScoreGraphEntry;
 import com.modusgo.ubi.db.ScorePercentageContract.ScorePercentageEntry;
 import com.modusgo.ubi.db.ScorePieChartContract.ScorePieChartEntry;
@@ -116,6 +118,15 @@ public class DbHelper extends SQLiteOpenHelper {
 		    ScorePieChartEntry.COLUMN_NAME_VALUE + FLOAT_TYPE + COMMA_SEP +
 		    ScorePieChartEntry.COLUMN_NAME_TITLE + TEXT_TYPE + COMMA_SEP +
 		    ScorePieChartEntry.COLUMN_NAME_SUBTITLE + TEXT_TYPE + " ); ";
+	
+	private static final String SQL_CREATE_ENTRIES_9 =
+		    "CREATE TABLE " + ScoreCirclesEntry.TABLE_NAME + " (" +
+		    ScoreCirclesEntry._ID + " INTEGER PRIMARY KEY," +
+		    ScoreCirclesEntry.COLUMN_NAME_DRIVER_ID + INT_TYPE + COMMA_SEP +
+		    ScoreCirclesEntry.COLUMN_NAME_TAB + TEXT_TYPE + COMMA_SEP +
+		    ScoreCirclesEntry.COLUMN_NAME_SECTION + TEXT_TYPE + COMMA_SEP +
+		    ScoreCirclesEntry.COLUMN_NAME_MARK + INT_TYPE + COMMA_SEP +
+		    ScoreCirclesEntry.COLUMN_NAME_DISTANCE + FLOAT_TYPE + " ); ";
 
 	private static final String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + VehicleEntry.TABLE_NAME;
 	private static final String SQL_DELETE_ENTRIES_2 = "DROP TABLE IF EXISTS " + TripEntry.TABLE_NAME;
@@ -125,9 +136,10 @@ public class DbHelper extends SQLiteOpenHelper {
 	private static final String SQL_DELETE_ENTRIES_6 = "DROP TABLE IF EXISTS " + ScoreGraphEntry.TABLE_NAME;
 	private static final String SQL_DELETE_ENTRIES_7 = "DROP TABLE IF EXISTS " + ScorePercentageEntry.TABLE_NAME;
 	private static final String SQL_DELETE_ENTRIES_8 = "DROP TABLE IF EXISTS " + ScorePieChartEntry.TABLE_NAME;
+	private static final String SQL_DELETE_ENTRIES_9 = "DROP TABLE IF EXISTS " + ScoreCirclesEntry.TABLE_NAME;
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 7;
+	public static final int DATABASE_VERSION = 9;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;
@@ -155,6 +167,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	    db.execSQL(SQL_CREATE_ENTRIES_6);
 	    db.execSQL(SQL_CREATE_ENTRIES_7);
 	    db.execSQL(SQL_CREATE_ENTRIES_8);
+	    db.execSQL(SQL_CREATE_ENTRIES_9);
 	}
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 	    // This database is only a cache for online data, so its upgrade policy is
@@ -175,6 +188,8 @@ public class DbHelper extends SQLiteOpenHelper {
 	    db.execSQL(SQL_CREATE_ENTRIES_7);
 	    db.execSQL(SQL_DELETE_ENTRIES_8);
 	    db.execSQL(SQL_CREATE_ENTRIES_8);
+	    db.execSQL(SQL_DELETE_ENTRIES_9);
+	    db.execSQL(SQL_CREATE_ENTRIES_9);
 	}
 	public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 	    onUpgrade(db, oldVersion, newVersion);
@@ -576,6 +591,54 @@ public class DbHelper extends SQLiteOpenHelper {
 			    	else
 			    		statement.bindString(5, "");
 			    	statement.execute();
+				}
+			}
+		    
+		    database.setTransactionSuccessful();	
+		    database.endTransaction();
+		    statement.close();
+		}
+		
+		database.close();
+	}
+	
+	public void saveScoreCircles(long driverId, LinkedHashMap<String, ArrayList<CirclesSection>> tabs){
+		SQLiteDatabase database = sInstance.getWritableDatabase();
+		
+		if(database!=null && tabs!=null){
+			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+ScoreCirclesEntry.TABLE_NAME+" WHERE "+ScoreCirclesEntry.COLUMN_NAME_DRIVER_ID+" = "+driverId);
+		    database.beginTransaction();
+		    removeStatement.clearBindings();
+	        removeStatement.execute();
+	        database.setTransactionSuccessful();	
+		    database.endTransaction();
+		    removeStatement.close();
+			
+			String sql = "INSERT INTO "+ ScoreCirclesEntry.TABLE_NAME +" ("
+					+ ScoreCirclesEntry.COLUMN_NAME_DRIVER_ID +","
+					+ ScoreCirclesEntry.COLUMN_NAME_TAB +","
+					+ ScoreCirclesEntry.COLUMN_NAME_SECTION +","
+					+ ScoreCirclesEntry.COLUMN_NAME_MARK +","
+					+ ScoreCirclesEntry.COLUMN_NAME_DISTANCE
+					+ ") VALUES (?,?,?,?,?);";
+			
+			SQLiteStatement statement = database.compileStatement(sql);
+		    database.beginTransaction();
+		    
+		    for (LinkedHashMap.Entry<String, ArrayList<CirclesSection>> entry : tabs.entrySet()) {
+		    	String tabName = entry.getKey();
+		    	ArrayList<CirclesSection> sections = entry.getValue();
+		    	
+		    	for (CirclesSection section : sections) {
+		    		for (int i = 0; i < section.marks.length; i++) {
+			    		statement.clearBindings();
+				    	statement.bindLong(1, driverId);
+				    	statement.bindString(2, tabName);
+				    	statement.bindString(3, section.sectionName);
+				    	statement.bindLong(4, section.marks[i]);
+				    	statement.bindDouble(5, section.distances[i]);
+				    	statement.execute();
+					}
 				}
 			}
 		    

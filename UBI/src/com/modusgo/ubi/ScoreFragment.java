@@ -1,7 +1,5 @@
 package com.modusgo.ubi;
 
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedHashMap;
@@ -31,6 +29,7 @@ import android.widget.TextView;
 import com.echo.holographlibrary.Bar;
 import com.echo.holographlibrary.BarGraph;
 import com.modusgo.demo.R;
+import com.modusgo.ubi.ScoreCirclesActivity.CirclesSection;
 import com.modusgo.ubi.ScorePieChartActivity.PieChartTab;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.ScoreGraphContract.ScoreGraphEntry;
@@ -52,8 +51,6 @@ public class ScoreFragment extends Fragment{
 	TextView tvLastMonthMessage;
 	ImageView imageLastMonthArrow;
 	BarGraph graph;
-	
-	Bundle circlesData;
 	
 	MonthStats[] yearStats;
 	
@@ -133,7 +130,7 @@ public class ScoreFragment extends Fragment{
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(getActivity(), ScoreCirclesActivity.class);
-				i.putExtra(ScoreCirclesActivity.SAVED_CIRCLES_BUNDLE, circlesData);
+				i.putExtra(VehicleEntry._ID, driver.id);
 				startActivity(i);
 				getActivity().overridePendingTransition(R.anim.flip_in,R.anim.flip_out);
 			}
@@ -419,7 +416,7 @@ public class ScoreFragment extends Fragment{
 		
 		@Override
 		protected void onSuccess(JSONObject json) throws JSONException {
-			System.out.println(json);
+//			System.out.println(json);
 			
 			DbHelper dHelper = DbHelper.getInstance(getActivity());
 			
@@ -437,9 +434,6 @@ public class ScoreFragment extends Fragment{
 				dHelper.saveScoreGraph(driver.id, yearStats);
 				updateGraph();
 			}
-			
-			SimpleDateFormat sdf = new SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault());
-			DecimalFormat df = new DecimalFormat("0.000");
 			
 			LinkedHashMap<String, Integer> percentageData = new LinkedHashMap<String, Integer>();
 			percentageData.put("Use of speed", json.optInt("score_pace"));
@@ -505,14 +499,16 @@ public class ScoreFragment extends Fragment{
 			));
 			dHelper.saveScorePieCharts(driver.id, pcTabs);
 			
-			circlesData = new Bundle();
 			if(json.has("road_env_analysis") && json.has("road_env_stats")){
 				JSONObject jsonMarks = json.getJSONObject("road_env_analysis");
 				JSONObject jsonStats = json.getJSONObject("road_env_stats");
 				
-				circlesData.putBundle("suburban", getPageBundle("suburban", jsonMarks, jsonStats));
-				circlesData.putBundle("urban", getPageBundle("urban", jsonMarks, jsonStats));
-				circlesData.putBundle("rural", getPageBundle("rural", jsonMarks, jsonStats));
+				LinkedHashMap<String, ArrayList<CirclesSection>> circlesTabs = new LinkedHashMap<String, ArrayList<CirclesSection>>();
+				circlesTabs.put("SUBURBAN", getTabSections("suburban", jsonMarks, jsonStats));
+				circlesTabs.put("URBAN", getTabSections("urban", jsonMarks, jsonStats));
+				circlesTabs.put("RURAL", getTabSections("rural", jsonMarks, jsonStats));
+				
+				dHelper.saveScoreCircles(driver.id, circlesTabs);
 			}
 			
 			dHelper.close();
@@ -520,28 +516,19 @@ public class ScoreFragment extends Fragment{
 			super.onSuccess(json);
 		}
 		
-		private Bundle getPageBundle(String pageName, JSONObject jsonMarks, JSONObject jsonStats) throws JSONException{
+		private ArrayList<CirclesSection> getTabSections(String pageName, JSONObject jsonMarks, JSONObject jsonStats) throws JSONException{
 			JSONObject jsonMarkPage = jsonMarks.getJSONObject(pageName);
-			
 			JSONObject jsonStatsPage = jsonStats.getJSONObject(pageName);
 			
-			Bundle pageBundle = new Bundle();
-			pageBundle.putString(CirclesFragment.SAVED_TITLE, pageName);
-			pageBundle.putBundle(CirclesFragment.SAVED_USE_OF_SPEED, getBundleStats("pace", jsonMarkPage, jsonStatsPage));
-			pageBundle.putBundle(CirclesFragment.SAVED_CORNERING, getBundleStats("cornering", jsonMarkPage, jsonStatsPage));
-			pageBundle.putBundle(CirclesFragment.SAVED_INTERSECTION_ACCEL, getBundleStats("junctionacceleration", jsonMarkPage, jsonStatsPage));
-			pageBundle.putBundle(CirclesFragment.SAVED_ROAD_ACCEL, getBundleStats("roadacceleration", jsonMarkPage, jsonStatsPage));
-			pageBundle.putBundle(CirclesFragment.SAVED_INTERSECTION_BRAKING, getBundleStats("junctionbrake", jsonMarkPage, jsonStatsPage));
-			pageBundle.putBundle(CirclesFragment.SAVED_ROAD_BRAKING, getBundleStats("roadbrake", jsonMarkPage, jsonStatsPage));
+			ArrayList<CirclesSection> sections = new ArrayList<CirclesSection>();
+			sections.add(new CirclesSection("Use of Speed", getMarksFromJson("pace", jsonMarkPage), getDistancesFromJson("pace", jsonStatsPage)));
+			sections.add(new CirclesSection("Cornering", getMarksFromJson("cornering", jsonMarkPage), getDistancesFromJson("cornering", jsonStatsPage)));
+			sections.add(new CirclesSection("Intersection Acceleration", getMarksFromJson("junctionacceleration", jsonMarkPage), getDistancesFromJson("junctionacceleration", jsonStatsPage)));
+			sections.add(new CirclesSection("Road Acceleration", getMarksFromJson("pace", jsonMarkPage), getDistancesFromJson("roadacceleration", jsonStatsPage)));
+			sections.add(new CirclesSection("Intersection Braking", getMarksFromJson("junctionbrake", jsonMarkPage), getDistancesFromJson("junctionbrake", jsonStatsPage)));
+			sections.add(new CirclesSection("Road Braking", getMarksFromJson("roadbrake", jsonMarkPage), getDistancesFromJson("roadbrake", jsonStatsPage)));
 			
-			return pageBundle;
-		}
-		
-		private Bundle getBundleStats(String statName, JSONObject jsonMarks, JSONObject jsonStats) throws JSONException{
-			Bundle b = new Bundle();
-			b.putIntArray("marks", getMarksFromJson(statName, jsonMarks));
-			b.putDoubleArray("distances", getDistancesFromJson(statName, jsonStats));
-			return b;
+			return sections;
 		}
 		
 		private int[] getMarksFromJson(String statName, JSONObject json) throws JSONException{
@@ -567,10 +554,10 @@ public class ScoreFragment extends Fragment{
 			JSONObject jsonUrbanLocal = json.getJSONObject("local");
 			
 			return new double[]{
-					jsonUrbanHighway.getDouble(statName),
-					jsonUrbanMajor.getDouble(statName),
-					jsonUrbanMinor.getDouble(statName),
-					jsonUrbanLocal.getDouble(statName),
+					jsonUrbanHighway.optDouble(statName),
+					jsonUrbanMajor.optDouble(statName),
+					jsonUrbanMinor.optDouble(statName),
+					jsonUrbanLocal.optDouble(statName),
 					};
 		}
 		
