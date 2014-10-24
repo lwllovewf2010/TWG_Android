@@ -12,6 +12,7 @@ import android.database.sqlite.SQLiteStatement;
 import com.google.android.gms.maps.model.LatLng;
 import com.modusgo.ubi.Driver;
 import com.modusgo.ubi.ScoreFragment.MonthStats;
+import com.modusgo.ubi.ScorePieChartActivity.PieChartTab;
 import com.modusgo.ubi.Trip;
 import com.modusgo.ubi.Trip.Event;
 import com.modusgo.ubi.Trip.Point;
@@ -20,6 +21,7 @@ import com.modusgo.ubi.db.PointContract.PointEntry;
 import com.modusgo.ubi.db.RouteContract.RouteEntry;
 import com.modusgo.ubi.db.ScoreGraphContract.ScoreGraphEntry;
 import com.modusgo.ubi.db.ScorePercentageContract.ScorePercentageEntry;
+import com.modusgo.ubi.db.ScorePieChartContract.ScorePieChartEntry;
 import com.modusgo.ubi.db.TripContract.TripEntry;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 
@@ -105,6 +107,15 @@ public class DbHelper extends SQLiteOpenHelper {
 		    ScorePercentageEntry.COLUMN_NAME_DRIVER_ID + INT_TYPE + COMMA_SEP +
 		    ScorePercentageEntry.COLUMN_NAME_STAT_NAME + TEXT_TYPE + COMMA_SEP +
 		    ScorePercentageEntry.COLUMN_NAME_STAT_VALUE + INT_TYPE +  " ); ";
+	
+	private static final String SQL_CREATE_ENTRIES_8 =
+		    "CREATE TABLE " + ScorePieChartEntry.TABLE_NAME + " (" +
+		    ScorePieChartEntry._ID + " INTEGER PRIMARY KEY," +
+		    ScorePieChartEntry.COLUMN_NAME_DRIVER_ID + INT_TYPE + COMMA_SEP +
+		    ScorePieChartEntry.COLUMN_NAME_TAB + TEXT_TYPE + COMMA_SEP +
+		    ScorePieChartEntry.COLUMN_NAME_VALUE + FLOAT_TYPE + COMMA_SEP +
+		    ScorePieChartEntry.COLUMN_NAME_TITLE + TEXT_TYPE + COMMA_SEP +
+		    ScorePieChartEntry.COLUMN_NAME_SUBTITLE + TEXT_TYPE + " ); ";
 
 	private static final String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + VehicleEntry.TABLE_NAME;
 	private static final String SQL_DELETE_ENTRIES_2 = "DROP TABLE IF EXISTS " + TripEntry.TABLE_NAME;
@@ -113,9 +124,10 @@ public class DbHelper extends SQLiteOpenHelper {
 	private static final String SQL_DELETE_ENTRIES_5 = "DROP TABLE IF EXISTS " + EventEntry.TABLE_NAME;
 	private static final String SQL_DELETE_ENTRIES_6 = "DROP TABLE IF EXISTS " + ScoreGraphEntry.TABLE_NAME;
 	private static final String SQL_DELETE_ENTRIES_7 = "DROP TABLE IF EXISTS " + ScorePercentageEntry.TABLE_NAME;
+	private static final String SQL_DELETE_ENTRIES_8 = "DROP TABLE IF EXISTS " + ScorePieChartEntry.TABLE_NAME;
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 6;
+	public static final int DATABASE_VERSION = 7;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;
@@ -142,6 +154,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	    db.execSQL(SQL_CREATE_ENTRIES_5);
 	    db.execSQL(SQL_CREATE_ENTRIES_6);
 	    db.execSQL(SQL_CREATE_ENTRIES_7);
+	    db.execSQL(SQL_CREATE_ENTRIES_8);
 	}
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 	    // This database is only a cache for online data, so its upgrade policy is
@@ -160,6 +173,8 @@ public class DbHelper extends SQLiteOpenHelper {
 	    db.execSQL(SQL_CREATE_ENTRIES_6);
 	    db.execSQL(SQL_DELETE_ENTRIES_7);
 	    db.execSQL(SQL_CREATE_ENTRIES_7);
+	    db.execSQL(SQL_DELETE_ENTRIES_8);
+	    db.execSQL(SQL_CREATE_ENTRIES_8);
 	}
 	public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 	    onUpgrade(db, oldVersion, newVersion);
@@ -516,6 +531,53 @@ public class DbHelper extends SQLiteOpenHelper {
 		    	statement.bindLong(3, value);
 		    	statement.execute();
 		    }
+		    
+		    database.setTransactionSuccessful();	
+		    database.endTransaction();
+		    statement.close();
+		}
+		
+		database.close();
+	}
+	
+	public void saveScorePieCharts(long driverId, ArrayList<PieChartTab> tabs){
+		SQLiteDatabase database = sInstance.getWritableDatabase();
+		
+		if(database!=null && tabs!=null){
+			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+ScorePieChartEntry.TABLE_NAME+" WHERE "+ScorePieChartEntry.COLUMN_NAME_DRIVER_ID+" = "+driverId);
+		    database.beginTransaction();
+		    removeStatement.clearBindings();
+	        removeStatement.execute();
+	        database.setTransactionSuccessful();	
+		    database.endTransaction();
+		    removeStatement.close();
+			
+			String sql = "INSERT INTO "+ ScorePieChartEntry.TABLE_NAME +" ("
+					+ ScorePieChartEntry.COLUMN_NAME_DRIVER_ID +","
+					+ ScorePieChartEntry.COLUMN_NAME_TAB +","
+					+ ScorePieChartEntry.COLUMN_NAME_VALUE +","
+					+ ScorePieChartEntry.COLUMN_NAME_TITLE +","
+					+ ScorePieChartEntry.COLUMN_NAME_SUBTITLE
+					+ ") VALUES (?,?,?,?,?);";
+			
+			SQLiteStatement statement = database.compileStatement(sql);
+		    database.beginTransaction();
+		    
+		    for (PieChartTab tab : tabs) {
+		    	int piecesCount = tab.values.length;
+		    	for (int i = 0; i < piecesCount; i++) {
+		    		statement.clearBindings();
+			    	statement.bindLong(1, driverId);
+			    	statement.bindString(2, tab.tabName);
+			    	statement.bindDouble(3, tab.values[i]);
+			    	statement.bindString(4, tab.titles[i]);
+			    	if(tab.subtitles!=null)
+			    		statement.bindString(5, tab.subtitles[i]);
+			    	else
+			    		statement.bindString(5, "");
+			    	statement.execute();
+				}
+			}
 		    
 		    database.setTransactionSuccessful();	
 		    database.endTransaction();

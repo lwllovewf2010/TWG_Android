@@ -2,6 +2,8 @@ package com.modusgo.ubi;
 
 import java.util.ArrayList;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,9 +12,11 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.modusgo.demo.R;
 import com.modusgo.ubi.db.DbHelper;
+import com.modusgo.ubi.db.ScorePieChartContract.ScorePieChartEntry;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 
 public class ScorePieChartActivity extends MainActivity{
@@ -23,10 +27,6 @@ public class ScorePieChartActivity extends MainActivity{
 	
 	Driver driver;
 	long driverId = 0;
-
-	float[] pieChartRoadSettings;
-	float[] pieChartRoadType;
-	float[] pieChartTimeOfDay;
 	RadioGroup rgPieCharts;
 	
 	@Override
@@ -38,15 +38,9 @@ public class ScorePieChartActivity extends MainActivity{
 		
 		if(savedInstanceState!=null){
 			driverId = savedInstanceState.getLong(VehicleEntry._ID);
-			pieChartRoadSettings = savedInstanceState.getFloatArray(SAVED_PIE_CHART_ROAD_SETTINGS);
-			pieChartRoadType = savedInstanceState.getFloatArray(SAVED_PIE_CHART_ROAD_TYPE);
-			pieChartTimeOfDay = savedInstanceState.getFloatArray(SAVED_PIE_CHART_TIME_OF_DAY);
 		}
 		else if(getIntent()!=null){
 			driverId = getIntent().getLongExtra(VehicleEntry._ID,0);
-			pieChartRoadSettings = getIntent().getFloatArrayExtra(SAVED_PIE_CHART_ROAD_SETTINGS);
-			pieChartRoadType = getIntent().getFloatArrayExtra(SAVED_PIE_CHART_ROAD_TYPE);
-			pieChartTimeOfDay = getIntent().getFloatArrayExtra(SAVED_PIE_CHART_TIME_OF_DAY);
 		}
 
 		DbHelper dHelper = DbHelper.getInstance(this);
@@ -54,46 +48,74 @@ public class ScorePieChartActivity extends MainActivity{
 		dHelper.close();
 		
 		rgPieCharts = (RadioGroup) findViewById(R.id.radioGroupPieCharts);
-		updatePieCharts(pieChartRoadSettings, pieChartRoadType, pieChartTimeOfDay);
+		if(!updatePieCharts()){
+			Toast.makeText(this, "No Time/Road Charts available", Toast.LENGTH_SHORT).show();
+			finish();
+		}
         
 	}
 	
-	private void updatePieCharts(float[] roadSetting, float[] roadType, float[] timeOfDay){
+	private boolean updatePieCharts(){
+		DbHelper dbHelper = DbHelper.getInstance(this);
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
 		
-		String pieChartTabs[] = new String[]{"TIME OF DAY", "ROAD SETTING", "ROAD TYPE"};
+		Cursor c = db.query(ScorePieChartEntry.TABLE_NAME, 
+				new String[]{
+				ScorePieChartEntry.COLUMN_NAME_TAB}, 
+				ScorePieChartEntry.COLUMN_NAME_DRIVER_ID + " = " + driver.id, null, ScorePieChartEntry.COLUMN_NAME_TAB, null, ScorePieChartEntry._ID+" ASC");
 		
-		Bundle bundles[] = new Bundle[3];
-		bundles[0] = new Bundle();
-	    bundles[0].putFloatArray(PieChartFragment.SAVED_VALUES, timeOfDay);
-	    bundles[0].putStringArray(PieChartFragment.SAVED_TITLES, new String[]{
-	    		Math.round(timeOfDay[0])+"% WEEKDAY",
-	        	Math.round(timeOfDay[1])+"% WEEKDAY",
-	        	Math.round(timeOfDay[2])+"% WEEKEND",
-	        	Math.round(timeOfDay[3])+"% WEEKDAY",
-	        	Math.round(timeOfDay[4])+"% WEEKDAY",
-	        	Math.round(timeOfDay[5])+"% WEEKDAY"});
-	    bundles[0].putStringArray(PieChartFragment.SAVED_SUBTITLES, new String[]{"6:30 AM - 9:30 AM","4:00 PM - 7:00 PM","All day","9:30 AM - 4:00 PM","7:00 PM - 11:59 PM","12:00 AM - 6:30 AM"});
-		    
-		bundles[1] = new Bundle();
-		bundles[1].putFloatArray(PieChartFragment.SAVED_VALUES, roadSetting);
-		bundles[1].putStringArray(PieChartFragment.SAVED_TITLES, new String[]{
-				Math.round(roadSetting[0])+"%\nRURAL",
-				Math.round(roadSetting[1])+"%\nSUBURBAN",
-				Math.round(roadSetting[2])+"%\nURBAN"});
-	    
-        bundles[2] = new Bundle();
-        bundles[2].putFloatArray(PieChartFragment.SAVED_VALUES, roadType);
-        bundles[2].putStringArray(PieChartFragment.SAVED_TITLES, new String[]{
-        		Math.round(roadType[0])+"%\nMAJOR ROAD",
-        		Math.round(roadType[1])+"%\nLOCAL ROAD",
-        		Math.round(roadType[2])+"%\nHIGHWAY",
-        		Math.round(roadType[3])+"%\nMINOR ROAD"});
+		String pieChartTabs[] = new String[c.getCount()];
+		
+		if(pieChartTabs.length==0)
+			return false;
+		
+		if(c.moveToFirst()){
+			int i = 0;
+			while(!c.isAfterLast()){
+				pieChartTabs[i] = c.getString(0);
+				i++;
+				c.moveToNext();
+			}
+		}
+		c.close();
 	   
         ArrayList<Fragment> pieChartFragments = new ArrayList<>();
         
         LayoutInflater inflater = getLayoutInflater();
         
         for (int i = 0; i < pieChartTabs.length; i++) {
+            
+            Bundle bundle = new Bundle();
+            
+            c = db.query(ScorePieChartEntry.TABLE_NAME, 
+    				new String[]{
+    				ScorePieChartEntry._ID,
+    				ScorePieChartEntry.COLUMN_NAME_VALUE,
+    				ScorePieChartEntry.COLUMN_NAME_TITLE,
+    				ScorePieChartEntry.COLUMN_NAME_SUBTITLE},
+    				ScorePieChartEntry.COLUMN_NAME_DRIVER_ID + " = ? AND "+ScorePieChartEntry.COLUMN_NAME_TAB + " = ?", new String[]{Long.toString(driver.id), pieChartTabs[i]}, null, null, ScorePieChartEntry._ID+" ASC");
+    		
+            int piecesCount = c.getCount();
+            float[] values = new float[piecesCount];
+            String[] titles = new String[piecesCount];
+            String[] subtitles = new String[piecesCount];
+            
+    		if(c.moveToFirst()){
+    			int j = 0;
+    			while(!c.isAfterLast()){
+    				values[j] = c.getFloat(1);
+    				titles[j] = c.getString(2);
+    				subtitles[j] = c.getString(3);
+    				j++;
+    				c.moveToNext();
+    			}
+    		}
+    		c.close();
+    		
+    		bundle.putFloatArray(PieChartFragment.SAVED_VALUES, values);
+    	    bundle.putStringArray(PieChartFragment.SAVED_TITLES, titles);
+    	    bundle.putStringArray(PieChartFragment.SAVED_SUBTITLES, subtitles);
+    		
         	RadioButton rb = (RadioButton)inflater.inflate(R.layout.radio_tab, rgPieCharts, false);
         	rb.setText(pieChartTabs[i]);
         	rb.setBackgroundResource(R.drawable.radio_tab_bg_selector);
@@ -101,7 +123,7 @@ public class ScorePieChartActivity extends MainActivity{
         	rb.setTypeface(tf);
         	
         	final Fragment fragment = new PieChartFragment();
-        	fragment.setArguments(bundles[i]);
+        	fragment.setArguments(bundle);
         	pieChartFragments.add(fragment);
         	
         	rb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -126,14 +148,15 @@ public class ScorePieChartActivity extends MainActivity{
         		.commitAllowingStateLoss();
         	}
         }
+        db.close();
+		dbHelper.close();
+		
+		return true;
 	}
 	
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		outState.putLong(VehicleEntry._ID, driverId);
-		outState.putFloatArray(SAVED_PIE_CHART_ROAD_SETTINGS, pieChartRoadSettings);
-		outState.putFloatArray(SAVED_PIE_CHART_ROAD_TYPE, pieChartRoadType);
-		outState.putFloatArray(SAVED_PIE_CHART_TIME_OF_DAY, pieChartTimeOfDay);
 		super.onSaveInstanceState(outState);
 	}
 	
@@ -148,5 +171,21 @@ public class ScorePieChartActivity extends MainActivity{
 		super.onBackPressed();
 		overridePendingTransition(R.anim.flip_in,R.anim.flip_out);
 	}
-
+	
+	public static class PieChartTab{
+		
+		public String tabName;
+		public float[] values;
+		public String[] titles;
+		public String[] subtitles;
+		
+		public PieChartTab(String tabName, float[] values, String[] titles,
+				String[] subtitles) {
+			super();
+			this.tabName = tabName;
+			this.values = values;
+			this.titles = titles;
+			this.subtitles = subtitles;
+		}
+	}
 }

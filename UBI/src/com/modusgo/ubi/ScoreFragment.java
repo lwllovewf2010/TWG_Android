@@ -31,6 +31,7 @@ import android.widget.TextView;
 import com.echo.holographlibrary.Bar;
 import com.echo.holographlibrary.BarGraph;
 import com.modusgo.demo.R;
+import com.modusgo.ubi.ScorePieChartActivity.PieChartTab;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.ScoreGraphContract.ScoreGraphEntry;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
@@ -52,8 +53,6 @@ public class ScoreFragment extends Fragment{
 	ImageView imageLastMonthArrow;
 	BarGraph graph;
 	
-	String[] additionalData;
-	float[][] pieChartsData;
 	Bundle circlesData;
 	
 	MonthStats[] yearStats;
@@ -124,11 +123,6 @@ public class ScoreFragment extends Fragment{
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(getActivity(), ScorePieChartActivity.class);
-				if(pieChartsData!=null && pieChartsData.length>=3){
-					i.putExtra(ScorePieChartActivity.SAVED_PIE_CHART_ROAD_SETTINGS, pieChartsData[0]);
-					i.putExtra(ScorePieChartActivity.SAVED_PIE_CHART_ROAD_TYPE, pieChartsData[1]);
-					i.putExtra(ScorePieChartActivity.SAVED_PIE_CHART_TIME_OF_DAY, pieChartsData[2]);
-				}
 				i.putExtra(VehicleEntry._ID, driver.id);
 				startActivity(i);
 				getActivity().overridePendingTransition(R.anim.flip_in,R.anim.flip_out);
@@ -447,14 +441,6 @@ public class ScoreFragment extends Fragment{
 			SimpleDateFormat sdf = new SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault());
 			DecimalFormat df = new DecimalFormat("0.000");
 			
-			additionalData = new String[]{
-					Utils.convertTime(driver.lastTripDate, sdf), 
-					driver.carVIN, 
-					Utils.convertTime(json.optString("created"), sdf), 
-					Utils.convertTime(json.optString("startdate"), sdf), 
-					df.format(json.optDouble("summary_distance",0))+" Miles", 
-					df.format(json.optDouble("summary_ead",0))+" Miles"};
-			
 			LinkedHashMap<String, Integer> percentageData = new LinkedHashMap<String, Integer>();
 			percentageData.put("Use of speed", json.optInt("score_pace"));
 			percentageData.put("Anticipation", json.optInt("score_anticipation"));
@@ -464,7 +450,17 @@ public class ScoreFragment extends Fragment{
 			percentageData.put("Consistency", json.optInt("score_consistency"));
 			dHelper.saveScorePercentage(driver.id, percentageData);
 			
-			pieChartsData = new float[][]{
+			ArrayList<PieChartTab> pcTabs = new ArrayList<PieChartTab>();
+			
+			float[][] pieChartsData = new float[][]{
+					new float[]{
+							(float)json.optDouble("timeofday0"),
+							(float)json.optDouble("timeofday1"),
+							(float)json.optDouble("timeofday2"),
+							(float)json.optDouble("timeofday3"),
+							(float)json.optDouble("timeofday4"),
+							(float)json.optDouble("timeofday5")
+					},
 					new float[]{
 							(float)json.optDouble("roadsettings_rural"),
 							(float)json.optDouble("roadsettings_suburban"),
@@ -474,14 +470,40 @@ public class ScoreFragment extends Fragment{
 							(float)json.optDouble("roadtype_local"),
 							(float)json.optDouble("roadtype_trunk"),
 							(float)json.optDouble("roadtype_minor")
-					},new float[]{
-							(float)json.optDouble("timeofday0"),
-							(float)json.optDouble("timeofday1"),
-							(float)json.optDouble("timeofday2"),
-							(float)json.optDouble("timeofday3"),
-							(float)json.optDouble("timeofday4"),
-							(float)json.optDouble("timeofday5")
-					}};
+					},};
+			
+			pcTabs.add(new PieChartTab("TIME OF DAY", 
+					pieChartsData[0],
+					new String[]{
+						Math.round(pieChartsData[0][0])+"% WEEKDAY",
+			        	Math.round(pieChartsData[0][1])+"% WEEKDAY",
+			        	Math.round(pieChartsData[0][2])+"% WEEKEND",
+			        	Math.round(pieChartsData[0][3])+"% WEEKDAY",
+			        	Math.round(pieChartsData[0][4])+"% WEEKDAY",
+			        	Math.round(pieChartsData[0][5])+"% WEEKDAY"
+					},
+					new String[]{"6:30 AM - 9:30 AM","4:00 PM - 7:00 PM","All day","9:30 AM - 4:00 PM","7:00 PM - 11:59 PM","12:00 AM - 6:30 AM"}
+			));
+			pcTabs.add(new PieChartTab("ROAD SETTING", 
+					pieChartsData[1],
+					new String[]{
+						Math.round(pieChartsData[1][0])+"%\nRURAL",
+						Math.round(pieChartsData[1][1])+"%\nSUBURBAN",
+						Math.round(pieChartsData[1][2])+"%\nURBAN"
+					},
+					null
+			));
+			pcTabs.add(new PieChartTab("ROAD TYPE", 
+					pieChartsData[2],
+					new String[]{
+						Math.round(pieChartsData[2][0])+"%\nMAJOR ROAD",
+		        		Math.round(pieChartsData[2][1])+"%\nLOCAL ROAD",
+		        		Math.round(pieChartsData[2][2])+"%\nHIGHWAY",
+		        		Math.round(pieChartsData[2][3])+"%\nMINOR ROAD"
+					},
+					null
+			));
+			dHelper.saveScorePieCharts(driver.id, pcTabs);
 			
 			circlesData = new Bundle();
 			if(json.has("road_env_analysis") && json.has("road_env_stats")){
