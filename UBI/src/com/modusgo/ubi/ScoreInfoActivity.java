@@ -65,7 +65,16 @@ public class ScoreInfoActivity extends MainActivity{
 		gvPercentData.setNumColumns(3);
 		
 		percentInfoData = new ArrayList<Map<String, Object>>();
-		updatePercentInfoAdapter();
+		
+		DbHelper dbHelper = DbHelper.getInstance(this);
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		boolean updateSuccessful = updatePercentInfoAdapter(db);
+		db.close();
+		dbHelper.close();
+		if(!updateSuccessful){
+			finish();
+		}
+		
 		gvPercentData.setAdapter(percentInfoAdapter);
 		gvPercentData.setAdditionalTextExpand(1, 12.5f);
 		gvPercentData.setExpanded(true);
@@ -135,10 +144,7 @@ public class ScoreInfoActivity extends MainActivity{
 		return d;
 	}
 	
-	private void updatePercentInfoAdapter(){
-		DbHelper dbHelper = DbHelper.getInstance(this);
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
-		
+	private boolean updatePercentInfoAdapter(SQLiteDatabase db){		
 		Cursor c = db.query(ScorePercentageEntry.TABLE_NAME, 
 				new String[]{
 				ScorePercentageEntry._ID,
@@ -148,6 +154,8 @@ public class ScoreInfoActivity extends MainActivity{
 		
 		percentInfoData.clear();
 		Map<String, Object> m;
+		
+		int infoCount = c.getCount();
 		
 		if(c.moveToFirst()){
 			while(!c.isAfterLast()){
@@ -159,8 +167,9 @@ public class ScoreInfoActivity extends MainActivity{
 			}
 		}
 		c.close();
-		db.close();
-		dbHelper.close();
+		
+		if(infoCount==0)
+			return false;
 		
 		String[] from = new String[]{ATTRIBUTE_NAME_VALUE, ATTRIBUTE_NAME_TITLE};
 		int[] to = new int[]{R.id.tvPercentValue, R.id.tvTitle};
@@ -169,6 +178,8 @@ public class ScoreInfoActivity extends MainActivity{
 			percentInfoAdapter = new SimpleAdapter(this, percentInfoData, R.layout.score_percents_item, from, to);
 		else
 			percentInfoAdapter.notifyDataSetChanged();
+		
+		return true;
 	}
 	
 	private void fillAdditionalInfo(){

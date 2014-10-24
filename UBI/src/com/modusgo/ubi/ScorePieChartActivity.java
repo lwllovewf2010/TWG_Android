@@ -12,7 +12,6 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import com.modusgo.demo.R;
 import com.modusgo.ubi.db.DbHelper;
@@ -48,17 +47,18 @@ public class ScorePieChartActivity extends MainActivity{
 		dHelper.close();
 		
 		rgPieCharts = (RadioGroup) findViewById(R.id.radioGroupPieCharts);
-		if(!updatePieCharts()){
-			Toast.makeText(this, "No Time/Road Charts available", Toast.LENGTH_SHORT).show();
+		DbHelper dbHelper = DbHelper.getInstance(this);
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		boolean updateSuccessful = updatePieCharts(db);
+		db.close();
+		dbHelper.close();
+		if(!updateSuccessful){
 			finish();
 		}
         
 	}
 	
-	private boolean updatePieCharts(){
-		DbHelper dbHelper = DbHelper.getInstance(this);
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
-		
+	private boolean updatePieCharts(SQLiteDatabase db){		
 		Cursor c = db.query(ScorePieChartEntry.TABLE_NAME, 
 				new String[]{
 				ScorePieChartEntry.COLUMN_NAME_TAB}, 
@@ -148,8 +148,6 @@ public class ScorePieChartActivity extends MainActivity{
         		.commitAllowingStateLoss();
         	}
         }
-        db.close();
-		dbHelper.close();
 		
 		return true;
 	}

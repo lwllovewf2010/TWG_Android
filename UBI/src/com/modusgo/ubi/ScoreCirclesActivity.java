@@ -51,16 +51,21 @@ public class ScoreCirclesActivity extends MainActivity{
 		
 		rgCircles = (RadioGroup) findViewById(R.id.radioGroupCircles);
         
-		updateCircles();
+        DbHelper dbHelper = DbHelper.getInstance(this);
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		boolean updateSuccessful = updateCircles(db);
+		db.close();
+		dbHelper.close();
+		if(!updateSuccessful){
+			finish();
+		}
 	}
 	
-	private void updateCircles() {
+	private boolean updateCircles(SQLiteDatabase db) {
         ArrayList<Fragment> circleFragments = new ArrayList<>();
         
         LayoutInflater inflater = getLayoutInflater();
         
-        DbHelper dbHelper = DbHelper.getInstance(this);
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
 		
 		Cursor c = db.query(ScoreCirclesEntry.TABLE_NAME, 
 				new String[]{
@@ -78,7 +83,9 @@ public class ScoreCirclesActivity extends MainActivity{
 			}
 		}
 		c.close();
-        
+		
+		if(circlesTabs.length==0)
+			return false;
         
         for (int i = 0; i < circlesTabs.length; i++) {
         	
@@ -164,6 +171,8 @@ public class ScoreCirclesActivity extends MainActivity{
                 .commitAllowingStateLoss();
             }
 		}
+        
+        return true;
 	}
 	
 	@Override
