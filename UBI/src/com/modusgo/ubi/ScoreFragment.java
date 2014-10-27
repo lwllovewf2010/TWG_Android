@@ -18,6 +18,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -176,52 +177,66 @@ public class ScoreFragment extends Fragment{
 	
 	private void updateScoreLabels(){
 		String grade = driver.grade.toUpperCase(Locale.getDefault());
-		grade = grade.equals("NULL") || grade.equals("") ? "X" : grade;
-		String thisMonthMessage = "This month:\n";
-		tvScore.setText(grade);
-		if(grade.contains("A") || grade.contains("B")){
-			thisMonthMessage+="Great Score!\nKeep it up!";
-			tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_green));
-			tvScore.setBackgroundResource(R.drawable.circle_score_green);
-		}
-		else if(grade.contains("C")){
-			thisMonthMessage+="Average Score\nYou can do better!";
-			tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_orange));
-			tvScore.setBackgroundResource(R.drawable.circle_score_orange);
-		}
-		else if(grade.contains("D") || grade.contains("E") || grade.contains("F")){
-			thisMonthMessage+="Hmm Not good\nYou can do better!";
-			tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_red));
-			tvScore.setBackgroundResource(R.drawable.circle_score_red);
-		}
-		else{
-			thisMonthMessage+="";
-			tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_gray));
-			tvScore.setBackgroundResource(R.drawable.circle_score_gray);
-		}
+		grade = grade.equals("NULL") || grade.equals("") ? "" : grade;
 		
-		tvThisMonthMessage.setText(thisMonthMessage);
-		
-		Calendar c = Calendar.getInstance();
-		int currentMonth = c.get(Calendar.MONTH);
-		String lastMonthGrade = yearStats[currentMonth-1].grade;
-		
-		if(!lastMonthGrade.equals("") && !grade.equals("X")){
-			tvLastMonthMessage.setText(lastMonthGrade+" Last Month");
-			if(gradeToNumber(grade)>gradeToNumber(lastMonthGrade)){
-				tvLastMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_green));
-				imageLastMonthArrow.setImageResource(R.drawable.arrow_up_green);
+		if(!grade.equals("")){
+			tvThisMonthMessage.setGravity(Gravity.LEFT);
+			tvScore.setVisibility(View.VISIBLE);
+			tvLastMonthMessage.setVisibility(View.VISIBLE);
+			
+			String thisMonthMessage = "This month:\n";
+			tvScore.setText(grade);
+			if(grade.contains("A") || grade.contains("B")){
+				thisMonthMessage+="Great Score!\nKeep it up!";
+				tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_green));
+				tvScore.setBackgroundResource(R.drawable.circle_score_green);
+			}
+			else if(grade.contains("C")){
+				thisMonthMessage+="Average Score\nYou can do better!";
+				tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_orange));
+				tvScore.setBackgroundResource(R.drawable.circle_score_orange);
+			}
+			else if(grade.contains("D") || grade.contains("E") || grade.contains("F")){
+				thisMonthMessage+="Hmm Not good\nYou can do better!";
+				tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_red));
+				tvScore.setBackgroundResource(R.drawable.circle_score_red);
 			}
 			else{
-				tvLastMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_red));
-				imageLastMonthArrow.setImageResource(R.drawable.arrow_down_red);				
+				thisMonthMessage+="";
+				tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_gray));
+				tvScore.setBackgroundResource(R.drawable.circle_score_gray);
+			}
+			
+			tvThisMonthMessage.setText(thisMonthMessage);
+			
+			Calendar c = Calendar.getInstance();
+			int currentMonth = c.get(Calendar.MONTH);
+			String lastMonthGrade = yearStats[currentMonth-1].grade;
+			
+			if(!lastMonthGrade.equals("")){
+				tvLastMonthMessage.setText(lastMonthGrade+" Last Month");
+				if(gradeToNumber(grade)>gradeToNumber(lastMonthGrade)){
+					tvLastMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_green));
+					imageLastMonthArrow.setImageResource(R.drawable.arrow_up_green);
+				}
+				else{
+					tvLastMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_red));
+					imageLastMonthArrow.setImageResource(R.drawable.arrow_down_red);				
+				}
+			}
+			else{
+				tvLastMonthMessage.setText("N/A Last Month");
+				tvLastMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_gray));
+				imageLastMonthArrow.setVisibility(View.INVISIBLE);
 			}
 		}
 		else{
-			tvLastMonthMessage.setText("N/A Last Month");
-			tvLastMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_gray));
-			imageLastMonthArrow.setVisibility(View.INVISIBLE);
-		}	
+			tvThisMonthMessage.setText("Scoring will be available soon");
+			tvThisMonthMessage.setGravity(Gravity.CENTER);
+			tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_gray));
+			tvScore.setVisibility(View.GONE);
+			tvLastMonthMessage.setVisibility(View.GONE);
+		}
 	}
 	
 	private void updateGraph(){
