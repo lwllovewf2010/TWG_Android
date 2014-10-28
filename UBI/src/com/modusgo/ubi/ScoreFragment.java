@@ -186,20 +186,31 @@ public class ScoreFragment extends Fragment{
 			
 			String thisMonthMessage = "This month:\n";
 			tvScore.setText(grade);
-			if(grade.contains("A") || grade.contains("B")){
-				thisMonthMessage+="Great Score!\nKeep it up!";
+			if(grade.contains("A")){
+				thisMonthMessage+="Great Driving!\nKeep it up";
+				tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_green));
+				tvScore.setBackgroundResource(R.drawable.circle_score_green);
+			}
+			else if(grade.contains("B")){
+				thisMonthMessage+="Really Good Driving!\nKeep Going!";
 				tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_green));
 				tvScore.setBackgroundResource(R.drawable.circle_score_green);
 			}
 			else if(grade.contains("C")){
-				thisMonthMessage+="Average Score\nYou can do better!";
+				thisMonthMessage+="Average Driving\nYou can do better!";
 				tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_orange));
 				tvScore.setBackgroundResource(R.drawable.circle_score_orange);
 			}
-			else if(grade.contains("D") || grade.contains("E") || grade.contains("F")){
-				thisMonthMessage+="Hmm Not good\nYou can do better!";
+			else if(grade.contains("D")){
+				thisMonthMessage+="Off to a rough start.\nYou can do better!";
 				tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_red));
 				tvScore.setBackgroundResource(R.drawable.circle_score_red);
+			}
+			else if(grade.contains("F")){
+				thisMonthMessage+="Off to a rough start.\nNo where to go but up!";
+				tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_red));
+				tvScore.setBackgroundResource(R.drawable.circle_score_red);
+				
 			}
 			else{
 				thisMonthMessage+="";
