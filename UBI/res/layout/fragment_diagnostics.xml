@@ -105,5 +105,59 @@
             android:orientation="vertical" >
         </LinearLayout>
     </ScrollView>
+    
+    <LinearLayout
+        android:id="@+id/llOdometer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp" >
+
+            <com.modusgo.ubi.customviews.TypefacedTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="To create your diagnostic profile please enter your vehicles current odometer reading below."
+                android:textColor="#3C454F"
+                android:textSize="14sp"
+                ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+
+            <com.modusgo.ubi.customviews.TypefacedEditText
+                android:id="@+id/odometer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/textview_border"
+                android:textColor="#3C454F"
+                android:inputType="number"
+                android:paddingBottom="8dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="8dp"
+                android:textSize="18sp"
+                ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+
+            <com.modusgo.ubi.customviews.TypefacedButton
+                android:id="@+id/btnSubmit"
+                android:layout_width="102dp"
+                android:layout_height="33dp"
+                android:layout_marginTop="20dp"
+                android:background="@color/btn_orange"
+                android:text="SUBMIT"
+                android:textColor="#edf1f9"
+                android:textSize="12.5sp"
+                ubi:typeface="EncodeSansNormal-500-Medium.ttf" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#00aeef" />
+    </LinearLayout>
 
 </LinearLayout>

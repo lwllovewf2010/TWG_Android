@@ -19,12 +19,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.TranslateAnimation;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.modusgo.demo.R;
+import com.modusgo.ubi.db.DbHelper;
+import com.modusgo.ubi.utils.AnimationUtils;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -37,11 +45,13 @@ public class DiagnosticsFragment extends Fragment{
 	LinearLayout llInfo;
 	LinearLayout llContent;
 	LinearLayout llProgress;
+	LinearLayout llOdometer;
 	LayoutInflater inflater;
 	
 	ImageView imageDTCAlert;
 	TextView tvLastCheckup;
 	TextView tvStatus;
+	EditText editOdometer;
 	
 	ArrayList<DiagnosticsTroubleCode> dtcs;
 	ArrayList<Recall> recalls;
@@ -89,13 +99,73 @@ public class DiagnosticsFragment extends Fragment{
 		llInfo = (LinearLayout) rootView.findViewById(R.id.llInfo);
 		llContent = (LinearLayout) rootView.findViewById(R.id.llContent);
 		llProgress = (LinearLayout) rootView.findViewById(R.id.llProgress);
+		llOdometer = (LinearLayout) rootView.findViewById(R.id.llOdometer);
 		
 		imageDTCAlert = (ImageView) rootView.findViewById(R.id.imageAlerts);
 		tvLastCheckup = (TextView) rootView.findViewById(R.id.tvLastCheckup);
 		tvStatus = (TextView) rootView.findViewById(R.id.tvStatus);
+		editOdometer = (EditText) rootView.findViewById(R.id.odometer);
 		
+		if(driver.odometer<=0){
 		
-		new GetDiagnosticsTask(getActivity()).execute("vehicles/"+driver.id+"/diagnostics.json");
+			llInfo.setVisibility(View.GONE);
+			llOdometer.setVisibility(View.VISIBLE);
+			
+			rootView.findViewById(R.id.btnSubmit).setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					try{
+						int odo = Integer.parseInt(editOdometer.getText().toString());
+						
+						if(odo<=0){
+							Toast.makeText(getActivity(), "Odometer value is too small", Toast.LENGTH_SHORT).show();
+						}
+						if(odo>999999){
+							Toast.makeText(getActivity(), "Odometer value is too big", Toast.LENGTH_SHORT).show();
+						}
+						
+						if(odo<=999999 && odo>0){
+							
+							driver.odometer = odo;
+							
+							TranslateAnimation slideDownOdometerLayoutAmination = new TranslateAnimation(
+								      TranslateAnimation.RELATIVE_TO_PARENT,0.0f,
+								      TranslateAnimation.RELATIVE_TO_PARENT,0.0f,
+								      TranslateAnimation.RELATIVE_TO_PARENT,0.0f,
+								      TranslateAnimation.RELATIVE_TO_PARENT,1f);
+							slideDownOdometerLayoutAmination.setDuration(500);
+							slideDownOdometerLayoutAmination.setFillAfter(true);
+							slideDownOdometerLayoutAmination.setAnimationListener(new AnimationListener() {
+								@Override
+								public void onAnimationStart(Animation animation) {	
+								}
+								@Override
+								public void onAnimationRepeat(Animation animation) {	
+								}
+								@Override
+								public void onAnimationEnd(Animation animation) {
+									llOdometer.setVisibility(View.GONE);
+									new GetDiagnosticsTask(getActivity()).execute("vehicles/"+driver.id+"/diagnostics.json");
+								}
+							});
+							llOdometer.startAnimation(slideDownOdometerLayoutAmination);
+							
+							InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+						    // check if no view has focus:
+						    View view = getActivity().getCurrentFocus();
+						    if (view != null) {
+						        inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+						    }
+						}
+					}
+					catch(NumberFormatException e){
+						Toast.makeText(getActivity(), "Incorrect odometer value", Toast.LENGTH_SHORT).show();
+					}
+				}
+			});
+		}
 		
 		return rootView;
 	}
@@ -116,7 +186,7 @@ public class DiagnosticsFragment extends Fragment{
 				tvCode.setText(dtc.code);
 				tvDescription.setText(dtc.description);
 				tvImportance.setText(dtc.importance);
-				switch (dtc.importance.toLowerCase()) {
+				switch (dtc.importance.toLowerCase(Locale.US)) {
 				case "high":
 					tvImportance.setTextColor(Color.parseColor("#ee4e43"));
 					break;
@@ -189,7 +259,7 @@ public class DiagnosticsFragment extends Fragment{
 				tvCode.setText(maintenance.mileage);
 				tvDescription.setText(maintenance.description);
 				tvImportance.setText(maintenance.importance);
-				switch (maintenance.importance.toLowerCase()) {
+				switch (maintenance.importance.toLowerCase(Locale.US)) {
 				case "high":
 					tvImportance.setTextColor(Color.parseColor("#ee4e43"));
 					break;
@@ -266,34 +336,62 @@ public class DiagnosticsFragment extends Fragment{
 		SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
 		SimpleDateFormat sdfTo = new SimpleDateFormat("MM/dd/yyyy KK:mm aa z", Locale.getDefault());
 		
+
+		Animation fadeInProgress;
+		Animation fadeOutProgress;
+		Animation fadeInInfo;
+		Animation fadeOutInfo;
+		Animation fadeInContent;
+		Animation fadeOutContent;
+		
 		public GetDiagnosticsTask(Context context) {
 			super(context);
+			fadeInProgress = AnimationUtils.getFadeInAnmation(getActivity(), llProgress);
+			fadeOutProgress = AnimationUtils.getFadeOutAnmation(getActivity(), llProgress);
+			fadeInInfo = AnimationUtils.getFadeInAnmation(getActivity(), llInfo);
+			fadeOutInfo = AnimationUtils.getFadeOutAnmation(getActivity(), llInfo);
+			fadeInContent = AnimationUtils.getFadeInAnmation(getActivity(), svContent);
+			fadeOutContent = AnimationUtils.getFadeOutAnmation(getActivity(), svContent);
 		}
 		
 		@Override
 		protected void onPreExecute() {
-			llProgress.setVisibility(View.VISIBLE);
-			svContent.setVisibility(View.GONE);
-			llInfo.setVisibility(View.GONE);
+			llProgress.startAnimation(fadeInProgress);
+			llInfo.startAnimation(fadeOutInfo);
+			svContent.startAnimation(fadeOutContent);
 			super.onPreExecute();
 		}
 		
 		@Override
 		protected void onPostExecute(JSONObject result) {
 			super.onPostExecute(result);
-			llProgress.setVisibility(View.GONE);
-			svContent.setVisibility(View.VISIBLE);
-			llInfo.setVisibility(View.VISIBLE);
+			llProgress.startAnimation(fadeOutProgress);
+			llInfo.startAnimation(fadeInInfo);
+			svContent.startAnimation(fadeInContent);
 		}
 
 		@Override
 		protected JSONObject doInBackground(String... params) {
 	        requestParams.add(new BasicNameValuePair("driver_id", ""+driver.id));
+	        requestParams.add(new BasicNameValuePair("mileage", ""+driver.odometer));
 			return super.doInBackground(params);
 		}
 		
 		@Override
+		protected void onError(String message) {
+			tvLastCheckup.setText("N/A");
+			tvStatus.setText("Gathering diagnostic information...");
+//			super.onError(message);
+		}
+		
+		@Override
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
+			DbHelper dbHelper = DbHelper.getInstance(getActivity());
+			dbHelper.saveDriver(driver);
+			dbHelper.close();
+			
+			System.out.println(responseJSON);
+			
 			if(responseJSON.has("diagnostics")){
 				JSONObject diagnosticsJSON = responseJSON.getJSONObject("diagnostics");
 				

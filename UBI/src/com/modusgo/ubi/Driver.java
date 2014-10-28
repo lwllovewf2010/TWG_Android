@@ -1,7 +1,6 @@
 package com.modusgo.ubi;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,6 +40,7 @@ public class Driver implements Serializable{
 	public int totalAcceleration;
 	public int totalSpeeding;
 	public double totalSpeedingDistance;
+	public int odometer;
 	
 	public String profileDate = "";
 	public int harshEvents;

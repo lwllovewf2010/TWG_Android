@@ -24,7 +24,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
@@ -181,41 +180,6 @@ public class SignInActivity extends FragmentActivity {
         }
     }
 	
-	public class MyAnimationListener implements AnimationListener {
-	    
-		View view;
-	    boolean hideView;
-	    
-	    public MyAnimationListener(View v, boolean hideView) {
-			view = v;
-			this.hideView = hideView;
-		}
-	    
-	    public void onAnimationEnd(Animation animation) {
-	    	if(hideView)
-	    		view.setVisibility(View.GONE);
-	    	else
-	    		view.setVisibility(View.VISIBLE);
-	    }
-	    
-	    public void onAnimationRepeat(Animation animation) {
-	    }
-	    public void onAnimationStart(Animation animation) {
-	    }
-	}
-	
-	private Animation getFadeInAnmation(View v){
-		Animation fadeIn = AnimationUtils.loadAnimation(SignInActivity.this,android.R.anim.fade_in);
-		fadeIn.setAnimationListener(new MyAnimationListener(v, false));
-		return fadeIn;
-	}
-	
-	private Animation getFadeOutAnmation(View v){
-		Animation fadeOut = AnimationUtils.loadAnimation(SignInActivity.this,android.R.anim.fade_out);
-		fadeOut.setAnimationListener(new MyAnimationListener(v, true));
-		return fadeOut;
-	}
-	
 	class LoginTask extends BasePostRequestAsyncTask{
 		
 		Animation fadeInProgress;
@@ -228,10 +192,10 @@ public class SignInActivity extends FragmentActivity {
 		
 		public LoginTask(Context context) {
 			super(context);
-			fadeInProgress = getFadeInAnmation(layoutProgress);
-			fadeOutProgress = getFadeOutAnmation(layoutProgress);
-			fadeInFields = getFadeInAnmation(layoutFields);
-			fadeOutFields = getFadeOutAnmation(layoutFields);
+			fadeInProgress = com.modusgo.ubi.utils.AnimationUtils.getFadeInAnmation(SignInActivity.this, layoutProgress);
+			fadeOutProgress = com.modusgo.ubi.utils.AnimationUtils.getFadeOutAnmation(SignInActivity.this, layoutProgress);
+			fadeInFields = com.modusgo.ubi.utils.AnimationUtils.getFadeInAnmation(SignInActivity.this, layoutFields);
+			fadeOutFields = com.modusgo.ubi.utils.AnimationUtils.getFadeOutAnmation(SignInActivity.this, layoutFields);
 		}
 		
 		@Override

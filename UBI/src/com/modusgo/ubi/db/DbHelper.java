@@ -220,7 +220,13 @@ public class DbHelper extends SQLiteOpenHelper {
 		return d;
 	}
 	
-	public void saveDrivers(ArrayList<Driver> drivers){
+	public void saveDriver(Driver d){
+		ArrayList<Driver> drivers = new ArrayList<Driver>();
+		drivers.add(d);
+		saveDrivers(drivers, false);
+	}
+	
+	public void saveDrivers(ArrayList<Driver> drivers, boolean removeDrivers){
 		SQLiteDatabase database = sInstance.getWritableDatabase();
 		
 		if(database!=null && drivers!=null){
@@ -294,17 +300,22 @@ public class DbHelper extends SQLiteOpenHelper {
 		    database.endTransaction();
 		    statement.close();
 
-		    SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+VehicleEntry.TABLE_NAME+" WHERE "+VehicleEntry._ID+" NOT IN (" + ids + ")");
-		    database.beginTransaction();
-		    removeStatement.clearBindings();
-	        removeStatement.execute();
-	        database.setTransactionSuccessful();	
-		    database.endTransaction();
-		    removeStatement.close();
+		    if(removeDrivers){
+			    SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+VehicleEntry.TABLE_NAME+" WHERE "+VehicleEntry._ID+" NOT IN (" + ids + ")");
+			    database.beginTransaction();
+			    removeStatement.clearBindings();
+		        removeStatement.execute();
+		        database.setTransactionSuccessful();	
+			    database.endTransaction();
+			    removeStatement.close();
+		    }
 		}
 		
 		database.close();
-		
+	}
+	
+	public void saveDrivers(ArrayList<Driver> drivers){
+		saveDrivers(drivers, true);		
 	}
 	
 	public void saveTrip(Trip trip){
