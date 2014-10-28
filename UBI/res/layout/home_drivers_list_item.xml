@@ -15,10 +15,12 @@
 
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginLeft="18dp"
         android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
         android:layout_weight="1"
+        android:gravity="bottom"
         android:orientation="vertical" >
 
         <com.modusgo.ubi.customviews.TypefacedTextView
@@ -27,7 +29,6 @@
             android:layout_height="wrap_content"
             android:gravity="left|bottom"
             android:lineSpacingExtra="-2dp"
-            android:minLines="2"
             android:text="Melissa Hasalonglastname"
             android:textColor="#697078"
             android:textSize="17.5sp"
@@ -36,7 +37,7 @@
         <com.modusgo.ubi.customviews.TypefacedTextView
             android:id="@+id/tvVehicle"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
             android:layout_marginTop="4dp"
             android:gravity="left"
@@ -47,7 +48,7 @@
 
         <com.modusgo.ubi.customviews.TypefacedTextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:gravity="left"
             android:text="Last Trip"
             android:textColor="#3c454f"
@@ -57,7 +58,7 @@
         <com.modusgo.ubi.customviews.TypefacedTextView
             android:id="@+id/tvDate"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:gravity="left"
             android:text="07/05/2014 05:00 PM PST"
             android:textColor="#a1a6ad"
