@@ -986,7 +986,6 @@ android.support.v4.view.ViewCompat:
     public static final int MEASURED_HEIGHT_STATE_SHIFT
     public static final int MEASURED_STATE_TOO_SMALL
     43:962:public ViewCompat()
-    1018:1018:public static boolean canScrollVertically(android.view.View,int)
     1048:1049:public static void setOverScrollMode(android.view.View,int)
     1085:1086:public static void onPopulateAccessibilityEvent(android.view.View,android.view.accessibility.AccessibilityEvent)
     1118:1119:public static void onInitializeAccessibilityEvent(android.view.View,android.view.accessibility.AccessibilityEvent)
@@ -1042,7 +1041,6 @@ android.support.v4.view.ViewCompat$BaseViewCompatImpl:
     private java.lang.reflect.Method mDispatchStartTemporaryDetach
     private java.lang.reflect.Method mDispatchFinishTemporaryDetach
     private boolean mTempDetachBound
-    333:333:public boolean canScrollVertically(android.view.View,int)
     340:340:public void setOverScrollMode(android.view.View,int)
     346:346:public void onPopulateAccessibilityEvent(android.view.View,android.view.accessibility.AccessibilityEvent)
     349:349:public void onInitializeAccessibilityEvent(android.view.View,android.view.accessibility.AccessibilityEvent)
@@ -1126,7 +1124,6 @@ android.support.v4.view.ViewCompat$HCViewCompatImpl:
     803:803:public float getPivotX(android.view.View)
     807:807:public float getPivotY(android.view.View)
 android.support.v4.view.ViewCompat$ICSViewCompatImpl:
-    818:818:public boolean canScrollVertically(android.view.View,int)
     822:823:public void onPopulateAccessibilityEvent(android.view.View,android.view.accessibility.AccessibilityEvent)
     826:827:public void onInitializeAccessibilityEvent(android.view.View,android.view.accessibility.AccessibilityEvent)
     830:831:public void onInitializeAccessibilityNodeInfo(android.view.View,android.support.v4.view.accessibility.AccessibilityNodeInfoCompat)
@@ -1155,7 +1152,6 @@ android.support.v4.view.ViewCompat$LayoutDirectionMode
 android.support.v4.view.ViewCompat$OverScroll
 android.support.v4.view.ViewCompat$ResolvedLayoutDirectionMode
 android.support.v4.view.ViewCompat$ViewCompatImpl:
-    public abstract boolean canScrollVertically(android.view.View,int)
     public abstract void setOverScrollMode(android.view.View,int)
     public abstract void onInitializeAccessibilityEvent(android.view.View,android.view.accessibility.AccessibilityEvent)
     public abstract void onPopulateAccessibilityEvent(android.view.View,android.view.accessibility.AccessibilityEvent)
@@ -1243,7 +1239,6 @@ android.support.v4.view.ViewCompatHC:
     145:145:public static float getPivotY(android.view.View)
 android.support.v4.view.ViewCompatICS:
     27:27:ViewCompatICS()
-    34:34:public static boolean canScrollVertically(android.view.View,int)
     42:43:public static void onPopulateAccessibilityEvent(android.view.View,android.view.accessibility.AccessibilityEvent)
     46:47:public static void onInitializeAccessibilityEvent(android.view.View,android.view.accessibility.AccessibilityEvent)
     50:51:public static void onInitializeAccessibilityNodeInfo(android.view.View,java.lang.Object)
@@ -1729,7 +1724,6 @@ android.support.v4.widget.AutoScrollHelper
 android.support.v4.widget.AutoScrollHelper$1
 android.support.v4.widget.AutoScrollHelper$ClampedScroller
 android.support.v4.widget.AutoScrollHelper$ScrollAnimationRunnable
-android.support.v4.widget.BakedBezierInterpolator
 android.support.v4.widget.ContentLoadingProgressBar
 android.support.v4.widget.ContentLoadingProgressBar$1
 android.support.v4.widget.ContentLoadingProgressBar$2
@@ -1898,16 +1892,24 @@ android.support.v4.widget.SlidingPaneLayout$PanelSlideListener:
     public abstract void onPanelOpened(android.view.View)
     public abstract void onPanelClosed(android.view.View)
 android.support.v4.widget.SlidingPaneLayout$SimplePanelSlideListener
-android.support.v4.widget.SwipeProgressBar
-android.support.v4.widget.SwipeRefreshLayout
-android.support.v4.widget.SwipeRefreshLayout$1
-android.support.v4.widget.SwipeRefreshLayout$2
-android.support.v4.widget.SwipeRefreshLayout$3
-android.support.v4.widget.SwipeRefreshLayout$4
-android.support.v4.widget.SwipeRefreshLayout$5
-android.support.v4.widget.SwipeRefreshLayout$6
-android.support.v4.widget.SwipeRefreshLayout$BaseAnimationListener
-android.support.v4.widget.SwipeRefreshLayout$OnRefreshListener
+android.support.v4.widget.SwipeProgressBar:
+    private static final int COLOR1
+    private static final int COLOR2
+    private static final int COLOR3
+    private static final int COLOR4
+    private static final int ANIMATION_DURATION_MS
+    private static final int FINISH_ANIMATION_DURATION_MS
+    133:133:boolean isRunning()
+android.support.v4.widget.SwipeRefreshLayout:
+    private static final long RETURN_TO_ORIGINAL_POSITION_TIMEOUT
+    private static final float ACCELERATE_INTERPOLATION_FACTOR
+    private static final float DECELERATE_INTERPOLATION_FACTOR
+    private static final float PROGRESS_BAR_HEIGHT
+    private static final float MAX_SWIPE_DISTANCE_FACTOR
+    private static final int REFRESH_TRIGGER_DISTANCE
+    private static final int INVALID_POINTER
+    271:272:public void setColorScheme(int,int,int,int)
+    301:301:public boolean isRefreshing()
 android.support.v4.widget.ViewDragHelper:
     private static final java.lang.String TAG
     public static final int INVALID_POINTER
@@ -6691,7 +6693,7 @@ com.modusgo.demo.R$layout
 com.modusgo.demo.R$string
 com.modusgo.demo.R$style
 com.modusgo.demo.R$styleable:
-    3087:3087:public R$styleable()
+    3090:3090:public R$styleable()
 com.modusgo.demo.R$xml
 com.modusgo.ubi.CirclesFragment:
     public static final java.lang.String SAVED_SECTIONS
@@ -6708,6 +6710,8 @@ com.modusgo.ubi.Constants:
     public static final java.lang.String PREF_DEVICE_TYPE
     public static final java.lang.String PREF_DEVICE_DATA_URL
     public static final java.lang.String PREF_DEVICE_AUTH_KEY
+    public static final java.lang.String PREF_DIAGNOSTICS_CHECKUP_DATE
+    public static final java.lang.String PREF_DIAGNOSTICS_STATUS
     public static final java.lang.String API_BASE_URL_PREFIX
     public static final java.lang.String API_BASE_URL_POSTFIX
     public static final java.lang.String API_PLATFORM
@@ -6723,6 +6727,8 @@ com.modusgo.ubi.Constants:
     3:3:public Constants()
 com.modusgo.ubi.DiagnosticDetailActivity:
     public static final java.lang.String EXTRA_DTC
+com.modusgo.ubi.DiagnosticsFragment:
+    private static final java.lang.String ERROR_STATUS_MESSAGE
 com.modusgo.ubi.DiagnosticsTroubleCode:
     private static final long serialVersionUID
 com.modusgo.ubi.Driver:
@@ -6732,8 +6738,8 @@ com.modusgo.ubi.Driver:
     56:62:public java.lang.String getLastName()
 com.modusgo.ubi.DriverActivity:
     public static final java.lang.String SAVED_DRIVER
-    293:296:public android.view.animation.Animation fadeOutAnimation()
-    301:304:public android.view.animation.Animation fadeInAnimation()
+    256:259:public android.view.animation.Animation fadeOutAnimation()
+    264:267:public android.view.animation.Animation fadeInAnimation()
 com.modusgo.ubi.DriversHelper:
     23:24:public void setDrivers(java.util.ArrayList)
     43:44:public void setDriver(int,com.modusgo.ubi.Driver)
@@ -6805,35 +6811,23 @@ com.modusgo.ubi.customviews.PieChartView:
     private static final int START_ANGLE
 com.modusgo.ubi.customviews.PieChartView$PieSector:
     155:155:public PieChartView$PieSector(com.modusgo.ubi.customviews.PieChartView)
+com.modusgo.ubi.db.DTCContract
+com.modusgo.ubi.db.DTCContract$DTCEntry
 com.modusgo.ubi.db.DbHelper:
     private static final java.lang.String TEXT_TYPE
     private static final java.lang.String INT_TYPE
     private static final java.lang.String FLOAT_TYPE
     private static final java.lang.String COMMA_SEP
-    private static final java.lang.String SQL_CREATE_ENTRIES
-    private static final java.lang.String SQL_CREATE_ENTRIES_2
-    private static final java.lang.String SQL_CREATE_ENTRIES_3
-    private static final java.lang.String SQL_CREATE_ENTRIES_4
-    private static final java.lang.String SQL_CREATE_ENTRIES_5
-    private static final java.lang.String SQL_CREATE_ENTRIES_6
-    private static final java.lang.String SQL_CREATE_ENTRIES_7
-    private static final java.lang.String SQL_CREATE_ENTRIES_8
-    private static final java.lang.String SQL_CREATE_ENTRIES_9
-    private static final java.lang.String SQL_DELETE_ENTRIES
-    private static final java.lang.String SQL_DELETE_ENTRIES_2
-    private static final java.lang.String SQL_DELETE_ENTRIES_3
-    private static final java.lang.String SQL_DELETE_ENTRIES_4
-    private static final java.lang.String SQL_DELETE_ENTRIES_5
-    private static final java.lang.String SQL_DELETE_ENTRIES_6
-    private static final java.lang.String SQL_DELETE_ENTRIES_7
-    private static final java.lang.String SQL_DELETE_ENTRIES_8
-    private static final java.lang.String SQL_DELETE_ENTRIES_9
     public static final int DATABASE_VERSION
     public static final java.lang.String DATABASE_NAME
 com.modusgo.ubi.db.EventContract
 com.modusgo.ubi.db.EventContract$EventEntry
+com.modusgo.ubi.db.MaintenanceContract
+com.modusgo.ubi.db.MaintenanceContract$MaintenanceEntry
 com.modusgo.ubi.db.PointContract
 com.modusgo.ubi.db.PointContract$PointEntry
+com.modusgo.ubi.db.RecallContract
+com.modusgo.ubi.db.RecallContract$RecallEntry
 com.modusgo.ubi.db.RouteContract
 com.modusgo.ubi.db.RouteContract$RouteEntry
 com.modusgo.ubi.db.ScoreCirclesContract
@@ -6848,6 +6842,10 @@ com.modusgo.ubi.db.TripContract
 com.modusgo.ubi.db.TripContract$TripEntry
 com.modusgo.ubi.db.VehicleContract
 com.modusgo.ubi.db.VehicleContract$VehicleEntry
+com.modusgo.ubi.db.WarrantyInfoContract
+com.modusgo.ubi.db.WarrantyInfoContract$WarrantyInfoEntry
+com.modusgo.ubi.utils.AnimationUtils:
+    8:8:public AnimationUtils()
 com.modusgo.ubi.utils.RequestGet:
     19:21:public RequestGet(java.lang.String)
 com.modusgo.ubi.utils.Utils:
