@@ -35,5 +35,6 @@ public class VehicleContract {
         public static final String COLUMN_NAME_TOTAL_SPEEDING = "total_speeding";
         public static final String COLUMN_NAME_TOTAL_SPEEDING_DISTANCE = "total_speeding_distance";
         public static final String COLUMN_NAME_ALERTS = "new_alerts";
+        public static final String COLUMN_NAME_ODOMETER = "odometer";
     }
 }

@@ -85,6 +85,7 @@ public class Driver implements Serializable{
 			d.carYear = carJSON.optString("year");
 			d.carFuelLevel = carJSON.optInt("fuel_level", -1);
 			d.carCheckup = carJSON.optBoolean("checkup");
+			d.odometer = carJSON.optInt("odometer");
 		}
 		
 		if(!vehicleJSON.isNull("location")){

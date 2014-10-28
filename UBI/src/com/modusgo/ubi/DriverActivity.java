@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTabHost;
@@ -67,7 +65,9 @@ public class DriverActivity extends MainActivity{
         Bundle b = new Bundle();
 		b.putLong("id", getIntent().getLongExtra(VehicleEntry._ID, 0));
 		
-		driver = getDriverFromDB(getIntent().getLongExtra(VehicleEntry._ID, 0));
+		DbHelper dbHelper = DbHelper.getInstance(this);
+		driver = dbHelper.getDriver(getIntent().getLongExtra(VehicleEntry._ID, 0));
+		dbHelper.close();
 		
 		setupTab(DriverDetailsFragment.class, b, "Driver Detail", R.drawable.ic_tab_driver, 0);
 		setupTab(TripsFragment.class, b, "Trips", R.drawable.ic_tab_trips, 0);
@@ -113,74 +113,6 @@ public class DriverActivity extends MainActivity{
 	
 	public void switchTab(int index){
 		tabHost.setCurrentTab(index);
-	}
-	
-	private Driver getDriverFromDB(long id){
-		DbHelper dbHelper = DbHelper.getInstance(this);
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
-		Cursor c = db.query(VehicleEntry.TABLE_NAME, 
-				new String[]{
-				VehicleEntry._ID,
-				VehicleEntry.COLUMN_NAME_DRIVER_NAME,
-				VehicleEntry.COLUMN_NAME_DRIVER_MARKER_ICON,
-				VehicleEntry.COLUMN_NAME_DRIVER_PHOTO,
-				VehicleEntry.COLUMN_NAME_CAR_MAKE,
-				VehicleEntry.COLUMN_NAME_CAR_MODEL,
-				VehicleEntry.COLUMN_NAME_CAR_YEAR,
-				VehicleEntry.COLUMN_NAME_CAR_VIN,
-				VehicleEntry.COLUMN_NAME_CAR_FUEL,
-				VehicleEntry.COLUMN_NAME_CAR_CHECKUP,
-				VehicleEntry.COLUMN_NAME_LAST_TRIP_DATE,
-				VehicleEntry.COLUMN_NAME_LAST_TRIP_ID,
-				VehicleEntry.COLUMN_NAME_ALERTS,
-				VehicleEntry.COLUMN_NAME_LATITUDE,
-				VehicleEntry.COLUMN_NAME_LONGITUDE,
-				VehicleEntry.COLUMN_NAME_ADDRESS,
-				VehicleEntry.COLUMN_NAME_GRADE,
-				VehicleEntry.COLUMN_NAME_SCORE,
-			    VehicleEntry.COLUMN_NAME_TOTAL_TRIPS_COUNT,
-			    VehicleEntry.COLUMN_NAME_TOTAL_DRIVING_TIME,
-			    VehicleEntry.COLUMN_NAME_TOTAL_DISTANCE,
-			    VehicleEntry.COLUMN_NAME_TOTAL_BREAKING,
-			    VehicleEntry.COLUMN_NAME_TOTAL_ACCELERATION,
-			    VehicleEntry.COLUMN_NAME_TOTAL_SPEEDING,
-			    VehicleEntry.COLUMN_NAME_TOTAL_SPEEDING_DISTANCE}, 
-				VehicleEntry._ID+" = ?", new String[]{Long.toString(id)}, null, null, null);
-		
-		Driver d = new Driver();
-		
-		if(c.moveToFirst()){
-			d.id = c.getLong(0);
-			d.name = c.getString(1);
-			d.markerIcon = c.getString(2);
-			d.photo = c.getString(3);
-			d.carMake = c.getString(4);
-			d.carModel = c.getString(5);
-			d.carYear = c.getString(6);
-			d.carVIN = c.getString(7);
-			d.carFuelLevel = c.getInt(8);
-			d.carCheckup = c.getInt(9) == 1;
-			d.lastTripDate = c.getString(10);
-			d.lastTripId = c.getLong(11);
-			d.alerts = c.getInt(12);
-			d.latitude = c.getLong(13);
-			d.longitude = c.getLong(14);
-			d.address = c.getString(15);
-			d.grade = c.getString(16);
-			d.score = c.getInt(17);
-			d.totalTripsCount = c.getInt(18);
-			d.totalDrivingTime = c.getInt(19);
-			d.totalDistance = c.getDouble(20);
-			d.totalBraking = c.getInt(21);
-			d.totalAcceleration = c.getInt(22);
-			d.totalSpeeding = c.getInt(23);
-			d.totalSpeedingDistance = c.getDouble(24);
-				
-		}
-		c.close();
-		db.close();
-		dbHelper.close();
-		return d;
 	}
 	
 	class DriversAdapter extends BaseAdapter{

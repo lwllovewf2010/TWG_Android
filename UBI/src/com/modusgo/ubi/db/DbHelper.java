@@ -60,7 +60,8 @@ public class DbHelper extends SQLiteOpenHelper {
 	    VehicleEntry.COLUMN_NAME_TOTAL_ACCELERATION + INT_TYPE + COMMA_SEP +
 	    VehicleEntry.COLUMN_NAME_TOTAL_SPEEDING + INT_TYPE + COMMA_SEP +
 	    VehicleEntry.COLUMN_NAME_TOTAL_SPEEDING_DISTANCE + FLOAT_TYPE + COMMA_SEP +
-	    VehicleEntry.COLUMN_NAME_ALERTS + INT_TYPE + " ); ";
+	    VehicleEntry.COLUMN_NAME_ALERTS + INT_TYPE + COMMA_SEP +
+	    VehicleEntry.COLUMN_NAME_ODOMETER + INT_TYPE + " ); ";
 	
 	private static final String SQL_CREATE_ENTRIES_2 =
 		    "CREATE TABLE " + TripEntry.TABLE_NAME + " (" +
@@ -139,7 +140,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	private static final String SQL_DELETE_ENTRIES_9 = "DROP TABLE IF EXISTS " + ScoreCirclesEntry.TABLE_NAME;
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 9;
+	public static final int DATABASE_VERSION = 10;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;
@@ -220,6 +221,74 @@ public class DbHelper extends SQLiteOpenHelper {
 		return d;
 	}
 	
+	public Driver getDriver(long id){
+		SQLiteDatabase db = sInstance.getReadableDatabase();
+		Cursor c = db.query(VehicleEntry.TABLE_NAME, 
+				new String[]{
+				VehicleEntry._ID,
+				VehicleEntry.COLUMN_NAME_DRIVER_NAME,
+				VehicleEntry.COLUMN_NAME_DRIVER_MARKER_ICON,
+				VehicleEntry.COLUMN_NAME_DRIVER_PHOTO,
+				VehicleEntry.COLUMN_NAME_CAR_MAKE,
+				VehicleEntry.COLUMN_NAME_CAR_MODEL,
+				VehicleEntry.COLUMN_NAME_CAR_YEAR,
+				VehicleEntry.COLUMN_NAME_CAR_VIN,
+				VehicleEntry.COLUMN_NAME_CAR_FUEL,
+				VehicleEntry.COLUMN_NAME_CAR_CHECKUP,
+				VehicleEntry.COLUMN_NAME_LAST_TRIP_DATE,
+				VehicleEntry.COLUMN_NAME_LAST_TRIP_ID,
+				VehicleEntry.COLUMN_NAME_ALERTS,
+				VehicleEntry.COLUMN_NAME_LATITUDE,
+				VehicleEntry.COLUMN_NAME_LONGITUDE,
+				VehicleEntry.COLUMN_NAME_ADDRESS,
+				VehicleEntry.COLUMN_NAME_GRADE,
+				VehicleEntry.COLUMN_NAME_SCORE,
+			    VehicleEntry.COLUMN_NAME_TOTAL_TRIPS_COUNT,
+			    VehicleEntry.COLUMN_NAME_TOTAL_DRIVING_TIME,
+			    VehicleEntry.COLUMN_NAME_TOTAL_DISTANCE,
+			    VehicleEntry.COLUMN_NAME_TOTAL_BREAKING,
+			    VehicleEntry.COLUMN_NAME_TOTAL_ACCELERATION,
+			    VehicleEntry.COLUMN_NAME_TOTAL_SPEEDING,
+			    VehicleEntry.COLUMN_NAME_TOTAL_SPEEDING_DISTANCE,
+			    VehicleEntry.COLUMN_NAME_ODOMETER}, 
+				VehicleEntry._ID+" = ?", new String[]{Long.toString(id)}, null, null, null);
+		
+		Driver d = new Driver();
+		
+		if(c.moveToFirst()){
+			d.id = c.getLong(0);
+			d.name = c.getString(1);
+			d.markerIcon = c.getString(2);
+			d.photo = c.getString(3);
+			d.carMake = c.getString(4);
+			d.carModel = c.getString(5);
+			d.carYear = c.getString(6);
+			d.carVIN = c.getString(7);
+			d.carFuelLevel = c.getInt(8);
+			d.carCheckup = c.getInt(9) == 1;
+			d.lastTripDate = c.getString(10);
+			d.lastTripId = c.getLong(11);
+			d.alerts = c.getInt(12);
+			d.latitude = c.getLong(13);
+			d.longitude = c.getLong(14);
+			d.address = c.getString(15);
+			d.grade = c.getString(16);
+			d.score = c.getInt(17);
+			d.totalTripsCount = c.getInt(18);
+			d.totalDrivingTime = c.getInt(19);
+			d.totalDistance = c.getDouble(20);
+			d.totalBraking = c.getInt(21);
+			d.totalAcceleration = c.getInt(22);
+			d.totalSpeeding = c.getInt(23);
+			d.totalSpeedingDistance = c.getDouble(24);
+			d.odometer = c.getInt(25);
+				
+		}
+		c.close();
+		db.close();
+		return d;
+	}
+	
 	public void saveDriver(Driver d){
 		ArrayList<Driver> drivers = new ArrayList<Driver>();
 		drivers.add(d);
@@ -255,8 +324,9 @@ public class DbHelper extends SQLiteOpenHelper {
 					+ VehicleEntry.COLUMN_NAME_TOTAL_ACCELERATION +","
 					+ VehicleEntry.COLUMN_NAME_TOTAL_SPEEDING +","
 					+ VehicleEntry.COLUMN_NAME_TOTAL_SPEEDING_DISTANCE +","
-					+ VehicleEntry.COLUMN_NAME_ALERTS +""
-					+ ") VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
+					+ VehicleEntry.COLUMN_NAME_ALERTS +","
+					+ VehicleEntry.COLUMN_NAME_ODOMETER +""
+					+ ") VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
 			
 			SQLiteStatement statement = database.compileStatement(sql);
 		    database.beginTransaction();
@@ -292,6 +362,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		    	statement.bindLong(23, driver.totalSpeeding);
 		    	statement.bindDouble(24, driver.totalSpeedingDistance);
 		    	statement.bindLong(25, driver.alerts);
+		    	statement.bindLong(26, driver.odometer);
 		    	statement.execute();
 		    	
 			}
