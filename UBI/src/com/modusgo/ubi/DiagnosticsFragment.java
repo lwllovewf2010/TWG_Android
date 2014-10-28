@@ -20,6 +20,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,7 +33,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,7 +54,7 @@ public class DiagnosticsFragment extends Fragment{
 
 	Driver driver;
 
-	ScrollView svContent;
+	SwipeRefreshLayout lRefresh;
 	LinearLayout llInfo;
 	LinearLayout llContent;
 	LinearLayout llProgress;
@@ -106,7 +107,7 @@ public class DiagnosticsFragment extends Fragment{
 
 		this.inflater = inflater;
 		
-		svContent = (ScrollView) rootView.findViewById(R.id.svContent);
+		lRefresh = (SwipeRefreshLayout) rootView.findViewById(R.id.lRefresh);
 		llInfo = (LinearLayout) rootView.findViewById(R.id.llInfo);
 		llContent = (LinearLayout) rootView.findViewById(R.id.llContent);
 		llProgress = (LinearLayout) rootView.findViewById(R.id.llProgress);
@@ -117,9 +118,19 @@ public class DiagnosticsFragment extends Fragment{
 		tvStatus = (TextView) rootView.findViewById(R.id.tvStatus);
 		editOdometer = (EditText) rootView.findViewById(R.id.odometer);
 		
+		lRefresh.setColorSchemeResources(R.color.ubi_gray, R.color.ubi_green, R.color.ubi_orange, R.color.ubi_red);
+		lRefresh.setOnRefreshListener(new OnRefreshListener() {
+			
+			@Override
+			public void onRefresh() {
+				lRefresh.setRefreshing(true);
+				new GetDiagnosticsTask(getActivity()).execute("vehicles/"+driver.id+"/diagnostics.json");
+			}
+		});
+		
 		if(driver.odometer<=0){
 		
-			llInfo.setVisibility(View.GONE);
+			lRefresh.setVisibility(View.GONE);
 			llOdometer.setVisibility(View.VISIBLE);
 			
 			rootView.findViewById(R.id.btnSubmit).setOnClickListener(new OnClickListener() {
@@ -157,6 +168,7 @@ public class DiagnosticsFragment extends Fragment{
 								@Override
 								public void onAnimationEnd(Animation animation) {
 									llOdometer.setVisibility(View.GONE);
+									lRefresh.startAnimation(AnimationUtils.getFadeInAnmation(getActivity(), lRefresh));
 									new GetDiagnosticsTask(getActivity()).execute("vehicles/"+driver.id+"/diagnostics.json");
 								}
 							});
@@ -182,7 +194,7 @@ public class DiagnosticsFragment extends Fragment{
 				updateInfo();
 			}
 			else{
-				new GetDiagnosticsTask(getActivity()).execute("vehicles/"+driver.id+"/diagnostics.json");				
+				new GetDiagnosticsTask(getActivity()).execute("vehicles/"+driver.id+"/diagnostics.json");
 			}
 		}
 		
@@ -430,37 +442,19 @@ public class DiagnosticsFragment extends Fragment{
 	
 	class GetDiagnosticsTask extends BaseRequestAsyncTask{
 		
-		Animation fadeInProgress;
-		Animation fadeOutProgress;
-		Animation fadeInInfo;
-		Animation fadeOutInfo;
-		Animation fadeInContent;
-		Animation fadeOutContent;
-		
 		public GetDiagnosticsTask(Context context) {
 			super(context);
-			fadeInProgress = AnimationUtils.getFadeInAnmation(getActivity(), llProgress);
-			fadeOutProgress = AnimationUtils.getFadeOutAnmation(getActivity(), llProgress);
-			fadeInInfo = AnimationUtils.getFadeInAnmation(getActivity(), llInfo);
-			fadeOutInfo = AnimationUtils.getFadeOutAnmation(getActivity(), llInfo);
-			fadeInContent = AnimationUtils.getFadeInAnmation(getActivity(), svContent);
-			fadeOutContent = AnimationUtils.getFadeOutAnmation(getActivity(), svContent);
 		}
 		
 		@Override
 		protected void onPreExecute() {
-			llProgress.startAnimation(fadeInProgress);
-			llInfo.startAnimation(fadeOutInfo);
-			svContent.startAnimation(fadeOutContent);
 			super.onPreExecute();
 		}
 		
 		@Override
 		protected void onPostExecute(JSONObject result) {
 			super.onPostExecute(result);
-			llProgress.startAnimation(fadeOutProgress);
-			llInfo.startAnimation(fadeInInfo);
-			svContent.startAnimation(fadeInContent);
+			lRefresh.setRefreshing(false);
 		}
 
 		@Override
@@ -488,7 +482,8 @@ public class DiagnosticsFragment extends Fragment{
 				JSONObject diagnosticsJSON = responseJSON.getJSONObject("diagnostics");
 				
 				Editor e = prefs.edit();
-				e.putString(Constants.PREF_DIAGNOSTICS_STATUS+driver.id, Utils.fixTimezoneZ(diagnosticsJSON.optString("last_checkup")));
+				e.putString(Constants.PREF_DIAGNOSTICS_CHECKUP_DATE+driver.id, Utils.fixTimezoneZ(diagnosticsJSON.optString("last_checkup")));
+				System.out.println(Constants.PREF_DIAGNOSTICS_CHECKUP_DATE+driver.id+" = "+Utils.fixTimezoneZ(diagnosticsJSON.optString("last_checkup")));
 				e.putString(Constants.PREF_DIAGNOSTICS_STATUS+driver.id, diagnosticsJSON.optString("status_diagnostics",ERROR_STATUS_MESSAGE));
 				e.commit();
 				
