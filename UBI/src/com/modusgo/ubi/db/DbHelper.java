@@ -10,15 +10,22 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.modusgo.ubi.DiagnosticsFragment.Maintenance;
+import com.modusgo.ubi.DiagnosticsFragment.WarrantyInformation;
+import com.modusgo.ubi.DiagnosticsTroubleCode;
 import com.modusgo.ubi.Driver;
+import com.modusgo.ubi.Recall;
 import com.modusgo.ubi.ScoreCirclesActivity.CirclesSection;
 import com.modusgo.ubi.ScoreFragment.MonthStats;
 import com.modusgo.ubi.ScorePieChartActivity.PieChartTab;
 import com.modusgo.ubi.Trip;
 import com.modusgo.ubi.Trip.Event;
 import com.modusgo.ubi.Trip.Point;
+import com.modusgo.ubi.db.DTCContract.DTCEntry;
 import com.modusgo.ubi.db.EventContract.EventEntry;
+import com.modusgo.ubi.db.MaintenanceContract.MaintenanceEntry;
 import com.modusgo.ubi.db.PointContract.PointEntry;
+import com.modusgo.ubi.db.RecallContract.RecallEntry;
 import com.modusgo.ubi.db.RouteContract.RouteEntry;
 import com.modusgo.ubi.db.ScoreCirclesContract.ScoreCirclesEntry;
 import com.modusgo.ubi.db.ScoreGraphContract.ScoreGraphEntry;
@@ -26,6 +33,7 @@ import com.modusgo.ubi.db.ScorePercentageContract.ScorePercentageEntry;
 import com.modusgo.ubi.db.ScorePieChartContract.ScorePieChartEntry;
 import com.modusgo.ubi.db.TripContract.TripEntry;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
+import com.modusgo.ubi.db.WarrantyInfoContract.WarrantyInfoEntry;
 
 public class DbHelper extends SQLiteOpenHelper {
 	
@@ -34,7 +42,8 @@ public class DbHelper extends SQLiteOpenHelper {
 	private static final String FLOAT_TYPE = " REAL";
 	
 	private static final String COMMA_SEP = ",";
-	private static final String SQL_CREATE_ENTRIES =
+	
+	private static final String[] SQL_CREATE_ENTRIES = new String[]{
 	    "CREATE TABLE " + VehicleEntry.TABLE_NAME + " (" +
 	    VehicleEntry._ID + " INTEGER PRIMARY KEY," +
 	    VehicleEntry.COLUMN_NAME_DRIVER_NAME + TEXT_TYPE + COMMA_SEP +
@@ -61,9 +70,8 @@ public class DbHelper extends SQLiteOpenHelper {
 	    VehicleEntry.COLUMN_NAME_TOTAL_SPEEDING + INT_TYPE + COMMA_SEP +
 	    VehicleEntry.COLUMN_NAME_TOTAL_SPEEDING_DISTANCE + FLOAT_TYPE + COMMA_SEP +
 	    VehicleEntry.COLUMN_NAME_ALERTS + INT_TYPE + COMMA_SEP +
-	    VehicleEntry.COLUMN_NAME_ODOMETER + INT_TYPE + " ); ";
-	
-	private static final String SQL_CREATE_ENTRIES_2 =
+	    VehicleEntry.COLUMN_NAME_ODOMETER + INT_TYPE + " ); ",
+	    
 		    "CREATE TABLE " + TripEntry.TABLE_NAME + " (" +
 		    TripEntry._ID + " INTEGER PRIMARY KEY," +
 		    TripEntry.COLUMN_NAME_EVENTS_COUNT + INT_TYPE + COMMA_SEP +
@@ -71,76 +79,116 @@ public class DbHelper extends SQLiteOpenHelper {
 		    TripEntry.COLUMN_NAME_END_TIME + TEXT_TYPE + COMMA_SEP +
 		    TripEntry.COLUMN_NAME_DISTANCE + FLOAT_TYPE + COMMA_SEP +
 		    TripEntry.COLUMN_NAME_AVG_SPEED + FLOAT_TYPE + COMMA_SEP +
-		    TripEntry.COLUMN_NAME_MAX_SPEED + FLOAT_TYPE + " ); ";
+		    TripEntry.COLUMN_NAME_MAX_SPEED + FLOAT_TYPE + " ); ",
 	
-	private static final String SQL_CREATE_ENTRIES_3 =
 		    "CREATE TABLE " + RouteEntry.TABLE_NAME + " (" +
 		    RouteEntry._ID + " INTEGER PRIMARY KEY," +
 		    RouteEntry.COLUMN_NAME_TRIP_ID + INT_TYPE + COMMA_SEP +
 		    RouteEntry.COLUMN_NAME_LATITUDE + FLOAT_TYPE + COMMA_SEP +
-		    RouteEntry.COLUMN_NAME_LONGITUDE + FLOAT_TYPE +  " ); ";
+		    RouteEntry.COLUMN_NAME_LONGITUDE + FLOAT_TYPE +  " ); ",
 	
-	private static final String SQL_CREATE_ENTRIES_4 =
 		    "CREATE TABLE " + PointEntry.TABLE_NAME + " (" +
 		    PointEntry._ID + " INTEGER PRIMARY KEY," +
 		    PointEntry.COLUMN_NAME_TRIP_ID + INT_TYPE + COMMA_SEP +
 		    PointEntry.COLUMN_NAME_LATITUDE + FLOAT_TYPE + COMMA_SEP +
 		    PointEntry.COLUMN_NAME_LONGITUDE + FLOAT_TYPE + COMMA_SEP +
-		    PointEntry.COLUMN_NAME_EVENTS + TEXT_TYPE +  " ); ";
+		    PointEntry.COLUMN_NAME_EVENTS + TEXT_TYPE +  " ); ",
 	
-	private static final String SQL_CREATE_ENTRIES_5 =
 		    "CREATE TABLE " + EventEntry.TABLE_NAME + " (" +
 		    EventEntry._ID + " INTEGER PRIMARY KEY," +
 		    EventEntry.COLUMN_NAME_TRIP_ID + INT_TYPE + COMMA_SEP +
 		    EventEntry.COLUMN_NAME_TYPE + TEXT_TYPE + COMMA_SEP +
 		    EventEntry.COLUMN_NAME_TITLE + TEXT_TYPE + COMMA_SEP +
-		    EventEntry.COLUMN_NAME_ADDRESS + TEXT_TYPE +  " ); ";
+		    EventEntry.COLUMN_NAME_ADDRESS + TEXT_TYPE +  " ); ",
 	
-	private static final String SQL_CREATE_ENTRIES_6 =
 		    "CREATE TABLE " + ScoreGraphEntry.TABLE_NAME + " (" +
 		    ScoreGraphEntry._ID + " INTEGER PRIMARY KEY," +
 		    ScoreGraphEntry.COLUMN_NAME_DRIVER_ID + INT_TYPE + COMMA_SEP +
 		    ScoreGraphEntry.COLUMN_NAME_MONTH + INT_TYPE + COMMA_SEP +
 		    ScoreGraphEntry.COLUMN_NAME_SCORE + INT_TYPE + COMMA_SEP +
-		    ScoreGraphEntry.COLUMN_NAME_GRADE + TEXT_TYPE +  " ); ";
+		    ScoreGraphEntry.COLUMN_NAME_GRADE + TEXT_TYPE +  " ); ",
 	
-	private static final String SQL_CREATE_ENTRIES_7 =
 		    "CREATE TABLE " + ScorePercentageEntry.TABLE_NAME + " (" +
 		    ScorePercentageEntry._ID + " INTEGER PRIMARY KEY," +
 		    ScorePercentageEntry.COLUMN_NAME_DRIVER_ID + INT_TYPE + COMMA_SEP +
 		    ScorePercentageEntry.COLUMN_NAME_STAT_NAME + TEXT_TYPE + COMMA_SEP +
-		    ScorePercentageEntry.COLUMN_NAME_STAT_VALUE + INT_TYPE +  " ); ";
+		    ScorePercentageEntry.COLUMN_NAME_STAT_VALUE + INT_TYPE +  " ); ",
 	
-	private static final String SQL_CREATE_ENTRIES_8 =
 		    "CREATE TABLE " + ScorePieChartEntry.TABLE_NAME + " (" +
 		    ScorePieChartEntry._ID + " INTEGER PRIMARY KEY," +
 		    ScorePieChartEntry.COLUMN_NAME_DRIVER_ID + INT_TYPE + COMMA_SEP +
 		    ScorePieChartEntry.COLUMN_NAME_TAB + TEXT_TYPE + COMMA_SEP +
 		    ScorePieChartEntry.COLUMN_NAME_VALUE + FLOAT_TYPE + COMMA_SEP +
 		    ScorePieChartEntry.COLUMN_NAME_TITLE + TEXT_TYPE + COMMA_SEP +
-		    ScorePieChartEntry.COLUMN_NAME_SUBTITLE + TEXT_TYPE + " ); ";
+		    ScorePieChartEntry.COLUMN_NAME_SUBTITLE + TEXT_TYPE + " ); ",
 	
-	private static final String SQL_CREATE_ENTRIES_9 =
 		    "CREATE TABLE " + ScoreCirclesEntry.TABLE_NAME + " (" +
 		    ScoreCirclesEntry._ID + " INTEGER PRIMARY KEY," +
 		    ScoreCirclesEntry.COLUMN_NAME_DRIVER_ID + INT_TYPE + COMMA_SEP +
 		    ScoreCirclesEntry.COLUMN_NAME_TAB + TEXT_TYPE + COMMA_SEP +
 		    ScoreCirclesEntry.COLUMN_NAME_SECTION + TEXT_TYPE + COMMA_SEP +
 		    ScoreCirclesEntry.COLUMN_NAME_MARK + INT_TYPE + COMMA_SEP +
-		    ScoreCirclesEntry.COLUMN_NAME_DISTANCE + FLOAT_TYPE + " ); ";
+		    ScoreCirclesEntry.COLUMN_NAME_DISTANCE + FLOAT_TYPE + " ); ",
+	
+		    "CREATE TABLE " + DTCEntry.TABLE_NAME + " (" +
+		    DTCEntry._ID + " INTEGER PRIMARY KEY," +
+		    DTCEntry.COLUMN_NAME_DRIVER_ID + INT_TYPE + COMMA_SEP +
+		    DTCEntry.COLUMN_NAME_CODE + TEXT_TYPE + COMMA_SEP +
+		    DTCEntry.COLUMN_NAME_CONDITIONS + TEXT_TYPE + COMMA_SEP +
+		    DTCEntry.COLUMN_NAME_CREATED_AT + TEXT_TYPE + COMMA_SEP +
+		    DTCEntry.COLUMN_NAME_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
+		    DTCEntry.COLUMN_NAME_DETAILS + TEXT_TYPE + COMMA_SEP +
+		    DTCEntry.COLUMN_NAME_FULL_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
+		    DTCEntry.COLUMN_NAME_IMPORTANCE + TEXT_TYPE + COMMA_SEP +
+		    DTCEntry.COLUMN_NAME_LABOR_COST + TEXT_TYPE + COMMA_SEP +
+		    DTCEntry.COLUMN_NAME_LABOR_HOURS + TEXT_TYPE + COMMA_SEP +
+		    DTCEntry.COLUMN_NAME_PARTS + TEXT_TYPE + COMMA_SEP +
+		    DTCEntry.COLUMN_NAME_PARTS_COST + TEXT_TYPE + COMMA_SEP +
+		    DTCEntry.COLUMN_NAME_TOTAL_COST + TEXT_TYPE + " ); ",
+	
+		    "CREATE TABLE " + RecallEntry.TABLE_NAME + " (" +
+		    RecallEntry._ID + " INTEGER PRIMARY KEY," +
+		    RecallEntry.COLUMN_NAME_DRIVER_ID + INT_TYPE + COMMA_SEP +
+		    RecallEntry.COLUMN_NAME_CONSEQUENCE + TEXT_TYPE + COMMA_SEP +
+		    RecallEntry.COLUMN_NAME_CORRECTIVE_ACTION + TEXT_TYPE + COMMA_SEP +
+		    RecallEntry.COLUMN_NAME_CREATED_AT + TEXT_TYPE + COMMA_SEP +
+		    RecallEntry.COLUMN_NAME_DEFECT_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
+		    RecallEntry.COLUMN_NAME_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
+		    RecallEntry.COLUMN_NAME_RECALL_ID + TEXT_TYPE + " ); ",
+		    
+		    "CREATE TABLE " + MaintenanceEntry.TABLE_NAME + " (" +
+		    MaintenanceEntry._ID + " INTEGER PRIMARY KEY," +
+		    MaintenanceEntry.COLUMN_NAME_DRIVER_ID + INT_TYPE + COMMA_SEP +
+			MaintenanceEntry.COLUMN_NAME_CREATED_AT + TEXT_TYPE + COMMA_SEP +
+			MaintenanceEntry.COLUMN_NAME_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
+			MaintenanceEntry.COLUMN_NAME_IMPORTANCE + TEXT_TYPE + COMMA_SEP +
+			MaintenanceEntry.COLUMN_NAME_MILEAGE + TEXT_TYPE + COMMA_SEP +
+			MaintenanceEntry.COLUMN_NAME_PRICE + TEXT_TYPE + " ); ",
+		    
+		    "CREATE TABLE " + WarrantyInfoEntry.TABLE_NAME + " (" +
+		    WarrantyInfoEntry._ID + " INTEGER PRIMARY KEY," +
+		    WarrantyInfoEntry.COLUMN_NAME_DRIVER_ID + INT_TYPE + COMMA_SEP +
+			WarrantyInfoEntry.COLUMN_NAME_CREATED_AT + TEXT_TYPE + COMMA_SEP +
+			WarrantyInfoEntry.COLUMN_NAME_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
+			WarrantyInfoEntry.COLUMN_NAME_MILEAGE + TEXT_TYPE + " ); "};
 
-	private static final String SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + VehicleEntry.TABLE_NAME;
-	private static final String SQL_DELETE_ENTRIES_2 = "DROP TABLE IF EXISTS " + TripEntry.TABLE_NAME;
-	private static final String SQL_DELETE_ENTRIES_3 = "DROP TABLE IF EXISTS " + RouteEntry.TABLE_NAME;
-	private static final String SQL_DELETE_ENTRIES_4 = "DROP TABLE IF EXISTS " + PointEntry.TABLE_NAME;
-	private static final String SQL_DELETE_ENTRIES_5 = "DROP TABLE IF EXISTS " + EventEntry.TABLE_NAME;
-	private static final String SQL_DELETE_ENTRIES_6 = "DROP TABLE IF EXISTS " + ScoreGraphEntry.TABLE_NAME;
-	private static final String SQL_DELETE_ENTRIES_7 = "DROP TABLE IF EXISTS " + ScorePercentageEntry.TABLE_NAME;
-	private static final String SQL_DELETE_ENTRIES_8 = "DROP TABLE IF EXISTS " + ScorePieChartEntry.TABLE_NAME;
-	private static final String SQL_DELETE_ENTRIES_9 = "DROP TABLE IF EXISTS " + ScoreCirclesEntry.TABLE_NAME;
+	private static final String[] SQL_DELETE_ENTRIES = new String[]{
+	"DROP TABLE IF EXISTS " + VehicleEntry.TABLE_NAME,
+	"DROP TABLE IF EXISTS " + TripEntry.TABLE_NAME,
+	"DROP TABLE IF EXISTS " + RouteEntry.TABLE_NAME,
+	"DROP TABLE IF EXISTS " + PointEntry.TABLE_NAME,
+	"DROP TABLE IF EXISTS " + EventEntry.TABLE_NAME,
+	"DROP TABLE IF EXISTS " + ScoreGraphEntry.TABLE_NAME,
+	"DROP TABLE IF EXISTS " + ScorePercentageEntry.TABLE_NAME,
+	"DROP TABLE IF EXISTS " + ScorePieChartEntry.TABLE_NAME,
+	"DROP TABLE IF EXISTS " + ScoreCirclesEntry.TABLE_NAME,
+	"DROP TABLE IF EXISTS " + DTCEntry.TABLE_NAME,
+	"DROP TABLE IF EXISTS " + RecallEntry.TABLE_NAME,
+	"DROP TABLE IF EXISTS " + MaintenanceEntry.TABLE_NAME,
+	"DROP TABLE IF EXISTS " + WarrantyInfoEntry.TABLE_NAME};
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 10;
+	public static final int DATABASE_VERSION = 13;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;
@@ -160,37 +208,17 @@ public class DbHelper extends SQLiteOpenHelper {
 	}
 	public void onCreate(SQLiteDatabase db) {
 		//One sql create request for each table
-	    db.execSQL(SQL_CREATE_ENTRIES);
-	    db.execSQL(SQL_CREATE_ENTRIES_2);
-	    db.execSQL(SQL_CREATE_ENTRIES_3);
-	    db.execSQL(SQL_CREATE_ENTRIES_4);
-	    db.execSQL(SQL_CREATE_ENTRIES_5);
-	    db.execSQL(SQL_CREATE_ENTRIES_6);
-	    db.execSQL(SQL_CREATE_ENTRIES_7);
-	    db.execSQL(SQL_CREATE_ENTRIES_8);
-	    db.execSQL(SQL_CREATE_ENTRIES_9);
+		for (String sql_query : SQL_CREATE_ENTRIES) {
+			db.execSQL(sql_query);
+		}
 	}
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 	    // This database is only a cache for online data, so its upgrade policy is
 	    // to simply to discard the data and start over
-	    db.execSQL(SQL_DELETE_ENTRIES);
-	    db.execSQL(SQL_CREATE_ENTRIES);
-	    db.execSQL(SQL_DELETE_ENTRIES_2);
-	    db.execSQL(SQL_CREATE_ENTRIES_2);
-	    db.execSQL(SQL_DELETE_ENTRIES_3);
-	    db.execSQL(SQL_CREATE_ENTRIES_3);
-	    db.execSQL(SQL_DELETE_ENTRIES_4);
-	    db.execSQL(SQL_CREATE_ENTRIES_4);
-	    db.execSQL(SQL_DELETE_ENTRIES_5);
-	    db.execSQL(SQL_CREATE_ENTRIES_5);
-	    db.execSQL(SQL_DELETE_ENTRIES_6);
-	    db.execSQL(SQL_CREATE_ENTRIES_6);
-	    db.execSQL(SQL_DELETE_ENTRIES_7);
-	    db.execSQL(SQL_CREATE_ENTRIES_7);
-	    db.execSQL(SQL_DELETE_ENTRIES_8);
-	    db.execSQL(SQL_CREATE_ENTRIES_8);
-	    db.execSQL(SQL_DELETE_ENTRIES_9);
-	    db.execSQL(SQL_CREATE_ENTRIES_9);
+		for (int i = 0; i < SQL_CREATE_ENTRIES.length; i++) {
+			db.execSQL(SQL_DELETE_ENTRIES[i]);
+			db.execSQL(SQL_CREATE_ENTRIES[i]);
+		}
 	}
 	public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 	    onUpgrade(db, oldVersion, newVersion);
@@ -722,6 +750,190 @@ public class DbHelper extends SQLiteOpenHelper {
 				    	statement.execute();
 					}
 				}
+			}
+		    
+		    database.setTransactionSuccessful();	
+		    database.endTransaction();
+		    statement.close();
+		}
+		
+		database.close();
+	}
+	
+	public void saveDTCs(long driverId, ArrayList<DiagnosticsTroubleCode> dtcs){
+		SQLiteDatabase database = sInstance.getWritableDatabase();
+		
+		if(database!=null && dtcs!=null){
+			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+DTCEntry.TABLE_NAME+" WHERE "+DTCEntry.COLUMN_NAME_DRIVER_ID+" = "+driverId);
+		    database.beginTransaction();
+		    removeStatement.clearBindings();
+	        removeStatement.execute();
+	        database.setTransactionSuccessful();
+		    database.endTransaction();
+		    removeStatement.close();
+			
+			String sql = "INSERT INTO "+ DTCEntry.TABLE_NAME +" ("
+					+ DTCEntry.COLUMN_NAME_DRIVER_ID +","
+					+ DTCEntry.COLUMN_NAME_CODE +","
+					+ DTCEntry.COLUMN_NAME_CONDITIONS +","
+					+ DTCEntry.COLUMN_NAME_CREATED_AT +","
+					+ DTCEntry.COLUMN_NAME_DESCRIPTION +","
+					+ DTCEntry.COLUMN_NAME_DETAILS +","
+					+ DTCEntry.COLUMN_NAME_FULL_DESCRIPTION +","
+					+ DTCEntry.COLUMN_NAME_IMPORTANCE +","
+					+ DTCEntry.COLUMN_NAME_LABOR_COST +","
+					+ DTCEntry.COLUMN_NAME_LABOR_HOURS +","
+					+ DTCEntry.COLUMN_NAME_PARTS +","
+					+ DTCEntry.COLUMN_NAME_PARTS_COST +","
+					+ DTCEntry.COLUMN_NAME_TOTAL_COST
+					+ ") VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?);";
+			
+			SQLiteStatement statement = database.compileStatement(sql);
+		    database.beginTransaction();
+		    
+		    for (DiagnosticsTroubleCode dtc : dtcs) {
+		    	statement.clearBindings();
+			    statement.bindLong(1, driverId);
+			    statement.bindString(2, dtc.code);
+			    statement.bindString(3, dtc.conditions);
+			    statement.bindString(4, dtc.created_at);
+			    statement.bindString(5, dtc.description);
+			    statement.bindString(6, dtc.details);
+			    statement.bindString(7, dtc.full_description);
+			    statement.bindString(8, dtc.importance);
+			    statement.bindString(9, dtc.labor_cost);
+			    statement.bindString(10, dtc.labor_hours);
+			    statement.bindString(11, dtc.parts);
+			    statement.bindString(12, dtc.parts_cost);
+			    statement.bindString(13, dtc.total_cost);
+			    statement.execute();
+			}
+		    
+		    database.setTransactionSuccessful();	
+		    database.endTransaction();
+		    statement.close();
+		}
+		
+		database.close();
+	}
+	
+	public void saveRecalls(long driverId, ArrayList<Recall> recalls){
+		SQLiteDatabase database = sInstance.getWritableDatabase();
+		
+		if(database!=null && recalls!=null){
+			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+RecallEntry.TABLE_NAME+" WHERE "+RecallEntry.COLUMN_NAME_DRIVER_ID+" = "+driverId);
+		    database.beginTransaction();
+		    removeStatement.clearBindings();
+	        removeStatement.execute();
+	        database.setTransactionSuccessful();
+		    database.endTransaction();
+		    removeStatement.close();
+			
+			String sql = "INSERT INTO "+ RecallEntry.TABLE_NAME +" ("
+					+ RecallEntry.COLUMN_NAME_DRIVER_ID +","
+					+ RecallEntry.COLUMN_NAME_CONSEQUENCE +","
+					+ RecallEntry.COLUMN_NAME_CORRECTIVE_ACTION +","
+					+ RecallEntry.COLUMN_NAME_CREATED_AT +","
+					+ RecallEntry.COLUMN_NAME_DEFECT_DESCRIPTION +","
+					+ RecallEntry.COLUMN_NAME_DESCRIPTION +","
+					+ RecallEntry.COLUMN_NAME_RECALL_ID
+					+ ") VALUES (?,?,?,?,?,?,?);";
+			
+			SQLiteStatement statement = database.compileStatement(sql);
+		    database.beginTransaction();
+		    
+		    for (Recall recall : recalls) {
+		    	statement.clearBindings();
+			    statement.bindLong(1, driverId);
+			    statement.bindString(2, recall.consequence);
+			    statement.bindString(3, recall.corrective_action);
+			    statement.bindString(4, recall.created_at);
+			    statement.bindString(5, recall.defect_description);
+			    statement.bindString(6, recall.description);
+			    statement.bindString(7, recall.recall_id);
+			    statement.execute();
+			}
+		    
+		    database.setTransactionSuccessful();	
+		    database.endTransaction();
+		    statement.close();
+		}
+		
+		database.close();
+	}
+	
+	public void saveMaintenances(long driverId, ArrayList<Maintenance> maintenances){
+		SQLiteDatabase database = sInstance.getWritableDatabase();
+		
+		if(database!=null && maintenances!=null){
+			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+MaintenanceEntry.TABLE_NAME+" WHERE "+MaintenanceEntry.COLUMN_NAME_DRIVER_ID+" = "+driverId);
+		    database.beginTransaction();
+		    removeStatement.clearBindings();
+	        removeStatement.execute();
+	        database.setTransactionSuccessful();
+		    database.endTransaction();
+		    removeStatement.close();
+			
+			String sql = "INSERT INTO "+ MaintenanceEntry.TABLE_NAME +" ("
+					+ MaintenanceEntry.COLUMN_NAME_DRIVER_ID +","
+					+ MaintenanceEntry.COLUMN_NAME_CREATED_AT +","
+					+ MaintenanceEntry.COLUMN_NAME_DESCRIPTION +","
+					+ MaintenanceEntry.COLUMN_NAME_IMPORTANCE +","
+					+ MaintenanceEntry.COLUMN_NAME_MILEAGE +","
+					+ MaintenanceEntry.COLUMN_NAME_PRICE
+					+ ") VALUES (?,?,?,?,?,?);";
+			
+			SQLiteStatement statement = database.compileStatement(sql);
+		    database.beginTransaction();
+		    
+		    for (Maintenance m : maintenances) {
+		    	statement.clearBindings();
+			    statement.bindLong(1, driverId);
+			    statement.bindString(2, m.created_at);
+			    statement.bindString(3, m.description);
+			    statement.bindString(4, m.importance);
+			    statement.bindString(5, m.mileage);
+			    statement.bindString(6, m.price);
+			    statement.execute();
+			}
+		    
+		    database.setTransactionSuccessful();	
+		    database.endTransaction();
+		    statement.close();
+		}
+		
+		database.close();
+	}
+	
+	public void saveWarrantyInformation(long driverId, ArrayList<WarrantyInformation> warrantyInfo){
+		SQLiteDatabase database = sInstance.getWritableDatabase();
+		
+		if(database!=null && warrantyInfo!=null){
+			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+WarrantyInfoEntry.TABLE_NAME+" WHERE "+WarrantyInfoEntry.COLUMN_NAME_DRIVER_ID+" = "+driverId);
+		    database.beginTransaction();
+		    removeStatement.clearBindings();
+	        removeStatement.execute();
+	        database.setTransactionSuccessful();
+		    database.endTransaction();
+		    removeStatement.close();
+			
+			String sql = "INSERT INTO "+ WarrantyInfoEntry.TABLE_NAME +" ("
+					+ WarrantyInfoEntry.COLUMN_NAME_DRIVER_ID +","
+					+ WarrantyInfoEntry.COLUMN_NAME_CREATED_AT +","
+					+ WarrantyInfoEntry.COLUMN_NAME_DESCRIPTION +","
+					+ WarrantyInfoEntry.COLUMN_NAME_MILEAGE
+					+ ") VALUES (?,?,?,?);";
+			
+			SQLiteStatement statement = database.compileStatement(sql);
+		    database.beginTransaction();
+		    
+		    for (WarrantyInformation wi : warrantyInfo) {
+		    	statement.clearBindings();
+			    statement.bindLong(1, driverId);
+			    statement.bindString(2, wi.created_at);
+			    statement.bindString(3, wi.description);
+			    statement.bindString(4, wi.mileage);
+			    statement.execute();
 			}
 		    
 		    database.setTransactionSuccessful();	

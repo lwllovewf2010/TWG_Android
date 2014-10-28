@@ -12,8 +12,13 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,13 +36,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.modusgo.demo.R;
+import com.modusgo.ubi.db.DTCContract.DTCEntry;
 import com.modusgo.ubi.db.DbHelper;
+import com.modusgo.ubi.db.MaintenanceContract.MaintenanceEntry;
+import com.modusgo.ubi.db.RecallContract.RecallEntry;
+import com.modusgo.ubi.db.ScoreGraphContract.ScoreGraphEntry;
+import com.modusgo.ubi.db.WarrantyInfoContract.WarrantyInfoEntry;
 import com.modusgo.ubi.utils.AnimationUtils;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class DiagnosticsFragment extends Fragment{
+	
+	private static final String ERROR_STATUS_MESSAGE = "Gathering diagnostic information...";
 
 	Driver driver;
 
@@ -53,10 +65,7 @@ public class DiagnosticsFragment extends Fragment{
 	TextView tvStatus;
 	EditText editOdometer;
 	
-	ArrayList<DiagnosticsTroubleCode> dtcs;
-	ArrayList<Recall> recalls;
-	ArrayList<Maintenance> maintenances;
-	ArrayList<WarrantyInformation> warrantyInformations;
+	SharedPreferences prefs;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -64,6 +73,8 @@ public class DiagnosticsFragment extends Fragment{
 		LinearLayout rootView = (LinearLayout)inflater.inflate(R.layout.fragment_diagnostics, container, false);
 		
 		((MainActivity)getActivity()).setActionBarTitle("DIAGNOSTICS");
+		
+	    prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		
 		driver = ((DriverActivity)getActivity()).driver;
 		
@@ -166,19 +177,68 @@ public class DiagnosticsFragment extends Fragment{
 				}
 			});
 		}
+		else{
+			if(!prefs.getString(Constants.PREF_DIAGNOSTICS_STATUS+driver.id, "").equals("")){
+				updateInfo();
+			}
+			else{
+				new GetDiagnosticsTask(getActivity()).execute("vehicles/"+driver.id+"/diagnostics.json");				
+			}
+		}
 		
 		return rootView;
 	}
 	
 	private void updateInfo(){
+		SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
+		SimpleDateFormat sdfTo = new SimpleDateFormat("MM/dd/yyyy KK:mm aa z", Locale.getDefault());
+
+		String lastCheckup = prefs.getString(Constants.PREF_DIAGNOSTICS_CHECKUP_DATE+driver.id, "N/A");
+		try {
+			tvLastCheckup.setText(sdfTo.format(sdfFrom.parse(lastCheckup)));
+		} catch (ParseException e) {
+			tvLastCheckup.setText(lastCheckup);
+			e.printStackTrace();
+		}
+		tvStatus.setText(prefs.getString(Constants.PREF_DIAGNOSTICS_STATUS+driver.id,ERROR_STATUS_MESSAGE));
 		
 		//--------------------------------------------- DTC ------------------------------------
+		DbHelper dbHelper = DbHelper.getInstance(getActivity());
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
 		
-		if(dtcs!=null && dtcs.size()>0){
+		Cursor c = db.query(DTCEntry.TABLE_NAME, 
+				new String[]{
+				DTCEntry.COLUMN_NAME_CODE,
+				DTCEntry.COLUMN_NAME_CREATED_AT,
+				DTCEntry.COLUMN_NAME_DESCRIPTION,
+				DTCEntry.COLUMN_NAME_DETAILS,
+				DTCEntry.COLUMN_NAME_FULL_DESCRIPTION,
+				DTCEntry.COLUMN_NAME_IMPORTANCE,
+				DTCEntry.COLUMN_NAME_LABOR_COST,
+				DTCEntry.COLUMN_NAME_LABOR_HOURS,
+				DTCEntry.COLUMN_NAME_PARTS,
+				DTCEntry.COLUMN_NAME_PARTS_COST,
+				DTCEntry.COLUMN_NAME_TOTAL_COST
+				}, 
+				ScoreGraphEntry.COLUMN_NAME_DRIVER_ID + " = " + driver.id, null, null, null, null);
+		
+		if(c.moveToFirst()){
 			imageDTCAlert.setImageResource(R.drawable.ic_alerts_red_big);
 			llContent.addView(inflater.inflate(R.layout.diagnostics_header, llContent, false));
 			
-			for (final DiagnosticsTroubleCode dtc : dtcs) {
+			while (!c.isAfterLast()) {
+				final DiagnosticsTroubleCode dtc = new DiagnosticsTroubleCode(c.getString(0), 
+						c.getString(1), 
+						c.getString(2), 
+						c.getString(3), 
+						c.getString(4), 
+						c.getString(5), 
+						c.getString(6), 
+						c.getString(7), 
+						c.getString(8), 
+						c.getString(9), 
+						c.getString(10), 
+						c.getString(11));
 				View rowView = inflater.inflate(R.layout.diagnostics_item, llContent, false);
 				TextView tvCode = (TextView) rowView.findViewById(R.id.tvCode);
 				TextView tvDescription = (TextView) rowView.findViewById(R.id.tvDescription);
@@ -210,18 +270,31 @@ public class DiagnosticsFragment extends Fragment{
 				});
 				
 				llContent.addView(rowView);
+				c.moveToNext();
 			}
 		}
 		else{
 			imageDTCAlert.setImageResource(R.drawable.ic_alerts_green_big);
 		}
+		c.close();
 
 		//--------------------------------------------- Recalls ------------------------------------
+		c = db.query(RecallEntry.TABLE_NAME, 
+				new String[]{
+				RecallEntry.COLUMN_NAME_CONSEQUENCE,
+				RecallEntry.COLUMN_NAME_CORRECTIVE_ACTION,
+				RecallEntry.COLUMN_NAME_CREATED_AT,
+				RecallEntry.COLUMN_NAME_DEFECT_DESCRIPTION,
+				RecallEntry.COLUMN_NAME_DESCRIPTION,
+				RecallEntry.COLUMN_NAME_RECALL_ID
+				}, 
+				RecallEntry.COLUMN_NAME_DRIVER_ID + " = " + driver.id, null, null, null, null);
 		
-		if(recalls!=null && recalls.size()>0){
+		if(c.moveToFirst()){
 			llContent.addView(inflater.inflate(R.layout.recall_header, llContent, false));
 			
-			for (final Recall recall : recalls) {
+			while (!c.isAfterLast()) {
+				final Recall recall = new Recall(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5));
 				View rowView = inflater.inflate(R.layout.diagnostics_item, llContent, false);
 				TextView tvCode = (TextView) rowView.findViewById(R.id.tvCode);
 				TextView tvDescription = (TextView) rowView.findViewById(R.id.tvDescription);
@@ -239,17 +312,29 @@ public class DiagnosticsFragment extends Fragment{
 						startActivity(i);
 					}
 				});
+				c.moveToNext();
 			}
 		}
+		c.close();
 		
 		//--------------------------------------------- Maintenances ------------------------------------
+		c = db.query(MaintenanceEntry.TABLE_NAME, 
+				new String[]{
+				MaintenanceEntry.COLUMN_NAME_CREATED_AT,
+				MaintenanceEntry.COLUMN_NAME_DESCRIPTION,
+				MaintenanceEntry.COLUMN_NAME_IMPORTANCE,
+				MaintenanceEntry.COLUMN_NAME_MILEAGE,
+				MaintenanceEntry.COLUMN_NAME_PRICE
+				}, 
+				MaintenanceEntry.COLUMN_NAME_DRIVER_ID + " = " + driver.id, null, null, null, null);
 		
-		if(maintenances!=null && maintenances.size()>0){
+		if(c.moveToFirst()){
 			View header = inflater.inflate(R.layout.diagnostics_header, llContent, false);
 			((TextView) header.findViewById(R.id.tvTitle)).setText("Scheduled Maintenance");
 			llContent.addView(header);
 			
-			for (Maintenance maintenance : maintenances) {
+			while(!c.isAfterLast()){
+				Maintenance maintenance = new Maintenance(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4));
 				View rowView = inflater.inflate(R.layout.diagnostics_item, llContent, false);
 				TextView tvCode = (TextView) rowView.findViewById(R.id.tvCode);
 				TextView tvDescription = (TextView) rowView.findViewById(R.id.tvDescription);
@@ -273,38 +358,50 @@ public class DiagnosticsFragment extends Fragment{
 					break;
 				}
 				llContent.addView(rowView);
+				c.moveToNext();
 			}
 		}
+		c.close();
 
 		//--------------------------------------------- Warranty Information ------------------------------------
+		c = db.query(WarrantyInfoEntry.TABLE_NAME, 
+				new String[]{
+				WarrantyInfoEntry.COLUMN_NAME_CREATED_AT,
+				WarrantyInfoEntry.COLUMN_NAME_DESCRIPTION,
+				WarrantyInfoEntry.COLUMN_NAME_MILEAGE
+				}, 
+				WarrantyInfoEntry.COLUMN_NAME_DRIVER_ID + " = " + driver.id, null, null, null, null);
 		
-		if(warrantyInformations!=null && warrantyInformations.size()>0){
+		if(c.moveToFirst()){
 			View header = inflater.inflate(R.layout.diagnostics_header, llContent, false);
 			((TextView) header.findViewById(R.id.tvTitle)).setText("Warranty Information");
 			llContent.addView(header);
 			
-			for (WarrantyInformation warrantyInformation : warrantyInformations) {
+			while(!c.isAfterLast()){
+				WarrantyInformation wi = new WarrantyInformation(c.getString(0), c.getString(1), c.getString(2));
 				View rowView = inflater.inflate(R.layout.diagnostics_item, llContent, false);
 				TextView tvCode = (TextView) rowView.findViewById(R.id.tvCode);
 				TextView tvDescription = (TextView) rowView.findViewById(R.id.tvDescription);
 				TextView tvImportance = (TextView) rowView.findViewById(R.id.tvImportance);
 				View imageArrow = rowView.findViewById(R.id.imageArrow);
 				imageArrow.setVisibility(View.GONE);
-				tvCode.setText(warrantyInformation.mileage);
-				tvDescription.setText(warrantyInformation.description);
+				tvCode.setText(wi.mileage);
+				tvDescription.setText(wi.description);
 				tvImportance.setVisibility(View.GONE);
 				llContent.addView(rowView);
+				c.moveToNext();
 			}
 		}
+		c.close();
 		
 	}
 	
-	class Maintenance {
-		String created_at;
-		String description;
-		String importance;
-		String mileage;
-		String price;
+	public class Maintenance {
+		public String created_at;
+		public String description;
+		public String importance;
+		public String mileage;
+		public String price;
 		
 		public Maintenance(String created_at, String description,
 				String importance, String mileage, String price) {
@@ -317,10 +414,10 @@ public class DiagnosticsFragment extends Fragment{
 		}
 	}
 	
-	class WarrantyInformation {
-		String created_at;
-		String description;
-		String mileage;
+	public class WarrantyInformation {
+		public String created_at;
+		public String description;
+		public String mileage;
 		
 		public WarrantyInformation(String created_at, String description,
 				String mileage) {
@@ -333,10 +430,6 @@ public class DiagnosticsFragment extends Fragment{
 	
 	class GetDiagnosticsTask extends BaseRequestAsyncTask{
 		
-		SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
-		SimpleDateFormat sdfTo = new SimpleDateFormat("MM/dd/yyyy KK:mm aa z", Locale.getDefault());
-		
-
 		Animation fadeInProgress;
 		Animation fadeOutProgress;
 		Animation fadeInInfo;
@@ -380,7 +473,7 @@ public class DiagnosticsFragment extends Fragment{
 		@Override
 		protected void onError(String message) {
 			tvLastCheckup.setText("N/A");
-			tvStatus.setText("Gathering diagnostic information...");
+			tvStatus.setText(ERROR_STATUS_MESSAGE);
 //			super.onError(message);
 		}
 		
@@ -388,27 +481,22 @@ public class DiagnosticsFragment extends Fragment{
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
 			DbHelper dbHelper = DbHelper.getInstance(getActivity());
 			dbHelper.saveDriver(driver);
-			dbHelper.close();
 			
 			System.out.println(responseJSON);
 			
 			if(responseJSON.has("diagnostics")){
 				JSONObject diagnosticsJSON = responseJSON.getJSONObject("diagnostics");
 				
-				String lastCheckup = Utils.fixTimezoneZ(diagnosticsJSON.optString("last_checkup"));
-				try {
-					tvLastCheckup.setText(sdfTo.format(sdfFrom.parse(lastCheckup)));
-				} catch (ParseException e) {
-					tvLastCheckup.setText(lastCheckup);
-					e.printStackTrace();
-				}
-				tvStatus.setText(diagnosticsJSON.optString("status_diagnostics"));
+				Editor e = prefs.edit();
+				e.putString(Constants.PREF_DIAGNOSTICS_STATUS+driver.id, Utils.fixTimezoneZ(diagnosticsJSON.optString("last_checkup")));
+				e.putString(Constants.PREF_DIAGNOSTICS_STATUS+driver.id, diagnosticsJSON.optString("status_diagnostics",ERROR_STATUS_MESSAGE));
+				e.commit();
 				
 				if(diagnosticsJSON.has("diagnostics_trouble_codes")){
 					Object dtcsObject = diagnosticsJSON.get("diagnostics_trouble_codes");
 					if(dtcsObject instanceof JSONArray){
 						JSONArray dtcsJSON = (JSONArray)dtcsObject;
-						dtcs = new ArrayList<DiagnosticsTroubleCode>();
+						ArrayList<DiagnosticsTroubleCode> dtcs = new ArrayList<DiagnosticsTroubleCode>();
 						for (int i = 0; i < dtcsJSON.length(); i++) {
 							
 							JSONObject dtc = dtcsJSON.getJSONObject(i);
@@ -427,6 +515,7 @@ public class DiagnosticsFragment extends Fragment{
 									dtc.optString("parts_cost"), 
 									dtc.optString("total_cost")));
 						}
+						dbHelper.saveDTCs(driver.id, dtcs);
 					}
 				}
 				
@@ -434,7 +523,7 @@ public class DiagnosticsFragment extends Fragment{
 					Object recallsObject = diagnosticsJSON.get("recall_updates");
 					if(recallsObject instanceof JSONArray){
 						JSONArray recallsJSON = (JSONArray)recallsObject;
-						recalls = new ArrayList<Recall>();
+						ArrayList<Recall> recalls = new ArrayList<Recall>();
 						for (int i = 0; i < recallsJSON.length(); i++) {
 							
 							JSONObject recall = recallsJSON.getJSONObject(i);
@@ -447,6 +536,7 @@ public class DiagnosticsFragment extends Fragment{
 									recall.optString("description"), 
 									recall.optString("recall_id")));
 						}
+						dbHelper.saveRecalls(driver.id, recalls);
 					}
 				}
 				
@@ -454,7 +544,7 @@ public class DiagnosticsFragment extends Fragment{
 					Object maintenancesObject = diagnosticsJSON.get("vehicle_maintenances");
 					if(maintenancesObject instanceof JSONArray){
 						JSONArray maintenancesJSON = (JSONArray) maintenancesObject;
-						maintenances = new ArrayList<Maintenance>();
+						ArrayList<Maintenance> maintenances = new ArrayList<Maintenance>();
 						for (int i = 0; i < maintenancesJSON.length(); i++) {
 							
 							JSONObject maintenance = maintenancesJSON.getJSONObject(i);
@@ -466,6 +556,7 @@ public class DiagnosticsFragment extends Fragment{
 									maintenance.optString("mileage"), 
 									maintenance.optString("price")));
 						}
+						dbHelper.saveMaintenances(driver.id, maintenances);
 					}
 				}
 				
@@ -473,21 +564,23 @@ public class DiagnosticsFragment extends Fragment{
 					Object warrantyInformationsObject = diagnosticsJSON.get("diagnostics_warranty_informations");
 					if(warrantyInformationsObject instanceof JSONArray){
 						JSONArray warrantyInformationsJSON = (JSONArray) warrantyInformationsObject;
-						warrantyInformations = new ArrayList<WarrantyInformation>();
+						ArrayList<WarrantyInformation> warrantyInformation = new ArrayList<WarrantyInformation>();
 						for (int i = 0; i < warrantyInformationsJSON.length(); i++) {
 							
-							JSONObject warrantyInformation = warrantyInformationsJSON.getJSONObject(i);
+							JSONObject wInfoJSON = warrantyInformationsJSON.getJSONObject(i);
 							
-							warrantyInformations.add(new WarrantyInformation(
-									warrantyInformation.optString("created_at"), 
-									warrantyInformation.optString("description"), 
-									warrantyInformation.optString("mileage")));
+							warrantyInformation.add(new WarrantyInformation(
+									wInfoJSON.optString("created_at"), 
+									wInfoJSON.optString("description"), 
+									wInfoJSON.optString("mileage")));
 						}
+						dbHelper.saveWarrantyInformation(driver.id, warrantyInformation);
 					}
 				}
 				
 				updateInfo();
 			}
+			dbHelper.close();
 			
 			super.onSuccess(responseJSON);
 		}
