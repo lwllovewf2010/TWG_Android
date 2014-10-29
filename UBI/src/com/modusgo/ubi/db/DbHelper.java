@@ -332,8 +332,8 @@ public class DbHelper extends SQLiteOpenHelper {
 			d.lastTripDate = c.getString(10);
 			d.lastTripId = c.getLong(11);
 			d.alerts = c.getInt(12);
-			d.latitude = c.getLong(13);
-			d.longitude = c.getLong(14);
+			d.latitude = c.getDouble(13);
+			d.longitude = c.getDouble(14);
 			d.address = c.getString(15);
 			d.grade = c.getString(16);
 			d.score = c.getInt(17);
