@@ -67,7 +67,6 @@ public class DriverActivity extends MainActivity{
 		
 		DbHelper dbHelper = DbHelper.getInstance(this);
 		driver = dbHelper.getDriver(getIntent().getLongExtra(VehicleEntry._ID, 0));
-		dbHelper.close();
 		
 		setupTab(DriverDetailsFragment.class, b, "Driver Detail", R.drawable.ic_tab_driver, 0);
 		setupTab(TripsFragment.class, b, "Trips", R.drawable.ic_tab_trips, 0);
@@ -98,8 +97,9 @@ public class DriverActivity extends MainActivity{
 		});
         
         ListView lvDrivers = (ListView)menu.findViewById(R.id.listViewDrivers);
-		
-		DriversAdapter driversAdapter = new DriversAdapter(this, DriversHelper.getInstance().drivers);
+        
+		DriversAdapter driversAdapter = new DriversAdapter(this, dbHelper.getDriversShort());
+		dbHelper.close();
 		
 		lvDrivers.setAdapter(driversAdapter);
 		
@@ -151,7 +151,7 @@ public class DriverActivity extends MainActivity{
 		      view = lInflater.inflate(R.layout.switch_driver_item, parent, false);
 		    }
 
-		    Driver d = getDriver(position);
+		    final Driver d = getDriver(position);
 		    
 		    final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(DriverActivity.this);
 		    if(prefs.getInt(Constants.PREF_CURRENT_DRIVER, -1)>=0 && prefs.getInt(Constants.PREF_CURRENT_DRIVER, -1)==position){
@@ -179,7 +179,6 @@ public class DriverActivity extends MainActivity{
 		    }
 		    
 		    view.setOnClickListener(new OnClickListener() {
-				
 				@Override
 				public void onClick(View arg0) {
 					if(prefs.getInt(Constants.PREF_CURRENT_DRIVER, 0)!=position){
@@ -188,7 +187,7 @@ public class DriverActivity extends MainActivity{
 						finish();
 						
 						Intent i = new Intent(DriverActivity.this, DriverActivity.class);
-						i.putExtra("id", position);
+						i.putExtra(VehicleEntry._ID, d.id);
 						startActivity(i);
 					}
 					else{

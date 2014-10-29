@@ -224,6 +224,41 @@ public class DbHelper extends SQLiteOpenHelper {
 	    onUpgrade(db, oldVersion, newVersion);
 	}
 	
+	public ArrayList<Driver> getDriversShort(){
+		SQLiteDatabase db = sInstance.getReadableDatabase();
+		Cursor c = db.query(VehicleEntry.TABLE_NAME, 
+				new String[]{
+				VehicleEntry._ID,
+				VehicleEntry.COLUMN_NAME_DRIVER_NAME,
+				VehicleEntry.COLUMN_NAME_CAR_MAKE,
+				VehicleEntry.COLUMN_NAME_CAR_MODEL,
+				VehicleEntry.COLUMN_NAME_CAR_YEAR,
+				VehicleEntry.COLUMN_NAME_CAR_CHECKUP,
+				VehicleEntry.COLUMN_NAME_LAST_TRIP_DATE,
+				VehicleEntry.COLUMN_NAME_ALERTS}, 
+				null, null, null, null, null);
+		
+		ArrayList<Driver> drivers = new ArrayList<Driver>();
+		
+		if(c.moveToFirst()){
+			while (!c.isAfterLast()) {
+				Driver d = new Driver();
+				d.id = c.getLong(0);
+				d.name = c.getString(1);
+				d.carMake = c.getString(2);
+				d.carModel = c.getString(3);
+				d.carYear = c.getString(4);
+				d.carCheckup = c.getInt(5) == 1;
+				d.lastTripDate = c.getString(6);
+				drivers.add(d);
+				
+				c.moveToNext();
+			}
+		}
+		c.close();
+		return drivers;
+	}
+	
 	public Driver getDriverShort(long id){
 		SQLiteDatabase db = sInstance.getReadableDatabase();
 		Cursor c = db.query(VehicleEntry.TABLE_NAME, 

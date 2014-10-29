@@ -13,8 +13,6 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
@@ -53,7 +51,9 @@ public class HomeActivity extends MainActivity{
 		progressBar = (ProgressBar)findViewById(R.id.progressBar);
 		lvDrivers = (ListView)findViewById(R.id.listViewDrivers);
 		
-		drivers = getDriversFromDB();
+		DbHelper dbHelper = DbHelper.getInstance(this);
+		drivers = dbHelper.getDriversShort();
+		dbHelper.close();
 		
 		driversAdapter = new DriversAdapter(this, drivers);
 		
@@ -193,43 +193,6 @@ public class HomeActivity extends MainActivity{
 		setNavigationDrawerItemSelected(MenuItems.HOME);
 		driversAdapter.notifyDataSetChanged();
 		super.onResume();
-	}
-	
-	private ArrayList<Driver> getDriversFromDB(){
-		DbHelper dbHelper = DbHelper.getInstance(this);
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
-		Cursor c = db.query(VehicleEntry.TABLE_NAME, 
-				new String[]{
-				VehicleEntry._ID,
-				VehicleEntry.COLUMN_NAME_DRIVER_NAME,
-				VehicleEntry.COLUMN_NAME_CAR_MAKE,
-				VehicleEntry.COLUMN_NAME_CAR_MODEL,
-				VehicleEntry.COLUMN_NAME_CAR_YEAR,
-				VehicleEntry.COLUMN_NAME_CAR_CHECKUP,
-				VehicleEntry.COLUMN_NAME_LAST_TRIP_DATE,
-				VehicleEntry.COLUMN_NAME_ALERTS}, 
-				null, null, null, null, null);
-		
-		ArrayList<Driver> drivers = new ArrayList<Driver>();
-		
-		if(c.moveToFirst()){
-			while (!c.isAfterLast()) {
-				Driver d = new Driver();
-				d.id = c.getLong(0);
-				d.name = c.getString(1);
-				d.carMake = c.getString(2);
-				d.carModel = c.getString(3);
-				d.carYear = c.getString(4);
-				d.carCheckup = c.getInt(5) == 1;
-				d.lastTripDate = c.getString(6);
-				drivers.add(d);
-				
-				c.moveToNext();
-			}
-		}
-		c.close();
-		dbHelper.close();
-		return drivers;
 	}
 	
 	class GetDriversTask extends BaseRequestAsyncTask{
