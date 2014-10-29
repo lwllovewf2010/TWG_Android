@@ -111,8 +111,6 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 		catch(NullPointerException e){
 			e.printStackTrace();
 		}
-
-	    rlLastTrip.findViewById(R.id.imageArrow).setVisibility(View.GONE);
 	    
 	    btnDistanceToCar.setEnabled(false);
 	    btnDistanceToCar.setOnClickListener(new OnClickListener() {
@@ -223,7 +221,8 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	    	tvAlerts.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_alerts_red_medium, 0, 0, 0);		    	
 	    }
 	    
-	    if(driver.lastTripId!=-1){
+	    if(driver.lastTripId>0){
+	    	System.out.println("asdasdasd");
 	    	rlLastTrip.findViewById(R.id.imageArrow).setVisibility(View.VISIBLE);
 		    rlLastTrip.setOnClickListener(new OnClickListener() {
 				@Override
@@ -234,6 +233,9 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 					startActivity(intent);
 				}
 			});
+	    }
+	    else{
+	    	rlLastTrip.findViewById(R.id.imageArrow).setVisibility(View.GONE);	    	
 	    }
 	    
         setUpMapIfNeeded();
