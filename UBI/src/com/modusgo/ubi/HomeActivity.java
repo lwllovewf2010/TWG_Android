@@ -61,7 +61,7 @@ public class HomeActivity extends MainActivity{
 		
 		btnUp.setImageResource(R.drawable.ic_map);
 		
-		setButtonUpVisibility(false);
+		setButtonUpVisibility(true);
 		
 		if(!prefs.getString(Constants.PREF_REG_CODE, "").equals(""))
 			startService(new Intent(this, TrackingStatusService.class));
@@ -275,7 +275,6 @@ public class HomeActivity extends MainActivity{
 			dbHelper.close();
 			
 			driversAdapter.notifyDataSetChanged();
-			setButtonUpVisibility(true);
 			super.onSuccess(responseJSON);
 		}
 	}
