@@ -34,7 +34,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.modusgo.demo.R;
 import com.modusgo.ubi.customviews.GoogleMapFragment;
 import com.modusgo.ubi.customviews.GoogleMapFragment.OnMapReadyListener;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;

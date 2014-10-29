@@ -14,7 +14,6 @@ import android.view.animation.TranslateAnimation;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.modusgo.demo.R;
 import com.modusgo.ubi.customviews.PieChartView;
 import com.modusgo.ubi.customviews.PieChartView.PieSector;
 

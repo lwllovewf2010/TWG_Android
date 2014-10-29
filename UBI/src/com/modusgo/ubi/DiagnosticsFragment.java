@@ -36,7 +36,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.modusgo.demo.R;
 import com.modusgo.ubi.db.DTCContract.DTCEntry;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.MaintenanceContract.MaintenanceEntry;

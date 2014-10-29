@@ -44,7 +44,6 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.LatLngBounds.Builder;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.ui.IconGenerator;
-import com.modusgo.demo.R;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 
 public class FindMechanicActivity extends MainActivity implements ConnectionCallbacks,

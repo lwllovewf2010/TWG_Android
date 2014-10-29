@@ -35,8 +35,6 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.modusgo.demo.R;
-
 public class SettingsEditFragment extends Fragment {
 
 	public static final String EXTRA_FIRST_NAME = "first_name";

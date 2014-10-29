@@ -13,7 +13,6 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import com.modusgo.demo.R;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.ScorePieChartContract.ScorePieChartEntry;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;

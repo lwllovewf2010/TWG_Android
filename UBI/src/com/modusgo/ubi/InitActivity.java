@@ -25,7 +25,6 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.modusgo.demo.R;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.utils.RequestGet;
 import com.modusgo.ubi.utils.Utils;

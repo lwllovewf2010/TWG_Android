@@ -37,7 +37,7 @@ import android.util.Log;
 import android.view.animation.LinearInterpolator;
 import android.widget.ProgressBar;
 
-import com.modusgo.demo.R;
+import com.modusgo.ubi.R;
 
 public class CircularProgressBar extends ProgressBar{
 	private static final String TAG = "CircularProgressBar";

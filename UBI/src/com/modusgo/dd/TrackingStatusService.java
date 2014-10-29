@@ -22,9 +22,9 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
 import com.modusgo.dd.requests.CheckIgnitionRequest;
 import com.modusgo.dd.requests.SendStatsRequest;
-import com.modusgo.demo.R;
 import com.modusgo.ubi.Constants;
 import com.modusgo.ubi.InitActivity;
+import com.modusgo.ubi.R;
 import com.modusgo.ubi.utils.Utils;
 
 public class TrackingStatusService extends Service implements GooglePlayServicesClient.ConnectionCallbacks,

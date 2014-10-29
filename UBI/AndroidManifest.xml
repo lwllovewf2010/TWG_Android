@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.modusgo.demo"
+    package="com.modusgo.ubi"
     android:versionCode="82"
     android:versionName="0.8.2" >
 

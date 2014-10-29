@@ -36,7 +36,6 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.LatLngBounds.Builder;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.modusgo.demo.R;
 import com.modusgo.ubi.Trip.Event;
 import com.modusgo.ubi.Trip.EventType;
 import com.modusgo.ubi.Trip.Point;

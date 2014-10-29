@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.modusgo.demo.R;
+import com.modusgo.ubi.R;
 
 public class ExpandablePanel extends LinearLayout {
 	 

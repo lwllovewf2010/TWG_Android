@@ -29,7 +29,6 @@ import android.widget.TextView;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnCloseListener;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnOpenListener;
-import com.modusgo.demo.R;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;

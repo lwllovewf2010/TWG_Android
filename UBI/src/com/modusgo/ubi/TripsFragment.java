@@ -34,7 +34,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.modusgo.demo.R;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.TripContract.TripEntry;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;

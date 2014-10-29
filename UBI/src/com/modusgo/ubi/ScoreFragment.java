@@ -29,7 +29,6 @@ import android.widget.TextView;
 
 import com.echo.holographlibrary.Bar;
 import com.echo.holographlibrary.BarGraph;
-import com.modusgo.demo.R;
 import com.modusgo.ubi.ScoreCirclesActivity.CirclesSection;
 import com.modusgo.ubi.ScorePieChartActivity.PieChartTab;
 import com.modusgo.ubi.db.DbHelper;

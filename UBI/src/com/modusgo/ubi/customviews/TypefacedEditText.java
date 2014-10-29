@@ -6,7 +6,7 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.widget.EditText;
 
-import com.modusgo.demo.R;
+import com.modusgo.ubi.R;
 
 
 public class TypefacedEditText extends EditText {

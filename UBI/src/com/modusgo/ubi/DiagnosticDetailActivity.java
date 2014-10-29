@@ -13,8 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.modusgo.demo.R;
-
 public class DiagnosticDetailActivity extends MainActivity {
 	
 	public static final String EXTRA_DTC = "diagnosticsTroubleCodeInfo";

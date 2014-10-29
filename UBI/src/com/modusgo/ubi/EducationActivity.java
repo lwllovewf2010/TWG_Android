@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.text.Html;
 import android.widget.TextView;
 
-import com.modusgo.demo.R;
-
 public class EducationActivity extends MainActivity {
 	
 	public static final String SAVED_STRING_RESOURCE = "stringResource";

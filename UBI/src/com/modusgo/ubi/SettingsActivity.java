@@ -2,9 +2,6 @@ package com.modusgo.ubi;
 
 import android.os.Bundle;
 
-import com.modusgo.demo.R;
-import com.modusgo.ubi.MainActivity.MenuItems;
-
 
 public class SettingsActivity extends MainActivity {
 	
