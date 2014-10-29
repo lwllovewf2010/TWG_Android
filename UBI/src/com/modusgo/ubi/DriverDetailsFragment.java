@@ -5,6 +5,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
@@ -36,6 +40,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.modusgo.ubi.customviews.GoogleMapFragment;
 import com.modusgo.ubi.customviews.GoogleMapFragment.OnMapReadyListener;
+import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -96,20 +101,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	    btnDistanceToCar = (View)tvDistanceToCar.getParent();
 	    rlLastTrip = rootView.findViewById(R.id.rlDate);
 	    
-	    
-	    try{
-			if(mMap!=null){
-				mMap.clear();
-				setUpMap();
-			}
-			updateFragment();
-			
-	        setUpLocationClientIfNeeded();
-	        mLocationClient.connect();
-		}
-		catch(NullPointerException e){
-			e.printStackTrace();
-		}
+	    updateFragment();
 	    
 	    btnDistanceToCar.setEnabled(false);
 	    btnDistanceToCar.setOnClickListener(new OnClickListener() {
@@ -148,6 +140,8 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 				startActivity(intent);	
 			}
 		});
+	    
+	    new GetDriverTask(getActivity()).execute("vehicles/"+driver.id+".json");
 		
 		return rootView;
 	}
@@ -160,6 +154,22 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
     }
 	
 	private void updateFragment(){
+		try{
+			if(mMap!=null){
+				mMap.clear();
+				setUpMap();
+			}
+			updateDriverInfo();
+			
+	        setUpLocationClientIfNeeded();
+	        mLocationClient.connect();
+		}
+		catch(NullPointerException e){
+			e.printStackTrace();
+		}
+	}
+	
+	private void updateDriverInfo(){
 		tvName.setText(driver.name);
 	    tvVehicle.setText(driver.getCarFullName());
 	    if(driver.address == null || driver.address.equals(""))
@@ -331,4 +341,37 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
             mLocationClient.disconnect();
         }
     }
+    
+    class GetDriverTask extends BaseRequestAsyncTask{
+
+		public GetDriverTask(Context context) {
+			super(context);
+		}
+		
+		@Override
+		protected void onError(String message) {
+			//Do nothing
+		}
+
+		@Override
+		protected JSONObject doInBackground(String... params) {			
+			return super.doInBackground(params);
+		}
+		
+		@Override
+		protected void onSuccess(JSONObject responseJSON) throws JSONException {
+			System.out.println(responseJSON);
+			
+			JSONObject vehicleJSON = responseJSON.getJSONObject("vehicle");
+			
+			driver = Driver.fromJSON(vehicleJSON);
+			DbHelper dbHelper = DbHelper.getInstance(getActivity());
+			dbHelper.saveDriver(driver);
+			
+			updateFragment();
+			
+			super.onSuccess(responseJSON);
+		}
+	}
+
 }
