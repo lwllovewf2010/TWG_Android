@@ -297,7 +297,9 @@ public class MainActivity extends FragmentActivity {
 		        case 5:
 		        	//Logout
 		        	prefs.edit().putString(Constants.PREF_AUTH_KEY, "").commit();
-		        	finish();
+		    		Intent intent = new Intent(MainActivity.this, InitActivity.class);
+		    		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+		    		startActivity(intent);
 		            break;
 	        	}
 	        	
