@@ -15,6 +15,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -23,22 +25,23 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.modusgo.dd.TrackingStatusService;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
+import com.modusgo.ubi.utils.AnimationUtils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class HomeActivity extends MainActivity{
 	
 	DriversAdapter driversAdapter;
-	ArrayList<Driver> drivers;
-	
+	ArrayList<Driver> drivers = new ArrayList<Driver>();
+
+	SwipeRefreshLayout lRefresh;
 	ListView lvDrivers;
-	ProgressBar progressBar;
+	TextView tvError;
 	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,23 +50,37 @@ public class HomeActivity extends MainActivity{
 		
 		setActionBarTitle("HOME");
 
-		progressBar = (ProgressBar)findViewById(R.id.progressBar);
-		lvDrivers = (ListView)findViewById(R.id.listViewDrivers);
-		
-		DbHelper dbHelper = DbHelper.getInstance(this);
-		drivers = dbHelper.getDriversShort();
-		dbHelper.close();
+		lRefresh = (SwipeRefreshLayout) findViewById(R.id.lRefresh);
+		lvDrivers = (ListView) findViewById(R.id.listViewDrivers);
+		tvError = (TextView) findViewById(R.id.tvError);
 		
 		driversAdapter = new DriversAdapter(this, drivers);
-		
 		lvDrivers.setAdapter(driversAdapter);
 		
 		btnUp.setImageResource(R.drawable.ic_map);
-		
 		setButtonUpVisibility(true);
+		
+		lRefresh.setColorSchemeResources(R.color.ubi_gray, R.color.ubi_green, R.color.ubi_orange, R.color.ubi_red);
+		lRefresh.setOnRefreshListener(new OnRefreshListener() {
+			
+			@Override
+			public void onRefresh() {
+				lRefresh.setRefreshing(true);
+				AnimationUtils.collapse(tvError);
+				new GetDriversTask(HomeActivity.this).execute("vehicles.json");
+			}
+		});
 		
 		if(!prefs.getString(Constants.PREF_REG_CODE, "").equals(""))
 			startService(new Intent(this, TrackingStatusService.class));
+		
+		updateDrivers();
+	}
+	
+	private void updateDrivers(){
+		DbHelper dbHelper = DbHelper.getInstance(this);
+		drivers = dbHelper.getDriversShort();
+		dbHelper.close();
 		
 		if(drivers.size()==1){
 			Intent i = new Intent(this, DriverActivity.class);
@@ -71,6 +88,8 @@ public class HomeActivity extends MainActivity{
 			startActivity(i);
 			finish();
 		}
+		
+		driversAdapter.notifyDataSetChanged();
 	}
 	
 	@Override
@@ -202,16 +221,13 @@ public class HomeActivity extends MainActivity{
 		
 		@Override
 		protected void onPreExecute() {
-			progressBar.setVisibility(View.VISIBLE);
-			lvDrivers.setVisibility(View.GONE);
 			super.onPreExecute();
 		}
 		
 		@Override
 		protected void onPostExecute(JSONObject result) {
 			super.onPostExecute(result);
-			progressBar.setVisibility(View.GONE);
-			lvDrivers.setVisibility(View.VISIBLE);
+			lRefresh.setRefreshing(false);
 		}
 
 		@Override
@@ -222,8 +238,14 @@ public class HomeActivity extends MainActivity{
 		}
 		
 		@Override
+		protected void onError(String message) {
+			AnimationUtils.expand(tvError);
+		}
+		
+		@Override
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
 			//responseJSON = Utils.getJSONObjectFromAssets(HomeActivity.this, "vehicles.json");
+			tvError.setVisibility(View.GONE);
 			
 			JSONArray vehiclesJSON = responseJSON.getJSONArray("vehicles");
 			drivers.clear();
@@ -236,7 +258,7 @@ public class HomeActivity extends MainActivity{
 			dbHelper.saveDrivers(drivers);
 			dbHelper.close();
 			
-			driversAdapter.notifyDataSetChanged();
+			updateDrivers();
 			super.onSuccess(responseJSON);
 		}
 	}
