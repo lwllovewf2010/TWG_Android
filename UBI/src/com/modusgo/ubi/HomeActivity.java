@@ -13,6 +13,7 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -209,6 +210,7 @@ public class HomeActivity extends MainActivity{
 	@Override
 	public void onResume() {
 		setNavigationDrawerItemSelected(MenuItems.HOME);
+		getActionBar().getCustomView().setBackgroundColor(Color.parseColor("#000000"));
 		driversAdapter.notifyDataSetChanged();
 		super.onResume();
 	}
