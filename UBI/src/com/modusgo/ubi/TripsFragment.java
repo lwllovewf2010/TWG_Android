@@ -331,6 +331,7 @@ public class TripsFragment extends Fragment{
 			
 			DbHelper dbHelper = DbHelper.getInstance(getActivity());
 			dbHelper.saveTrips(trips);
+			dbHelper.close();
 
 			cStart.setTimeInMillis(System.currentTimeMillis());
 			cStart.add(Calendar.DAY_OF_YEAR, -7);

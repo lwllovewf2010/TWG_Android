@@ -372,6 +372,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 			driver = Driver.fromJSON(vehicleJSON);
 			DbHelper dbHelper = DbHelper.getInstance(getActivity());
 			dbHelper.saveDriver(driver);
+			dbHelper.close();
 			
 			updateFragment();
 			
