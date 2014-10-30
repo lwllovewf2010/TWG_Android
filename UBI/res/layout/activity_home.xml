@@ -7,31 +7,31 @@
 
     <!-- The main content view -->
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/lRefresh"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent"
+        android:background="#fff"
+        android:gravity="center"
+        android:orientation="vertical" >
 
-        <LinearLayout
+        <com.modusgo.ubi.customviews.TypefacedTextView
+            android:id="@+id/tvError"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#fff"
+            android:layout_height="wrap_content"
+            android:background="@color/ubi_orange"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:text="Please check your internet connection"
+            android:textColor="#000"
+            android:textSize="12sp"
+            android:visibility="gone"
+            ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
-                android:id="@+id/tvError"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/ubi_orange"
-                android:gravity="center"
-                android:paddingBottom="8dp"
-                android:paddingTop="8dp"
-                android:text="Please check your internet connection"
-                android:textColor="#000"
-                android:textSize="12sp"
-                ubi:typeface="EncodeSansNormal-300-Light.ttf"
-                android:visibility="gone" />
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/lRefresh"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
 
             <ListView
                 android:id="@+id/listViewDrivers"
@@ -40,8 +40,8 @@
                 android:divider="@drawable/listview_home_divider"
                 android:dividerHeight="2dp" >
             </ListView>
-        </LinearLayout>
-    </android.support.v4.widget.SwipeRefreshLayout>
+        </android.support.v4.widget.SwipeRefreshLayout>
+    </LinearLayout>
     <!-- The navigation drawer -->
 
     <ListView
