@@ -3,8 +3,12 @@ package com.modusgo.ubi;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Locale;
 
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -142,6 +146,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 		});
 	    
 	    new GetDriverTask(getActivity()).execute("vehicles/"+driver.id+".json");
+	    new GetTripsTask(getActivity()).execute("vehicles/"+driver.id+"/trips.json");
 		
 		return rootView;
 	}
@@ -369,6 +374,65 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 			dbHelper.saveDriver(driver);
 			
 			updateFragment();
+			
+			super.onSuccess(responseJSON);
+		}
+	}
+    
+    class GetTripsTask extends BaseRequestAsyncTask{
+		
+		public GetTripsTask(Context context) {
+			super(context);
+		}
+		
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+		}
+
+		@Override
+		protected JSONObject doInBackground(String... params) {
+			SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);
+			
+			Calendar cStart = Calendar.getInstance();
+			Calendar cEnd = Calendar.getInstance();
+			cStart.setTimeInMillis(System.currentTimeMillis());
+			cStart.add(Calendar.DAY_OF_YEAR, -7);
+			cEnd.setTimeInMillis(System.currentTimeMillis());
+			
+	        requestParams.add(new BasicNameValuePair("page", "1"));
+	        requestParams.add(new BasicNameValuePair("per_page", "1000"));
+	        requestParams.add(new BasicNameValuePair("start_time", sdf.format(cStart.getTime())));
+	        requestParams.add(new BasicNameValuePair("end_time", sdf.format(cEnd.getTime())));
+			return super.doInBackground(params);
+		}
+		
+		@Override
+		protected void onPostExecute(JSONObject result) {
+			super.onPostExecute(result);
+		}
+		
+		@Override
+		protected void onSuccess(JSONObject responseJSON) throws JSONException {
+			JSONArray tripsJSON = responseJSON.getJSONArray("trips");
+			
+			ArrayList<Trip> trips = new ArrayList<Trip>();
+			
+			for (int i = 0; i < tripsJSON.length(); i++) {
+				JSONObject tipJSON = tripsJSON.getJSONObject(i);
+				
+				Trip t = new Trip(
+						tipJSON.optLong("id"), 
+						tipJSON.optInt("harsh_events_count"), 
+						Utils.fixTimezoneZ(tipJSON.optString("start_time")), 
+						Utils.fixTimezoneZ(tipJSON.optString("end_time")), 
+						tipJSON.optDouble("mileage"));
+				trips.add(t);
+			}
+			
+			DbHelper dbHelper = DbHelper.getInstance(getActivity());
+			dbHelper.saveTrips(trips);
+			dbHelper.close();
 			
 			super.onSuccess(responseJSON);
 		}
