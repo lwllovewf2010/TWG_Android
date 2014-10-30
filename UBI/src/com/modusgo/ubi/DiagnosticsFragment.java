@@ -212,6 +212,7 @@ public class DiagnosticsFragment extends Fragment{
 			e.printStackTrace();
 		}
 		tvStatus.setText(prefs.getString(Constants.PREF_DIAGNOSTICS_STATUS+driver.id,ERROR_STATUS_MESSAGE));
+		llContent.removeAllViews();
 		
 		//--------------------------------------------- DTC ------------------------------------
 		DbHelper dbHelper = DbHelper.getInstance(getActivity());
@@ -483,7 +484,7 @@ public class DiagnosticsFragment extends Fragment{
 				Editor e = prefs.edit();
 				e.putString(Constants.PREF_DIAGNOSTICS_CHECKUP_DATE+driver.id, Utils.fixTimezoneZ(diagnosticsJSON.optString("last_checkup")));
 				System.out.println(Constants.PREF_DIAGNOSTICS_CHECKUP_DATE+driver.id+" = "+Utils.fixTimezoneZ(diagnosticsJSON.optString("last_checkup")));
-				e.putString(Constants.PREF_DIAGNOSTICS_STATUS+driver.id, diagnosticsJSON.optString("status_diagnostics",ERROR_STATUS_MESSAGE));
+				e.putString(Constants.PREF_DIAGNOSTICS_STATUS+driver.id, diagnosticsJSON.optString("checkup_status",ERROR_STATUS_MESSAGE));
 				e.commit();
 				
 				if(diagnosticsJSON.has("diagnostics_trouble_codes")){
