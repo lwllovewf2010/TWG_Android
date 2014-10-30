@@ -6719,8 +6719,8 @@ com.modusgo.ubi.Driver:
     56:62:public java.lang.String getLastName()
 com.modusgo.ubi.DriverActivity:
     public static final java.lang.String SAVED_DRIVER
-    254:257:public android.view.animation.Animation fadeOutAnimation()
-    262:265:public android.view.animation.Animation fadeInAnimation()
+    256:259:public android.view.animation.Animation fadeOutAnimation()
+    264:267:public android.view.animation.Animation fadeInAnimation()
 com.modusgo.ubi.DriversHelper:
     23:24:public void setDrivers(java.util.ArrayList)
     43:44:public void setDriver(int,com.modusgo.ubi.Driver)
