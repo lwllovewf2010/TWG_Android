@@ -193,9 +193,9 @@ public class InitActivity extends FragmentActivity {
 						if(responseJSON.has("driver"))
 							e.putString(Constants.PREF_ROLE, responseJSON.getJSONObject("driver").optString("role"));
 						
-						e.commit();
-						
 						JSONObject infoJSON = responseJSON.getJSONObject("info");
+						e.putBoolean(Constants.PREF_DIAGNOSTIC, infoJSON.optBoolean("diagnostic"));
+						
 						if(infoJSON.has("welcome"))
 							welcomeScreens = infoJSON.getJSONArray("welcome");
 						
@@ -211,7 +211,8 @@ public class InitActivity extends FragmentActivity {
 							dbHelper.saveDrivers(drivers);
 							dbHelper.close();
 						}
-						
+
+						e.commit();
 						return true;
 					}
 	        	}

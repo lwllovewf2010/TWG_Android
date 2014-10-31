@@ -161,10 +161,17 @@ public class HomeActivity extends MainActivity{
 		    	ImageLoader.getInstance().displayImage(d.photo, imagePhoto, options);
 		    }
 		    
-		    if(d.diags<=0){
-		    	((ImageButton)view.findViewById(R.id.imageDiagnostics)).setImageResource(R.drawable.ic_diagnostics_green);
-		    }else{
-		    	((ImageButton)view.findViewById(R.id.imageDiagnostics)).setImageResource(R.drawable.ic_diagnostics_red);		    	
+		    ImageButton btnDiagnostic = (ImageButton) view.findViewById(R.id.imageDiagnostics);
+		    
+		    if(prefs.getBoolean(Constants.PREF_DIAGNOSTIC, false)){
+			    if(d.diags<=0){
+			    	btnDiagnostic.setImageResource(R.drawable.ic_diagnostics_green);
+			    }else{
+			    	btnDiagnostic.setImageResource(R.drawable.ic_diagnostics_red);		    	
+			    }
+		    }
+		    else{
+		    	btnDiagnostic.setVisibility(View.GONE);
 		    }
 		    
 		    ImageButton btnAlerts = (ImageButton) view.findViewById(R.id.imageAlerts);

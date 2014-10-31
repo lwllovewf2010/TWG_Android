@@ -12,6 +12,7 @@ public class Constants {
 	public static final String PREF_SHOW_TIP_POPUP = "showTipPopup";
 	public static final String PREF_WELCOME_PAGES = "welcomePagesIds";
 	public static final String PREF_ROLE = "role";
+	public static final String PREF_DIAGNOSTIC = "diagnostic";
 	public static final String PREF_DEVICE_MEID = "deviceMEID";
 	public static final String PREF_DEVICE_TYPE = "deviceType";
 	public static final String PREF_DEVICE_DATA_URL = "deviceDataUrl";

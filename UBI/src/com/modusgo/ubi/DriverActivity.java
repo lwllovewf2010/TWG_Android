@@ -69,7 +69,8 @@ public class DriverActivity extends MainActivity{
 		setupTab(DriverDetailsFragment.class, b, "Driver Detail", R.drawable.ic_tab_driver, 0);
 		setupTab(TripsFragment.class, b, "Trips", R.drawable.ic_tab_trips, 0);
 		setupTab(ScoreFragment.class, b, "Score", driver.grade, 0);
-		setupTab(DiagnosticsFragment.class, b, "Diagnostics", R.drawable.ic_tab_diagnostics, 0);
+		if(prefs.getBoolean(Constants.PREF_DIAGNOSTIC, false))
+			setupTab(DiagnosticsFragment.class, b, "Diagnostics", R.drawable.ic_tab_diagnostics, 0);
 		setupTab(LimitsFragment.class, b, "Limits", R.drawable.ic_tab_limits, 0);
 		
 		menu = new SlidingMenu(this);

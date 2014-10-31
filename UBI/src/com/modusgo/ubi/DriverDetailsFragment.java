@@ -119,7 +119,6 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 		});
 	    
 	    ((View)tvAlerts.getParent()).setOnClickListener(new OnClickListener() {
-			
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(getActivity(), AlertsActivity.class);
@@ -128,13 +127,18 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 			}
 		});
 	    
-	    ((View)tvDiagnostics.getParent()).setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				((DriverActivity)getActivity()).switchTab(3);
-			}
-		});
+	    if(prefs.getBoolean(Constants.PREF_DIAGNOSTIC, false)){
+		    ((View)tvDiagnostics.getParent()).setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					((DriverActivity)getActivity()).switchTab(3);
+				}
+			});
+	    }
+	    else{
+	    	rootView.findViewById(R.id.spaceDiagnostics).setVisibility(View.GONE);
+	    	((View)tvDiagnostics.getParent()).setVisibility(View.GONE);
+	    }
 	    
 	    rootView.findViewById(R.id.rlLocation).setOnClickListener(new OnClickListener() {
 			@Override
