@@ -281,7 +281,8 @@ public class MainActivity extends FragmentActivity {
 		            break;
 		        case DRIVERSETUP:
 		        	//Driver setup
-		        	
+		        	changeSelectedItem = true;
+		        	startActivity(new Intent(MainActivity.this, DriverSetupActivity.class));		        	
 		            break;
 		        case FEEDBACK:
 		        	//Feedback
