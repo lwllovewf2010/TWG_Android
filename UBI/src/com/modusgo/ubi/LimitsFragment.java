@@ -148,7 +148,7 @@ public class LimitsFragment extends Fragment {
 							    		c.value = value;
 							        }
 							    })
-							    .setNegativeButton("Calcel", new DialogInterface.OnClickListener() {
+							    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 							    	public void onClick(DialogInterface dialog, int id) {
 							    		dialog.cancel();
 							        }
