@@ -22,7 +22,6 @@ public class Driver implements Serializable{
 	public int carFuelLevel;
 	public boolean carCheckup;
 
-	public int diags;
 	public int alerts;
 	
 	public double latitude;
