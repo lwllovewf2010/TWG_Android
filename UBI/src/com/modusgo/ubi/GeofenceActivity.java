@@ -40,7 +40,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class GeofenceActivity extends MainActivity {
 
-	Driver driver;
 	long driverId = 0;
 	
 	MapView mapView;

@@ -41,8 +41,6 @@ public class DriverActivity extends MainActivity{
 	
 	private FragmentTabHost tabHost;
 	SlidingMenu menu;
-
-	public Driver driver;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

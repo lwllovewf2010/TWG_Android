@@ -17,7 +17,6 @@ public class DiagnosticDetailActivity extends MainActivity {
 	
 	public static final String EXTRA_DTC = "diagnosticsTroubleCodeInfo";
 	
-	Driver driver;
 	DriversHelper dHelper;
 	int driverIndex = 0;
 	

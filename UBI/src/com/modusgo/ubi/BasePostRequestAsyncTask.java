@@ -24,7 +24,7 @@ public class BasePostRequestAsyncTask extends BaseRequestAsyncTask{
 		catch(NullPointerException e){
 			e.printStackTrace();
 			status = 0;
-			message = "Connection error";
+			message = "Check your internet connection";
 			return null;
 		}
 		return Utils.getJSONObjectFromHttpResponse(result);

@@ -29,7 +29,6 @@ import com.modusgo.ubi.utils.Utils;
 
 public class ScoreInfoActivity extends MainActivity{
 	
-	Driver driver;
 	long driverId = 0;
 	
 	private static final String ATTRIBUTE_NAME_VALUE = "value";

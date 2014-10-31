@@ -22,7 +22,6 @@ public class ScoreCirclesActivity extends MainActivity{
 
 	public static final String SAVED_CIRCLES_BUNDLE = "circlesBundle";
 	
-	Driver driver;
 	long driverId = 0;
 
 	Bundle circlesData;

@@ -2,6 +2,7 @@ package com.modusgo.ubi;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import net.hockeyapp.android.CrashManager;
@@ -39,9 +40,11 @@ public class MainActivity extends FragmentActivity {
     private int mDrawerSelectedItem = -1;
     protected ImageButton btnUp;
     private ImageButton btnNavigationDrawer; 
+    private String actionBarTitle = "";
+    public Driver driver;
     
-    public static enum MenuItems {HOME("HOME",1), COMPARE("COMPARE",2), SETTINGS("SETTINGS",3), 
-    	CALLSUPPORT("CALL SUPPORT",4), AGENT("AGENT",5), LOGOUT("LOGOUT",6); 
+    public static enum MenuItems {HOME("HOME",1), COMPARE("COMPARE",2), SETTINGS("SETTINGS",3), FEEDBACK("FEEDBACK",4),
+    	CALLSUPPORT("CALL SUPPORT",5), AGENT("AGENT",6), LOGOUT("LOGOUT",7); 
 	    private MenuItems(final String text, final int num) {
 	        this.text = text;
 	        this.num = num;
@@ -200,6 +203,7 @@ public class MainActivity extends FragmentActivity {
     }
     
     public void setActionBarTitle(String title){
+    	actionBarTitle = title;
 	    ((TextView)getActionBar().getCustomView().findViewById(R.id.tvTitle)).setText(title);
     }
     
@@ -289,12 +293,17 @@ public class MainActivity extends FragmentActivity {
 					.commit();*/
 		            break;
 		        case 3:
-		        	//Call support
+		        	//Feedback
+		        	String driverName = driver !=null ? ", "+driver.name : "";
+		        	new DialogFeedback(actionBarTitle.toLowerCase(Locale.US) + " screen" + driverName).show(getSupportFragmentManager(), "FeedbackDialog");
 		            break;
 		        case 4:
+		        	//Call support
+		            break;
+		        case 5:
 		        	//Agent
 		        	break;
-		        case 5:
+		        case 6:
 		        	//Logout
 		        	prefs.edit().putString(Constants.PREF_AUTH_KEY, "").commit();
 		    		Intent intent = new Intent(MainActivity.this, InitActivity.class);

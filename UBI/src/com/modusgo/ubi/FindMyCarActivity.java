@@ -58,7 +58,6 @@ OnConnectionFailedListener, LocationListener {
     
 	public static final String EXTRA_POINTS = "points";
 	
-	Driver driver;
 	long driverId = 0;
 	
 	MapView mapView;

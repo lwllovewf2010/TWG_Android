@@ -34,7 +34,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class AlertsActivity extends MainActivity {
 	
-	Driver driver;
 	long driverId = 0;
 	
     ListView lvAlerts;

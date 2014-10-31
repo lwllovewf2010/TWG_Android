@@ -53,7 +53,6 @@ public class TripActivity extends MainActivity {
 	
 	public static final String EXTRA_TRIP_ID = "tripId";
 	
-	Driver driver;
 	long driverId = 0;
 	
 	MapView mapView;

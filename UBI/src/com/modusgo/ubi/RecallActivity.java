@@ -23,7 +23,6 @@ public class RecallActivity extends MainActivity {
 	
 	public static final String EXTRA_RECALL = "recallInfo";
 	
-	Driver driver;
 	long driverId = 0;
 	
 	Recall recall;

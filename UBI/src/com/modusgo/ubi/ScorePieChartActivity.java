@@ -23,7 +23,6 @@ public class ScorePieChartActivity extends MainActivity{
 	public static final String SAVED_PIE_CHART_ROAD_TYPE = "pieChartRoadType";
 	public static final String SAVED_PIE_CHART_TIME_OF_DAY = "pieChartTimeOfDay";
 	
-	Driver driver;
 	long driverId = 0;
 	RadioGroup rgPieCharts;
 	

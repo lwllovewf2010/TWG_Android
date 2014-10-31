@@ -16,7 +16,6 @@ import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 
 public class MapActivity extends MainActivity {
 
-	Driver driver;
 	long driverId = 0;
 	
 	MapView mapView;
