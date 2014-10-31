@@ -18,6 +18,8 @@ public class Constants {
 	public static final String PREF_DEVICE_AUTH_KEY = "deviceAuthKey";
 	public static final String PREF_DIAGNOSTICS_CHECKUP_DATE = "diagnisticsCheckupDate";
 	public static final String PREF_DIAGNOSTICS_STATUS = "diagnisticsStatus";
+	
+	public static final String ROLE_CUSTOMER = "customer";
 
 	public static final String API_BASE_URL_PREFIX = "http://api.";
 	public static final String API_BASE_URL_POSTFIX = ".test.modusgo.com/";

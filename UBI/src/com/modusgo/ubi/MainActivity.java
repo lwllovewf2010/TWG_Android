@@ -1,9 +1,7 @@
 package com.modusgo.ubi;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.CrashManagerListener;
@@ -27,10 +25,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 public class MainActivity extends FragmentActivity {
@@ -43,7 +41,7 @@ public class MainActivity extends FragmentActivity {
     private String actionBarTitle = "";
     public Driver driver;
     
-    public static enum MenuItems {HOME("HOME",1), COMPARE("COMPARE",2), SETTINGS("SETTINGS",3), FEEDBACK("FEEDBACK",4),
+    public static enum MenuItems {HOME("HOME",0), COMPARE("COMPARE",1), SETTINGS("SETTINGS",2), DRIVERSETUP("DRIVER SETUP",3), FEEDBACK("FEEDBACK",4),
     	CALLSUPPORT("CALL SUPPORT",5), AGENT("AGENT",6), LOGOUT("LOGOUT",7); 
 	    private MenuItems(final String text, final int num) {
 	        this.text = text;
@@ -67,9 +65,9 @@ public class MainActivity extends FragmentActivity {
 	    }
     };
     
-    SharedPreferences prefs;
+    ArrayList<MenuItems> menuItems;
     
-    private static final String ATTRIBUTE_NAME_TEXT = "text"; 
+    SharedPreferences prefs;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,27 +106,27 @@ public class MainActivity extends FragmentActivity {
         
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         
-        final MenuItems[] menuItemsArray = MenuItems.values();
-        //final String[] menuItems = new String[]{"Score","Dashboard","Trips","Comparsion","Alerts","Distraction","Limits","Engine"};
-        
-        ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>(menuItemsArray.length);
-        Map<String, Object> m;
+        MenuItems[] menuItemsArray = MenuItems.values();
+        menuItems = new ArrayList<MenuItems>();
         for (int i = 0; i < menuItemsArray.length; i++) {
-        	m = new HashMap<String, Object>();
-	        m.put(ATTRIBUTE_NAME_TEXT, menuItemsArray[i].toString());
-	        data.add(m);
-        }
-
-        String[] from = { ATTRIBUTE_NAME_TEXT};
-        int[] to = { R.id.tvText };
-
-        SimpleAdapter sAdapter = new SimpleAdapter(this, data, R.layout.drawer_list_item,
-            from, to){
+        	if(!menuItemsArray[i].equals(MenuItems.DRIVERSETUP))
+        		menuItems.add(menuItemsArray[i]);
+        	else{
+        		if(prefs.getString(Constants.PREF_ROLE, "").equals(Constants.ROLE_CUSTOMER))
+            		menuItems.add(menuItemsArray[i]);
+        	}
+		}
+       
+        ArrayAdapter<MenuItems> adapter = new ArrayAdapter<MenuItems>(this, R.layout.drawer_list_item, menuItemsArray){
         	
         	@Override
-        	public View getView(int position, View convertView,	ViewGroup parent) {
-
-            	ViewHolder holder;
+        	public int getCount() {
+        		return menuItems.size();
+        	}
+        	
+        	@Override
+        	public View getView(int position, View convertView, ViewGroup parent) {
+        		ViewHolder holder;
             	
         		View rowView = convertView;
         		if(rowView==null){
@@ -141,12 +139,12 @@ public class MainActivity extends FragmentActivity {
         		else{
         			holder = (ViewHolder) rowView.getTag();
         		}
-        		holder.tvTitle.setText(menuItemsArray[position].toString());
+        		holder.tvTitle.setText(menuItems.get(position).text);
         		
-        		if(position==MenuItems.LOGOUT.num-1)
+        		if(menuItems.get(position).equals(MenuItems.LOGOUT))
         			holder.tvTitle.setTextColor(getResources().getColor(R.color.orange));
         		
-        		if(position==MenuItems.AGENT.num-1)
+        		if(menuItems.get(position).equals(MenuItems.AGENT))
         			holder.imageIcon.setImageResource(R.drawable.ic_external_link);
         		else
         			holder.imageIcon.setVisibility(View.GONE);
@@ -155,13 +153,14 @@ public class MainActivity extends FragmentActivity {
         			rowView.findViewById(R.id.divider).setVisibility(View.VISIBLE);
     			}*/
         		
+        		
         		return rowView;
         	}
         };
         
         
         // set up the drawer's list view with items and click listener
-        mDrawerList.setAdapter(sAdapter);
+        mDrawerList.setAdapter(adapter);
 
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         
@@ -259,51 +258,43 @@ public class MainActivity extends FragmentActivity {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         	System.out.println("pos: "+position+" checked: "+mDrawerList.getCheckedItemPosition());
         	System.out.println(mDrawerList.isItemChecked(1));
+        	
+        	System.out.println();
+        	
         	if(position!=mDrawerSelectedItem){
 	        	boolean changeSelectedItem = false;
-        		switch (position) {
-		        case 0:
+        		switch (menuItems.get(position)) {
+		        case HOME:
 		        	//Home
 		        	changeSelectedItem = true;
 		        	startActivity(new Intent(MainActivity.this, HomeActivity.class));
-//		        	getFragmentManager().beginTransaction()
-//					.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
-//					.replace(R.id.content_frame, homeFragment)
-//					.addToBackStack(null)
-//					.commit();
 		            break;
-		        case 1:
+		        case COMPARE:
 		        	//Compare
 		        	changeSelectedItem = true;
 		        	startActivity(new Intent(MainActivity.this, CompareActivity.class));
-//		        	getFragmentManager().beginTransaction()
-//					.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
-//					.replace(R.id.content_frame, new CompareFragment())
-//					.addToBackStack("testt")
-//					.commit();
 		            break;
-		        case 2:
+		        case SETTINGS:
 		        	//Settings
 		        	changeSelectedItem = true;
 		        	startActivity(new Intent(MainActivity.this, SettingsActivity.class));
-		        	/*getSupportFragmentManager().beginTransaction()
-					.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
-					.replace(R.id.content_frame, new TripFragment())
-					.addToBackStack(null)
-					.commit();*/
 		            break;
-		        case 3:
+		        case DRIVERSETUP:
+		        	//Driver setup
+		        	
+		            break;
+		        case FEEDBACK:
 		        	//Feedback
 		        	String driverName = driver !=null ? ", "+driver.name : "";
 		        	new DialogFeedback(actionBarTitle.toLowerCase(Locale.US) + " screen" + driverName).show(getSupportFragmentManager(), "FeedbackDialog");
 		            break;
-		        case 4:
+		        case CALLSUPPORT:
 		        	//Call support
 		            break;
-		        case 5:
+		        case AGENT:
 		        	//Agent
 		        	break;
-		        case 6:
+		        case LOGOUT:
 		        	//Logout
 		        	prefs.edit().putString(Constants.PREF_AUTH_KEY, "").commit();
 		    		Intent intent = new Intent(MainActivity.this, InitActivity.class);
@@ -326,8 +317,8 @@ public class MainActivity extends FragmentActivity {
      * @param item MenuItem num
      */
     public void setNavigationDrawerItemSelected(MenuItems item){
-    	mDrawerSelectedItem = item.num-1;
-    	mDrawerList.setItemChecked(item.num-1, true);
+    	mDrawerSelectedItem = item.num;
+    	mDrawerList.setItemChecked(item.num, true);
     }
     
     public void setNavigationDrawerItemsUnselected(){

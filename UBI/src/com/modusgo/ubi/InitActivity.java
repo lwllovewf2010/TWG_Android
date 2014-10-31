@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -158,6 +159,7 @@ public class InitActivity extends FragmentActivity {
 			String clientId = editClientId.getText().toString();
 
 	        requestParams.add(new BasicNameValuePair("auth_key", prefs.getString(Constants.PREF_AUTH_KEY, "")));
+	        System.out.println(requestParams);
 			
 			HttpResponse result = new RequestGet(Constants.API_BASE_URL_PREFIX+clientId+Constants.API_BASE_URL_POSTFIX+"info.json", requestParams).execute();
 			if(result==null){
@@ -181,14 +183,20 @@ public class InitActivity extends FragmentActivity {
 	        	if(status>=200 && status<300){
 					JSONObject responseJSON = Utils.getJSONObjectFromHttpResponse(result);
 					if(responseJSON.getString("status").equals("success")){
-						prefs.edit().putString(Constants.PREF_CLIENT_ID, clientId).commit();
-						JSONObject infoJSON = responseJSON.getJSONObject("info");
+						Editor e = prefs.edit();
+						e.putString(Constants.PREF_CLIENT_ID, clientId);
 						
 						if(responseJSON.optString("auth_key").equals("")){
-							prefs.edit().putString(Constants.PREF_AUTH_KEY, "").commit();
+							e.putString(Constants.PREF_AUTH_KEY, "");
 						}	
 						
-						if(!infoJSON.isNull("welcome"))
+						if(responseJSON.has("driver"))
+							e.putString(Constants.PREF_ROLE, responseJSON.getJSONObject("driver").optString("role"));
+						
+						e.commit();
+						
+						JSONObject infoJSON = responseJSON.getJSONObject("info");
+						if(infoJSON.has("welcome"))
 							welcomeScreens = infoJSON.getJSONArray("welcome");
 						
 						if(responseJSON.has("vehicles")){
