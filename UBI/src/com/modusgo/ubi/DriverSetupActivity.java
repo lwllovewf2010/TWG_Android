@@ -129,19 +129,8 @@ public class DriverSetupActivity extends MainActivity{
 		    	ImageLoader.getInstance().displayImage(d.photo, imagePhoto, options);
 		    }
 		    
-		    if(d.diags<=0){
-		    	((ImageButton)view.findViewById(R.id.imageDiagnostics)).setImageResource(R.drawable.ic_diagnostics_green);
-		    }else{
-		    	((ImageButton)view.findViewById(R.id.imageDiagnostics)).setImageResource(R.drawable.ic_diagnostics_red);		    	
-		    }
-		    
-		    ImageButton btnAlerts = (ImageButton) view.findViewById(R.id.imageAlerts);
-		    
-		    if(d.alerts<=0){
-		    	btnAlerts.setImageResource(R.drawable.ic_alerts_green);
-		    }else{
-		    	btnAlerts.setImageResource(R.drawable.ic_alerts_red);
-		    }
+		    view.findViewById(R.id.imageDiagnostics).setVisibility(View.GONE);
+		    view.findViewById(R.id.imageAlerts).setVisibility(View.GONE);
 		    
 		    return view;
 		}
