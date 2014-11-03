@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,6 +32,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -294,6 +296,18 @@ public class LimitsFragment extends Fragment {
 			new SetLimitsTask(getActivity()).execute("vehicles/"+driver.id+"/limits.json");
 		super.onPause();
 	}
+	
+	public class Limit{
+
+		public String key;
+		public String type;
+		public String value;
+		public String minValue;
+		public String maxValue;
+		public String step;
+		public boolean active;
+		
+	}
 
 	class LimitsListGroup{
 		String groupTitle;
@@ -388,6 +402,26 @@ public class LimitsFragment extends Fragment {
 		
 		@Override
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
+			
+			ArrayList<Limit> limits = new ArrayList<Limit>();
+			if(responseJSON.has("limits")){
+				JSONArray limitsJSON = responseJSON.getJSONArray("limits");
+				for (int i = 0; i < limitsJSON.length(); i++) {
+					JSONObject lJSON = limitsJSON.getJSONObject(i);
+					Limit l = new Limit();
+					l.key = lJSON.optString("key");
+					l.type = lJSON.optString("type");
+					l.value = lJSON.optString("value");
+					l.minValue = lJSON.optString("min_value",lJSON.optString("value_from"));
+					l.maxValue = lJSON.optString("max_value",lJSON.optString("value_to"));
+					l.step = lJSON.optString("step");
+					l.active = lJSON.optBoolean("active");
+				}
+			}
+			
+			DbHelper dbHelper = DbHelper.getInstance(getActivity());
+			dbHelper.saveLimits(driver.id, limits);
+			dbHelper.close();
 			
 			ArrayList<LimitsListChild> maxSpeedLimitsChildren = new ArrayList<LimitsListChild>();
 			ArrayList<LimitsListChild> dailyMileageLimitsChildren = new ArrayList<LimitsListChild>();

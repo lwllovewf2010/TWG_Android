@@ -14,6 +14,7 @@ import com.modusgo.ubi.DiagnosticsFragment.Maintenance;
 import com.modusgo.ubi.DiagnosticsFragment.WarrantyInformation;
 import com.modusgo.ubi.DiagnosticsTroubleCode;
 import com.modusgo.ubi.Driver;
+import com.modusgo.ubi.LimitsFragment.Limit;
 import com.modusgo.ubi.Recall;
 import com.modusgo.ubi.ScoreCirclesActivity.CirclesSection;
 import com.modusgo.ubi.ScoreFragment.MonthStats;
@@ -23,6 +24,7 @@ import com.modusgo.ubi.Trip.Event;
 import com.modusgo.ubi.Trip.Point;
 import com.modusgo.ubi.db.DTCContract.DTCEntry;
 import com.modusgo.ubi.db.EventContract.EventEntry;
+import com.modusgo.ubi.db.LimitsContract.LimitsEntry;
 import com.modusgo.ubi.db.MaintenanceContract.MaintenanceEntry;
 import com.modusgo.ubi.db.PointContract.PointEntry;
 import com.modusgo.ubi.db.RecallContract.RecallEntry;
@@ -170,7 +172,18 @@ public class DbHelper extends SQLiteOpenHelper {
 		    WarrantyInfoEntry.COLUMN_NAME_DRIVER_ID + INT_TYPE + COMMA_SEP +
 			WarrantyInfoEntry.COLUMN_NAME_CREATED_AT + TEXT_TYPE + COMMA_SEP +
 			WarrantyInfoEntry.COLUMN_NAME_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
-			WarrantyInfoEntry.COLUMN_NAME_MILEAGE + TEXT_TYPE + " ); "};
+			WarrantyInfoEntry.COLUMN_NAME_MILEAGE + TEXT_TYPE + " )",
+		    
+		    "CREATE TABLE " + LimitsEntry.TABLE_NAME + " (" +
+		    		LimitsEntry._ID + " INTEGER PRIMARY KEY," +
+		    		LimitsEntry.COLUMN_NAME_DRIVER_ID + INT_TYPE + COMMA_SEP +
+			LimitsEntry.COLUMN_NAME_KEY + TEXT_TYPE + COMMA_SEP +
+			LimitsEntry.COLUMN_NAME_TYPE + TEXT_TYPE + COMMA_SEP +
+			LimitsEntry.COLUMN_NAME_VALUE + TEXT_TYPE + COMMA_SEP +
+			LimitsEntry.COLUMN_NAME_MIN_VALUE + TEXT_TYPE + COMMA_SEP +
+			LimitsEntry.COLUMN_NAME_MAX_VALUE + TEXT_TYPE + COMMA_SEP +
+			LimitsEntry.COLUMN_NAME_STEP + TEXT_TYPE + COMMA_SEP +
+			LimitsEntry.COLUMN_NAME_ACTIVE + INT_TYPE + " ); "};
 
 	private static final String[] SQL_DELETE_ENTRIES = new String[]{
 	"DROP TABLE IF EXISTS " + VehicleEntry.TABLE_NAME,
@@ -185,10 +198,11 @@ public class DbHelper extends SQLiteOpenHelper {
 	"DROP TABLE IF EXISTS " + DTCEntry.TABLE_NAME,
 	"DROP TABLE IF EXISTS " + RecallEntry.TABLE_NAME,
 	"DROP TABLE IF EXISTS " + MaintenanceEntry.TABLE_NAME,
-	"DROP TABLE IF EXISTS " + WarrantyInfoEntry.TABLE_NAME};
+	"DROP TABLE IF EXISTS " + WarrantyInfoEntry.TABLE_NAME,
+	"DROP TABLE IF EXISTS " + LimitsEntry.TABLE_NAME};
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 13;
+	public static final int DATABASE_VERSION = 14;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;
@@ -968,6 +982,53 @@ public class DbHelper extends SQLiteOpenHelper {
 			    statement.bindString(2, wi.created_at);
 			    statement.bindString(3, wi.description);
 			    statement.bindString(4, wi.mileage);
+			    statement.execute();
+			}
+		    
+		    database.setTransactionSuccessful();	
+		    database.endTransaction();
+		    statement.close();
+		}
+		
+		database.close();
+	}
+	
+	public void saveLimits(long driverId, ArrayList<Limit> limits){
+		SQLiteDatabase database = sInstance.getWritableDatabase();
+		
+		if(database!=null && limits!=null){
+			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+LimitsEntry.TABLE_NAME+" WHERE "+LimitsEntry.COLUMN_NAME_DRIVER_ID+" = "+driverId);
+		    database.beginTransaction();
+		    removeStatement.clearBindings();
+	        removeStatement.execute();
+	        database.setTransactionSuccessful();
+		    database.endTransaction();
+		    removeStatement.close();
+			
+			String sql = "INSERT INTO "+ LimitsEntry.TABLE_NAME +" ("
+					+ LimitsEntry.COLUMN_NAME_DRIVER_ID +","
+					+ LimitsEntry.COLUMN_NAME_KEY +","
+					+ LimitsEntry.COLUMN_NAME_TYPE +","
+					+ LimitsEntry.COLUMN_NAME_VALUE +","
+					+ LimitsEntry.COLUMN_NAME_MIN_VALUE +","
+					+ LimitsEntry.COLUMN_NAME_MAX_VALUE +","
+					+ LimitsEntry.COLUMN_NAME_STEP +","
+					+ LimitsEntry.COLUMN_NAME_ACTIVE
+					+ ") VALUES (?,?,?,?,?,?,?,?);";
+			
+			SQLiteStatement statement = database.compileStatement(sql);
+		    database.beginTransaction();
+		    
+		    for (Limit l : limits) {
+		    	statement.clearBindings();
+			    statement.bindLong(1, driverId);
+			    statement.bindString(2, l.key);
+			    statement.bindString(3, l.type);
+			    statement.bindString(4, l.value);
+			    statement.bindString(5, l.minValue);
+			    statement.bindString(6, l.maxValue);
+			    statement.bindString(7, l.step);
+			    statement.bindLong(8, l.active ? 1 : 0);
 			    statement.execute();
 			}
 		    
