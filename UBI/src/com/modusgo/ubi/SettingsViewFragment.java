@@ -34,6 +34,7 @@ public class SettingsViewFragment extends Fragment{
 	TextView tvPhone;
 	TextView tvEmail;
 	TextView tvTimezone;
+	TextView tvCar;
 	
 	private String email;
 	
@@ -55,6 +56,7 @@ public class SettingsViewFragment extends Fragment{
 		tvPhone = (TextView)rootView.findViewById(R.id.tvPhone);
 		tvEmail = (TextView)rootView.findViewById(R.id.tvEmail);
 		tvTimezone = (TextView)rootView.findViewById(R.id.tvTimezone);
+		tvCar = (TextView)rootView.findViewById(R.id.tvCar);
 		ImageView imagePhoto = (ImageView)rootView.findViewById(R.id.imagePhoto);
 		
 		tvTimezone.setText("");
@@ -95,7 +97,8 @@ public class SettingsViewFragment extends Fragment{
 					prefs.getString(SettingsEditFragment.EXTRA_LAST_NAME,""), 
 					prefs.getString(SettingsEditFragment.EXTRA_PHONE,""), 
 					prefs.getString(SettingsEditFragment.EXTRA_EMAIL,""), 
-					prefs.getString(SettingsEditFragment.EXTRA_TIMEZONE,""));
+					prefs.getString(SettingsEditFragment.EXTRA_TIMEZONE,""),
+					"N/A");
 		}
 		else
 			new GetCompareInfoTask(getActivity()).execute("settings.json");
@@ -103,10 +106,11 @@ public class SettingsViewFragment extends Fragment{
 		return rootView;
 	}
 	
-	private void updateFields(String fn, String ln, String phone, String email, String timezone){
+	private void updateFields(String fn, String ln, String phone, String email, String timezone, String car){
 		tvFirstName.setText(fn);
 		tvLastName.setText(ln);
 		tvPhone.setText(phone);
+		tvCar.setText(car);
 		
 		this.email = email;
 		int dogIndex = email.indexOf("@");
@@ -168,7 +172,8 @@ public class SettingsViewFragment extends Fragment{
 					responseJSON.getString(SettingsEditFragment.EXTRA_LAST_NAME), 
 					responseJSON.getString(SettingsEditFragment.EXTRA_PHONE), 
 					responseJSON.getString(SettingsEditFragment.EXTRA_EMAIL), 
-					responseJSON.getString(SettingsEditFragment.EXTRA_TIMEZONE));
+					responseJSON.getString(SettingsEditFragment.EXTRA_TIMEZONE),
+					"N/A");
 			
 			super.onSuccess(responseJSON);
 		}

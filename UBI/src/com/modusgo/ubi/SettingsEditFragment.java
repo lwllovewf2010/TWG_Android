@@ -2,6 +2,7 @@ package com.modusgo.ubi;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.TimeZone;
 
 import org.apache.http.message.BasicNameValuePair;
@@ -35,6 +36,8 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.modusgo.ubi.db.DbHelper;
+
 public class SettingsEditFragment extends Fragment {
 
 	public static final String EXTRA_FIRST_NAME = "first_name";
@@ -42,6 +45,7 @@ public class SettingsEditFragment extends Fragment {
 	public static final String EXTRA_PHONE = "phone_number";
 	public static final String EXTRA_EMAIL = "email";
 	public static final String EXTRA_TIMEZONE = "time_zone";
+	public static final String EXTRA_CAR = "vehicle_id";
 	public static final String EXTRA_PASSWORD = "password";
 	public static final String PREF_JUSTSAVED = "justsaved";
 	
@@ -52,12 +56,15 @@ public class SettingsEditFragment extends Fragment {
 	EditText editPhone;
 	EditText editEmail;
 	Spinner spinnerTimezone;
+	Spinner spinnerCar;
 	EditText editPassword;
 	Button btnUpdate;
 	Button btnCancel;
 	
-	private int spinnerDefault = 0;
-	private boolean spinnerChanged = false;
+	private int spinnerTimezoneDefault = 0;
+	private int spinnerCarDefault = 0;
+	private boolean spinnerTimezoneChanged = false;
+	private boolean spinnerCarChanged = false;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -71,6 +78,7 @@ public class SettingsEditFragment extends Fragment {
 		editPhone = (EditText)rootView.findViewById(R.id.editPhone);
 		editEmail = (EditText)rootView.findViewById(R.id.editEmail);
 		spinnerTimezone = (Spinner)rootView.findViewById(R.id.spinnerTimezone);
+		spinnerCar = (Spinner)rootView.findViewById(R.id.spinnerCar);
 		ImageView imagePhoto = (ImageView)rootView.findViewById(R.id.imagePhoto);
 		editPassword = (EditText)rootView.findViewById(R.id.editPassword);
 		final EditText editConfirmPassword = (EditText)rootView.findViewById(R.id.editConfirmPassword);
@@ -80,48 +88,22 @@ public class SettingsEditFragment extends Fragment {
 		
 		ArrayList<String> timezones = getTimezoneList();
 		
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-				R.layout.simple_spinner_item, timezones) {
-			public View getView(int position, View convertView, ViewGroup parent) {
-				TextView v = (TextView) super.getView(position, convertView, parent);
-
-				Typeface externalFont = Typeface.createFromAsset(getActivity()
-						.getAssets(), "fonts/EncodeSansNormal-300-Light.ttf");
-				v.setTypeface(externalFont);
-				v.setTextColor(Color.parseColor("#697078"));
-				v.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-
-				return v;
-			}
-
-			public View getDropDownView(int position, View convertView,
-					ViewGroup parent) {
-				TextView v = (TextView)super.getDropDownView(position, convertView, parent);
-
-				Typeface externalFont = Typeface.createFromAsset(getActivity()
-						.getAssets(), "fonts/EncodeSansNormal-300-Light.ttf");
-				v.setTypeface(externalFont);
-				v.setTextColor(Color.parseColor("#697078"));
-				v.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-
-				return v;
-			}
-		};
+		TypefacedArrayAdapter<String> adapterTimezones = new TypefacedArrayAdapter<String>(getActivity(),
+				R.layout.simple_spinner_item, timezones);
+        adapterTimezones.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		
-		spinnerTimezone.setAdapter(adapter);
+		spinnerTimezone.setAdapter(adapterTimezones);
 		spinnerTimezone.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int position, long id) {
-				if(position!=spinnerDefault){
+				if(position!=spinnerTimezoneDefault){
 					((TextView)view).setTextColor(Color.parseColor("#00aeef"));
-					spinnerChanged = true;
+					spinnerTimezoneChanged = true;
 				}
 				else{
 					((TextView)view).setTextColor(Color.parseColor("#697078"));
-					spinnerChanged = false;
+					spinnerTimezoneChanged = false;
 				}
 			}
 
@@ -129,6 +111,49 @@ public class SettingsEditFragment extends Fragment {
 			public void onNothingSelected(AdapterView<?> parent) {
 			}
 		});
+		
+		DbHelper dbHelper = DbHelper.getInstance(getActivity());
+		ArrayList<Driver> vehicles = dbHelper.getDriversShort();
+		dbHelper.close();
+		
+		TypefacedArrayAdapter<Driver> adapterCars = new TypefacedArrayAdapter<Driver>(getActivity(),
+				R.layout.simple_spinner_item, vehicles){
+			@Override
+			public View getView(int position, View convertView,
+					ViewGroup parent) {
+				TextView v = (TextView) super.getDropDownView(position, convertView, parent);
+				v.setText(getItem(position).getCarFullName());
+				return v;
+			}
+			@Override
+			public View getDropDownView(int position, View convertView,
+					ViewGroup parent) {
+				TextView v = (TextView) super.getDropDownView(position, convertView, parent);
+				v.setText(getItem(position).getCarFullName());
+				return v;
+			}
+		};
+		adapterCars.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinnerCar.setAdapter(adapterCars);
+		spinnerCar.setOnItemSelectedListener(new OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int position, long id) {
+				if(position!=spinnerCarDefault){
+					((TextView)view).setTextColor(Color.parseColor("#00aeef"));
+					spinnerCarChanged = true;
+				}
+				else{
+					((TextView)view).setTextColor(Color.parseColor("#697078"));
+					spinnerCarChanged = false;
+				}
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+			}
+		});
+		
 		
 		
 		if(savedInstanceState!=null){
@@ -140,7 +165,7 @@ public class SettingsEditFragment extends Fragment {
 			for (int i = 0; i < timezones.size(); i++) {
 				if(timezones.get(i).contains(tz)){
 					spinnerTimezone.setSelection(i);
-					spinnerDefault = i;
+					spinnerTimezoneDefault = i;
 					break;
 				}
 			}
@@ -155,7 +180,7 @@ public class SettingsEditFragment extends Fragment {
 			for (int i = 0; i < timezones.size(); i++) {
 				if(timezones.get(i).contains(tz)){
 					spinnerTimezone.setSelection(i);
-					spinnerDefault = i;
+					spinnerTimezoneDefault = i;
 					break;
 				}
 			}
@@ -475,6 +500,38 @@ public class SettingsEditFragment extends Fragment {
 	    }
 	};
 	
+	class TypefacedArrayAdapter<T> extends ArrayAdapter<T>{
+
+		public TypefacedArrayAdapter(Context context, int resource,
+				List<T> objects) {
+			super(context, resource, objects);
+		}
+		public View getView(int position, View convertView, ViewGroup parent) {
+			TextView v = (TextView) super.getView(position, convertView, parent);
+
+			Typeface externalFont = Typeface.createFromAsset(getActivity()
+					.getAssets(), "fonts/EncodeSansNormal-300-Light.ttf");
+			v.setTypeface(externalFont);
+			v.setTextColor(Color.parseColor("#697078"));
+			v.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+
+			return v;
+		}
+
+		public View getDropDownView(int position, View convertView,
+				ViewGroup parent) {
+			TextView v = (TextView)super.getDropDownView(position, convertView, parent);
+
+			Typeface externalFont = Typeface.createFromAsset(getActivity()
+					.getAssets(), "fonts/EncodeSansNormal-300-Light.ttf");
+			v.setTypeface(externalFont);
+			v.setTextColor(Color.parseColor("#697078"));
+			v.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+
+			return v;
+		}
+	}
+	
 	class SetSettingsTask extends BasePostRequestAsyncTask{
 		
 		public SetSettingsTask(Context context) {
@@ -511,10 +568,13 @@ public class SettingsEditFragment extends Fragment {
 	        	if(editEmail.getTag()!=null && editEmail.getTag().equals(TAG_CHANGED))
 	        		requestParams.add(new BasicNameValuePair(EXTRA_EMAIL, editEmail.getText().toString()));
 	        	
-		        if(spinnerChanged){
+		        if(spinnerTimezoneChanged){
 		        	String tz = ((TextView)spinnerTimezone.getSelectedView()).getText().toString();
 		        	tz = tz.substring(0,10).replace(" ", "");
 		        	requestParams.add(new BasicNameValuePair(EXTRA_TIMEZONE, tz));
+		        }
+		        if(spinnerCarChanged){
+		        	requestParams.add(new BasicNameValuePair(EXTRA_CAR, ""+((Driver)spinnerCar.getSelectedItem()).id));
 		        }
 		        if(editPassword.getTag()!=null && editPassword.getTag().equals(TAG_CHANGED))
 		        	requestParams.add(new BasicNameValuePair(EXTRA_PASSWORD, editPassword.getText().toString()));

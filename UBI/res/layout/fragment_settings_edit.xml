@@ -154,6 +154,21 @@
                 android:id="@+id/spinnerTimezone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+            
+            <com.modusgo.ubi.customviews.TypefacedTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Car"
+                android:textAllCaps="true"
+                android:textColor="#3C454F"
+                android:textSize="10sp"
+                ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
+
+            <Spinner
+                android:id="@+id/spinnerCar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <com.modusgo.ubi.customviews.TypefacedTextView
                 android:layout_width="match_parent"

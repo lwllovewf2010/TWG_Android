@@ -150,6 +150,25 @@
                 android:textColor="#697078"
                 android:textSize="20sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+            
+            <com.modusgo.ubi.customviews.TypefacedTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Car"
+                android:textAllCaps="true"
+                android:textColor="#3C454F"
+                android:textSize="10sp"
+                ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
+
+            <com.modusgo.ubi.customviews.TypefacedTextView
+                android:id="@+id/tvCar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="#697078"
+                android:textSize="20sp"
+                ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
             <Space
                 android:layout_width="match_parent"
