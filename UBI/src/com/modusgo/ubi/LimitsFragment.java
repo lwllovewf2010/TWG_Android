@@ -97,47 +97,16 @@ public class LimitsFragment extends Fragment {
 	
 	private void updateLimits(){
 		
-		ArrayList<Limit> limits = getLimitsFromDB();
-		ArrayList<LimitsListGroup> groups = new ArrayList<LimitsListGroup>();
+		final ArrayList<Limit> limits = getLimitsFromDB();
 		
-		for (Limit limit : limits) {
-			switch (limit.type) {
-			case "number_picker":
-			case "number_input":
-				ArrayList<LimitsListChild> maxSpeedLimitsChildren = new ArrayList<LimitsListChild>();
-				int value = 0;
-				try{
-					value = Integer.parseInt(limit.value);
-				}
-				catch(NumberFormatException e){
-					e.printStackTrace();
-				}
-				maxSpeedLimitsChildren.add(new LimitsSingleValueChild(value, "Set max to"));
-				groups.add(new LimitsListGroup(limit.title, limit.active, maxSpeedLimitsChildren));
-				
-				break;
-			case "flag":
-				groups.add(new LimitsListGroup(limit.title, limit.active));
-				break;
-			case "time_between_picker":
-				ArrayList<LimitsListChild> timeOfDayLimitsChildren = new ArrayList<LimitsListChild>();
-				timeOfDayLimitsChildren.add(new LimitsTimePeriodChild(limit.minValue, limit.maxValue, "Between", "and"));
-				groups.add(new LimitsListGroup(limit.title, limit.active, timeOfDayLimitsChildren));
-				break;
-			case "geofence":
-				ArrayList<LimitsListChild> geofenceChildren = new ArrayList<LimitsListChild>();
-				geofenceChildren.add(new LimitsLinkChild(GeofenceActivity.class, "Set geofence"));
-				groups.add(new LimitsListGroup(limit.title, limit.active, geofenceChildren));
-				
-				break;
-			default:
-				break;
-			}
-		}
-		
-		for (final LimitsListGroup limitsListGroup : groups) {
+		for (final Limit limit : limits) {
 			View groupView = inflater.inflate(R.layout.limits_toggle_button_item, content, false);
-			final ToggleButton btnToggle = (ToggleButton)groupView.findViewById(R.id.btnToggle);
+			final LinearLayout childLayout = (LinearLayout) groupView.findViewById(R.id.llChilds);
+			final ToggleButton btnToggle = (ToggleButton) groupView.findViewById(R.id.btnToggle);
+			final LimitsListChild child;
+			final View childView;
+			
+			btnToggle.setChecked(limit.active);
 			
 			groupView.setOnClickListener(new OnClickListener() {
 				@Override
@@ -146,162 +115,222 @@ public class LimitsFragment extends Fragment {
 				}
 			});
 			
+			if(limit.type.equals("flag")){
+				//groups.add(new LimitsListGroup(limit.title, limit.active));
+			}
+			else if(limit.type.equals("number_picker") || limit.type.equals("number_input")){
+				int value = 0;
+				try{
+					value = Integer.parseInt(limit.value);
+				}
+				catch(NumberFormatException e){
+					e.printStackTrace();
+				}
+				
+				child = new LimitsSingleValueChild(value, "Set max to");
+				childView = inflater.inflate(child.layoutId, childLayout, false);
+				
+				childView.setClickable(true);
+				//Block parent click listener
+				childView.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+					}
+				});
+				
+				TextView tvChildTitle = (TextView) childView.findViewById(R.id.tvTitle);
+				tvChildTitle.setText(child.text[0]);
+				
+				final TextView tvSingleValue = (TextView)childView.findViewById(R.id.tvValue);
+				tvSingleValue.setText(((LimitsSingleValueChild)child).value+" ");
+				tvSingleValue.setOnClickListener(new OnClickListener() {		
+					@Override
+					public void onClick(View v) {
+						AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+						// Get the layout inflater
+						LayoutInflater inflater = getActivity().getLayoutInflater();
+						
+						// Inflate and set the layout for the dialog
+						// Pass null as the parent view because its going in the dialog layout
+						final View dialogContentView = inflater.inflate(R.layout.dialog_numbers, null);
+						((TextView)dialogContentView.findViewById(R.id.editValue)).setText(""+((LimitsSingleValueChild)child).value);
+						builder.setView(dialogContentView)
+						// Add action buttons
+						.setTitle(((TextView)childView.findViewById(R.id.tvValue)).getText())
+						.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int id) {
+								int value = Integer.valueOf(((TextView)dialogContentView.findViewById(R.id.editValue)).getText().toString());
+								tvSingleValue.setText(value+" ");
+								((LimitsSingleValueChild)child).value = value;
+							}
+						})
+						.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								dialog.cancel();
+							}
+						});      
+						builder.create().show();
+					}
+				});
+			}
+			else if(limit.type.equals("time_between_picker")){
+				child = new LimitsTimePeriodChild(limit.minValue, limit.maxValue, "Between", "and");
+				childView = inflater.inflate(child.layoutId, childLayout, false);
+				
+				childView.setClickable(true);
+				//Block parent click listener
+				childView.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+					}
+				});
+				
+				TextView tvChildTitle = (TextView) childView.findViewById(R.id.tvTitle);
+				tvChildTitle.setText(child.text[0]);
+				
+				SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa", Locale.US);
+				final Calendar startCalendar = Calendar.getInstance();
+				final Calendar endCalendar = Calendar.getInstance();
+				try {
+					startCalendar.setTime(sdf.parse(((LimitsTimePeriodChild)child).startTime));
+					endCalendar.setTime(sdf.parse(((LimitsTimePeriodChild)child).endTime));
+				} catch (ParseException e) {
+					e.printStackTrace();
+					startCalendar.set(2014, 0, 1, 10, 0);
+					endCalendar.set(2014, 0, 1, 20, 0);
+				}
+				
+				if(child.text[1]!=null){
+					((TextView) childView.findViewById(R.id.tvTitle2)).setText(child.text[1]);
+				}
+				
+				final TextView tvValue = (TextView)childView.findViewById(R.id.tvValue);
+				tvValue.setText(((LimitsTimePeriodChild)child).startTime);
+				tvValue.setOnClickListener(new OnClickListener() {		
+					@Override
+					public void onClick(View v) {
+						TimePickerDialog tpd = new TimePickerDialog(getActivity(), new OnTimeSetListener(){
+							@Override
+							public void onTimeSet(TimePicker arg0, int hourOfDay, int minutes) {
+								startCalendar.set(2014, 0, 1, hourOfDay, minutes);
+								tvValue.setText(getTimeString(hourOfDay, minutes));
+								((LimitsTimePeriodChild)child).startTime = getTimeString(hourOfDay, minutes);
+							}
+						}, startCalendar.get(Calendar.HOUR_OF_DAY), startCalendar.get(Calendar.MINUTE), false);
+						tpd.show();
+					}
+				});
+				
+				final TextView tvValue2 = (TextView)childView.findViewById(R.id.tvValue2);
+				tvValue2.setText(((LimitsTimePeriodChild)child).endTime);
+				tvValue2.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						TimePickerDialog tpd = new TimePickerDialog(getActivity(), new OnTimeSetListener(){
+							@Override
+							public void onTimeSet(TimePicker arg0, int hourOfDay, int minutes) {
+								endCalendar.set(2014, 0, 1, hourOfDay, minutes);
+								tvValue2.setText(getTimeString(hourOfDay, minutes));
+								((LimitsTimePeriodChild)child).endTime = getTimeString(hourOfDay, minutes);
+							}
+						}, endCalendar.get(Calendar.HOUR_OF_DAY), endCalendar.get(Calendar.MINUTE), false);
+						tpd.show();
+					}
+				});
+			}
+			else if(limit.type.equals("geofence")){
+				child = new LimitsLinkChild(GeofenceActivity.class, "Set geofence");
+				childView = inflater.inflate(child.layoutId, childLayout, false);
+				
+				childView.setClickable(true);
+				//Block parent click listener
+				childView.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+					}
+				});
+				
+				TextView tvChildTitle = (TextView) childView.findViewById(R.id.tvTitle);
+				tvChildTitle.setText(child.text[0]);
+				
+				LinearLayout llContent = (LinearLayout) childView.findViewById(R.id.llContent);
+				
+				llContent.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						showSavedToast = false;
+						Intent i = new Intent(getActivity(), ((LimitsLinkChild)child).linkActivityClass);
+						i.putExtra(VehicleEntry._ID, driver.id);
+						startActivity(i);
+					}
+				});
+			}
 			
-			if(limitsListGroup.childs.size()>0){
-				final LinearLayout groupChilds = (LinearLayout)groupView.findViewById(R.id.llChilds);
-				for (LimitsListChild child : limitsListGroup.childs) {
-					final View childView = inflater.inflate(child.layoutId, groupChilds, false);
-
-					childView.setClickable(true);
-					//Block parent click listener
-					childView.setOnClickListener(new OnClickListener() {
+			if(limit.active){
+				childLayout.setVisibility(View.VISIBLE);
+			}
+			
+			btnToggle.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					
+					new SetLimitsTask(getActivity()){
+						
 						@Override
-						public void onClick(View v) {
-						}
-					});
-					
-					TextView textChild = (TextView) childView.findViewById(R.id.tvTitle);
-					textChild.setText(child.text[0]);
-					
-					if(child instanceof LimitsSingleValueChild){
-						final LimitsSingleValueChild c = (LimitsSingleValueChild)child;
-						
-						final TextView tvSingleValue = (TextView)childView.findViewById(R.id.tvValue);
-						tvSingleValue.setText(c.value+" ");
-						tvSingleValue.setOnClickListener(new OnClickListener() {		
-							@Override
-							public void onClick(View v) {
-								AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-							    // Get the layout inflater
-							    LayoutInflater inflater = getActivity().getLayoutInflater();
-
-							    // Inflate and set the layout for the dialog
-							    // Pass null as the parent view because its going in the dialog layout
-							    final View dialogContentView = inflater.inflate(R.layout.dialog_numbers, null);
-							    ((TextView)dialogContentView.findViewById(R.id.editValue)).setText(""+c.value);
-							    builder.setView(dialogContentView)
-							    // Add action buttons
-							    .setTitle(((TextView)childView.findViewById(R.id.tvValue)).getText())
-							    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-							    	@Override
-							        public void onClick(DialogInterface dialog, int id) {
-							    		int value = Integer.valueOf(((TextView)dialogContentView.findViewById(R.id.editValue)).getText().toString());
-							    		tvSingleValue.setText(value+" ");
-							    		c.value = value;
-							        }
-							    })
-							    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-							    	public void onClick(DialogInterface dialog, int id) {
-							    		dialog.cancel();
-							        }
-							    });      
-							    builder.create().show();
-							}
-						});
-					}
-					else if(child instanceof LimitsTimePeriodChild){
-						final LimitsTimePeriodChild c = (LimitsTimePeriodChild)child;
-						
-						SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa", Locale.US);
-						final Calendar startCalendar = Calendar.getInstance();
-						final Calendar endCalendar = Calendar.getInstance();
-						try {
-							startCalendar.setTime(sdf.parse(c.startTime));
-							endCalendar.setTime(sdf.parse(c.endTime));
-						} catch (ParseException e) {
-							e.printStackTrace();
-							startCalendar.set(2014, 0, 1, 10, 0);
-							endCalendar.set(2014, 0, 1, 20, 0);
+						protected void onPreExecute() {
+							btnToggle.setEnabled(false);
+							requestParams.add(new BasicNameValuePair("vehicle_id",""+driver.id));
+							requestParams.add(new BasicNameValuePair("key",limit.key));
+							requestParams.add(new BasicNameValuePair("value",btnToggle.isChecked() ? "true" : "false"));
+							requestParams.add(new BasicNameValuePair("active",btnToggle.isChecked() ? "true" : "false"));
+							super.onPreExecute();
 						}
 						
-						if(child.text[1]!=null){
-							((TextView) childView.findViewById(R.id.tvTitle2)).setText(child.text[1]);
+						@Override
+						protected void onSuccess(JSONObject responseJSON) throws JSONException {
+							limit.key = responseJSON.optString("key");
+							limit.title = responseJSON.optString("title");
+							limit.type = responseJSON.optString("type");
+							limit.value = responseJSON.optString("value");
+							limit.minValue = responseJSON.optString("min_value",responseJSON.optString("value_from"));
+							limit.maxValue = responseJSON.optString("max_value",responseJSON.optString("value_to"));
+							limit.step = responseJSON.optString("step");
+							limit.active = responseJSON.optBoolean("active");
+							
+							DbHelper dbHelper = DbHelper.getInstance(getActivity());
+							dbHelper.saveLimits(driver.id, limits);
+							dbHelper.close();
+							
+							if(limit.active){
+								btnToggle.setChecked(true);
+								childLayout.setVisibility(View.VISIBLE);
+							}
+							else{
+								btnToggle.setChecked(true);
+								childLayout.setVisibility(View.VISIBLE);
+							}
+								
+							super.onSuccess(responseJSON);
 						}
 						
-						final TextView tvValue = (TextView)childView.findViewById(R.id.tvValue);
-						tvValue.setText(c.startTime);
-						tvValue.setOnClickListener(new OnClickListener() {		
-							@Override
-							public void onClick(View v) {
-								TimePickerDialog tpd = new TimePickerDialog(getActivity(), new OnTimeSetListener(){
-									@Override
-									public void onTimeSet(TimePicker arg0, int hourOfDay, int minutes) {
-										startCalendar.set(2014, 0, 1, hourOfDay, minutes);
-										tvValue.setText(getTimeString(hourOfDay, minutes));
-										c.startTime = getTimeString(hourOfDay, minutes);
-									}
-								}, startCalendar.get(Calendar.HOUR_OF_DAY), startCalendar.get(Calendar.MINUTE), false);
-								tpd.show();
-							}
-						});
+						@Override
+						protected void onError(String message) {
+							btnToggle.setChecked(limit.active);
+							super.onError(message);
+						}
 						
-						final TextView tvValue2 = (TextView)childView.findViewById(R.id.tvValue2);
-						tvValue2.setText(c.endTime);
-						tvValue2.setOnClickListener(new OnClickListener() {
-							@Override
-							public void onClick(View v) {
-								TimePickerDialog tpd = new TimePickerDialog(getActivity(), new OnTimeSetListener(){
-									@Override
-									public void onTimeSet(TimePicker arg0, int hourOfDay, int minutes) {
-										endCalendar.set(2014, 0, 1, hourOfDay, minutes);
-										tvValue2.setText(getTimeString(hourOfDay, minutes));
-										c.endTime = getTimeString(hourOfDay, minutes);
-									}
-								}, endCalendar.get(Calendar.HOUR_OF_DAY), endCalendar.get(Calendar.MINUTE), false);
-								tpd.show();
-							}
-						});
-					}
-					else if(child instanceof LimitsLinkChild){
-						final LimitsLinkChild c = (LimitsLinkChild)child;
-						
-						LinearLayout llContent = (LinearLayout) childView.findViewById(R.id.llContent);
-						
-						llContent.setOnClickListener(new OnClickListener() {
-							@Override
-							public void onClick(View v) {
-								showSavedToast = false;
-								Intent i = new Intent(getActivity(), c.linkActivityClass);
-								i.putExtra(VehicleEntry._ID, driver.id);
-								startActivity(i);
-							}
-						});
-					}
-					
-					groupChilds.addView(childView);
+						@Override
+						protected void onPostExecute(JSONObject result) {
+							btnToggle.setEnabled(true);
+							super.onPostExecute(result);
+						}
+					}.execute("vehicles/"+driver.id+"/limits.json");
 				}
-				
-				if(limitsListGroup.enabled){
-					btnToggle.setChecked(true);
-					groupChilds.setVisibility(View.VISIBLE);
-				}
-				
-				btnToggle.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-					@Override
-					public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-						if(isChecked)
-							groupChilds.setVisibility(View.VISIBLE);
-						else
-							groupChilds.setVisibility(View.GONE);
-						
-						limitsListGroup.enabled = isChecked;
-					}
-				});
-			}
-			else{
-				if(limitsListGroup.enabled){
-					btnToggle.setChecked(true);
-				}
-				
-				btnToggle.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-					@Override
-					public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {						
-						limitsListGroup.enabled = isChecked;
-					}
-				});
-			}
+			});
 			
-			((TextView)groupView.findViewById(R.id.tvTitle)).setText(limitsListGroup.groupTitle);
+			
+			((TextView)groupView.findViewById(R.id.tvTitle)).setText(limit.title);
 			
 			content.addView(groupView);
 		}
@@ -385,20 +414,19 @@ public class LimitsFragment extends Fragment {
 	class LimitsListGroup{
 		String groupTitle;
 		boolean enabled = false;
-		ArrayList<LimitsListChild> childs;
+		LimitsListChild child = null;
 		
 		public LimitsListGroup(String groupTitle, boolean enabled,
-				ArrayList<LimitsListChild> childs) {
+				LimitsListChild child) {
 			super();
 			this.groupTitle = groupTitle;
 			this.enabled = enabled;
-			this.childs = childs;
+			this.child = child;
 		}
 		public LimitsListGroup(String groupTitle, boolean enabled) {
 			super();
 			this.groupTitle = groupTitle;
 			this.enabled = enabled;
-			this.childs = new ArrayList<LimitsListChild>();
 		}
 	}
 	
@@ -467,10 +495,10 @@ public class LimitsFragment extends Fragment {
 
 		@Override
 		protected JSONObject doInBackground(String... params) {
-//	        requestParams.add(new BasicNameValuePair("driver_id", ""+driver.id));
-//			return super.doInBackground(params);
-			status = 200;
-			return Utils.getJSONObjectFromAssets(getActivity(), "limits.json");
+	        requestParams.add(new BasicNameValuePair("driver_id", ""+driver.id));
+			return super.doInBackground(params);
+//			status = 200;
+//			return Utils.getJSONObjectFromAssets(getActivity(), "limits.json");
 		}
 		
 		@Override
