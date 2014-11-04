@@ -26,11 +26,11 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="56dp"
+                android:layout_below="@+id/tvVehicle"
                 android:paddingBottom="5dp"
                 android:background="#e6FFFFFF"
                 android:orientation="vertical"
-                android:paddingTop="60dp" >
+                android:paddingTop="10dp" >
 
                 <LinearLayout
                     android:layout_width="match_parent"
