@@ -21,6 +21,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.SuperscriptSpan;
 import android.util.TypedValue;
@@ -240,7 +241,6 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	    }
 	    
 	    if(driver.lastTripId>0){
-	    	System.out.println("asdasdasd");
 	    	rlLastTrip.findViewById(R.id.imageArrow).setVisibility(View.VISIBLE);
 		    rlLastTrip.setOnClickListener(new OnClickListener() {
 				@Override
@@ -254,6 +254,10 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	    }
 	    else{
 	    	rlLastTrip.findViewById(R.id.imageArrow).setVisibility(View.GONE);	    	
+	    }
+	    
+	    if(TextUtils.isEmpty(driver.lastTripDate)){
+	    	rlLastTrip.setVisibility(View.GONE);
 	    }
 	    
         setUpMapIfNeeded();
