@@ -105,7 +105,7 @@ public class GeofenceActivity extends MainActivity {
 			public void onMapLoaded() {
 				CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(37.8430094,-95.0098992), 1);
 		        map.animateCamera(cameraUpdate);
-				new GetLimitsTask(GeofenceActivity.this).execute("drivers/"+driver.id+"/limits.json");
+				new GetLimitsTask(GeofenceActivity.this).execute("vehicles/"+driver.id+"/limits.json");
 			}
 		});
         map.setOnMapLongClickListener(new OnMapLongClickListener() {
@@ -163,7 +163,7 @@ public class GeofenceActivity extends MainActivity {
 			        tvInstructions.setText("Press and hold anywhere on\nthe map to reset geofence borders");
 				}
 				else{
-					new SetLimitsTask(GeofenceActivity.this).execute("drivers/"+driver.id+"/limits.json");
+					new SetLimitsTask(GeofenceActivity.this).execute("vehicles/"+driver.id+"/limits.json");
 				}
 			}
 		});
@@ -250,7 +250,8 @@ public class GeofenceActivity extends MainActivity {
 	        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(driver.latitude, driver.longitude), 10);
 	        map.animateCamera(cameraUpdate);
 
-	        tvInstructions.setText("Press and hold anywhere on\nthe map to begin setting up\nyour geofence borders");
+			geofencingStarted = true;
+	        tvInstructions.setText("Tap anywhere on the map to begin\nsetting up your geofence borders");
 		}
 
 		updateSaveBtn("Save");
