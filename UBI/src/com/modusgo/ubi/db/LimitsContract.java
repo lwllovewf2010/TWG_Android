@@ -13,6 +13,7 @@ public class LimitsContract {
 		public static final String TABLE_NAME = "limits";
 		public static final String COLUMN_NAME_DRIVER_ID = "driver_id";
 		public static final String COLUMN_NAME_KEY = "key";
+		public static final String COLUMN_NAME_TITLE = "title";
 		public static final String COLUMN_NAME_TYPE = "type";
 		public static final String COLUMN_NAME_VALUE = "value";
 		public static final String COLUMN_NAME_MIN_VALUE = "min_value";

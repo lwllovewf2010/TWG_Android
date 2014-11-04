@@ -175,9 +175,10 @@ public class DbHelper extends SQLiteOpenHelper {
 			WarrantyInfoEntry.COLUMN_NAME_MILEAGE + TEXT_TYPE + " )",
 		    
 		    "CREATE TABLE " + LimitsEntry.TABLE_NAME + " (" +
-		    		LimitsEntry._ID + " INTEGER PRIMARY KEY," +
-		    		LimitsEntry.COLUMN_NAME_DRIVER_ID + INT_TYPE + COMMA_SEP +
+		    LimitsEntry._ID + " INTEGER PRIMARY KEY," +
+		    LimitsEntry.COLUMN_NAME_DRIVER_ID + INT_TYPE + COMMA_SEP +
 			LimitsEntry.COLUMN_NAME_KEY + TEXT_TYPE + COMMA_SEP +
+			LimitsEntry.COLUMN_NAME_TITLE + TEXT_TYPE + COMMA_SEP +
 			LimitsEntry.COLUMN_NAME_TYPE + TEXT_TYPE + COMMA_SEP +
 			LimitsEntry.COLUMN_NAME_VALUE + TEXT_TYPE + COMMA_SEP +
 			LimitsEntry.COLUMN_NAME_MIN_VALUE + TEXT_TYPE + COMMA_SEP +
@@ -202,7 +203,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	"DROP TABLE IF EXISTS " + LimitsEntry.TABLE_NAME};
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 14;
+	public static final int DATABASE_VERSION = 15;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;
@@ -1008,13 +1009,14 @@ public class DbHelper extends SQLiteOpenHelper {
 			String sql = "INSERT INTO "+ LimitsEntry.TABLE_NAME +" ("
 					+ LimitsEntry.COLUMN_NAME_DRIVER_ID +","
 					+ LimitsEntry.COLUMN_NAME_KEY +","
+					+ LimitsEntry.COLUMN_NAME_TITLE +","
 					+ LimitsEntry.COLUMN_NAME_TYPE +","
 					+ LimitsEntry.COLUMN_NAME_VALUE +","
 					+ LimitsEntry.COLUMN_NAME_MIN_VALUE +","
 					+ LimitsEntry.COLUMN_NAME_MAX_VALUE +","
 					+ LimitsEntry.COLUMN_NAME_STEP +","
 					+ LimitsEntry.COLUMN_NAME_ACTIVE
-					+ ") VALUES (?,?,?,?,?,?,?,?);";
+					+ ") VALUES (?,?,?,?,?,?,?,?,?);";
 			
 			SQLiteStatement statement = database.compileStatement(sql);
 		    database.beginTransaction();
@@ -1023,12 +1025,13 @@ public class DbHelper extends SQLiteOpenHelper {
 		    	statement.clearBindings();
 			    statement.bindLong(1, driverId);
 			    statement.bindString(2, l.key);
-			    statement.bindString(3, l.type);
-			    statement.bindString(4, l.value);
-			    statement.bindString(5, l.minValue);
-			    statement.bindString(6, l.maxValue);
-			    statement.bindString(7, l.step);
-			    statement.bindLong(8, l.active ? 1 : 0);
+			    statement.bindString(3, l.title);
+			    statement.bindString(4, l.type);
+			    statement.bindString(5, l.value);
+			    statement.bindString(6, l.minValue);
+			    statement.bindString(7, l.maxValue);
+			    statement.bindString(8, l.step);
+			    statement.bindLong(9, l.active ? 1 : 0);
 			    statement.execute();
 			}
 		    

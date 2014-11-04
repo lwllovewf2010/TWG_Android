@@ -17,6 +17,8 @@ import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -33,7 +35,9 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.modusgo.ubi.db.DbHelper;
+import com.modusgo.ubi.db.LimitsContract.LimitsEntry;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
+import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -44,8 +48,6 @@ public class LimitsFragment extends Fragment {
 	LinearLayout content;
 	LinearLayout llProgress;
 	LayoutInflater inflater;
-	
-	ArrayList<LimitsListGroup> groups;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -93,7 +95,45 @@ public class LimitsFragment extends Fragment {
 		return rootView;
 	}
 	
-	private void updateLimits(){	
+	private void updateLimits(){
+		
+		ArrayList<Limit> limits = getLimitsFromDB();
+		ArrayList<LimitsListGroup> groups = new ArrayList<LimitsListGroup>();
+		
+		for (Limit limit : limits) {
+			switch (limit.type) {
+			case "number_picker":
+			case "number_input":
+				ArrayList<LimitsListChild> maxSpeedLimitsChildren = new ArrayList<LimitsListChild>();
+				int value = 0;
+				try{
+					value = Integer.parseInt(limit.value);
+				}
+				catch(NumberFormatException e){
+					e.printStackTrace();
+				}
+				maxSpeedLimitsChildren.add(new LimitsSingleValueChild(value, "Set max to"));
+				groups.add(new LimitsListGroup(limit.title, limit.active, maxSpeedLimitsChildren));
+				
+				break;
+			case "flag":
+				groups.add(new LimitsListGroup(limit.title, limit.active));
+				break;
+			case "time_between_picker":
+				ArrayList<LimitsListChild> timeOfDayLimitsChildren = new ArrayList<LimitsListChild>();
+				timeOfDayLimitsChildren.add(new LimitsTimePeriodChild(limit.minValue, limit.maxValue, "Between", "and"));
+				groups.add(new LimitsListGroup(limit.title, limit.active, timeOfDayLimitsChildren));
+				break;
+			case "geofence":
+				ArrayList<LimitsListChild> geofenceChildren = new ArrayList<LimitsListChild>();
+				geofenceChildren.add(new LimitsLinkChild(GeofenceActivity.class, "Set geofence"));
+				groups.add(new LimitsListGroup(limit.title, limit.active, geofenceChildren));
+				
+				break;
+			default:
+				break;
+			}
+		}
 		
 		for (final LimitsListGroup limitsListGroup : groups) {
 			View groupView = inflater.inflate(R.layout.limits_toggle_button_item, content, false);
@@ -127,7 +167,7 @@ public class LimitsFragment extends Fragment {
 						final LimitsSingleValueChild c = (LimitsSingleValueChild)child;
 						
 						final TextView tvSingleValue = (TextView)childView.findViewById(R.id.tvValue);
-						tvSingleValue.setText(c.value+" "+c.measurePoint);
+						tvSingleValue.setText(c.value+" ");
 						tvSingleValue.setOnClickListener(new OnClickListener() {		
 							@Override
 							public void onClick(View v) {
@@ -146,7 +186,7 @@ public class LimitsFragment extends Fragment {
 							    	@Override
 							        public void onClick(DialogInterface dialog, int id) {
 							    		int value = Integer.valueOf(((TextView)dialogContentView.findViewById(R.id.editValue)).getText().toString());
-							    		tvSingleValue.setText(value+" "+c.measurePoint);
+							    		tvSingleValue.setText(value+" ");
 							    		c.value = value;
 							        }
 							    })
@@ -267,6 +307,45 @@ public class LimitsFragment extends Fragment {
 		}
 	}
 	
+	private ArrayList<Limit> getLimitsFromDB(){
+		DbHelper dbHelper = DbHelper.getInstance(getActivity());
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		
+		Cursor c = db.query(LimitsEntry.TABLE_NAME, 
+				new String[]{
+				LimitsEntry.COLUMN_NAME_KEY,
+				LimitsEntry.COLUMN_NAME_TITLE,
+				LimitsEntry.COLUMN_NAME_TYPE,
+				LimitsEntry.COLUMN_NAME_VALUE,
+				LimitsEntry.COLUMN_NAME_MIN_VALUE,
+				LimitsEntry.COLUMN_NAME_MAX_VALUE,
+				LimitsEntry.COLUMN_NAME_STEP,
+				LimitsEntry.COLUMN_NAME_ACTIVE,}, 
+				LimitsEntry.COLUMN_NAME_DRIVER_ID + " = " + driver.id, null, null, null, null);
+		
+		ArrayList<Limit> limits = new ArrayList<Limit>();
+		if(c.moveToFirst()){
+			while(!c.isAfterLast()){
+				Limit l = new Limit();
+				l.key = c.getString(0);
+				l.title = c.getString(1);
+				l.type = c.getString(2);
+				l.value = c.getString(3);
+				l.minValue = c.getString(4);
+				l.maxValue = c.getString(5);
+				l.step = c.getString(6);
+				l.active = c.getInt(7) == 1 ? true : false;
+				limits.add(l);
+				c.moveToNext();
+			}
+		}
+		c.close();
+		db.close();
+		dbHelper.close();
+		
+		return limits;
+	}
+	
 	private String getTimeString(int hourOfDay, int minutes){
 		Calendar datetime = Calendar.getInstance();
 	    datetime.set(Calendar.HOUR_OF_DAY, hourOfDay);
@@ -290,16 +369,10 @@ public class LimitsFragment extends Fragment {
 		super.onResume();
 	}
 	
-	@Override
-	public void onPause() {
-		if(groups!=null)
-			new SetLimitsTask(getActivity()).execute("vehicles/"+driver.id+"/limits.json");
-		super.onPause();
-	}
-	
 	public class Limit{
 
 		public String key;
+		public String title;
 		public String type;
 		public String value;
 		public String minValue;
@@ -343,12 +416,10 @@ public class LimitsFragment extends Fragment {
 	class LimitsSingleValueChild extends LimitsListChild{
 		
 		int value;
-		String measurePoint;
 		
-		public LimitsSingleValueChild(int value, String meausrePoint, String text) {
+		public LimitsSingleValueChild(int value, String text) {
 			super(R.layout.limits_edittext_item, text);
 			this.value = value;
-			this.measurePoint = meausrePoint;
 		}
 	}
 	
@@ -396,8 +467,10 @@ public class LimitsFragment extends Fragment {
 
 		@Override
 		protected JSONObject doInBackground(String... params) {
-	        requestParams.add(new BasicNameValuePair("driver_id", ""+driver.id));
-			return super.doInBackground(params);
+//	        requestParams.add(new BasicNameValuePair("driver_id", ""+driver.id));
+//			return super.doInBackground(params);
+			status = 200;
+			return Utils.getJSONObjectFromAssets(getActivity(), "limits.json");
 		}
 		
 		@Override
@@ -410,38 +483,20 @@ public class LimitsFragment extends Fragment {
 					JSONObject lJSON = limitsJSON.getJSONObject(i);
 					Limit l = new Limit();
 					l.key = lJSON.optString("key");
+					l.title = lJSON.optString("title");
 					l.type = lJSON.optString("type");
 					l.value = lJSON.optString("value");
 					l.minValue = lJSON.optString("min_value",lJSON.optString("value_from"));
 					l.maxValue = lJSON.optString("max_value",lJSON.optString("value_to"));
 					l.step = lJSON.optString("step");
 					l.active = lJSON.optBoolean("active");
+					limits.add(l);
 				}
 			}
 			
 			DbHelper dbHelper = DbHelper.getInstance(getActivity());
 			dbHelper.saveLimits(driver.id, limits);
 			dbHelper.close();
-			
-			ArrayList<LimitsListChild> maxSpeedLimitsChildren = new ArrayList<LimitsListChild>();
-			ArrayList<LimitsListChild> dailyMileageLimitsChildren = new ArrayList<LimitsListChild>();
-			ArrayList<LimitsListChild> timeOfDayLimitsChildren = new ArrayList<LimitsListChild>();
-			ArrayList<LimitsListChild> geofenceChildren = new ArrayList<LimitsListChild>();
-			maxSpeedLimitsChildren.add(new LimitsSingleValueChild(responseJSON.optInt("max_speed"), "MPH", "Set max to"));
-			dailyMileageLimitsChildren.add(new LimitsSingleValueChild(responseJSON.optInt("daily_mileage"), "MI", "Set max to"));
-			timeOfDayLimitsChildren.add(new LimitsTimePeriodChild(responseJSON.optString("driving_after", "08:00 AM"), responseJSON.optString("driving_before", "09:00 PM"), "Between", "and"));
-			
-			geofenceChildren.add(new LimitsLinkChild(GeofenceActivity.class, "Set geofence"));
-			
-			groups = new ArrayList<LimitsListGroup>();
-			groups.add(new LimitsListGroup("Max speed limit", responseJSON.optBoolean("max_speed_limit"), maxSpeedLimitsChildren));
-			groups.add(new LimitsListGroup("Daily mileage limit", responseJSON.optBoolean("daily_mileage_limit"), dailyMileageLimitsChildren));
-			groups.add(new LimitsListGroup("Harsh event alerts", responseJSON.optBoolean("harsh_way")));
-			groups.add(new LimitsListGroup("Time of day limits", responseJSON.optBoolean("is_driving_between"), timeOfDayLimitsChildren));
-			groups.add(new LimitsListGroup("Geofence", responseJSON.optBoolean("is_geofence"), geofenceChildren));
-			groups.add(new LimitsListGroup("Low fuel", responseJSON.optBoolean("low_fuel")));
-			groups.add(new LimitsListGroup("Distracted Driving Events", responseJSON.optBoolean("safe_driving")));
-			groups.add(new LimitsListGroup("Tow Alerts", responseJSON.optBoolean("tow_alerts")));
 			
 			updateLimits();
 			
@@ -460,28 +515,27 @@ public class LimitsFragment extends Fragment {
 		@Override
 		protected JSONObject doInBackground(String... params) {
 	        requestParams.add(new BasicNameValuePair("driver_id", ""+driver.id));
-	        
 
-	        try{
-		        requestParams.add(new BasicNameValuePair("max_speed_limit", ""+groups.get(0).enabled));
-		        requestParams.add(new BasicNameValuePair("daily_mileage_limit", ""+groups.get(1).enabled));
-		        requestParams.add(new BasicNameValuePair("harsh_way", ""+groups.get(2).enabled));
-		        requestParams.add(new BasicNameValuePair("is_driving_between", ""+groups.get(3).enabled));
-		        requestParams.add(new BasicNameValuePair("is_geofence", ""+groups.get(4).enabled));
-		        requestParams.add(new BasicNameValuePair("low_fuel", ""+groups.get(5).enabled));
-		        requestParams.add(new BasicNameValuePair("safe_driving", ""+groups.get(6).enabled));
-		        requestParams.add(new BasicNameValuePair("tow_alerts", ""+groups.get(7).enabled));
-		        
-		        requestParams.add(new BasicNameValuePair("max_speed", ""+((LimitsSingleValueChild)groups.get(0).childs.get(0)).value));
-		        requestParams.add(new BasicNameValuePair("daily_mileage", ""+((LimitsSingleValueChild)groups.get(1).childs.get(0)).value));
-	
-		        requestParams.add(new BasicNameValuePair("driving_after", ""+((LimitsTimePeriodChild)groups.get(3).childs.get(0)).startTime));
-		        requestParams.add(new BasicNameValuePair("driving_before", ""+((LimitsTimePeriodChild)groups.get(3).childs.get(0)).endTime));
-	        }
-	        catch(NullPointerException | IndexOutOfBoundsException e){
-	        	e.printStackTrace();
-	        	showSavedToast = false;
-	        }
+//	        try{
+//		        requestParams.add(new BasicNameValuePair("max_speed_limit", ""+groups.get(0).enabled));
+//		        requestParams.add(new BasicNameValuePair("daily_mileage_limit", ""+groups.get(1).enabled));
+//		        requestParams.add(new BasicNameValuePair("harsh_way", ""+groups.get(2).enabled));
+//		        requestParams.add(new BasicNameValuePair("is_driving_between", ""+groups.get(3).enabled));
+//		        requestParams.add(new BasicNameValuePair("is_geofence", ""+groups.get(4).enabled));
+//		        requestParams.add(new BasicNameValuePair("low_fuel", ""+groups.get(5).enabled));
+//		        requestParams.add(new BasicNameValuePair("safe_driving", ""+groups.get(6).enabled));
+//		        requestParams.add(new BasicNameValuePair("tow_alerts", ""+groups.get(7).enabled));
+//		        
+//		        requestParams.add(new BasicNameValuePair("max_speed", ""+((LimitsSingleValueChild)groups.get(0).childs.get(0)).value));
+//		        requestParams.add(new BasicNameValuePair("daily_mileage", ""+((LimitsSingleValueChild)groups.get(1).childs.get(0)).value));
+//	
+//		        requestParams.add(new BasicNameValuePair("driving_after", ""+((LimitsTimePeriodChild)groups.get(3).childs.get(0)).startTime));
+//		        requestParams.add(new BasicNameValuePair("driving_before", ""+((LimitsTimePeriodChild)groups.get(3).childs.get(0)).endTime));
+//	        }
+//	        catch(NullPointerException | IndexOutOfBoundsException e){
+//	        	e.printStackTrace();
+//	        	showSavedToast = false;
+//	        }
 	        
 			return super.doInBackground(params);
 		}
