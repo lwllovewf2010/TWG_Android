@@ -260,7 +260,7 @@ public class HomeActivity extends MainActivity{
 			drivers.clear();
 			for (int i = 0; i < vehiclesJSON.length(); i++) {
 				JSONObject vehicleJSON = vehiclesJSON.getJSONObject(i);
-				drivers.add(Driver.fromJSON(vehicleJSON));
+				drivers.add(Driver.fromJSON(getApplicationContext(), vehicleJSON));
 			}
 			
 			DbHelper dbHelper = DbHelper.getInstance(HomeActivity.this);

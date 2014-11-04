@@ -183,7 +183,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 		tvName.setText(driver.name);
 	    tvVehicle.setText(driver.getCarFullName());
 	    if(driver.address == null || driver.address.equals(""))
-	    	tvLocation.setText("Unknown address");
+	    	tvLocation.setText("Unknown location");
 	    else
 	    	tvLocation.setText(driver.address);
 	    
@@ -379,7 +379,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 			
 			JSONObject vehicleJSON = responseJSON.getJSONObject("vehicle");
 			
-			driver = Driver.fromJSON(vehicleJSON);
+			driver = Driver.fromJSON(getActivity().getApplicationContext(), vehicleJSON);
 			DbHelper dbHelper = DbHelper.getInstance(getActivity());
 			dbHelper.saveDriver(driver);
 			dbHelper.close();

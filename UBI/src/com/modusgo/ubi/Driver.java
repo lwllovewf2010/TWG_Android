@@ -1,9 +1,17 @@
 package com.modusgo.ubi;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.util.List;
+import java.util.Locale;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
+import android.text.TextUtils;
 
 import com.modusgo.ubi.utils.Utils;
 
@@ -65,7 +73,7 @@ public class Driver implements Serializable{
 		return carYear + " " + carMake + " " + carModel;
 	}
 	
-	public static Driver fromJSON(JSONObject vehicleJSON) throws JSONException{
+	public static Driver fromJSON(Context context, JSONObject vehicleJSON) throws JSONException{
 		Driver d = new Driver();
 		d.id = vehicleJSON.getLong("id");
 		
@@ -92,6 +100,18 @@ public class Driver implements Serializable{
 			d.latitude = locationJSON.optDouble("latitude");
 			d.longitude = locationJSON.optDouble("longitude");
 			d.address = locationJSON.optString("address");
+			if(TextUtils.isEmpty(d.address)){
+				Geocoder geocoder;
+				List<Address> addresses;
+				geocoder = new Geocoder(context, Locale.getDefault());
+				try {
+					addresses = geocoder.getFromLocation(d.latitude, d.longitude, 1);
+					if(addresses.size()>0)
+						d.address = addresses.get(0).getAddressLine(0);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 			d.lastTripDate = Utils.fixTimezoneZ(locationJSON.optString("last_trip_time","Undefined"));
 			d.lastTripId = locationJSON.optLong("last_trip_id");
 		}
