@@ -424,6 +424,11 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 		}
 		
 		@Override
+		protected void onError(String message) {
+			//Do nothing
+		}
+		
+		@Override
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
 			JSONArray tripsJSON = responseJSON.getJSONArray("trips");
 			
