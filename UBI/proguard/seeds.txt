@@ -2845,6 +2845,7 @@ com.modusgo.ubi.R$id: int showHome
 com.modusgo.ubi.R$id: int showTitle
 com.modusgo.ubi.R$id: int slidingmenumain
 com.modusgo.ubi.R$id: int spaceDiagnostics
+com.modusgo.ubi.R$id: int spinnerCar
 com.modusgo.ubi.R$id: int spinnerTimePeriod
 com.modusgo.ubi.R$id: int spinnerTimezone
 com.modusgo.ubi.R$id: int split_action_bar
@@ -2867,6 +2868,7 @@ com.modusgo.ubi.R$id: int triangle
 com.modusgo.ubi.R$id: int tvAddress
 com.modusgo.ubi.R$id: int tvAlertsCount
 com.modusgo.ubi.R$id: int tvAvgSpeed
+com.modusgo.ubi.R$id: int tvCar
 com.modusgo.ubi.R$id: int tvCode
 com.modusgo.ubi.R$id: int tvContent
 com.modusgo.ubi.R$id: int tvCounter
