@@ -27,9 +27,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tvVehicle"
-                android:paddingBottom="5dp"
                 android:background="#e6FFFFFF"
                 android:orientation="vertical"
+                android:paddingBottom="5dp"
                 android:paddingTop="10dp" >
 
                 <LinearLayout
@@ -43,22 +43,22 @@
                     <RelativeLayout
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
                         android:layout_weight="1"
                         android:background="@color/btn_border_rounded_orange_light"
-                        android:clickable="true" >
+                        android:clickable="true"
+                        android:paddingBottom="10dp"
+                        android:paddingTop="10dp" >
 
                         <com.modusgo.ubi.customviews.TypefacedTextView
                             android:id="@+id/tvDistanceToCar"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:gravity="bottom"
-                            android:layout_centerHorizontal="true"
-                            android:layout_alignParentTop="true"
                             android:layout_above="@+id/tvDistanceToCarLabel"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true"
                             android:drawableLeft="@drawable/ic_man"
                             android:drawablePadding="3dp"
+                            android:gravity="bottom"
                             android:text="…"
                             android:textColor="#00AEEF"
                             android:textSize="20sp"
@@ -75,19 +75,19 @@
                             android:textSize="10sp"
                             ubi:typeface="EncodeSansNormal-300-Light.ttf" />
                     </RelativeLayout>
-                    
-                    <Space 
+
+                    <Space
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight=".1"/>
+                        android:layout_weight=".1" />
 
                     <RelativeLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
                         android:layout_weight="1"
-                        android:background="@color/btn_border_rounded_orange_light" >
+                        android:background="@color/btn_border_rounded_orange_light"
+                        android:paddingBottom="10dp"
+                        android:paddingTop="10dp" >
 
                         <com.modusgo.ubi.customviews.TypefacedTextView
                             android:id="@+id/tvFuel"
@@ -112,21 +112,21 @@
                             android:textSize="10sp"
                             ubi:typeface="EncodeSansNormal-300-Light.ttf" />
                     </RelativeLayout>
-                    
-                    <Space 
+
+                    <Space
                         android:id="@+id/spaceDiagnostics"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight=".1"/>
+                        android:layout_weight=".1" />
 
                     <RelativeLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
                         android:layout_weight="1"
                         android:background="@color/btn_border_rounded_orange_light"
-                        android:clickable="true" >
+                        android:clickable="true"
+                        android:paddingBottom="10dp"
+                        android:paddingTop="10dp" >
 
                         <com.modusgo.ubi.customviews.TypefacedTextView
                             android:id="@+id/tvDiagnosticsCount"
@@ -151,20 +151,20 @@
                             android:textSize="10sp"
                             ubi:typeface="EncodeSansNormal-300-Light.ttf" />
                     </RelativeLayout>
-                    
-                    <Space 
+
+                    <Space
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight=".1"/>
+                        android:layout_weight=".1" />
 
                     <RelativeLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
                         android:layout_weight="1"
                         android:background="@color/btn_border_rounded_orange_light"
-                        android:clickable="true" >
+                        android:clickable="true"
+                        android:paddingBottom="10dp"
+                        android:paddingTop="10dp" >
 
                         <com.modusgo.ubi.customviews.TypefacedTextView
                             android:id="@+id/tvAlertsCount"
@@ -195,11 +195,11 @@
                     android:id="@+id/rlLocation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingTop="3dp"
+                    android:background="@color/btn_transparent_orange_light"
                     android:paddingBottom="3dp"
                     android:paddingLeft="17dp"
                     android:paddingRight="17dp"
-                    android:background="@color/btn_transparent_orange_light" >
+                    android:paddingTop="3dp" >
 
                     <com.modusgo.ubi.customviews.TypefacedTextView
                         android:id="@+id/tvLocationLabel"
@@ -232,11 +232,11 @@
                     android:id="@+id/rlDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingTop="3dp"
+                    android:background="@color/btn_transparent_orange_light"
                     android:paddingBottom="3dp"
                     android:paddingLeft="17dp"
                     android:paddingRight="17dp"
-                    android:background="@color/btn_transparent_orange_light" >
+                    android:paddingTop="3dp" >
 
                     <com.modusgo.ubi.customviews.TypefacedTextView
                         android:id="@+id/tvDateLabel"
@@ -267,6 +267,14 @@
                 </RelativeLayout>
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/tvVehicle"
+                android:layout_alignTop="@+id/tvName"
+                android:background="#e6FFFFFF"
+                android:orientation="vertical" />
+
             <ImageView
                 android:id="@+id/imagePhoto"
                 android:layout_width="102dp"
@@ -281,6 +289,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="12dp"
                 android:layout_marginTop="65dp"
+                android:paddingTop="4dp"
                 android:layout_toRightOf="@+id/imagePhoto"
                 android:text="Melissa"
                 android:textColor="#697078"
