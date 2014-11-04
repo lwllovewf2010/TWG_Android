@@ -434,6 +434,7 @@ public class TripActivity extends MainActivity {
 		@Override
 		protected JSONObject doInBackground(String... params) {
 	        requestParams.add(new BasicNameValuePair("trip_id", ""+tripId));
+	        requestParams.add(new BasicNameValuePair("vehicle_id", ""+driver.id));
 	        
 			return super.doInBackground(params);
 		}
@@ -502,7 +503,7 @@ public class TripActivity extends MainActivity {
 			}
 			
 			DbHelper dHelper = DbHelper.getInstance(TripActivity.this);
-			dHelper.saveTrip(trip);
+			dHelper.saveTrip(driver.id, trip);
 			dHelper.saveRoute(trip.id, trip.route);
 			dHelper.savePoints(trip.id, trip.points);
 			dHelper.saveEvents(trip.id, trip.events);

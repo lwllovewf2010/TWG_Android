@@ -436,7 +436,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 			}
 			
 			DbHelper dbHelper = DbHelper.getInstance(getActivity());
-			dbHelper.saveTrips(trips);
+			dbHelper.saveTrips(driver.id, trips);
 			dbHelper.close();
 			
 			super.onSuccess(responseJSON);

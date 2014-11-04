@@ -166,7 +166,8 @@ public class TripsFragment extends Fragment{
 				TripEntry.COLUMN_NAME_EVENTS_COUNT,
 				TripEntry.COLUMN_NAME_START_TIME,
 				TripEntry.COLUMN_NAME_END_TIME,
-				TripEntry.COLUMN_NAME_DISTANCE}, 
+				TripEntry.COLUMN_NAME_DISTANCE},
+				TripEntry.COLUMN_NAME_DRIVER_ID + " = " + driver.id + " AND " +
 				"datetime(" + TripEntry.COLUMN_NAME_START_TIME + ")>=datetime('"+ Utils.fixTimeZoneColon(sdf.format(startDate)) + "') AND " +
 				"datetime(" + TripEntry.COLUMN_NAME_START_TIME + ")<=datetime('"+ Utils.fixTimeZoneColon(sdf.format(endDate)) + "')", null, null, null, "datetime("+TripEntry.COLUMN_NAME_START_TIME+") DESC");
 		
@@ -330,7 +331,7 @@ public class TripsFragment extends Fragment{
 			}
 			
 			DbHelper dbHelper = DbHelper.getInstance(getActivity());
-			dbHelper.saveTrips(trips);
+			dbHelper.saveTrips(driver.id, trips);
 			dbHelper.close();
 
 			cStart.setTimeInMillis(System.currentTimeMillis());

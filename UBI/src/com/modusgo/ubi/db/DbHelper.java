@@ -76,6 +76,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	    
 		    "CREATE TABLE " + TripEntry.TABLE_NAME + " (" +
 		    TripEntry._ID + " INTEGER PRIMARY KEY," +
+		    TripEntry.COLUMN_NAME_DRIVER_ID + INT_TYPE + COMMA_SEP +
 		    TripEntry.COLUMN_NAME_EVENTS_COUNT + INT_TYPE + COMMA_SEP +
 		    TripEntry.COLUMN_NAME_START_TIME + TEXT_TYPE + COMMA_SEP +
 		    TripEntry.COLUMN_NAME_END_TIME + TEXT_TYPE + COMMA_SEP +
@@ -203,7 +204,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	"DROP TABLE IF EXISTS " + LimitsEntry.TABLE_NAME};
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 15;
+	public static final int DATABASE_VERSION = 17;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;
@@ -467,25 +468,26 @@ public class DbHelper extends SQLiteOpenHelper {
 		saveDrivers(drivers, true);		
 	}
 	
-	public void saveTrip(Trip trip){
+	public void saveTrip(long driverId, Trip trip){
 		ArrayList<Trip> trips = new ArrayList<Trip>();
 		trips.add(trip);
-		saveTrips(trips);
+		saveTrips(driverId, trips);
 	}
 	
-	public void saveTrips(ArrayList<Trip> trips){
+	public void saveTrips(long driverId, ArrayList<Trip> trips){
 		SQLiteDatabase database = sInstance.getWritableDatabase();
 		
 		if(database!=null && trips!=null){
 			String sql = "INSERT OR REPLACE INTO "+ TripEntry.TABLE_NAME +" ("
 					+ TripEntry._ID +","
+					+ TripEntry.COLUMN_NAME_DRIVER_ID +","
 					+ TripEntry.COLUMN_NAME_EVENTS_COUNT +","
 					+ TripEntry.COLUMN_NAME_START_TIME +","
 					+ TripEntry.COLUMN_NAME_END_TIME +","
 					+ TripEntry.COLUMN_NAME_DISTANCE +","
 					+ TripEntry.COLUMN_NAME_AVG_SPEED +","
 					+ TripEntry.COLUMN_NAME_MAX_SPEED +""
-					+ ") VALUES (?,?,?,?,?," +
+					+ ") VALUES (?,?,?,?,?,?," +
 					"(SELECT IFNULL(NULLIF((SELECT "+TripEntry.COLUMN_NAME_AVG_SPEED+" FROM trips WHERE "+TripEntry._ID+" IS ?),0),?))," +
 					"(SELECT IFNULL(NULLIF((SELECT "+TripEntry.COLUMN_NAME_MAX_SPEED+" FROM trips WHERE "+TripEntry._ID+" IS ?),0),?)));";
 			
@@ -497,14 +499,15 @@ public class DbHelper extends SQLiteOpenHelper {
 //		    	ids+= i!=trips.size()-1 ? trip.id+"," : trip.id;
 		    	statement.clearBindings();
 		    	statement.bindLong(1, trip.id);
-		    	statement.bindLong(2, trip.eventsCount);
-		    	statement.bindString(3, trip.startDate);
-		    	statement.bindString(4, trip.endDate);
-		    	statement.bindDouble(5, trip.distance);
-		    	statement.bindDouble(6, trip.id);
-		    	statement.bindDouble(7, trip.averageSpeed);
-		    	statement.bindDouble(8, trip.id);
-		    	statement.bindDouble(9, trip.maxSpeed);
+		    	statement.bindLong(2, driverId);
+		    	statement.bindLong(3, trip.eventsCount);
+		    	statement.bindString(4, trip.startDate);
+		    	statement.bindString(5, trip.endDate);
+		    	statement.bindDouble(6, trip.distance);
+		    	statement.bindDouble(7, trip.id);
+		    	statement.bindDouble(8, trip.averageSpeed);
+		    	statement.bindDouble(9, trip.id);
+		    	statement.bindDouble(10, trip.maxSpeed);
 		    	statement.execute();
 			}
 		    
