@@ -47,6 +47,7 @@
             ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
         <com.modusgo.ubi.customviews.TypefacedTextView
+            android:id="@+id/tvDateLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="left"

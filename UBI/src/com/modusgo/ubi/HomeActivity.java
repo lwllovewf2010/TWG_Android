@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -139,12 +140,22 @@ public class HomeActivity extends MainActivity{
 
 		    ((TextView) view.findViewById(R.id.tvName)).setText(d.name);
 		    ((TextView) view.findViewById(R.id.tvVehicle)).setText(d.getCarFullName());
-		    try {
-				((TextView) view.findViewById(R.id.tvDate)).setText(sdfTo.format(sdfFrom.parse(d.lastTripDate)));
-			} catch (ParseException e) {
-				((TextView) view.findViewById(R.id.tvDate)).setText(d.lastTripDate);
-				e.printStackTrace();
-			}
+		    
+		    if(TextUtils.isEmpty(d.lastTripDate)){
+		    	view.findViewById(R.id.tvDateLabel).setVisibility(View.INVISIBLE);
+		    	view.findViewById(R.id.tvDate).setVisibility(View.INVISIBLE);
+		    }
+		    else{
+		    	view.findViewById(R.id.tvDateLabel).setVisibility(View.VISIBLE);
+		    	TextView tvDate = (TextView) view.findViewById(R.id.tvDate);
+		    	tvDate.setVisibility(View.VISIBLE);
+		    	try {
+		    		tvDate.setText(sdfTo.format(sdfFrom.parse(d.lastTripDate)));
+				} catch (ParseException e) {
+					tvDate.setText(d.lastTripDate);
+					e.printStackTrace();
+				}
+		    }
 		    
 		    ImageView imagePhoto = (ImageView)view.findViewById(R.id.imagePhoto);
 		    if(d.photo == null || d.photo.equals(""))
