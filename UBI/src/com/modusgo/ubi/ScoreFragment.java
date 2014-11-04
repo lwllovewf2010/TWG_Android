@@ -244,8 +244,9 @@ public class ScoreFragment extends Fragment{
 			tvThisMonthMessage.setText("Scoring will be available soon");
 			tvThisMonthMessage.setGravity(Gravity.CENTER);
 			tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_gray));
-			tvScore.setVisibility(View.GONE);
-			tvLastMonthMessage.setVisibility(View.GONE);
+			tvScore.setVisibility(View.INVISIBLE);
+			tvLastMonthMessage.setVisibility(View.INVISIBLE);
+			imageLastMonthArrow.setVisibility(View.INVISIBLE);
 		}
 	}
 	
