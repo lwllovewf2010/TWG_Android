@@ -165,9 +165,72 @@ public class LimitsFragment extends Fragment {
 						.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int id) {
-								int value = Integer.valueOf(((TextView)dialogContentView.findViewById(R.id.editValue)).getText().toString());
-								tvSingleValue.setText(value+" ");
-								((LimitsSingleValueChild)child).value = value;
+								final int value = Integer.valueOf(((TextView)dialogContentView.findViewById(R.id.editValue)).getText().toString());
+								
+								new SetLimitsTask(getActivity()){
+									
+									@Override
+									protected void onPreExecute() {
+										btnToggle.setEnabled(false);
+										Utils.enableDisableViewGroup(childLayout, false);
+										requestParams.add(new BasicNameValuePair("vehicle_id",""+driver.id));
+										requestParams.add(new BasicNameValuePair("key",limit.key));
+										requestParams.add(new BasicNameValuePair("value",""+value));
+										requestParams.add(new BasicNameValuePair("active",btnToggle.isChecked() ? "true" : "false"));
+										super.onPreExecute();
+									}
+									
+									@Override
+									protected void onSuccess(JSONObject responseJSON) throws JSONException {
+
+										int newValue;
+										try{
+											newValue = Integer.parseInt(limit.value);
+										}
+										catch(NumberFormatException e){
+											newValue = 0;
+										}
+										
+										limit.key = responseJSON.optString("key");
+										limit.title = responseJSON.optString("title");
+										limit.type = responseJSON.optString("type");
+										limit.value = responseJSON.optString("value");
+										limit.minValue = responseJSON.optString("min_value",responseJSON.optString("value_from"));
+										limit.maxValue = responseJSON.optString("max_value",responseJSON.optString("value_to"));
+										limit.step = responseJSON.optString("step");
+										limit.active = responseJSON.optBoolean("active");
+										
+										DbHelper dbHelper = DbHelper.getInstance(getActivity());
+										dbHelper.saveLimits(driver.id, limits);
+										dbHelper.close();
+										
+										
+										try{
+											newValue = Integer.parseInt(limit.value);
+										}
+										catch(NumberFormatException e){ 
+											e.printStackTrace();
+										}
+
+										((LimitsSingleValueChild)child).value = newValue;
+										tvSingleValue.setText(""+newValue);
+											
+										super.onSuccess(responseJSON);
+									}
+									
+									@Override
+									protected void onError(String message) {
+										//super.onError(message);
+									}
+									
+									@Override
+									protected void onPostExecute(JSONObject result) {
+										super.onPostExecute(result);
+										btnToggle.setEnabled(true);
+										Utils.enableDisableViewGroup(childLayout, true);
+									}
+								}.execute("vehicles/"+driver.id+"/limits.json");
+								
 							}
 						})
 						.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
