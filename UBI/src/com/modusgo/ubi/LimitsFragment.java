@@ -97,6 +97,7 @@ public class LimitsFragment extends Fragment {
 	
 	private void updateLimits(){
 		
+		content.removeAllViews();
 		final ArrayList<Limit> limits = getLimitsFromDB();
 		
 		for (final Limit limit : limits) {
@@ -107,6 +108,10 @@ public class LimitsFragment extends Fragment {
 			final View childView;
 			
 			btnToggle.setChecked(limit.active);
+			
+			if(limit.active){
+				childLayout.setVisibility(View.VISIBLE);
+			}
 			
 			groupView.setOnClickListener(new OnClickListener() {
 				@Override
@@ -173,6 +178,8 @@ public class LimitsFragment extends Fragment {
 						builder.create().show();
 					}
 				});
+				childLayout.addView(childView);
+				System.out.println("numbers "+(null==childView) + " and count = " + childLayout.getChildCount());
 			}
 			else if(limit.type.equals("time_between_picker")){
 				child = new LimitsTimePeriodChild(limit.minValue, limit.maxValue, "Between", "and");
@@ -189,7 +196,7 @@ public class LimitsFragment extends Fragment {
 				TextView tvChildTitle = (TextView) childView.findViewById(R.id.tvTitle);
 				tvChildTitle.setText(child.text[0]);
 				
-				SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa", Locale.US);
+				SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss", Locale.US);
 				final Calendar startCalendar = Calendar.getInstance();
 				final Calendar endCalendar = Calendar.getInstance();
 				try {
@@ -238,6 +245,7 @@ public class LimitsFragment extends Fragment {
 						tpd.show();
 					}
 				});
+				childLayout.addView(childView);
 			}
 			else if(limit.type.equals("geofence")){
 				child = new LimitsLinkChild(GeofenceActivity.class, "Set geofence");
@@ -265,10 +273,7 @@ public class LimitsFragment extends Fragment {
 						startActivity(i);
 					}
 				});
-			}
-			
-			if(limit.active){
-				childLayout.setVisibility(View.VISIBLE);
+				childLayout.addView(childView);
 			}
 			
 			btnToggle.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -280,9 +285,9 @@ public class LimitsFragment extends Fragment {
 						@Override
 						protected void onPreExecute() {
 							btnToggle.setEnabled(false);
+							Utils.enableDisableViewGroup(childLayout, false);
 							requestParams.add(new BasicNameValuePair("vehicle_id",""+driver.id));
 							requestParams.add(new BasicNameValuePair("key",limit.key));
-							requestParams.add(new BasicNameValuePair("value",btnToggle.isChecked() ? "true" : "false"));
 							requestParams.add(new BasicNameValuePair("active",btnToggle.isChecked() ? "true" : "false"));
 							super.onPreExecute();
 						}
@@ -307,8 +312,8 @@ public class LimitsFragment extends Fragment {
 								childLayout.setVisibility(View.VISIBLE);
 							}
 							else{
-								btnToggle.setChecked(true);
-								childLayout.setVisibility(View.VISIBLE);
+								btnToggle.setChecked(false);
+								childLayout.setVisibility(View.GONE);						
 							}
 								
 							super.onSuccess(responseJSON);
@@ -317,13 +322,14 @@ public class LimitsFragment extends Fragment {
 						@Override
 						protected void onError(String message) {
 							btnToggle.setChecked(limit.active);
-							super.onError(message);
+							//super.onError(message);
 						}
 						
 						@Override
 						protected void onPostExecute(JSONObject result) {
-							btnToggle.setEnabled(true);
 							super.onPostExecute(result);
+							btnToggle.setEnabled(true);
+							Utils.enableDisableViewGroup(childLayout, true);
 						}
 					}.execute("vehicles/"+driver.id+"/limits.json");
 				}

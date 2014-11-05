@@ -20,6 +20,8 @@ import org.json.JSONTokener;
 
 import android.content.Context;
 import android.telephony.TelephonyManager;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.modusgo.ubi.Constants;
 
@@ -182,4 +184,15 @@ public class Utils {
 
         return mins+hours*60+days*24*60+years*daysInYear*24*60;   
     }
+	
+	public static void enableDisableViewGroup(ViewGroup viewGroup, boolean enabled) {
+	    int childCount = viewGroup.getChildCount();
+	    for (int i = 0; i < childCount; i++) {
+	      View view = viewGroup.getChildAt(i);
+	      view.setEnabled(enabled);
+	      if (view instanceof ViewGroup) {
+	        enableDisableViewGroup((ViewGroup) view, enabled);
+	      }
+	    }
+	  }
 }
