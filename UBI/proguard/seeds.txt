@@ -1981,8 +1981,8 @@ com.jeremyfeinstein.slidingmenu.lib.app.SlidingPreferenceActivity: void setConte
 com.jeremyfeinstein.slidingmenu.lib.app.SlidingPreferenceActivity: void setBehindContentView(android.view.View)
 com.modusgo.dd.CallReceiver
 com.modusgo.dd.CallReceiver: CallReceiver()
-com.modusgo.dd.PhoneUnlockReceiver
-com.modusgo.dd.PhoneUnlockReceiver: PhoneUnlockReceiver()
+com.modusgo.dd.PhoneScreenOnOffReceiver
+com.modusgo.dd.PhoneScreenOnOffReceiver: PhoneScreenOnOffReceiver()
 com.modusgo.dd.RegisterByCodeActivity
 com.modusgo.dd.RegisterByCodeActivity: RegisterByCodeActivity()
 com.modusgo.dd.TrackingStatusService
@@ -2321,6 +2321,7 @@ com.modusgo.ubi.R$color: int green
 com.modusgo.ubi.R$color: int home_item_pressed
 com.modusgo.ubi.R$color: int light_orange
 com.modusgo.ubi.R$color: int light_orange_2
+com.modusgo.ubi.R$color: int limits_edittext
 com.modusgo.ubi.R$color: int menu_blue
 com.modusgo.ubi.R$color: int menu_text_gray
 com.modusgo.ubi.R$color: int orange
@@ -2494,6 +2495,7 @@ com.modusgo.ubi.R$drawable: int arrow_down_red
 com.modusgo.ubi.R$drawable: int arrow_small_right
 com.modusgo.ubi.R$drawable: int arrow_up_green
 com.modusgo.ubi.R$drawable: int bg_alerts_triangle_gray
+com.modusgo.ubi.R$drawable: int bg_alerts_triangle_green
 com.modusgo.ubi.R$drawable: int bg_alerts_triangle_red
 com.modusgo.ubi.R$drawable: int bubble_blue
 com.modusgo.ubi.R$drawable: int bubble_green
@@ -2665,6 +2667,7 @@ com.modusgo.ubi.R$drawable: int textview_login_password_bg
 com.modusgo.ubi.R$drawable: int toggle_btn_disabled_bg
 com.modusgo.ubi.R$drawable: int toggle_btn_enabled_bg
 com.modusgo.ubi.R$drawable: int toggle_selector
+com.modusgo.ubi.R$drawable: int toggle_selector_bg
 com.modusgo.ubi.R$drawable: int vpi__tab_indicator
 com.modusgo.ubi.R$drawable: int vpi__tab_selected_focused_holo
 com.modusgo.ubi.R$drawable: int vpi__tab_selected_holo
