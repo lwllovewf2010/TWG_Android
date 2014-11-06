@@ -454,15 +454,15 @@ public class TripsFragment extends Fragment{
 			else{
 				holder = (ViewHolderTrip) view.getTag();				
 			}
-
-			holder.tvEventsCount.setText(""+t.eventsCount);
+				
 			if(t.eventsCount>0){
 				holder.tvEventsCount.setTextColor(Color.parseColor("#FFFFFF"));
 				holder.tvEventsCount.setBackgroundResource(R.drawable.bg_alerts_triangle_red);
+				holder.tvEventsCount.setText(""+t.eventsCount);
 			}
 			else{
-				holder.tvEventsCount.setTextColor(Color.parseColor("#a1a6ad"));
-				holder.tvEventsCount.setBackgroundResource(R.drawable.bg_alerts_triangle_gray);				
+				holder.tvEventsCount.setBackgroundResource(R.drawable.bg_alerts_triangle_green);
+				holder.tvEventsCount.setText("");				
 			}
 			
 			String grade = t.grade;

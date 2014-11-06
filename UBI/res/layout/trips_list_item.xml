@@ -97,7 +97,6 @@
         android:layout_marginRight="10dp"
         android:background="@drawable/bg_alerts_triangle_red"
         android:gravity="center|bottom"
-        android:text="1"
         android:textColor="#FFF"
         android:textSize="18sp"
         ubi:typeface="EncodeSansNormal-300-Light.ttf" />
