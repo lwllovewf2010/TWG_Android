@@ -378,14 +378,14 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 			System.out.println(responseJSON);
 			
 			JSONObject vehicleJSON = responseJSON.getJSONObject("vehicle");
-			
-			driver = Driver.fromJSON(getActivity().getApplicationContext(), vehicleJSON);
-			DbHelper dbHelper = DbHelper.getInstance(getActivity());
-			dbHelper.saveDriver(driver);
-			dbHelper.close();
-			
-			updateFragment();
-			
+			if(isAdded()){
+				driver = Driver.fromJSON(getActivity().getApplicationContext(), vehicleJSON);
+				DbHelper dbHelper = DbHelper.getInstance(getActivity());
+				dbHelper.saveDriver(driver);
+				dbHelper.close();
+				
+				updateFragment();
+			}
 			super.onSuccess(responseJSON);
 		}
 	}
