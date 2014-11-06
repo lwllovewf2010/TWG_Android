@@ -276,16 +276,61 @@ public class LimitsFragment extends Fragment {
 				}
 				
 				final TextView tvValue = (TextView)childView.findViewById(R.id.tvValue);
-				tvValue.setText(((LimitsTimePeriodChild)child).startTime);
+				tvValue.setText(getTime12String(startCalendar.get(Calendar.HOUR_OF_DAY), startCalendar.get(Calendar.MINUTE)));
 				tvValue.setOnClickListener(new OnClickListener() {		
 					@Override
 					public void onClick(View v) {
 						TimePickerDialog tpd = new TimePickerDialog(getActivity(), new OnTimeSetListener(){
 							@Override
-							public void onTimeSet(TimePicker arg0, int hourOfDay, int minutes) {
-								startCalendar.set(2014, 0, 1, hourOfDay, minutes);
-								tvValue.setText(getTimeString(hourOfDay, minutes));
-								((LimitsTimePeriodChild)child).startTime = getTimeString(hourOfDay, minutes);
+							public void onTimeSet(TimePicker arg0, final int hourOfDay, final int minutes) {
+								new SetLimitsTask(getActivity()){
+									
+									@Override
+									protected void onPreExecute() {
+										btnToggle.setEnabled(false);
+										Utils.enableDisableViewGroup(childLayout, false);
+										requestParams.add(new BasicNameValuePair("vehicle_id",""+driver.id));
+										requestParams.add(new BasicNameValuePair("key",limit.key));
+										requestParams.add(new BasicNameValuePair("value_from",getTime24String(hourOfDay, minutes)));
+										requestParams.add(new BasicNameValuePair("active",btnToggle.isChecked() ? "true" : "false"));
+										super.onPreExecute();
+									}
+									
+									@Override
+									protected void onSuccess(JSONObject responseJSON) throws JSONException {
+										
+										limit.key = responseJSON.optString("key");
+										limit.title = responseJSON.optString("title");
+										limit.type = responseJSON.optString("type");
+										limit.value = responseJSON.optString("value");
+										limit.minValue = responseJSON.optString("min_value",responseJSON.optString("value_from"));
+										limit.maxValue = responseJSON.optString("max_value",responseJSON.optString("value_to"));
+										limit.step = responseJSON.optString("step");
+										limit.active = responseJSON.optBoolean("active");
+										
+										DbHelper dbHelper = DbHelper.getInstance(getActivity());
+										dbHelper.saveLimits(driver.id, limits);
+										dbHelper.close();
+
+										startCalendar.set(2014, 0, 1, hourOfDay, minutes);
+										tvValue.setText(getTime12String(hourOfDay, minutes));
+										((LimitsTimePeriodChild)child).startTime = getTime12String(hourOfDay, minutes);
+											
+										super.onSuccess(responseJSON);
+									}
+									
+									@Override
+									protected void onError(String message) {
+										//super.onError(message);
+									}
+									
+									@Override
+									protected void onPostExecute(JSONObject result) {
+										super.onPostExecute(result);
+										btnToggle.setEnabled(true);
+										Utils.enableDisableViewGroup(childLayout, true);
+									}
+								}.execute("vehicles/"+driver.id+"/limits.json");
 							}
 						}, startCalendar.get(Calendar.HOUR_OF_DAY), startCalendar.get(Calendar.MINUTE), false);
 						tpd.show();
@@ -293,16 +338,61 @@ public class LimitsFragment extends Fragment {
 				});
 				
 				final TextView tvValue2 = (TextView)childView.findViewById(R.id.tvValue2);
-				tvValue2.setText(((LimitsTimePeriodChild)child).endTime);
+				tvValue2.setText(getTime12String(endCalendar.get(Calendar.HOUR_OF_DAY), endCalendar.get(Calendar.MINUTE)));
 				tvValue2.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						TimePickerDialog tpd = new TimePickerDialog(getActivity(), new OnTimeSetListener(){
 							@Override
-							public void onTimeSet(TimePicker arg0, int hourOfDay, int minutes) {
-								endCalendar.set(2014, 0, 1, hourOfDay, minutes);
-								tvValue2.setText(getTimeString(hourOfDay, minutes));
-								((LimitsTimePeriodChild)child).endTime = getTimeString(hourOfDay, minutes);
+							public void onTimeSet(TimePicker arg0, final int hourOfDay, final int minutes) {
+								new SetLimitsTask(getActivity()){
+									
+									@Override
+									protected void onPreExecute() {
+										btnToggle.setEnabled(false);
+										Utils.enableDisableViewGroup(childLayout, false);
+										requestParams.add(new BasicNameValuePair("vehicle_id",""+driver.id));
+										requestParams.add(new BasicNameValuePair("key",limit.key));
+										requestParams.add(new BasicNameValuePair("value_to",getTime24String(hourOfDay, minutes)));
+										requestParams.add(new BasicNameValuePair("active",btnToggle.isChecked() ? "true" : "false"));
+										super.onPreExecute();
+									}
+									
+									@Override
+									protected void onSuccess(JSONObject responseJSON) throws JSONException {
+										
+										limit.key = responseJSON.optString("key");
+										limit.title = responseJSON.optString("title");
+										limit.type = responseJSON.optString("type");
+										limit.value = responseJSON.optString("value");
+										limit.minValue = responseJSON.optString("min_value",responseJSON.optString("value_from"));
+										limit.maxValue = responseJSON.optString("max_value",responseJSON.optString("value_to"));
+										limit.step = responseJSON.optString("step");
+										limit.active = responseJSON.optBoolean("active");
+										
+										DbHelper dbHelper = DbHelper.getInstance(getActivity());
+										dbHelper.saveLimits(driver.id, limits);
+										dbHelper.close();
+
+										endCalendar.set(2014, 0, 1, hourOfDay, minutes);
+										tvValue2.setText(getTime12String(hourOfDay, minutes));
+										((LimitsTimePeriodChild)child).endTime = getTime12String(hourOfDay, minutes);
+											
+										super.onSuccess(responseJSON);
+									}
+									
+									@Override
+									protected void onError(String message) {
+										//super.onError(message);
+									}
+									
+									@Override
+									protected void onPostExecute(JSONObject result) {
+										super.onPostExecute(result);
+										btnToggle.setEnabled(true);
+										Utils.enableDisableViewGroup(childLayout, true);
+									}
+								}.execute("vehicles/"+driver.id+"/limits.json");
 							}
 						}, endCalendar.get(Calendar.HOUR_OF_DAY), endCalendar.get(Calendar.MINUTE), false);
 						tpd.show();
@@ -444,7 +534,7 @@ public class LimitsFragment extends Fragment {
 		return limits;
 	}
 	
-	private String getTimeString(int hourOfDay, int minutes){
+	private String getTime12String(int hourOfDay, int minutes){
 		Calendar datetime = Calendar.getInstance();
 	    datetime.set(Calendar.HOUR_OF_DAY, hourOfDay);
 	    datetime.set(Calendar.MINUTE, minutes);
@@ -459,6 +549,14 @@ public class LimitsFragment extends Fragment {
 	    String strMntToShow = datetime.get(Calendar.MINUTE)<10 ? "0"+datetime.get(Calendar.MINUTE) : ""+datetime.get(Calendar.MINUTE); 
 
 	    return strHrsToShow+":"+strMntToShow+" "+am_pm;
+	}
+	
+	private String getTime24String(int hourOfDay, int minutes){
+
+	    String strHrsToShow = hourOfDay<10 ? "0"+hourOfDay : ""+hourOfDay;
+	    String strMntToShow = minutes<10 ? "0"+minutes : ""+minutes; 
+
+	    return strHrsToShow+":"+strMntToShow+":00";
 	}
 	
 	@Override
