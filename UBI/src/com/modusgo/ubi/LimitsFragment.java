@@ -31,7 +31,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.modusgo.ubi.db.DbHelper;
@@ -48,6 +47,8 @@ public class LimitsFragment extends Fragment {
 	LinearLayout content;
 	LinearLayout llProgress;
 	LayoutInflater inflater;
+	
+	ArrayList<Limit> limits;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -90,7 +91,11 @@ public class LimitsFragment extends Fragment {
 		llProgress = (LinearLayout)rootView.findViewById(R.id.llProgress);
 		content = (LinearLayout)rootView.findViewById(R.id.llContent);
 		
-		new GetLimitsTask(getActivity()).execute("vehicles/"+driver.id+"/limits.json");
+		limits = getLimitsFromDB();
+		if(limits.size()>0)
+			updateLimits();
+		else
+			new GetLimitsTask(getActivity()).execute("vehicles/"+driver.id+"/limits.json");
 		
 		return rootView;
 	}
@@ -98,7 +103,6 @@ public class LimitsFragment extends Fragment {
 	private void updateLimits(){
 		
 		content.removeAllViews();
-		final ArrayList<Limit> limits = getLimitsFromDB();
 		
 		for (final Limit limit : limits) {
 			View groupView = inflater.inflate(R.layout.limits_toggle_button_item, content, false);
@@ -659,8 +663,8 @@ public class LimitsFragment extends Fragment {
 		@Override
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
 			
-			ArrayList<Limit> limits = new ArrayList<Limit>();
 			if(responseJSON.has("limits")){
+				limits.clear();
 				JSONArray limitsJSON = responseJSON.getJSONArray("limits");
 				for (int i = 0; i < limitsJSON.length(); i++) {
 					JSONObject lJSON = limitsJSON.getJSONObject(i);
