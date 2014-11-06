@@ -105,7 +105,7 @@ public class GeofenceActivity extends MainActivity {
 			public void onMapLoaded() {
 				CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(37.8430094,-95.0098992), 1);
 		        map.animateCamera(cameraUpdate);
-				new GetLimitsTask(GeofenceActivity.this).execute("vehicles/"+driver.id+"/limits.json");
+				new GetGeofenceTask(GeofenceActivity.this).execute("vehicles/"+driver.id+"/limits.json");
 			}
 		});
         map.setOnMapLongClickListener(new OnMapLongClickListener() {
@@ -163,7 +163,7 @@ public class GeofenceActivity extends MainActivity {
 			        tvInstructions.setText("Press and hold anywhere on\nthe map to reset geofence borders");
 				}
 				else{
-					new SetLimitsTask(GeofenceActivity.this).execute("vehicles/"+driver.id+"/limits.json");
+					new SetGeofenceTask(GeofenceActivity.this).execute("vehicles/"+driver.id+"/limits.json");
 				}
 			}
 		});
@@ -292,28 +292,40 @@ public class GeofenceActivity extends MainActivity {
         mapView.onLowMemory();
     }
     
-    class GetLimitsTask extends BaseRequestAsyncTask{
+    class GetGeofenceTask extends BasePostRequestAsyncTask{
 		
-		public GetLimitsTask(Context context) {
+		public GetGeofenceTask(Context context) {
 			super(context);
+		}
+		
+		@Override
+		protected void onPreExecute() {
+			requestParams.add(new BasicNameValuePair("vehicle_id",""+driver.id));
+			requestParams.add(new BasicNameValuePair("key", "geofence"));
+			requestParams.add(new BasicNameValuePair("active", "true"));
+			super.onPreExecute();
 		}
 
 		@Override
 		protected JSONObject doInBackground(String... params) {
-	        requestParams.add(new BasicNameValuePair("driver_id", ""+driver.id));
 			return super.doInBackground(params);
 		}
 		
 		@Override
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
-			
-			JSONArray geofence = responseJSON.getJSONArray("geofence");
-				
 			points = new ArrayList<LatLng>();
 			
-			for (int j = 0; j < geofence.length(); j++) {
-				JSONArray point = geofence.getJSONArray(j);
-				points.add(new LatLng(point.getDouble(0), point.getDouble(1)));
+			if(responseJSON.has("value") && responseJSON.get("value") instanceof JSONArray){
+				JSONArray geofence = responseJSON.getJSONArray("value");
+				
+				for (int j = 0; j < geofence.length(); j++) {
+					try {
+						JSONArray point = geofence.getJSONArray(j);
+						points.add(new LatLng(point.getDouble(0), point.getDouble(1)));
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
 			}
 			
 			updateActivity();
@@ -322,9 +334,9 @@ public class GeofenceActivity extends MainActivity {
 		}
 	}
     
-    class SetLimitsTask extends BasePostRequestAsyncTask{
+    class SetGeofenceTask extends BasePostRequestAsyncTask{
 		
-		public SetLimitsTask(Context context) {
+		public SetGeofenceTask(Context context) {
 			super(context);
 		}
 		
@@ -333,6 +345,26 @@ public class GeofenceActivity extends MainActivity {
 			btnSave.setEnabled(false);
 			btnSave.setText("Saving...");
 			mapEnabled = false;
+			
+			requestParams.add(new BasicNameValuePair("vehicle_id",""+driver.id));
+			requestParams.add(new BasicNameValuePair("key", "geofence"));
+			requestParams.add(new BasicNameValuePair("active", "true"));
+			try{
+		        JSONArray geofence = new JSONArray();
+		        for (LatLng point : points) {
+		        	JSONArray pointJson = new JSONArray();
+		        	pointJson.put(point.latitude);
+		        	pointJson.put(point.longitude);
+					geofence.put(pointJson); 
+				}
+		        requestParams.add(new BasicNameValuePair("value", geofence.toString()));
+	        }
+	        catch(JSONException e){
+	        	e.printStackTrace();
+	        }
+			
+			System.out.println(requestParams);
+			
 			super.onPreExecute();
 		}
 		
@@ -342,27 +374,6 @@ public class GeofenceActivity extends MainActivity {
 			btnSave.setText("Save");
 			mapEnabled = true;
 			super.onPostExecute(result);
-		}
-
-		@Override
-		protected JSONObject doInBackground(String... params) {
-	        requestParams.add(new BasicNameValuePair("driver_id", ""+driver.id));
-	        
-	        try{
-		        JSONArray geofence = new JSONArray();
-		        for (LatLng point : points) {
-		        	JSONArray pointJson = new JSONArray();
-		        	pointJson.put(point.latitude);
-		        	pointJson.put(point.longitude);
-					geofence.put(pointJson); 
-				}
-		        requestParams.add(new BasicNameValuePair("geofence", geofence.toString()));
-	        }
-	        catch(JSONException e){
-	        	e.printStackTrace();
-	        }
-	        
-			return super.doInBackground(params);
 		}
 		
 		@Override
