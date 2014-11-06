@@ -112,8 +112,8 @@ public class MainActivity extends FragmentActivity {
         	if(!menuItemsArray[i].equals(MenuItems.DRIVERSETUP))
         		menuItems.add(menuItemsArray[i]);
         	else{
-        		if(prefs.getString(Constants.PREF_ROLE, "").equals(Constants.ROLE_CUSTOMER))
-            		menuItems.add(menuItemsArray[i]);
+//        		if(prefs.getString(Constants.PREF_ROLE, "").equals(Constants.ROLE_CUSTOMER))
+//            		menuItems.add(menuItemsArray[i]);
         	}
 		}
        
