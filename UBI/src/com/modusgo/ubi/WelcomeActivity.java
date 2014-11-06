@@ -101,9 +101,9 @@ public class WelcomeActivity extends FragmentActivity {
 					imageView.setVisibility(View.VISIBLE);
 					
 					DisplayImageOptions options = new DisplayImageOptions.Builder()
-			        .showImageOnLoading(R.drawable.person_placeholder)
-			        .showImageForEmptyUri(R.drawable.person_placeholder)
-			        .showImageOnFail(R.drawable.person_placeholder)
+			        .showImageOnLoading(R.drawable.login_progress)
+			        .showImageForEmptyUri(R.drawable.ic_launcher)
+			        .showImageOnFail(R.drawable.ic_launcher)
 			        .cacheInMemory(true)
 			        .cacheOnDisk(true)
 			        .build();
@@ -122,8 +122,8 @@ public class WelcomeActivity extends FragmentActivity {
 					               .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 					                   public void onClick(DialogInterface dialog, int id) {
 					                	   try {
-					                		   showNextScreen();
 					                		   prefs.edit().putString(Constants.PREF_WELCOME_PAGES, welcomePagesIds+" "+pageId).commit();
+					                		   showNextScreen();
 					                	   } catch (JSONException e) {
 					                		   e.printStackTrace();
 					                	   }
@@ -143,8 +143,8 @@ public class WelcomeActivity extends FragmentActivity {
 						@Override
 						public void onClick(View v) {
 							try {
-								showNextScreen();
 								prefs.edit().putString(Constants.PREF_WELCOME_PAGES, welcomePagesIds+" "+pageId).commit();
+								showNextScreen();
 							} catch (JSONException e) {
 								e.printStackTrace();
 							}
