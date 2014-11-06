@@ -14,6 +14,7 @@ import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 
 import com.modusgo.ubi.Constants;
+import com.modusgo.ubi.db.DbHelper;
 
 public class CallReceiver extends BroadcastReceiver {
 
@@ -37,23 +38,29 @@ public class CallReceiver extends BroadcastReceiver {
 		    	
 		    	Calendar c = Calendar.getInstance();
 		    	SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT,Locale.getDefault());
-		    	prefs.edit().putString(PREF_CALL_START, sdf.format(c.getTime())).commit();
+		    	String callStartTimestamp = sdf.format(c.getTime());
+		    	prefs.edit().putString(PREF_CALL_START, callStartTimestamp).commit();
+		    	
+		    	DbHelper dbHelper = DbHelper.getInstance(context);
+		    	dbHelper.saveDDEvent("call_usage_start", callStartTimestamp);
+		    	dbHelper.close();
 		    }
 		    else if(b.getString(TelephonyManager.EXTRA_STATE).equals(TelephonyManager.EXTRA_STATE_IDLE)){
 		    	if(callStarted){
-			    	prefs.edit().putLong(PREF_CALL_DURATION, prefs.getLong(PREF_CALL_DURATION, 0)+(System.currentTimeMillis()-callStartTime)).commit();
-		    		callStarted = false;
-		    		callStartTime = 0;
-		    		
-		    		Editor e = prefs.edit();
+			    	Editor e = prefs.edit();
 			    	e.putLong(PREF_CALL_DURATION, prefs.getLong(PREF_CALL_DURATION, 0)+(System.currentTimeMillis()-callStartTime));
 		    		callStarted = false;
 		    		callStartTime = 0;
 		    		
 			    	Calendar c = Calendar.getInstance();
 			    	SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT,Locale.getDefault());
-			    	e.putString(PREF_CALL_END, sdf.format(c.getTime()));
+			    	String callEndTimestamp = sdf.format(c.getTime());
+			    	e.putString(PREF_CALL_END, callEndTimestamp);
 			    	e.commit();
+			    	
+			    	DbHelper dbHelper = DbHelper.getInstance(context);
+			    	dbHelper.saveDDEvent("call_usage_stop", callEndTimestamp);
+			    	dbHelper.close();
 		    	}
 		    }
 	    }

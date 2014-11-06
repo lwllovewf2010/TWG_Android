@@ -22,6 +22,7 @@ import com.modusgo.ubi.ScorePieChartActivity.PieChartTab;
 import com.modusgo.ubi.Trip;
 import com.modusgo.ubi.Trip.Event;
 import com.modusgo.ubi.Trip.Point;
+import com.modusgo.ubi.db.DDEventContract.DDEventEntry;
 import com.modusgo.ubi.db.DTCContract.DTCEntry;
 import com.modusgo.ubi.db.EventContract.EventEntry;
 import com.modusgo.ubi.db.LimitsContract.LimitsEntry;
@@ -185,7 +186,12 @@ public class DbHelper extends SQLiteOpenHelper {
 			LimitsEntry.COLUMN_NAME_MIN_VALUE + TEXT_TYPE + COMMA_SEP +
 			LimitsEntry.COLUMN_NAME_MAX_VALUE + TEXT_TYPE + COMMA_SEP +
 			LimitsEntry.COLUMN_NAME_STEP + TEXT_TYPE + COMMA_SEP +
-			LimitsEntry.COLUMN_NAME_ACTIVE + INT_TYPE + " ); "};
+			LimitsEntry.COLUMN_NAME_ACTIVE + INT_TYPE + " ); ",
+		    
+		    "CREATE TABLE " + DDEventEntry.TABLE_NAME + " (" +
+		    DDEventEntry._ID + " INTEGER PRIMARY KEY," +
+		    DDEventEntry.COLUMN_NAME_EVENT + TEXT_TYPE + COMMA_SEP +
+			DDEventEntry.COLUMN_NAME_TIMESTAMP + TEXT_TYPE + " )"};
 
 	private static final String[] SQL_DELETE_ENTRIES = new String[]{
 	"DROP TABLE IF EXISTS " + VehicleEntry.TABLE_NAME,
@@ -201,10 +207,11 @@ public class DbHelper extends SQLiteOpenHelper {
 	"DROP TABLE IF EXISTS " + RecallEntry.TABLE_NAME,
 	"DROP TABLE IF EXISTS " + MaintenanceEntry.TABLE_NAME,
 	"DROP TABLE IF EXISTS " + WarrantyInfoEntry.TABLE_NAME,
-	"DROP TABLE IF EXISTS " + LimitsEntry.TABLE_NAME};
+	"DROP TABLE IF EXISTS " + LimitsEntry.TABLE_NAME,
+	"DROP TABLE IF EXISTS " + DDEventEntry.TABLE_NAME};
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 17;
+	public static final int DATABASE_VERSION = 18;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;
@@ -1043,6 +1050,48 @@ public class DbHelper extends SQLiteOpenHelper {
 		    statement.close();
 		}
 		
+		database.close();
+	}
+	
+	public void saveDDEvent(String event, String timestamp){
+		SQLiteDatabase database = sInstance.getWritableDatabase();
+		
+		if(database!=null){
+			
+			String sql = "INSERT INTO "+ DDEventEntry.TABLE_NAME +" ("
+					+ DDEventEntry.COLUMN_NAME_EVENT +","
+					+ DDEventEntry.COLUMN_NAME_TIMESTAMP
+					+ ") VALUES (?,?);";
+			
+			SQLiteStatement statement = database.compileStatement(sql);
+		    database.beginTransaction();
+		    
+		    statement.clearBindings();
+		    statement.bindString(1, event);
+		    statement.bindString(2, timestamp);
+		    statement.execute();
+		    
+		    database.setTransactionSuccessful();	
+		    database.endTransaction();
+		    statement.close();
+		}
+		database.close();
+	}
+	
+	public void deleteDDEvent(long id){
+		SQLiteDatabase database = sInstance.getWritableDatabase();
+		
+		if(database!=null){
+			
+			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+DDEventEntry.TABLE_NAME+" WHERE "+DDEventEntry._ID+" = "+id);
+		    database.beginTransaction();
+		    removeStatement.clearBindings();
+	        removeStatement.execute();
+	        database.setTransactionSuccessful();
+		    database.endTransaction();
+		    removeStatement.close();
+		    
+		}
 		database.close();
 	}
 	
