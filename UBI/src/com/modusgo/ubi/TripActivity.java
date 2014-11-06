@@ -171,13 +171,14 @@ public class TripActivity extends MainActivity {
 				TripEntry.COLUMN_NAME_END_TIME,
 				TripEntry.COLUMN_NAME_DISTANCE,
 				TripEntry.COLUMN_NAME_AVG_SPEED,
-				TripEntry.COLUMN_NAME_MAX_SPEED}, 
+				TripEntry.COLUMN_NAME_MAX_SPEED,
+				TripEntry.COLUMN_NAME_GRADE}, 
 				TripEntry._ID+" = ?", new String[]{Long.toString(tripId)}, null, null, null);
 		
 		Trip t = null;
 		
 		if(c.moveToFirst()){
-			t = new Trip(c.getLong(0), c.getInt(1), c.getString(2), c.getString(3), c.getFloat(4));
+			t = new Trip(c.getLong(0), c.getInt(1), c.getString(2), c.getString(3), c.getFloat(4), c.getString(7));
 			t.averageSpeed = c.getFloat(5);
 			t.maxSpeed = c.getFloat(6);
 		}
@@ -442,16 +443,16 @@ public class TripActivity extends MainActivity {
 		@Override
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
 			if(trip==null)
-				trip = new Trip(tripId, 0, Utils.fixTimezoneZ(responseJSON.getString("start_time")), Utils.fixTimezoneZ(responseJSON.getString("end_time")), responseJSON.getDouble("mileage"));
+				trip = new Trip(tripId, 0, Utils.fixTimezoneZ(responseJSON.optString("start_time")), Utils.fixTimezoneZ(responseJSON.optString("end_time")), responseJSON.optDouble("mileage"), responseJSON.optString("grade"));
 			
-			trip.averageSpeed = responseJSON.getDouble("avg_speed");
-			trip.maxSpeed = responseJSON.getDouble("max_speed");
+			trip.averageSpeed = responseJSON.optDouble("avg_speed");
+			trip.maxSpeed = responseJSON.optDouble("max_speed");
 			
 			if(responseJSON.has("route")){
 				JSONArray routeJSON = responseJSON.getJSONArray("route");
 				for (int i = 0; i < routeJSON.length(); i++) {
 					JSONArray pointJSON = routeJSON.getJSONArray(i);
-					trip.route.add(new LatLng(pointJSON.getDouble(0), pointJSON.getDouble(1)));					
+					trip.route.add(new LatLng(pointJSON.optDouble(0), pointJSON.optDouble(1)));					
 				}
 			}
 			

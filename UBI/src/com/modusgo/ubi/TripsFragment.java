@@ -166,7 +166,8 @@ public class TripsFragment extends Fragment{
 				TripEntry.COLUMN_NAME_EVENTS_COUNT,
 				TripEntry.COLUMN_NAME_START_TIME,
 				TripEntry.COLUMN_NAME_END_TIME,
-				TripEntry.COLUMN_NAME_DISTANCE},
+				TripEntry.COLUMN_NAME_DISTANCE,
+				TripEntry.COLUMN_NAME_GRADE},
 				TripEntry.COLUMN_NAME_DRIVER_ID + " = " + driver.id + " AND " +
 				"datetime(" + TripEntry.COLUMN_NAME_START_TIME + ")>=datetime('"+ Utils.fixTimeZoneColon(sdf.format(startDate)) + "') AND " +
 				"datetime(" + TripEntry.COLUMN_NAME_START_TIME + ")<=datetime('"+ Utils.fixTimeZoneColon(sdf.format(endDate)) + "')", null, null, null, "datetime("+TripEntry.COLUMN_NAME_START_TIME+") DESC");
@@ -181,7 +182,8 @@ public class TripsFragment extends Fragment{
 						c.getInt(1), 
 						c.getString(2), 
 						c.getString(3), 
-						c.getDouble(4)));
+						c.getDouble(4),
+						c.getString(5)));
 				c.moveToNext();
 			}
 		}
@@ -213,30 +215,6 @@ public class TripsFragment extends Fragment{
 		
 		for (int i = 0; i < tripsCount; i++) {
 			Trip t = trips.get(i);
-			
-			switch (r.nextInt(5)) {
-			case 0:
-				t.grade = "A";
-				break;
-			case 1:
-				t.grade = "B";
-				break;
-			case 2:
-				t.grade = "C+";
-				break;
-			case 3:
-				t.grade = "C";
-				break;
-			case 4:
-				t.grade = "E";
-				break;
-			case 5:
-				t.grade = "F";
-				break;
-
-			default:
-				break;
-			}
 			
 			if(prevTrip!=null){
 				
@@ -318,15 +296,16 @@ public class TripsFragment extends Fragment{
 			ArrayList<Trip> trips = new ArrayList<Trip>();
 			
 			for (int i = 0; i < tripsJSON.length(); i++) {
-				JSONObject tipJSON = tripsJSON.getJSONObject(i);
+				JSONObject tripJSON = tripsJSON.getJSONObject(i);
 				
 				System.out.println("i = "+i);
 				Trip t = new Trip(
-						tipJSON.optLong("id"), 
-						tipJSON.optInt("harsh_events_count"), 
-						Utils.fixTimezoneZ(tipJSON.optString("start_time")), 
-						Utils.fixTimezoneZ(tipJSON.optString("end_time")), 
-						tipJSON.optDouble("mileage"));
+						tripJSON.optLong("id"), 
+						tripJSON.optInt("harsh_events_count"), 
+						Utils.fixTimezoneZ(tripJSON.optString("start_time")), 
+						Utils.fixTimezoneZ(tripJSON.optString("end_time")), 
+						tripJSON.optDouble("mileage"));
+				t.grade = tripJSON.optString("grade");
 				trips.add(t);
 			}
 			

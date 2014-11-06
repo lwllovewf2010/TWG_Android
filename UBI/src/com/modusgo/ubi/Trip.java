@@ -23,7 +23,7 @@ public class Trip extends ListItem implements Serializable{
 	ArrayList<Point> points;
 	ArrayList<ArrayList<LatLng>> speedingRoute;
 	ArrayList<Event> events;
-	String grade;
+	public String grade;
 	
 	public enum EventType {START, STOP, HARSH_BRAKING, HARSH_ACCELERATION, SPEEDING, PHONE_USAGE, APP_USAGE};
 	
@@ -43,6 +43,11 @@ public class Trip extends ListItem implements Serializable{
 		events = new ArrayList<Event>();
 		
 		this.distance = distance;
+	}
+	
+	public Trip(long id, int eventsCount, String startDate, String endDate, double distance, String grade) {
+		this(id, eventsCount, startDate, endDate, distance);
+		this.grade = grade;
 	}
 	
 	public String getStartDateString() {

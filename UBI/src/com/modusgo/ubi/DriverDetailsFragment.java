@@ -435,14 +435,15 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 			ArrayList<Trip> trips = new ArrayList<Trip>();
 			
 			for (int i = 0; i < tripsJSON.length(); i++) {
-				JSONObject tipJSON = tripsJSON.getJSONObject(i);
+				JSONObject tripJSON = tripsJSON.getJSONObject(i);
 				
 				Trip t = new Trip(
-						tipJSON.optLong("id"), 
-						tipJSON.optInt("harsh_events_count"), 
-						Utils.fixTimezoneZ(tipJSON.optString("start_time")), 
-						Utils.fixTimezoneZ(tipJSON.optString("end_time")), 
-						tipJSON.optDouble("mileage"));
+						tripJSON.optLong("id"), 
+						tripJSON.optInt("harsh_events_count"), 
+						Utils.fixTimezoneZ(tripJSON.optString("start_time")), 
+						Utils.fixTimezoneZ(tripJSON.optString("end_time")), 
+						tripJSON.optDouble("mileage"),
+						tripJSON.optString("grade"));
 				trips.add(t);
 			}
 			

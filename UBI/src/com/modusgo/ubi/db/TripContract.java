@@ -18,5 +18,6 @@ public class TripContract {
 		public static final String COLUMN_NAME_DISTANCE = "distance";
 		public static final String COLUMN_NAME_AVG_SPEED = "avg_speed";
 		public static final String COLUMN_NAME_MAX_SPEED = "max_speed";
+		public static final String COLUMN_NAME_GRADE = "grade";
 	}
 }

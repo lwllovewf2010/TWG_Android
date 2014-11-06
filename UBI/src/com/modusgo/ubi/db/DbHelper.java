@@ -83,7 +83,8 @@ public class DbHelper extends SQLiteOpenHelper {
 		    TripEntry.COLUMN_NAME_END_TIME + TEXT_TYPE + COMMA_SEP +
 		    TripEntry.COLUMN_NAME_DISTANCE + FLOAT_TYPE + COMMA_SEP +
 		    TripEntry.COLUMN_NAME_AVG_SPEED + FLOAT_TYPE + COMMA_SEP +
-		    TripEntry.COLUMN_NAME_MAX_SPEED + FLOAT_TYPE + " ); ",
+		    TripEntry.COLUMN_NAME_MAX_SPEED + FLOAT_TYPE + COMMA_SEP +
+		    TripEntry.COLUMN_NAME_GRADE + TEXT_TYPE + " ); ",
 	
 		    "CREATE TABLE " + RouteEntry.TABLE_NAME + " (" +
 		    RouteEntry._ID + " INTEGER PRIMARY KEY," +
@@ -211,7 +212,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	"DROP TABLE IF EXISTS " + DDEventEntry.TABLE_NAME};
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 18;
+	public static final int DATABASE_VERSION = 20;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;
@@ -493,10 +494,11 @@ public class DbHelper extends SQLiteOpenHelper {
 					+ TripEntry.COLUMN_NAME_END_TIME +","
 					+ TripEntry.COLUMN_NAME_DISTANCE +","
 					+ TripEntry.COLUMN_NAME_AVG_SPEED +","
-					+ TripEntry.COLUMN_NAME_MAX_SPEED +""
+					+ TripEntry.COLUMN_NAME_MAX_SPEED +","
+					+ TripEntry.COLUMN_NAME_GRADE +""
 					+ ") VALUES (?,?,?,?,?,?," +
 					"(SELECT IFNULL(NULLIF((SELECT "+TripEntry.COLUMN_NAME_AVG_SPEED+" FROM trips WHERE "+TripEntry._ID+" IS ?),0),?))," +
-					"(SELECT IFNULL(NULLIF((SELECT "+TripEntry.COLUMN_NAME_MAX_SPEED+" FROM trips WHERE "+TripEntry._ID+" IS ?),0),?)));";
+					"(SELECT IFNULL(NULLIF((SELECT "+TripEntry.COLUMN_NAME_MAX_SPEED+" FROM trips WHERE "+TripEntry._ID+" IS ?),0),?)),?);";
 			
 			SQLiteStatement statement = database.compileStatement(sql);
 		    database.beginTransaction();
@@ -515,6 +517,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		    	statement.bindDouble(8, trip.averageSpeed);
 		    	statement.bindDouble(9, trip.id);
 		    	statement.bindDouble(10, trip.maxSpeed);
+		    	statement.bindString(11, trip.grade);
 		    	statement.execute();
 			}
 		    
