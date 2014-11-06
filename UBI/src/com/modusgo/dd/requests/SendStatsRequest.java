@@ -23,7 +23,7 @@ import android.preference.PreferenceManager;
 import android.util.Base64;
 
 import com.modusgo.dd.CallReceiver;
-import com.modusgo.dd.PhoneUnlockReceiver;
+import com.modusgo.dd.PhoneScreenOnOffReceiver;
 import com.modusgo.ubi.Constants;
 
 public class SendStatsRequest extends AsyncTask<String, String, String[]>{
@@ -108,7 +108,7 @@ public class SendStatsRequest extends AsyncTask<String, String, String[]>{
         	e.putLong(CallReceiver.PREF_CALL_DURATION, 0);
         	e.putString(CallReceiver.PREF_CALL_START, "");
         	e.putString(CallReceiver.PREF_CALL_END, "");
-        	e.putInt(PhoneUnlockReceiver.PREF_UNLOCK_COUNT, 0);
+        	e.putInt(PhoneScreenOnOffReceiver.PREF_UNLOCK_COUNT, 0);
         	e.commit();
         	
         	//Toast.makeText(app.getApplicationContext(), "Usage statistics sent", Toast.LENGTH_SHORT).show();
