@@ -213,6 +213,16 @@ public class InitActivity extends FragmentActivity {
 							dbHelper.saveDrivers(drivers);
 							dbHelper.close();
 						}
+						
+						if(responseJSON.has("device")){
+							JSONObject deviceJSON = responseJSON.getJSONObject("device");
+							e.putString(Constants.PREF_DEVICE_MEID, deviceJSON.optString("meid"));
+							e.putString(Constants.PREF_DEVICE_TYPE, deviceJSON.optString("type"));
+							e.putString(Constants.PREF_DEVICE_DATA_URL, deviceJSON.optString("data_url"));
+							e.putString(Constants.PREF_DEVICE_AUTH_KEY, deviceJSON.optString("auth_key"));
+							e.putBoolean(Constants.PREF_DEVICE_EVENTS, deviceJSON.optBoolean("events"));
+							e.putBoolean(Constants.PREF_DEVICE_TRIPS, deviceJSON.optBoolean("trips"));
+						}
 
 						e.commit();
 						return true;

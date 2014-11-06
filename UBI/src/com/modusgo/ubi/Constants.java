@@ -15,6 +15,8 @@ public class Constants {
 	public static final String PREF_DIAGNOSTIC = "diagnostic";
 	public static final String PREF_DEVICE_MEID = "deviceMEID";
 	public static final String PREF_DEVICE_TYPE = "deviceType";
+	public static final String PREF_DEVICE_EVENTS = "deviceEvents";
+	public static final String PREF_DEVICE_TRIPS = "deviceTrips";
 	public static final String PREF_DEVICE_DATA_URL = "deviceDataUrl";
 	public static final String PREF_DEVICE_AUTH_KEY = "deviceAuthKey";
 	public static final String PREF_DIAGNOSTICS_CHECKUP_DATE = "diagnisticsCheckupDate";
