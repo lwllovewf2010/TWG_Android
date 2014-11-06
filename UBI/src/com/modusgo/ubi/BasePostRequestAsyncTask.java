@@ -25,6 +25,12 @@ public class BasePostRequestAsyncTask extends BaseRequestAsyncTask{
 			e.printStackTrace();
 			status = 0;
 			message = "Check your internet connection";
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			return null;
 		}
 		return Utils.getJSONObjectFromHttpResponse(result);

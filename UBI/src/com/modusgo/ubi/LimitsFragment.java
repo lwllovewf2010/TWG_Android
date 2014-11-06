@@ -171,12 +171,14 @@ public class LimitsFragment extends Fragment {
 									
 									@Override
 									protected void onPreExecute() {
-										btnToggle.setEnabled(false);
+										//btnToggle.setEnabled(false);
 										Utils.enableDisableViewGroup(childLayout, false);
 										requestParams.add(new BasicNameValuePair("vehicle_id",""+driver.id));
 										requestParams.add(new BasicNameValuePair("key",limit.key));
 										requestParams.add(new BasicNameValuePair("value",""+value));
 										requestParams.add(new BasicNameValuePair("active",btnToggle.isChecked() ? "true" : "false"));
+
+										tvSingleValue.setText(""+value);
 										super.onPreExecute();
 									}
 									
@@ -220,13 +222,14 @@ public class LimitsFragment extends Fragment {
 									
 									@Override
 									protected void onError(String message) {
+										tvSingleValue.setText(limit.value);
 										//super.onError(message);
 									}
 									
 									@Override
 									protected void onPostExecute(JSONObject result) {
 										super.onPostExecute(result);
-										btnToggle.setEnabled(true);
+										//btnToggle.setEnabled(true);
 										Utils.enableDisableViewGroup(childLayout, true);
 									}
 								}.execute("vehicles/"+driver.id+"/limits.json");
@@ -293,6 +296,8 @@ public class LimitsFragment extends Fragment {
 										requestParams.add(new BasicNameValuePair("key",limit.key));
 										requestParams.add(new BasicNameValuePair("value_from",getTime24String(hourOfDay, minutes)));
 										requestParams.add(new BasicNameValuePair("active",btnToggle.isChecked() ? "true" : "false"));
+										
+										tvValue.setText(getTime12String(hourOfDay, minutes));
 										super.onPreExecute();
 									}
 									
@@ -314,14 +319,15 @@ public class LimitsFragment extends Fragment {
 
 										startCalendar.set(2014, 0, 1, hourOfDay, minutes);
 										tvValue.setText(getTime12String(hourOfDay, minutes));
-										((LimitsTimePeriodChild)child).startTime = getTime12String(hourOfDay, minutes);
+										((LimitsTimePeriodChild)child).startTime = getTime24String(hourOfDay, minutes);
 											
 										super.onSuccess(responseJSON);
 									}
 									
 									@Override
 									protected void onError(String message) {
-										//super.onError(message);
+										tvValue.setText(getTime12String(startCalendar.get(Calendar.HOUR_OF_DAY), startCalendar.get(Calendar.MINUTE)));
+										super.onError(message);
 									}
 									
 									@Override
@@ -349,12 +355,14 @@ public class LimitsFragment extends Fragment {
 									
 									@Override
 									protected void onPreExecute() {
-										btnToggle.setEnabled(false);
+//										btnToggle.setEnabled(false);
 										Utils.enableDisableViewGroup(childLayout, false);
 										requestParams.add(new BasicNameValuePair("vehicle_id",""+driver.id));
 										requestParams.add(new BasicNameValuePair("key",limit.key));
 										requestParams.add(new BasicNameValuePair("value_to",getTime24String(hourOfDay, minutes)));
 										requestParams.add(new BasicNameValuePair("active",btnToggle.isChecked() ? "true" : "false"));
+										
+										tvValue2.setText(getTime12String(hourOfDay, minutes));
 										super.onPreExecute();
 									}
 									
@@ -383,13 +391,14 @@ public class LimitsFragment extends Fragment {
 									
 									@Override
 									protected void onError(String message) {
-										//super.onError(message);
+										tvValue2.setText(getTime12String(endCalendar.get(Calendar.HOUR_OF_DAY), endCalendar.get(Calendar.MINUTE)));
+										super.onError(message);
 									}
 									
 									@Override
 									protected void onPostExecute(JSONObject result) {
 										super.onPostExecute(result);
-										btnToggle.setEnabled(true);
+//										btnToggle.setEnabled(true);
 										Utils.enableDisableViewGroup(childLayout, true);
 									}
 								}.execute("vehicles/"+driver.id+"/limits.json");
@@ -420,7 +429,6 @@ public class LimitsFragment extends Fragment {
 				llContent.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						showSavedToast = false;
 						Intent i = new Intent(getActivity(), ((LimitsLinkChild)child).linkActivityClass);
 						i.putExtra(VehicleEntry._ID, driver.id);
 						startActivity(i);
@@ -475,7 +483,7 @@ public class LimitsFragment extends Fragment {
 						@Override
 						protected void onError(String message) {
 							btnToggle.setChecked(limit.active);
-							//super.onError(message);
+							super.onError(message);
 						}
 						
 						@Override
@@ -561,7 +569,6 @@ public class LimitsFragment extends Fragment {
 	
 	@Override
 	public void onResume() {
-		showSavedToast = true;
 		super.onResume();
 	}
 	
@@ -576,25 +583,6 @@ public class LimitsFragment extends Fragment {
 		public String step;
 		public boolean active;
 		
-	}
-
-	class LimitsListGroup{
-		String groupTitle;
-		boolean enabled = false;
-		LimitsListChild child = null;
-		
-		public LimitsListGroup(String groupTitle, boolean enabled,
-				LimitsListChild child) {
-			super();
-			this.groupTitle = groupTitle;
-			this.enabled = enabled;
-			this.child = child;
-		}
-		public LimitsListGroup(String groupTitle, boolean enabled) {
-			super();
-			this.groupTitle = groupTitle;
-			this.enabled = enabled;
-		}
 	}
 	
 	class LimitsListChild{
@@ -699,8 +687,6 @@ public class LimitsFragment extends Fragment {
 		}
 	}
 	
-	private boolean showSavedToast = true;
-	
 	class SetLimitsTask extends BasePostRequestAsyncTask{
 		
 		public SetLimitsTask(Context context) {
@@ -710,35 +696,18 @@ public class LimitsFragment extends Fragment {
 		@Override
 		protected JSONObject doInBackground(String... params) {
 	        requestParams.add(new BasicNameValuePair("driver_id", ""+driver.id));
-
-//	        try{
-//		        requestParams.add(new BasicNameValuePair("max_speed_limit", ""+groups.get(0).enabled));
-//		        requestParams.add(new BasicNameValuePair("daily_mileage_limit", ""+groups.get(1).enabled));
-//		        requestParams.add(new BasicNameValuePair("harsh_way", ""+groups.get(2).enabled));
-//		        requestParams.add(new BasicNameValuePair("is_driving_between", ""+groups.get(3).enabled));
-//		        requestParams.add(new BasicNameValuePair("is_geofence", ""+groups.get(4).enabled));
-//		        requestParams.add(new BasicNameValuePair("low_fuel", ""+groups.get(5).enabled));
-//		        requestParams.add(new BasicNameValuePair("safe_driving", ""+groups.get(6).enabled));
-//		        requestParams.add(new BasicNameValuePair("tow_alerts", ""+groups.get(7).enabled));
-//		        
-//		        requestParams.add(new BasicNameValuePair("max_speed", ""+((LimitsSingleValueChild)groups.get(0).childs.get(0)).value));
-//		        requestParams.add(new BasicNameValuePair("daily_mileage", ""+((LimitsSingleValueChild)groups.get(1).childs.get(0)).value));
-//	
-//		        requestParams.add(new BasicNameValuePair("driving_after", ""+((LimitsTimePeriodChild)groups.get(3).childs.get(0)).startTime));
-//		        requestParams.add(new BasicNameValuePair("driving_before", ""+((LimitsTimePeriodChild)groups.get(3).childs.get(0)).endTime));
-//	        }
-//	        catch(NullPointerException | IndexOutOfBoundsException e){
-//	        	e.printStackTrace();
-//	        	showSavedToast = false;
-//	        }
-	        
 			return super.doInBackground(params);
 		}
 		
 		@Override
+		protected void onError(String message) {
+			//super.onError(message);
+		}
+		
+		@Override
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
-			if(showSavedToast && getActivity()!=null)
-				Toast.makeText(getActivity(), "Limits saved", Toast.LENGTH_SHORT).show();
+//			if(getActivity()!=null)
+//				Toast.makeText(getActivity(), "Limits saved", Toast.LENGTH_SHORT).show();
 			super.onSuccess(responseJSON);
 		}
 	}

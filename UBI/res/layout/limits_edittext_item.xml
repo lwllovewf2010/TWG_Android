@@ -28,7 +28,7 @@
         android:background="@drawable/textview_border"
         android:gravity="center"
         android:text="80 MI"
-        android:textColor="#697078"
+        android:textColor="@color/limits_edittext"
         android:textSize="12.5sp"
         ubi:typeface="EncodeSansNormal-500-Medium.ttf" />
 
