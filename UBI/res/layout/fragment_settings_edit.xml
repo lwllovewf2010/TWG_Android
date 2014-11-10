@@ -27,6 +27,7 @@
                 android:layout_height="102.5dp"
                 android:layout_marginBottom="18.5dp"
                 android:layout_marginTop="20dp"
+        		android:scaleType="centerCrop"
                 android:src="@drawable/person_test3" />
 
             <ImageView
@@ -153,7 +154,8 @@
             <Spinner
                 android:id="@+id/spinnerTimezone"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:spinnerMode="dialog" />
             
             <com.modusgo.ubi.customviews.TypefacedTextView
                 android:layout_width="match_parent"
@@ -168,7 +170,8 @@
             <Spinner
                 android:id="@+id/spinnerCar"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:spinnerMode="dialog" />
 
             <com.modusgo.ubi.customviews.TypefacedTextView
                 android:layout_width="match_parent"

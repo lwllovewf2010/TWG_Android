@@ -1,11 +1,10 @@
 package com.modusgo.ubi;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.TimeZone;
 
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -18,6 +17,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
 import android.util.TypedValue;
@@ -37,17 +37,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.modusgo.ubi.db.DbHelper;
+import com.modusgo.ubi.utils.Utils;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class SettingsEditFragment extends Fragment {
-
-	public static final String EXTRA_FIRST_NAME = "first_name";
-	public static final String EXTRA_LAST_NAME = "last_name";
-	public static final String EXTRA_PHONE = "phone_number";
-	public static final String EXTRA_EMAIL = "email";
-	public static final String EXTRA_TIMEZONE = "time_zone";
-	public static final String EXTRA_CAR = "vehicle_id";
-	public static final String EXTRA_PASSWORD = "password";
-	public static final String PREF_JUSTSAVED = "justsaved";
 	
 	private static final String TAG_CHANGED = "changed";
 
@@ -73,6 +67,8 @@ public class SettingsEditFragment extends Fragment {
 		
 		((MainActivity)getActivity()).setActionBarTitle("SETTINGS");
 		
+		final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+		
 		editFirstName = (EditText)rootView.findViewById(R.id.editFirstName);
 		editLastName = (EditText)rootView.findViewById(R.id.editLastName);
 		editPhone = (EditText)rootView.findViewById(R.id.editPhone);
@@ -86,6 +82,27 @@ public class SettingsEditFragment extends Fragment {
 		btnUpdate = (Button)rootView.findViewById(R.id.btnUpdate);
 		btnCancel = (Button)rootView.findViewById(R.id.btnCancel);
 		
+		editFirstName.setText(prefs.getString(Constants.PREF_FIRST_NAME, ""));
+		editLastName.setText(prefs.getString(Constants.PREF_LAST_NAME, ""));
+		editPhone.setText(prefs.getString(Constants.PREF_PHONE, ""));
+		editEmail.setText(prefs.getString(Constants.PREF_EMAIL, ""));
+		
+		String photoURL = prefs.getString(Constants.PREF_PHOTO, "");
+		
+		if(TextUtils.isEmpty(photoURL))
+	    	imagePhoto.setImageResource(R.drawable.person_placeholder);
+	    else{
+	    	DisplayImageOptions options = new DisplayImageOptions.Builder()
+	        .showImageOnLoading(R.drawable.person_placeholder)
+	        .showImageForEmptyUri(R.drawable.person_placeholder)
+	        .showImageOnFail(R.drawable.person_placeholder)
+	        .cacheInMemory(true)
+	        .cacheOnDisk(true)
+	        .build();
+	    	
+	    	ImageLoader.getInstance().displayImage(photoURL, imagePhoto, options);
+	    }
+		
 		ArrayList<String> timezones = getTimezoneList();
 		
 		TypefacedArrayAdapter<String> adapterTimezones = new TypefacedArrayAdapter<String>(getActivity(),
@@ -93,6 +110,8 @@ public class SettingsEditFragment extends Fragment {
         adapterTimezones.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		
 		spinnerTimezone.setAdapter(adapterTimezones);
+		spinnerTimezoneDefault = adapterTimezones.getPosition(prefs.getString(Constants.PREF_TIMEZONE, ""));
+		spinnerTimezone.setSelection(spinnerTimezoneDefault);
 		spinnerTimezone.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view,
@@ -154,42 +173,6 @@ public class SettingsEditFragment extends Fragment {
 			}
 		});
 		
-		
-		
-		if(savedInstanceState!=null){
-			editFirstName.setText(savedInstanceState.getString(EXTRA_FIRST_NAME));
-			editLastName.setText(savedInstanceState.getString(EXTRA_LAST_NAME));
-			editPhone.setText(savedInstanceState.getString(EXTRA_PHONE));
-			editEmail.setText(savedInstanceState.getString(EXTRA_EMAIL));
-			String tz = savedInstanceState.getString(EXTRA_TIMEZONE);
-			for (int i = 0; i < timezones.size(); i++) {
-				if(timezones.get(i).contains(tz)){
-					spinnerTimezone.setSelection(i);
-					spinnerTimezoneDefault = i;
-					break;
-				}
-			}
-		}
-		else if(getArguments()!=null){
-			//driverIndex = getArguments().getInt("id");
-			editFirstName.setText(getArguments().getString(EXTRA_FIRST_NAME));
-			editLastName.setText(getArguments().getString(EXTRA_LAST_NAME));
-			editPhone.setText(getArguments().getString(EXTRA_PHONE));
-			editEmail.setText(getArguments().getString(EXTRA_EMAIL));
-			String tz = getArguments().getString(EXTRA_TIMEZONE);
-			for (int i = 0; i < timezones.size(); i++) {
-				if(timezones.get(i).contains(tz)){
-					spinnerTimezone.setSelection(i);
-					spinnerTimezoneDefault = i;
-					break;
-				}
-			}
-		}
-		
-		final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-		
-		imagePhoto.setImageResource(R.drawable.person_placeholder);
-		
 		editFirstName.addTextChangedListener(new CustomTextWatcher(editFirstName));
 		editLastName.addTextChangedListener(new CustomTextWatcher(editLastName));
 		editPhone.addTextChangedListener(new CustomTextWatcher(editPhone));
@@ -218,7 +201,7 @@ public class SettingsEditFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				if(editPassword.getText().toString().equals(editConfirmPassword.getText().toString())){
-					new SetSettingsTask(getActivity()).execute("settings.json");	
+					new SetDriverTask(getActivity()).execute("driver.json");	
 				}
 				else{
 					tvPasswordError.setVisibility(View.VISIBLE);
@@ -234,219 +217,22 @@ public class SettingsEditFragment extends Fragment {
 			}
 		});
 		
-		prefs.edit().putBoolean(PREF_JUSTSAVED, true).commit();
-		
 		return rootView;
 	}
 	
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		
-		outState.putString(EXTRA_FIRST_NAME, editFirstName.getText().toString());
-		outState.putString(EXTRA_LAST_NAME, editLastName.getText().toString());
-		outState.putString(EXTRA_PHONE, editPhone.getText().toString());
-		outState.putString(EXTRA_EMAIL, editEmail.getText().toString());
-		outState.putString(EXTRA_TIMEZONE, ((TextView)spinnerTimezone.getSelectedView()).getText().toString());
-		
-		super.onSaveInstanceState(outState);
-	}
-	
-	public static ArrayList<String> getTimezoneList(){
-		ArrayList<String> timezoneIDs= new ArrayList<String>();
-		ArrayList<String> timezoneNames = new ArrayList<String>();
-		
-		timezoneIDs.add("Pacific/Majuro");
-		timezoneIDs.add("Pacific/Midway");
-		timezoneIDs.add("Pacific/Honolulu");
-		timezoneIDs.add("America/Anchorage");
-		timezoneIDs.add("America/Los_Angeles");
-		timezoneIDs.add("America/Tijuana");
-		timezoneIDs.add("America/Phoenix");
-		timezoneIDs.add("America/Chihuahua");
-		timezoneIDs.add("America/Denver");
-		timezoneIDs.add("America/Costa_Rica");
-		timezoneIDs.add("America/Chicago");
-		timezoneIDs.add("America/Mexico_City");
-		timezoneIDs.add("America/Regina");
-		timezoneIDs.add("America/Bogota");
-		timezoneIDs.add("America/New_York");
-		timezoneIDs.add("America/Caracas");
-		timezoneIDs.add("America/Barbados");
-		timezoneIDs.add("America/Halifax");
-		timezoneIDs.add("America/Manaus");
-		timezoneIDs.add("America/Santiago");
-		timezoneIDs.add("America/St_Johns");
-		timezoneIDs.add("America/Sao_Paulo");
-		timezoneIDs.add("America/Argentina/Buenos_Aires");
-		timezoneIDs.add("America/Godthab");
-		timezoneIDs.add("America/Montevideo");
-		timezoneIDs.add("Atlantic/South_Georgia");
-		timezoneIDs.add("Atlantic/Azores");
-		timezoneIDs.add("Atlantic/Cape_Verde");
-		timezoneIDs.add("Africa/Casablanca");
-		timezoneIDs.add("Europe/London");
-		timezoneIDs.add("Europe/Amsterdam");
-		timezoneIDs.add("Europe/Belgrade");
-		timezoneIDs.add("Europe/Brussels");
-		timezoneIDs.add("Europe/Sarajevo");
-		timezoneIDs.add("Africa/Windhoek");
-		timezoneIDs.add("Africa/Brazzaville");
-		timezoneIDs.add("Asia/Amman");
-		timezoneIDs.add("Europe/Athens");
-		timezoneIDs.add("Asia/Beirut");
-		timezoneIDs.add("Africa/Cairo");
-		timezoneIDs.add("Europe/Helsinki");
-		timezoneIDs.add("Asia/Jerusalem");
-		timezoneIDs.add("Europe/Minsk");
-		timezoneIDs.add("Africa/Harare");
-		timezoneIDs.add("Asia/Baghdad");
-		timezoneIDs.add("Europe/Moscow");
-		timezoneIDs.add("Asia/Kuwait");
-		timezoneIDs.add("Africa/Nairobi");
-		timezoneIDs.add("Asia/Tehran");
-		timezoneIDs.add("Asia/Baku");
-		timezoneIDs.add("Asia/Tbilisi");
-		timezoneIDs.add("Asia/Yerevan");
-		timezoneIDs.add("Asia/Dubai");
-		timezoneIDs.add("Asia/Kabul");
-		timezoneIDs.add("Asia/Karachi");
-		timezoneIDs.add("Asia/Oral");
-		timezoneIDs.add("Asia/Yekaterinburg");
-		timezoneIDs.add("Asia/Calcutta");
-		timezoneIDs.add("Asia/Colombo");
-		timezoneIDs.add("Asia/Katmandu");
-		timezoneIDs.add("Asia/Almaty");
-		timezoneIDs.add("Asia/Rangoon");
-		timezoneIDs.add("Asia/Krasnoyarsk");
-		timezoneIDs.add("Asia/Bangkok");
-		timezoneIDs.add("Asia/Shanghai");
-		timezoneIDs.add("Asia/Hong_Kong");
-		timezoneIDs.add("Asia/Irkutsk");
-		timezoneIDs.add("Asia/Kuala_Lumpur");
-		timezoneIDs.add("Australia/Perth");
-		timezoneIDs.add("Asia/Taipei");
-		timezoneIDs.add("Asia/Seoul");
-		timezoneIDs.add("Asia/Tokyo");
-		timezoneIDs.add("Asia/Yakutsk");
-		timezoneIDs.add("Australia/Adelaide");
-		timezoneIDs.add("Australia/Darwin");
-		timezoneIDs.add("Australia/Brisbane");
-		timezoneIDs.add("Australia/Hobart");
-		timezoneIDs.add("Australia/Sydney");
-		timezoneIDs.add("Asia/Vladivostok");
-		timezoneIDs.add("Pacific/Guam");
-		timezoneIDs.add("Asia/Magadan");
-		timezoneIDs.add("Pacific/Auckland");
-		timezoneIDs.add("Pacific/Fiji");
-		timezoneIDs.add("Pacific/Tongatapu");
-		
-		timezoneNames.add("Marshall Islands");
-	    timezoneNames.add("Midway Island");
-	    timezoneNames.add("Hawaii");
-	    timezoneNames.add("Alaska");
-	    timezoneNames.add("Pacific Time");
-	    timezoneNames.add("Tijuana");
-	    timezoneNames.add("Arizona");
-	    timezoneNames.add("Chihuahua");
-	    timezoneNames.add("Mountain Time");
-	    timezoneNames.add("Central America");
-	    timezoneNames.add("Central Time");
-	    timezoneNames.add("Mexico City");
-	    timezoneNames.add("Saskatchewan");
-	    timezoneNames.add("Bogota");
-	    timezoneNames.add("Eastern Time");
-	    timezoneNames.add("Venezuela");
-	    timezoneNames.add("Atlantic Time (Barbados)");
-	    timezoneNames.add("Atlantic Time (Canada)");
-	    timezoneNames.add("Manaus");
-	    timezoneNames.add("Santiago");
-	    timezoneNames.add("Newfoundland");
-	    timezoneNames.add("Brasilia");
-	    timezoneNames.add("Buenos Aires");
-	    timezoneNames.add("Greenland");
-	    timezoneNames.add("Montevideo");
-	    timezoneNames.add("Mid-Atlantic");
-	    timezoneNames.add("Azores");
-	    timezoneNames.add("Cape Verde Islands");
-	    timezoneNames.add("Casablanca");
-	    timezoneNames.add("London, Dublin");
-	    timezoneNames.add("Amsterdam, Berlin");
-	    timezoneNames.add("Belgrade");
-	    timezoneNames.add("Brussels");
-	    timezoneNames.add("Sarajevo");
-	    timezoneNames.add("Windhoek");
-	    timezoneNames.add("W. Africa Time");
-	    timezoneNames.add("Amman, Jordan");
-	    timezoneNames.add("Athens, Istanbul");
-	    timezoneNames.add("Beirut, Lebanon");
-	    timezoneNames.add("Cairo");
-	    timezoneNames.add("Helsinki");
-	    timezoneNames.add("Jerusalem");
-	    timezoneNames.add("Minsk");
-	    timezoneNames.add("Harare");
-	    timezoneNames.add("Baghdad");
-	    timezoneNames.add("Moscow");
-	    timezoneNames.add("Kuwait");
-	    timezoneNames.add("Nairobi");
-	    timezoneNames.add("Tehran");
-	    timezoneNames.add("Baku");
-	    timezoneNames.add("Tbilisi");
-	    timezoneNames.add("Yerevan");
-	    timezoneNames.add("Dubai");
-	    timezoneNames.add("Kabul");
-	    timezoneNames.add("Islamabad, Karachi");
-	    timezoneNames.add("Ural'sk");
-	    timezoneNames.add("Yekaterinburg");
-	    timezoneNames.add("Kolkata");
-	    timezoneNames.add("Sri Lanka");
-	    timezoneNames.add("Kathmandu");
-	    timezoneNames.add("Astana");
-	    timezoneNames.add("Yangon");
-	    timezoneNames.add("Krasnoyarsk");
-	    timezoneNames.add("Bangkok");
-	    timezoneNames.add("Beijing");
-	    timezoneNames.add("Hong Kong");
-	    timezoneNames.add("Irkutsk");
-	    timezoneNames.add("Kuala Lumpur");
-	    timezoneNames.add("Perth");
-	    timezoneNames.add("Taipei");
-	    timezoneNames.add("Seoul");
-	    timezoneNames.add("Tokyo, Osaka");
-	    timezoneNames.add("Yakutsk");
-	    timezoneNames.add("Adelaide");
-	    timezoneNames.add("Darwin");
-	    timezoneNames.add("Brisbane");
-	    timezoneNames.add("Hobart");
-	    timezoneNames.add("Sydney, Canberra");
-	    timezoneNames.add("Vladivostok");
-	    timezoneNames.add("Guam");
-	    timezoneNames.add("Magadan");
-	    timezoneNames.add("Auckland");
-	    timezoneNames.add("Fiji");
-	    timezoneNames.add("Tonga");
-		
-		
-		ArrayList<String> timezonesPlus = new ArrayList<String>();
+	private ArrayList<String> getTimezoneList(){
 		ArrayList<String> timezones = new ArrayList<String>();
-		
-		for (int i = 0; i< timezoneIDs.size(); i++) {
-			TimeZone tz = TimeZone.getTimeZone(timezoneIDs.get(i));
-			int hours = Math.abs(tz.getRawOffset()) / 3600000;
-		    int minutes = Math.abs(tz.getRawOffset() / 60000) % 60;
-		    String sign = tz.getRawOffset() >= 0 ? "+" : "-";
-		      
-			if(sign.equals("+"))
-				timezonesPlus.add(String.format("GMT %s%02d:%02d %s", sign, hours, minutes, timezoneNames.get(i)));
-			else
-				timezones.add(String.format("GMT %s%02d:%02d %s", sign, hours, minutes, timezoneNames.get(i)));
+		JSONObject tzJSON = Utils.getJSONObjectFromAssets(getActivity(), "timezones.json");
+		try{
+			JSONArray tzJSONArray = tzJSON.getJSONArray("timezones");
+			int tzCount = tzJSONArray.length();
+			for (int i = 0; i < tzCount; i++) {
+				timezones.add(tzJSONArray.getString(i));
+			}
 		}
-		
-		Collections.sort(timezonesPlus.subList(0, timezonesPlus.size()));
-		Collections.reverse(timezones);
-		Collections.sort(timezones.subList(0, timezones.size()));
-		
-		timezones.addAll(timezonesPlus);
-		
+		catch(JSONException e){
+			e.printStackTrace();
+		}
 		return timezones;
 	}
 	
@@ -532,9 +318,9 @@ public class SettingsEditFragment extends Fragment {
 		}
 	}
 	
-	class SetSettingsTask extends BasePostRequestAsyncTask{
+	class SetDriverTask extends BasePostRequestAsyncTask{
 		
-		public SetSettingsTask(Context context) {
+		public SetDriverTask(Context context) {
 			super(context);
 		}
 		
@@ -556,28 +342,27 @@ public class SettingsEditFragment extends Fragment {
 
 		@Override
 		protected JSONObject doInBackground(String... params) {
-	        
 
 	        try{
-	        	if(editFirstName.getTag()!=null && editFirstName.getTag().equals(TAG_CHANGED))
-	        		requestParams.add(new BasicNameValuePair(EXTRA_FIRST_NAME, editFirstName.getText().toString()));
-	        	if(editLastName.getTag()!=null && editLastName.getTag().equals(TAG_CHANGED))
-	        		requestParams.add(new BasicNameValuePair(EXTRA_LAST_NAME, editLastName.getText().toString()));
+        		requestParams.add(new BasicNameValuePair(Constants.PREF_DRIVER_ID, ""+prefs.getLong(Constants.PREF_DRIVER_ID, 0)));
+	        	
+	        	requestParams.add(new BasicNameValuePair(Constants.PREF_FIRST_NAME, editFirstName.getText().toString()));
+	        	requestParams.add(new BasicNameValuePair(Constants.PREF_LAST_NAME, editLastName.getText().toString()));
+	        	requestParams.add(new BasicNameValuePair(Constants.PREF_EMAIL, editEmail.getText().toString()));
+	        	
 	        	if(editPhone.getTag()!=null && editPhone.getTag().equals(TAG_CHANGED))
-	        		requestParams.add(new BasicNameValuePair(EXTRA_PHONE, editPhone.getText().toString()));
-	        	if(editEmail.getTag()!=null && editEmail.getTag().equals(TAG_CHANGED))
-	        		requestParams.add(new BasicNameValuePair(EXTRA_EMAIL, editEmail.getText().toString()));
+	        		requestParams.add(new BasicNameValuePair(Constants.PREF_PHONE, editPhone.getText().toString()));
 	        	
 		        if(spinnerTimezoneChanged){
 		        	String tz = ((TextView)spinnerTimezone.getSelectedView()).getText().toString();
 		        	tz = tz.substring(0,10).replace(" ", "");
-		        	requestParams.add(new BasicNameValuePair(EXTRA_TIMEZONE, tz));
+		        	requestParams.add(new BasicNameValuePair(Constants.PREF_TIMEZONE, tz));
 		        }
 		        if(spinnerCarChanged){
-		        	requestParams.add(new BasicNameValuePair(EXTRA_CAR, ""+((Driver)spinnerCar.getSelectedItem()).id));
+		        	requestParams.add(new BasicNameValuePair(Constants.PREF_VEHICLE_ID, ""+((Driver)spinnerCar.getSelectedItem()).id));
 		        }
 		        if(editPassword.getTag()!=null && editPassword.getTag().equals(TAG_CHANGED))
-		        	requestParams.add(new BasicNameValuePair(EXTRA_PASSWORD, editPassword.getText().toString()));
+		        	requestParams.add(new BasicNameValuePair("password", editPassword.getText().toString()));
 		        System.out.println(requestParams);
 	        }
 	        catch(NullPointerException e){
@@ -589,14 +374,20 @@ public class SettingsEditFragment extends Fragment {
 		
 		@Override
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
-			Editor e = prefs.edit();
-			e.putString(EXTRA_FIRST_NAME, editFirstName.getText().toString());
-			e.putString(EXTRA_LAST_NAME, editLastName.getText().toString());
-			e.putString(EXTRA_PHONE, editPhone.getText().toString());
-			e.putString(EXTRA_EMAIL, editEmail.getText().toString());
-			e.putString(EXTRA_TIMEZONE, ((TextView)spinnerTimezone.getSelectedView()).getText().toString());
-			e.commit();
 			
+			System.out.println(responseJSON);
+			
+			Editor e = prefs.edit();
+			e.putLong(Constants.PREF_DRIVER_ID, responseJSON.optLong(Constants.PREF_DRIVER_ID));
+			e.putLong(Constants.PREF_VEHICLE_ID, responseJSON.optLong(Constants.PREF_VEHICLE_ID));
+			e.putString(Constants.PREF_FIRST_NAME, responseJSON.optString(Constants.PREF_FIRST_NAME));
+			e.putString(Constants.PREF_LAST_NAME, responseJSON.optString(Constants.PREF_LAST_NAME));
+			e.putString(Constants.PREF_EMAIL, responseJSON.optString(Constants.PREF_EMAIL));
+			e.putString(Constants.PREF_ROLE, responseJSON.optString(Constants.PREF_ROLE));
+			e.putString(Constants.PREF_PHONE, responseJSON.optString(Constants.PREF_PHONE));
+			e.putString(Constants.PREF_TIMEZONE, responseJSON.optString(Constants.PREF_TIMEZONE));
+			e.putString(Constants.PREF_PHOTO, responseJSON.optString(Constants.PREF_PHOTO));
+			e.commit();
 
 			btnUpdate.setVisibility(View.INVISIBLE);
 			btnCancel.setEnabled(false);

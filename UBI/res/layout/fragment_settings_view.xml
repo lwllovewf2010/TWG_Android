@@ -31,6 +31,7 @@
             android:layout_height="102.5dp"
             android:layout_marginBottom="18.5dp"
             android:layout_marginTop="20dp"
+        	android:scaleType="centerCrop"
             android:src="@drawable/person_test3" />
 
         <LinearLayout
@@ -156,7 +157,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:text="Car"
-                android:textAllCaps="true"
                 android:textColor="#3C454F"
                 android:textSize="10sp"
                 ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />

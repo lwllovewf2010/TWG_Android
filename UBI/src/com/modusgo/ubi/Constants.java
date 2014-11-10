@@ -11,7 +11,15 @@ public class Constants {
 	public static final String PREF_CLIENT_ID = "clientId";
 	public static final String PREF_SHOW_TIP_POPUP = "showTipPopup";
 	public static final String PREF_WELCOME_PAGES = "welcomePagesIds";
+	public static final String PREF_DRIVER_ID = "id";
+	public static final String PREF_VEHICLE_ID = "vehicle_id";
+	public static final String PREF_FIRST_NAME = "first_name";
+	public static final String PREF_LAST_NAME = "last_name";
+	public static final String PREF_EMAIL = "email";
 	public static final String PREF_ROLE = "role";
+	public static final String PREF_PHONE = "phone_number";
+	public static final String PREF_TIMEZONE = "time_zone";
+	public static final String PREF_PHOTO = "photo";
 	public static final String PREF_DIAGNOSTIC = "diagnostic";
 	public static final String PREF_DEVICE_MEID = "deviceMEID";
 	public static final String PREF_DEVICE_TYPE = "deviceType";

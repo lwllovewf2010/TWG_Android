@@ -190,8 +190,19 @@ public class InitActivity extends FragmentActivity {
 							e.putString(Constants.PREF_AUTH_KEY, "");
 						}	
 						
-						if(responseJSON.has("driver"))
-							e.putString(Constants.PREF_ROLE, responseJSON.getJSONObject("driver").optString("role"));
+						if(responseJSON.has("driver")){
+							JSONObject driverJSON = responseJSON.getJSONObject("driver");
+							e.putString(Constants.PREF_ROLE, driverJSON.optString(Constants.PREF_ROLE));
+							e.putLong(Constants.PREF_DRIVER_ID, driverJSON.optLong(Constants.PREF_DRIVER_ID));
+							e.putLong(Constants.PREF_VEHICLE_ID, driverJSON.optLong(Constants.PREF_VEHICLE_ID));
+							e.putString(Constants.PREF_FIRST_NAME, driverJSON.optString(Constants.PREF_FIRST_NAME));
+							e.putString(Constants.PREF_LAST_NAME, driverJSON.optString(Constants.PREF_LAST_NAME));
+							e.putString(Constants.PREF_EMAIL, driverJSON.optString(Constants.PREF_EMAIL));
+							e.putString(Constants.PREF_ROLE, driverJSON.optString(Constants.PREF_ROLE));
+							e.putString(Constants.PREF_PHONE, driverJSON.optString(Constants.PREF_PHONE));
+							e.putString(Constants.PREF_TIMEZONE, driverJSON.optString(Constants.PREF_TIMEZONE));
+							e.putString(Constants.PREF_PHOTO, driverJSON.optString(Constants.PREF_PHOTO));
+						}
 						
 						if(responseJSON.has("info")){
 							JSONObject infoJSON = responseJSON.getJSONObject("info");

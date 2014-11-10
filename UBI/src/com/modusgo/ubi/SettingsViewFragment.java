@@ -1,6 +1,5 @@
 package com.modusgo.ubi;
 
-import java.util.ArrayList;
 import java.util.Locale;
 
 import org.json.JSONException;
@@ -12,6 +11,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,6 +22,9 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class SettingsViewFragment extends Fragment{	
 	
@@ -35,6 +38,7 @@ public class SettingsViewFragment extends Fragment{
 	TextView tvEmail;
 	TextView tvTimezone;
 	TextView tvCar;
+	ImageView imagePhoto;
 	
 	private String email;
 	
@@ -57,94 +61,71 @@ public class SettingsViewFragment extends Fragment{
 		tvEmail = (TextView)rootView.findViewById(R.id.tvEmail);
 		tvTimezone = (TextView)rootView.findViewById(R.id.tvTimezone);
 		tvCar = (TextView)rootView.findViewById(R.id.tvCar);
-		ImageView imagePhoto = (ImageView)rootView.findViewById(R.id.imagePhoto);
+		imagePhoto = (ImageView)rootView.findViewById(R.id.imagePhoto);
 		
 		tvTimezone.setText("");
 		
 		prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		
-		imagePhoto.setImageResource(R.drawable.person_placeholder);
-		
-		final SettingsEditFragment sef = new SettingsEditFragment();
-		
+		imagePhoto.setImageResource(R.drawable.person_placeholder);		
 		
 		Button btnEdit = (Button)rootView.findViewById(R.id.btnEdit);
 		btnEdit.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View arg0) {
-				Bundle b = new Bundle();
-				b.putString(SettingsEditFragment.EXTRA_FIRST_NAME, tvFirstName.getText().toString());
-				b.putString(SettingsEditFragment.EXTRA_LAST_NAME, tvLastName.getText().toString());
-				b.putString(SettingsEditFragment.EXTRA_PHONE, tvPhone.getText().toString());
-				b.putString(SettingsEditFragment.EXTRA_EMAIL, email);
-				b.putString(SettingsEditFragment.EXTRA_TIMEZONE, tvTimezone.getText().toString());
-				sef.setArguments(b);
-				
-				getActivity().getSupportFragmentManager().beginTransaction()
-				.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)
-				.replace(R.id.content_frame, sef)
-				.addToBackStack(null)
-				.commit();
+				new GetDriverTask(getActivity()).execute("driver.json");
 			}
-		});
-		
-		
-		System.out.println("saved null = "+(savedInstanceState == null));
-		if(prefs.getBoolean(SettingsEditFragment.PREF_JUSTSAVED, false)==true){
-			updateFields(
-					prefs.getString(SettingsEditFragment.EXTRA_FIRST_NAME,""), 
-					prefs.getString(SettingsEditFragment.EXTRA_LAST_NAME,""), 
-					prefs.getString(SettingsEditFragment.EXTRA_PHONE,""), 
-					prefs.getString(SettingsEditFragment.EXTRA_EMAIL,""), 
-					prefs.getString(SettingsEditFragment.EXTRA_TIMEZONE,""),
-					"N/A");
-		}
-		else
-			new GetCompareInfoTask(getActivity()).execute("settings.json");
+		});		
 		
 		return rootView;
 	}
 	
-	private void updateFields(String fn, String ln, String phone, String email, String timezone, String car){
-		tvFirstName.setText(fn);
-		tvLastName.setText(ln);
-		tvPhone.setText(phone);
-		tvCar.setText(car);
-		
-		this.email = email;
-		int dogIndex = email.indexOf("@");
-		String emailUser = email.substring(0, dogIndex);
-		String emailServer = email.substring(dogIndex, email.length());
-		
-		tvEmail.setText(emailUser.toUpperCase(Locale.US)+emailServer);
-		
-		ArrayList<String> timezones = SettingsEditFragment.getTimezoneList();
-		String responseTz = timezone.replaceAll("GMT", "");
-		System.out.println(responseTz);
-		for (String tz : timezones) {
-			if(tz.contains(responseTz)){
-				tvTimezone.setText(tz);
-				break;
-			}
-		}
-		
-		if(tvTimezone.getText().toString().equals(""))
-			tvTimezone.setText(timezone);
-		
-		Editor e = prefs.edit();
-		e.putString(SettingsEditFragment.EXTRA_FIRST_NAME, tvFirstName.getText().toString());
-		e.putString(SettingsEditFragment.EXTRA_LAST_NAME, tvLastName.getText().toString());
-		e.putString(SettingsEditFragment.EXTRA_PHONE, tvPhone.getText().toString());
-		e.putString(SettingsEditFragment.EXTRA_EMAIL, tvEmail.getText().toString());
-		e.putString(SettingsEditFragment.EXTRA_TIMEZONE, tvTimezone.getText().toString());
-		e.putBoolean(SettingsEditFragment.PREF_JUSTSAVED, false).commit();
-		e.commit();
+	@Override
+	public void onResume() {
+		updateFields("N/A");
+		super.onResume();
 	}
 	
-	class GetCompareInfoTask extends BaseRequestAsyncTask{
+	private void updateFields(String car){
+		tvFirstName.setText(prefs.getString(Constants.PREF_FIRST_NAME, ""));
+		tvLastName.setText(prefs.getString(Constants.PREF_LAST_NAME, ""));
+		tvPhone.setText(prefs.getString(Constants.PREF_PHONE, ""));
+		tvCar.setText(car);
+		
+		email = prefs.getString(Constants.PREF_EMAIL, "");
+		if(email!=null && email.length()>0){
+			int dogIndex = email.indexOf("@");
+			String emailUser = email.substring(0, dogIndex);
+			String emailServer = email.substring(dogIndex, email.length());
+			
+			tvEmail.setText(emailUser.toUpperCase(Locale.US)+emailServer);
+		}
+		else
+			tvEmail.setText("N/A");
+		
+		tvTimezone.setText(prefs.getString(Constants.PREF_TIMEZONE, ""));
+		
+		String photoURL = prefs.getString(Constants.PREF_PHOTO, "");
+		
+		if(TextUtils.isEmpty(photoURL))
+	    	imagePhoto.setImageResource(R.drawable.person_placeholder);
+	    else{
+	    	DisplayImageOptions options = new DisplayImageOptions.Builder()
+	        .showImageOnLoading(R.drawable.person_placeholder)
+	        .showImageForEmptyUri(R.drawable.person_placeholder)
+	        .showImageOnFail(R.drawable.person_placeholder)
+	        .cacheInMemory(true)
+	        .cacheOnDisk(true)
+	        .build();
+	    	
+	    	ImageLoader.getInstance().displayImage(photoURL, imagePhoto, options);
+	    }
+	}
+	
+	class GetDriverTask extends BaseRequestAsyncTask{
 
-		public GetCompareInfoTask(Context context) {
+		public GetDriverTask(Context context) {
 			super(context);
 		}
 		
@@ -159,21 +140,38 @@ public class SettingsViewFragment extends Fragment{
 		@Override
 		protected void onPostExecute(JSONObject result) {
 			super.onPostExecute(result);
+		}
+		
+		@Override
+		protected void onError(String message) {
 			progress.setVisibility(View.GONE);
 			llMainInfo.setVisibility(View.VISIBLE);
 			svAdditionalInfo.setVisibility(View.VISIBLE);
+			super.onError(message);
 		}
 		
 		@Override
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
 			
-			updateFields(
-					responseJSON.getString(SettingsEditFragment.EXTRA_FIRST_NAME), 
-					responseJSON.getString(SettingsEditFragment.EXTRA_LAST_NAME), 
-					responseJSON.getString(SettingsEditFragment.EXTRA_PHONE), 
-					responseJSON.getString(SettingsEditFragment.EXTRA_EMAIL), 
-					responseJSON.getString(SettingsEditFragment.EXTRA_TIMEZONE),
-					"N/A");
+			Editor e = prefs.edit();
+			e.putLong(Constants.PREF_DRIVER_ID, responseJSON.optLong(Constants.PREF_DRIVER_ID));
+			e.putLong(Constants.PREF_VEHICLE_ID, responseJSON.optLong(Constants.PREF_VEHICLE_ID));
+			e.putString(Constants.PREF_FIRST_NAME, responseJSON.optString(Constants.PREF_FIRST_NAME));
+			e.putString(Constants.PREF_LAST_NAME, responseJSON.optString(Constants.PREF_LAST_NAME));
+			e.putString(Constants.PREF_EMAIL, responseJSON.optString(Constants.PREF_EMAIL));
+			e.putString(Constants.PREF_ROLE, responseJSON.optString(Constants.PREF_ROLE));
+			e.putString(Constants.PREF_PHONE, responseJSON.optString(Constants.PREF_PHONE));
+			e.putString(Constants.PREF_TIMEZONE, responseJSON.optString(Constants.PREF_TIMEZONE));
+			e.putString(Constants.PREF_PHOTO, responseJSON.optString(Constants.PREF_PHOTO));
+			e.commit();
+				  
+			updateFields("N/A");
+
+			getActivity().getSupportFragmentManager().beginTransaction()
+			.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)
+			.replace(R.id.content_frame, new SettingsEditFragment())
+			.addToBackStack(null)
+			.commit();
 			
 			super.onSuccess(responseJSON);
 		}

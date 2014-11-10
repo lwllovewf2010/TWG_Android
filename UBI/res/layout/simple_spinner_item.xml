@@ -10,5 +10,4 @@
     android:textAlignment="inherit"
     android:textColor="#a1a6ad"
     android:textSize="12.5sp"
-    android:textAllCaps="true"
     ubi:typeface="EncodeSansNormal-500-Medium.ttf"/>

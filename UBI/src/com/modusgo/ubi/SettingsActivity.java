@@ -2,7 +2,6 @@ package com.modusgo.ubi;
 
 import android.os.Bundle;
 
-
 public class SettingsActivity extends MainActivity {
 	
 	@Override
@@ -15,12 +14,6 @@ public class SettingsActivity extends MainActivity {
 		SettingsViewFragment svf = new SettingsViewFragment();
 		
 		getSupportFragmentManager().beginTransaction().replace(R.id.content_frame, svf).commit();
-	}
-	
-	@Override
-	public void up() {
-		prefs.edit().putBoolean(SettingsEditFragment.PREF_JUSTSAVED, false).commit();
-		super.up();
 	}
 
 	@Override
