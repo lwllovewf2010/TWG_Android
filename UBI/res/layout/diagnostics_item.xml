@@ -28,6 +28,8 @@
         android:layout_toLeftOf="@+id/imageArrow"
         android:paddingBottom="10dp"
         android:paddingTop="2dp"
+        android:maxLines="4"
+        android:ellipsize="end"
         android:text="Random Misﬁre Detected"
         android:textColor="#697078"
         android:textSize="10sp"
