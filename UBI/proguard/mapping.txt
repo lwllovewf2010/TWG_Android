@@ -12745,8 +12745,8 @@ com.modusgo.ubi.CompareActivity$Paramater -> com.modusgo.ubi.s:
     1:1:com.modusgo.ubi.CompareActivity$Paramater[] values() -> values
     1:1:com.modusgo.ubi.CompareActivity$Paramater valueOf(java.lang.String) -> valueOf
 com.modusgo.ubi.Constants -> com.modusgo.ubi.t:
-    43:43:java.lang.String getSendStatisticsURL(java.lang.String) -> a
-    46:46:java.lang.String getCheckIgnitionURL(java.lang.String) -> b
+    51:51:java.lang.String getSendStatisticsURL(java.lang.String) -> a
+    54:54:java.lang.String getCheckIgnitionURL(java.lang.String) -> b
 com.modusgo.ubi.DiagnosticDetailActivity -> com.modusgo.ubi.DiagnosticDetailActivity:
     com.modusgo.ubi.DriversHelper dHelper -> n
     int driverIndex -> o
@@ -13262,8 +13262,8 @@ com.modusgo.ubi.InitActivity$ServerCheckTask -> com.modusgo.ubi.bz:
     java.util.List requestParams -> d
     com.modusgo.ubi.InitActivity this$0 -> e
     148:154:void onPreExecute() -> onPreExecute
-    159:241:java.lang.Boolean doInBackground(java.lang.Void[]) -> a
-    246:271:void onPostExecute(java.lang.Boolean) -> a
+    159:252:java.lang.Boolean doInBackground(java.lang.Void[]) -> a
+    257:282:void onPostExecute(java.lang.Boolean) -> a
     1:1:void onPostExecute(java.lang.Object) -> onPostExecute
     1:1:java.lang.Object doInBackground(java.lang.Object[]) -> doInBackground
 com.modusgo.ubi.LimitsFragment -> com.modusgo.ubi.ca:
@@ -13928,9 +13928,8 @@ com.modusgo.ubi.ScorePieChartActivity$PieChartTab -> com.modusgo.ubi.eb:
     java.lang.String[] titles -> c
     java.lang.String[] subtitles -> d
 com.modusgo.ubi.SettingsActivity -> com.modusgo.ubi.SettingsActivity:
-    10:18:void onCreate(android.os.Bundle) -> onCreate
-    22:24:void up() -> m_
-    28:30:void onResume() -> onResume
+    9:17:void onCreate(android.os.Bundle) -> onCreate
+    21:23:void onResume() -> onResume
 com.modusgo.ubi.SettingsEditFragment -> com.modusgo.ubi.ec:
     android.widget.EditText editFirstName -> a
     android.widget.EditText editLastName -> b
@@ -13945,64 +13944,63 @@ com.modusgo.ubi.SettingsEditFragment -> com.modusgo.ubi.ec:
     int spinnerCarDefault -> Z
     boolean spinnerTimezoneChanged -> aa
     boolean spinnerCarChanged -> ab
-    72:239:android.view.View onCreateView(android.view.LayoutInflater,android.view.ViewGroup,android.os.Bundle) -> a
-    245:252:void onSaveInstanceState(android.os.Bundle) -> e
-    255:450:java.util.ArrayList getTimezoneList() -> a
-    66:66:boolean access$0(com.modusgo.ubi.SettingsEditFragment) -> a
-    67:67:boolean access$1(com.modusgo.ubi.SettingsEditFragment) -> b
-    64:64:int access$2(com.modusgo.ubi.SettingsEditFragment) -> c
-    66:66:void access$3(com.modusgo.ubi.SettingsEditFragment,boolean) -> a
-    65:65:int access$4(com.modusgo.ubi.SettingsEditFragment) -> d
-    67:67:void access$5(com.modusgo.ubi.SettingsEditFragment,boolean) -> b
+    66:220:android.view.View onCreateView(android.view.LayoutInflater,android.view.ViewGroup,android.os.Bundle) -> a
+    224:236:java.util.ArrayList getTimezoneList() -> a
+    60:60:boolean access$0(com.modusgo.ubi.SettingsEditFragment) -> a
+    61:61:boolean access$1(com.modusgo.ubi.SettingsEditFragment) -> b
+    58:58:int access$2(com.modusgo.ubi.SettingsEditFragment) -> c
+    60:60:void access$3(com.modusgo.ubi.SettingsEditFragment,boolean) -> a
+    59:59:int access$4(com.modusgo.ubi.SettingsEditFragment) -> d
+    61:61:void access$5(com.modusgo.ubi.SettingsEditFragment,boolean) -> b
 com.modusgo.ubi.SettingsEditFragment$1 -> com.modusgo.ubi.ed:
     com.modusgo.ubi.SettingsEditFragment this$0 -> a
-    100:108:void onItemSelected(android.widget.AdapterView,android.view.View,int,long) -> onItemSelected
-    112:112:void onNothingSelected(android.widget.AdapterView) -> onNothingSelected
+    119:127:void onItemSelected(android.widget.AdapterView,android.view.View,int,long) -> onItemSelected
+    131:131:void onNothingSelected(android.widget.AdapterView) -> onNothingSelected
 com.modusgo.ubi.SettingsEditFragment$2 -> com.modusgo.ubi.ee:
     com.modusgo.ubi.SettingsEditFragment this$0 -> a
-    124:126:android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
-    131:133:android.view.View getDropDownView(int,android.view.View,android.view.ViewGroup) -> getDropDownView
+    143:145:android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
+    150:152:android.view.View getDropDownView(int,android.view.View,android.view.ViewGroup) -> getDropDownView
 com.modusgo.ubi.SettingsEditFragment$3 -> com.modusgo.ubi.ef:
     com.modusgo.ubi.SettingsEditFragment this$0 -> a
-    142:150:void onItemSelected(android.widget.AdapterView,android.view.View,int,long) -> onItemSelected
-    154:154:void onNothingSelected(android.widget.AdapterView) -> onNothingSelected
+    161:169:void onItemSelected(android.widget.AdapterView,android.view.View,int,long) -> onItemSelected
+    173:173:void onNothingSelected(android.widget.AdapterView) -> onNothingSelected
 com.modusgo.ubi.SettingsEditFragment$4 -> com.modusgo.ubi.eg:
     com.modusgo.ubi.SettingsEditFragment this$0 -> a
-    207:213:boolean onTouch(android.view.View,android.view.MotionEvent) -> onTouch
+    190:196:boolean onTouch(android.view.View,android.view.MotionEvent) -> onTouch
 com.modusgo.ubi.SettingsEditFragment$5 -> com.modusgo.ubi.eh:
     com.modusgo.ubi.SettingsEditFragment this$0 -> a
     android.widget.EditText val$editConfirmPassword -> b
     android.widget.TextView val$tvPasswordError -> c
-    220:227:void onClick(android.view.View) -> onClick
+    203:210:void onClick(android.view.View) -> onClick
 com.modusgo.ubi.SettingsEditFragment$6 -> com.modusgo.ubi.ei:
     com.modusgo.ubi.SettingsEditFragment this$0 -> a
-    233:234:void onClick(android.view.View) -> onClick
+    216:217:void onClick(android.view.View) -> onClick
 com.modusgo.ubi.SettingsEditFragment$AsteriskPasswordTransformationMethod -> com.modusgo.ubi.ej:
     com.modusgo.ubi.SettingsEditFragment this$0 -> a
-    483:483:java.lang.CharSequence getTransformation(java.lang.CharSequence,android.view.View) -> getTransformation
+    269:269:java.lang.CharSequence getTransformation(java.lang.CharSequence,android.view.View) -> getTransformation
 com.modusgo.ubi.SettingsEditFragment$AsteriskPasswordTransformationMethod$PasswordCharSequence -> com.modusgo.ubi.ek:
     java.lang.CharSequence mSource -> b
     com.modusgo.ubi.SettingsEditFragment$AsteriskPasswordTransformationMethod this$1 -> a
-    492:492:char charAt(int) -> charAt
-    495:495:int length() -> length
-    498:498:java.lang.CharSequence subSequence(int,int) -> subSequence
+    278:278:char charAt(int) -> charAt
+    281:281:int length() -> length
+    284:284:java.lang.CharSequence subSequence(int,int) -> subSequence
 com.modusgo.ubi.SettingsEditFragment$CustomTextWatcher -> com.modusgo.ubi.el:
     android.widget.EditText mEditText -> b
     java.lang.String defaultValue -> c
     com.modusgo.ubi.SettingsEditFragment this$0 -> a
-    463:463:void beforeTextChanged(java.lang.CharSequence,int,int,int) -> beforeTextChanged
-    466:466:void onTextChanged(java.lang.CharSequence,int,int,int) -> onTextChanged
-    469:477:void afterTextChanged(android.text.Editable) -> afterTextChanged
-com.modusgo.ubi.SettingsEditFragment$SetSettingsTask -> com.modusgo.ubi.em:
+    249:249:void beforeTextChanged(java.lang.CharSequence,int,int,int) -> beforeTextChanged
+    252:252:void onTextChanged(java.lang.CharSequence,int,int,int) -> onTextChanged
+    255:263:void afterTextChanged(android.text.Editable) -> afterTextChanged
+com.modusgo.ubi.SettingsEditFragment$SetDriverTask -> com.modusgo.ubi.em:
     com.modusgo.ubi.SettingsEditFragment this$0 -> a
-    543:547:void onPreExecute() -> onPreExecute
-    551:555:void onPostExecute(org.json.JSONObject) -> a
-    562:587:org.json.JSONObject doInBackground(java.lang.String[]) -> a
-    592:612:void onSuccess(org.json.JSONObject) -> b
+    329:333:void onPreExecute() -> onPreExecute
+    337:341:void onPostExecute(org.json.JSONObject) -> a
+    347:372:org.json.JSONObject doInBackground(java.lang.String[]) -> a
+    378:403:void onSuccess(org.json.JSONObject) -> b
 com.modusgo.ubi.SettingsEditFragment$TypefacedArrayAdapter -> com.modusgo.ubi.en:
     com.modusgo.ubi.SettingsEditFragment this$0 -> b
-    510:518:android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
-    523:531:android.view.View getDropDownView(int,android.view.View,android.view.ViewGroup) -> getDropDownView
+    296:304:android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
+    309:317:android.view.View getDropDownView(int,android.view.View,android.view.ViewGroup) -> getDropDownView
 com.modusgo.ubi.SettingsViewFragment -> com.modusgo.ubi.eo:
     android.widget.ProgressBar progress -> a
     android.widget.LinearLayout llMainInfo -> b
@@ -14013,21 +14011,22 @@ com.modusgo.ubi.SettingsViewFragment -> com.modusgo.ubi.eo:
     android.widget.TextView tvEmail -> g
     android.widget.TextView tvTimezone -> h
     android.widget.TextView tvCar -> i
-    java.lang.String email -> Z
-    android.content.SharedPreferences prefs -> Y
-    46:106:android.view.View onCreateView(android.view.LayoutInflater,android.view.ViewGroup,android.os.Bundle) -> a
-    110:143:void updateFields(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String) -> a
-    109:109:void access$0(com.modusgo.ubi.SettingsViewFragment,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String) -> a
-    39:39:java.lang.String access$1(com.modusgo.ubi.SettingsViewFragment) -> a
+    android.widget.ImageView imagePhoto -> Y
+    java.lang.String email -> aa
+    android.content.SharedPreferences prefs -> Z
+    50:81:android.view.View onCreateView(android.view.LayoutInflater,android.view.ViewGroup,android.os.Bundle) -> a
+    86:88:void onResume() -> q
+    91:124:void updateFields(java.lang.String) -> a
+    90:90:void access$0(com.modusgo.ubi.SettingsViewFragment,java.lang.String) -> a
 com.modusgo.ubi.SettingsViewFragment$1 -> com.modusgo.ubi.ep:
     com.modusgo.ubi.SettingsViewFragment this$0 -> a
-    com.modusgo.ubi.SettingsEditFragment val$sef -> b
-    76:89:void onClick(android.view.View) -> onClick
-com.modusgo.ubi.SettingsViewFragment$GetCompareInfoTask -> com.modusgo.ubi.eq:
+    77:78:void onClick(android.view.View) -> onClick
+com.modusgo.ubi.SettingsViewFragment$GetDriverTask -> com.modusgo.ubi.eq:
     com.modusgo.ubi.SettingsViewFragment this$0 -> a
-    153:157:void onPreExecute() -> onPreExecute
-    161:165:void onPostExecute(org.json.JSONObject) -> a
-    170:179:void onSuccess(org.json.JSONObject) -> b
+    134:138:void onPreExecute() -> onPreExecute
+    142:143:void onPostExecute(org.json.JSONObject) -> a
+    147:151:void onError(java.lang.String) -> a
+    156:177:void onSuccess(org.json.JSONObject) -> b
 com.modusgo.ubi.SignInActivity -> com.modusgo.ubi.SignInActivity:
     android.view.View layoutProgress -> n
     android.view.View layoutFields -> o
@@ -14420,6 +14419,7 @@ com.modusgo.ubi.utils.RequestPost -> com.modusgo.ubi.b.f:
 com.modusgo.ubi.utils.Utils -> com.modusgo.ubi.b.g:
     31:58:java.lang.String md5(java.lang.String) -> a
     62:71:java.lang.String getUUID(android.content.Context) -> a
+    75:92:org.json.JSONObject getJSONObjectFromAssets(android.content.Context,java.lang.String) -> a
     98:111:org.json.JSONObject getJSONObjectFromHttpResponse(org.apache.http.HttpResponse) -> a
     116:116:java.lang.String fixTimezoneZ(java.lang.String) -> b
     120:121:java.lang.String fixTimeZoneColon(java.lang.String) -> c

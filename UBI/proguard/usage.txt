@@ -6697,7 +6697,15 @@ com.modusgo.ubi.Constants:
     public static final java.lang.String PREF_CLIENT_ID
     public static final java.lang.String PREF_SHOW_TIP_POPUP
     public static final java.lang.String PREF_WELCOME_PAGES
+    public static final java.lang.String PREF_DRIVER_ID
+    public static final java.lang.String PREF_VEHICLE_ID
+    public static final java.lang.String PREF_FIRST_NAME
+    public static final java.lang.String PREF_LAST_NAME
+    public static final java.lang.String PREF_EMAIL
     public static final java.lang.String PREF_ROLE
+    public static final java.lang.String PREF_PHONE
+    public static final java.lang.String PREF_TIMEZONE
+    public static final java.lang.String PREF_PHOTO
     public static final java.lang.String PREF_DIAGNOSTIC
     public static final java.lang.String PREF_DEVICE_MEID
     public static final java.lang.String PREF_DEVICE_TYPE
@@ -6794,14 +6802,6 @@ com.modusgo.ubi.ScorePieChartActivity:
     public static final java.lang.String SAVED_PIE_CHART_ROAD_TYPE
     public static final java.lang.String SAVED_PIE_CHART_TIME_OF_DAY
 com.modusgo.ubi.SettingsEditFragment:
-    public static final java.lang.String EXTRA_FIRST_NAME
-    public static final java.lang.String EXTRA_LAST_NAME
-    public static final java.lang.String EXTRA_PHONE
-    public static final java.lang.String EXTRA_EMAIL
-    public static final java.lang.String EXTRA_TIMEZONE
-    public static final java.lang.String EXTRA_CAR
-    public static final java.lang.String EXTRA_PASSWORD
-    public static final java.lang.String PREF_JUSTSAVED
     private static final java.lang.String TAG_CHANGED
 com.modusgo.ubi.SignInActivity$LoginTask:
     int status
@@ -6869,7 +6869,6 @@ com.modusgo.ubi.utils.RequestGet:
     19:21:public RequestGet(java.lang.String)
 com.modusgo.ubi.utils.Utils:
     28:28:public Utils()
-    75:92:public static org.json.JSONObject getJSONObjectFromAssets(android.content.Context,java.lang.String)
 com.nostra13.universalimageloader.cache.disc.DiscCacheAware:
     public abstract java.io.File getDirectory()
     public abstract boolean remove(java.lang.String)
