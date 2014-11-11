@@ -24,6 +24,7 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -92,15 +93,24 @@ public class SettingsViewFragment extends Fragment{
 	
 	@Override
 	public void onResume() {
-		updateFields("N/A");
+		updateFields();
 		super.onResume();
 	}
 	
-	private void updateFields(String car){
+	private void updateFields(){
 		tvFirstName.setText(prefs.getString(Constants.PREF_FIRST_NAME, ""));
 		tvLastName.setText(prefs.getString(Constants.PREF_LAST_NAME, ""));
 		tvPhone.setText(prefs.getString(Constants.PREF_PHONE, ""));
-		tvCar.setText(car);
+		long vehicleId = prefs.getLong(Constants.PREF_VEHICLE_ID, -1);
+		if(vehicleId!=-1){
+			DbHelper dbHelper = DbHelper.getInstance(getActivity());
+			Driver d = dbHelper.getDriver(vehicleId);
+			dbHelper.close();
+			tvCar.setText(d.getCarFullName());
+		}
+		else{
+			tvCar.setText("N/A");			
+		}
 		
 		email = prefs.getString(Constants.PREF_EMAIL, "");
 		if(email!=null && email.length()>0){
@@ -174,7 +184,7 @@ public class SettingsViewFragment extends Fragment{
 			e.putString(Constants.PREF_PHOTO, responseJSON.optString(Constants.PREF_PHOTO));
 			e.commit();
 				  
-			updateFields("N/A");
+			updateFields();
 
 			getActivity().getSupportFragmentManager().beginTransaction()
 			.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)

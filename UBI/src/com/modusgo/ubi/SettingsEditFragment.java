@@ -36,6 +36,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.android.gms.internal.bh;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -59,6 +60,8 @@ public class SettingsEditFragment extends Fragment {
 	private int spinnerCarDefault = 0;
 	private boolean spinnerTimezoneChanged = false;
 	private boolean spinnerCarChanged = false;
+	
+	ArrayList<Driver> vehicles;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -132,46 +135,49 @@ public class SettingsEditFragment extends Fragment {
 		});
 		
 		DbHelper dbHelper = DbHelper.getInstance(getActivity());
-		ArrayList<Driver> vehicles = dbHelper.getDriversShort();
+		vehicles = dbHelper.getDriversShort();
 		dbHelper.close();
 		
-		TypefacedArrayAdapter<Driver> adapterCars = new TypefacedArrayAdapter<Driver>(getActivity(),
-				R.layout.simple_spinner_item, vehicles){
-			@Override
-			public View getView(int position, View convertView,
-					ViewGroup parent) {
-				TextView v = (TextView) super.getDropDownView(position, convertView, parent);
-				v.setText(getItem(position).getCarFullName());
-				return v;
-			}
-			@Override
-			public View getDropDownView(int position, View convertView,
-					ViewGroup parent) {
-				TextView v = (TextView) super.getDropDownView(position, convertView, parent);
-				v.setText(getItem(position).getCarFullName());
-				return v;
-			}
-		};
+		ArrayList<String> cars = new ArrayList<String>();
+		long vehicleId = prefs.getLong(Constants.PREF_VEHICLE_ID, -1);
+		String currentVehicle = "";
+		
+		for (Driver driver : vehicles) {
+			cars.add(driver.getCarFullName());
+			if(driver.id==vehicleId)
+				currentVehicle = driver.getCarFullName();
+		}
+		
+		TypefacedArrayAdapter<String> adapterCars = new TypefacedArrayAdapter<String>(getActivity(),
+				R.layout.simple_spinner_item, cars);
 		adapterCars.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinnerCar.setAdapter(adapterCars);
-		spinnerCar.setOnItemSelectedListener(new OnItemSelectedListener() {
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view,
-					int position, long id) {
-				if(position!=spinnerCarDefault){
-					((TextView)view).setTextColor(Color.parseColor("#00aeef"));
-					spinnerCarChanged = true;
+		spinnerCarDefault = adapterCars.getPosition(currentVehicle);
+		spinnerCar.setSelection(spinnerCarDefault);
+		
+		if(!prefs.getString(Constants.PREF_ROLE, "").equals(Constants.ROLE_CUSTOMER) || vehicleId>0){
+			spinnerCar.setEnabled(false);
+		}
+		else{
+			spinnerCar.setOnItemSelectedListener(new OnItemSelectedListener() {
+				@Override
+				public void onItemSelected(AdapterView<?> parent, View view,
+						int position, long id) {
+					if(position!=spinnerCarDefault){
+						((TextView)view).setTextColor(Color.parseColor("#00aeef"));
+						spinnerCarChanged = true;
+					}
+					else{
+						((TextView)view).setTextColor(Color.parseColor("#697078"));
+						spinnerCarChanged = false;
+					}
 				}
-				else{
-					((TextView)view).setTextColor(Color.parseColor("#697078"));
-					spinnerCarChanged = false;
+	
+				@Override
+				public void onNothingSelected(AdapterView<?> parent) {
 				}
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> parent) {
-			}
-		});
+			});
+		}
 		
 		editFirstName.addTextChangedListener(new CustomTextWatcher(editFirstName));
 		editLastName.addTextChangedListener(new CustomTextWatcher(editLastName));
@@ -373,7 +379,12 @@ public class SettingsEditFragment extends Fragment {
 		        	requestParams.add(new BasicNameValuePair(Constants.PREF_TIMEZONE, tz));
 		        }
 		        if(spinnerCarChanged){
-		        	requestParams.add(new BasicNameValuePair(Constants.PREF_VEHICLE_ID, ""+((Driver)spinnerCar.getSelectedItem()).id));
+		        	for (Driver d : vehicles) {
+		        		if(d.getCarFullName().equals(spinnerCar.getSelectedItem())){
+		        			requestParams.add(new BasicNameValuePair(Constants.PREF_VEHICLE_ID, ""+d.id));
+		        			break;
+		        		}
+					}
 		        }
 		        if(editPassword.getTag()!=null && editPassword.getTag().equals(TAG_CHANGED))
 		        	requestParams.add(new BasicNameValuePair("password", editPassword.getText().toString()));
@@ -392,16 +403,24 @@ public class SettingsEditFragment extends Fragment {
 			System.out.println(responseJSON);
 			
 			Editor e = prefs.edit();
+			Long vehicleId = responseJSON.optLong(Constants.PREF_VEHICLE_ID);
+			String photo = responseJSON.optString(Constants.PREF_PHONE);
 			e.putLong(Constants.PREF_DRIVER_ID, responseJSON.optLong(Constants.PREF_DRIVER_ID));
-			e.putLong(Constants.PREF_VEHICLE_ID, responseJSON.optLong(Constants.PREF_VEHICLE_ID));
+			e.putLong(Constants.PREF_VEHICLE_ID, vehicleId);
 			e.putString(Constants.PREF_FIRST_NAME, responseJSON.optString(Constants.PREF_FIRST_NAME));
 			e.putString(Constants.PREF_LAST_NAME, responseJSON.optString(Constants.PREF_LAST_NAME));
 			e.putString(Constants.PREF_EMAIL, responseJSON.optString(Constants.PREF_EMAIL));
 			e.putString(Constants.PREF_ROLE, responseJSON.optString(Constants.PREF_ROLE));
-			e.putString(Constants.PREF_PHONE, responseJSON.optString(Constants.PREF_PHONE));
+			e.putString(Constants.PREF_PHONE, photo);
 			e.putString(Constants.PREF_TIMEZONE, responseJSON.optString(Constants.PREF_TIMEZONE));
 			e.putString(Constants.PREF_PHOTO, responseJSON.optString(Constants.PREF_PHOTO));
 			e.commit();
+			
+			DbHelper dbHelper = DbHelper.getInstance(getActivity());
+			Driver d = dbHelper.getDriver(vehicleId);
+			d.photo = photo;
+			dbHelper.saveDriver(d);
+			dbHelper.close();
 
 			btnUpdate.setVisibility(View.INVISIBLE);
 			btnCancel.setEnabled(false);
