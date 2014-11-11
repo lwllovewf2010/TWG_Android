@@ -11,6 +11,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -86,6 +89,8 @@ public class SignInActivity extends FragmentActivity {
 	    editPassword = (EditText)findViewById(R.id.password);
 
 	    Button btnSignIn = (Button)findViewById(R.id.btnSignIn);
+	    btnSignIn.setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, "#f15b2a")));
+	    btnSignIn.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, "#edf1f9")));
 	    
 	    ProgressBar pb = (ProgressBar)findViewById(R.id.progressLogging);
 	    Animation a = AnimationUtils.loadAnimation(this, R.anim.rotate);

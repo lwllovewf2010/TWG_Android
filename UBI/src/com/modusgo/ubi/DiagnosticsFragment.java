@@ -30,6 +30,7 @@ import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -132,7 +133,11 @@ public class DiagnosticsFragment extends Fragment{
 			lRefresh.setVisibility(View.GONE);
 			llOdometer.setVisibility(View.VISIBLE);
 			
-			rootView.findViewById(R.id.btnSubmit).setOnClickListener(new OnClickListener() {
+			Button btnSubmit = (Button) rootView.findViewById(R.id.btnSubmit);
+			btnSubmit.setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, "#f15b2a")));
+			btnSubmit.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, "#edf1f9")));
+			
+			btnSubmit.setOnClickListener(new OnClickListener() {
 				
 				@Override
 				public void onClick(View v) {

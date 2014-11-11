@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
+import com.modusgo.ubi.utils.Utils;
 
 public class RecallActivity extends MainActivity {
 	
@@ -61,6 +62,9 @@ public class RecallActivity extends MainActivity {
 		llList = (LinearLayout)findViewById(R.id.llList);
 		scrollView = (ScrollView)findViewById(R.id.svContent);
 		btnContactService = (Button)findViewById(R.id.btnContactService);
+		
+		btnContactService.setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, "#f15b2a")));
+		btnContactService.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, "#edf1f9")));
 		
 		tvCode.setText("Recall id - "+recall.recall_id);
 		

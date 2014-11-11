@@ -118,6 +118,8 @@ OnConnectionFailedListener, LocationListener {
         tvInfo = (TextView) findViewById(R.id.tvInfo);
         
         btnStart.setEnabled(false);
+        btnStart.setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, "#f15b2a")));
+        btnStart.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, "#edf1f9")));
         
         btnStart.setOnClickListener(new OnClickListener() {
 			@Override

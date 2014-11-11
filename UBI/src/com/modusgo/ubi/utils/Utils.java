@@ -19,6 +19,10 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.StateListDrawable;
 import android.telephony.TelephonyManager;
 import android.view.View;
 import android.view.ViewGroup;
@@ -194,5 +198,36 @@ public class Utils {
 				enableDisableViewGroup((ViewGroup) view, enabled);
 			}
 		}
+	}
+	
+	public static int getDarkerColor(int color){
+		float[] hsv = new float[3];
+		Color.colorToHSV(color, hsv);
+		hsv[2] *= 0.78f; // value component
+		return Color.HSVToColor(hsv);
+	}
+	
+	public static StateListDrawable getButtonBgStateListDrawable(String color){
+		StateListDrawable buttonBgDrawable = new StateListDrawable();
+	    int c = Color.parseColor(color);
+	    buttonBgDrawable.addState(new int[] {-android.R.attr.state_pressed}, new ColorDrawable(c));
+	    buttonBgDrawable.addState(new int[] {android.R.attr.state_pressed}, new ColorDrawable(Utils.getDarkerColor(c)));
+	    buttonBgDrawable.addState(new int[] {-android.R.attr.state_enabled}, new ColorDrawable(Utils.getDarkerColor(c)));
+	    return buttonBgDrawable;
+	}
+	
+	public static ColorStateList getButtonTextColorStateList(String color){
+		int c = Color.parseColor(color);
+	    ColorStateList csl = new ColorStateList(new int[][]{
+                new int[]{-android.R.attr.state_pressed},
+                new int[]{android.R.attr.state_pressed},
+                new int[]{-android.R.attr.state_enabled}
+        },
+        new int[]{
+                c,
+                Utils.getDarkerColor(c),
+                Utils.getDarkerColor(c)});
+	    
+	    return csl;
 	}
 }

@@ -150,6 +150,9 @@ public class GeofenceActivity extends MainActivity {
 
 		btnSave.setText("Loading...");
         btnSave.setEnabled(false);
+        btnSave.setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, "#f15b2a")));
+        btnSave.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, "#edf1f9")));
+	    
         
         tvInstructions.setText("");
         

@@ -2,6 +2,8 @@ package com.modusgo.ubi;
 
 import java.util.Locale;
 
+import com.modusgo.ubi.utils.Utils;
+
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -125,6 +127,8 @@ public class DiagnosticDetailActivity extends MainActivity {
 				startActivity(new Intent(DiagnosticDetailActivity.this, FindMechanicActivity.class));
 			}
 		});
+		btnFindMechanic.setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, "#f15b2a")));
+		btnFindMechanic.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, "#edf1f9")));
 		
 	}
 
