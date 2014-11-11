@@ -199,16 +199,20 @@ public class MainActivity extends FragmentActivity {
                 R.string.app_name  		/* "close drawer" description for accessibility */
                 ) {
             public void onDrawerClosed(View view) {
-            	getActionBar().getCustomView().findViewById(R.id.tvTitle).setVisibility(View.VISIBLE);
-            	menuLogo.setVisibility(View.GONE);
+            	if(!prefs.getString(Constants.PREF_BR_MENU_LOGO, "").equals("")){
+	            	getActionBar().getCustomView().findViewById(R.id.tvTitle).setVisibility(View.VISIBLE);
+	            	menuLogo.setVisibility(View.GONE);
+            	}
             	btnNavigationDrawer.setImageResource(R.drawable.ic_menu);
                 //getActionBar().setTitle(mTitle);
                 //invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
             public void onDrawerOpened(View drawerView) {
-            	getActionBar().getCustomView().findViewById(R.id.tvTitle).setVisibility(View.GONE);
-            	menuLogo.setVisibility(View.VISIBLE);
+            	if(!prefs.getString(Constants.PREF_BR_MENU_LOGO, "").equals("")){
+	            	getActionBar().getCustomView().findViewById(R.id.tvTitle).setVisibility(View.GONE);
+	            	menuLogo.setVisibility(View.VISIBLE);
+            	}
             	btnNavigationDrawer.setImageResource(R.drawable.ic_menu_close);
                 //getActionBar().setTitle(mDrawerTitle);
                 //invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
