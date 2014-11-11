@@ -461,6 +461,7 @@ public class TripsFragment extends Fragment{
 			}
 			else{
 				holder.tvScore.setBackgroundResource(R.drawable.circle_score_gray);
+				holder.tvScore.setText("N/A");
 			}
 			
 			holder.tvStartTime.setText(t.getStartDateString());
