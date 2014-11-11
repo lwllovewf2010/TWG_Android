@@ -259,7 +259,8 @@ public class DbHelper extends SQLiteOpenHelper {
 				VehicleEntry.COLUMN_NAME_CAR_YEAR,
 				VehicleEntry.COLUMN_NAME_CAR_CHECKUP,
 				VehicleEntry.COLUMN_NAME_LAST_TRIP_DATE,
-				VehicleEntry.COLUMN_NAME_ALERTS}, 
+				VehicleEntry.COLUMN_NAME_ALERTS,
+				VehicleEntry.COLUMN_NAME_DRIVER_PHOTO}, 
 				null, null, null, null, null);
 		
 		ArrayList<Driver> drivers = new ArrayList<Driver>();
@@ -274,6 +275,8 @@ public class DbHelper extends SQLiteOpenHelper {
 				d.carYear = c.getString(4);
 				d.carCheckup = c.getInt(5) == 1;
 				d.lastTripDate = c.getString(6);
+				d.alerts = c.getInt(7);
+				d.photo = c.getString(8);
 				drivers.add(d);
 				
 				c.moveToNext();
