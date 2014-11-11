@@ -199,7 +199,12 @@ public class SettingsEditFragment extends Fragment {
 		
 
 		btnUpdate.setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, "#f15b2a")));
-		btnUpdate.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, "#edf1f9")));
+		try{
+			btnUpdate.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, "#edf1f9")));
+		}
+	    catch(Exception e){
+	    	e.printStackTrace();
+	    }
 		btnUpdate.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -213,7 +218,12 @@ public class SettingsEditFragment extends Fragment {
 			}
 		});
 		
-		btnCancel.setTextColor(Utils.getButtonTextColorStateList(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, "#f15b2a")));
+		try{
+			btnCancel.setTextColor(Utils.getButtonTextColorStateList(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, "#f15b2a")));
+		}
+	    catch(Exception e){
+	    	e.printStackTrace();
+	    }
 		btnCancel.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {				

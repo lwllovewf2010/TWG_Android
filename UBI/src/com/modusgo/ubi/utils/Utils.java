@@ -209,10 +209,19 @@ public class Utils {
 	
 	public static StateListDrawable getButtonBgStateListDrawable(String color){
 		StateListDrawable buttonBgDrawable = new StateListDrawable();
-	    int c = Color.parseColor(color);
-	    buttonBgDrawable.addState(new int[] {-android.R.attr.state_pressed}, new ColorDrawable(c));
-	    buttonBgDrawable.addState(new int[] {android.R.attr.state_pressed}, new ColorDrawable(Utils.getDarkerColor(c)));
-	    buttonBgDrawable.addState(new int[] {-android.R.attr.state_enabled}, new ColorDrawable(Utils.getDarkerColor(c)));
+	    try{
+			int c = Color.parseColor(color);
+		    buttonBgDrawable.addState(new int[] {-android.R.attr.state_pressed}, new ColorDrawable(c));
+		    buttonBgDrawable.addState(new int[] {android.R.attr.state_pressed}, new ColorDrawable(Utils.getDarkerColor(c)));
+		    buttonBgDrawable.addState(new int[] {-android.R.attr.state_enabled}, new ColorDrawable(Utils.getDarkerColor(c)));
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			buttonBgDrawable = new StateListDrawable();
+		    buttonBgDrawable.addState(new int[] {-android.R.attr.state_pressed}, new ColorDrawable(Color.parseColor("#f15b2a")));
+		    buttonBgDrawable.addState(new int[] {android.R.attr.state_pressed}, new ColorDrawable(Color.parseColor("#bc4721")));
+		    buttonBgDrawable.addState(new int[] {-android.R.attr.state_enabled}, new ColorDrawable(Color.parseColor("#bc4721")));
+		}
 	    return buttonBgDrawable;
 	}
 	

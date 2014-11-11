@@ -63,7 +63,12 @@ public class RecallActivity extends MainActivity {
 		btnContactService = (Button)findViewById(R.id.btnContactService);
 		
 		btnContactService.setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, "#f15b2a")));
-		btnContactService.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, "#edf1f9")));
+		try{
+			btnContactService.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, "#edf1f9")));
+		}
+	    catch(Exception e){
+	    	e.printStackTrace();
+	    }
 		
 		tvCode.setText("Recall id - "+recall.recall_id);
 		

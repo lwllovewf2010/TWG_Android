@@ -73,7 +73,12 @@ public class SettingsViewFragment extends Fragment{
 		
 		Button btnEdit = (Button)rootView.findViewById(R.id.btnEdit);
 		btnEdit.setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, "#f15b2a")));
-		btnEdit.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, "#edf1f9")));
+		try{
+			btnEdit.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, "#edf1f9")));
+		}
+	    catch(Exception e){
+	    	e.printStackTrace();
+	    }
 		btnEdit.setOnClickListener(new OnClickListener() {
 			
 			@Override

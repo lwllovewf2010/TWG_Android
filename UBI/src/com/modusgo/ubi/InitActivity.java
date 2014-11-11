@@ -228,16 +228,6 @@ public class InitActivity extends FragmentActivity {
 							e.putString(Constants.PREF_BR_MENU_LOGO, brandingJSON.optString("menu_logo"));
 							e.putString(Constants.PREF_BR_SWITCH_DRIVER_MENU_BUTTON_COLOR, brandingJSON.optString("switch_driver_menu_button_bg_color"));
 						}
-						else{
-							e.putString(Constants.PREF_BR_LOGIN_SCREEN_BG_IMAGE, "http://www.poweranimalsunleashed.com/images/forest-light-900.jpg");
-							e.putString(Constants.PREF_BR_LOGIN_SCREEN_LOGO, "http://www.soccercoliseum.com/images/logos/sc-soccer-header-logo-759-243.gif");
-							e.putString(Constants.PREF_BR_BUTTONS_BG_COLOR, "#6DDCED");
-							e.putString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, "#222222");
-							e.putString(Constants.PREF_BR_TITLE_BAR_BG, "http://www.intercarne.de/gif/header_line01.gif");
-							e.putString(Constants.PREF_BR_TITLE_BAR_TEXT_COLOR, "#222222");
-							e.putString(Constants.PREF_BR_MENU_LOGO, "http://design.ubuntu.com/wp-content/uploads/logo-ubuntu_su-orange-hex.png");
-							e.putString(Constants.PREF_BR_SWITCH_DRIVER_MENU_BUTTON_COLOR, "#FF0000");
-						}
 						
 						if(responseJSON.has("info")){
 							JSONObject infoJSON = responseJSON.getJSONObject("info");

@@ -128,8 +128,12 @@ public class DiagnosticDetailActivity extends MainActivity {
 			}
 		});
 		btnFindMechanic.setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, "#f15b2a")));
-		btnFindMechanic.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, "#edf1f9")));
-		
+		try{
+			btnFindMechanic.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, "#edf1f9")));
+		}
+	    catch(Exception e){
+	    	e.printStackTrace();
+	    }
 	}
 
 	@Override

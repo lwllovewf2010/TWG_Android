@@ -257,7 +257,12 @@ public class MainActivity extends FragmentActivity {
     			super.onLoadingComplete(imageUri, view, loadedImage);
     		}
     	});
-    	tvActionBarTitle.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_TITLE_BAR_TEXT_COLOR, "#FFFFFF")));
+    	try{
+    		tvActionBarTitle.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_TITLE_BAR_TEXT_COLOR, "#FFFFFF")));
+    	}
+	    catch(Exception e){
+	    	e.printStackTrace();
+	    }
     }
     
     @Override
