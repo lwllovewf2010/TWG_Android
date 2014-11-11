@@ -204,6 +204,22 @@ public class InitActivity extends FragmentActivity {
 							e.putString(Constants.PREF_PHOTO, driverJSON.optString(Constants.PREF_PHOTO));
 						}
 						
+						if(responseJSON.has("branding")){
+							JSONObject brandingJSON = responseJSON.getJSONObject("branding");
+							e.putString(Constants.PREF_BR_LOGIN_SCREEN_BG_IMAGE, brandingJSON.optString("login_screen_bg_image"));
+							e.putString(Constants.PREF_BR_LOGIN_SCREEN_LOGO, brandingJSON.optString("login_screen_logo"));
+							e.putString(Constants.PREF_BR_BUTTONS_BG_COLOR, brandingJSON.optString("buttons_bg_color"));
+							e.putString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, brandingJSON.optString("buttons_text_color"));
+							e.putString(Constants.PREF_BR_TITLE_BAR_BG, brandingJSON.optString("title_bar_bg"));
+							e.putString(Constants.PREF_BR_TITLE_BAR_TEXT_COLOR, brandingJSON.optString("title_bar_text_color"));
+							e.putString(Constants.PREF_BR_MENU_LOGO, brandingJSON.optString("menu_logo"));
+							e.putString(Constants.PREF_BR_SWITCH_DRIVER_MENU_BUTTON_COLOR, brandingJSON.optString("switch_driver_menu_button_bg_color"));
+						}
+						else{
+							e.putString(Constants.PREF_BR_LOGIN_SCREEN_BG_IMAGE, "http://www.poweranimalsunleashed.com/images/forest-light-900.jpg");
+							e.putString(Constants.PREF_BR_LOGIN_SCREEN_LOGO, "http://www.soccercoliseum.com/images/logos/sc-soccer-header-logo-759-243.gif");
+						}
+						
 						if(responseJSON.has("info")){
 							JSONObject infoJSON = responseJSON.getJSONObject("info");
 							e.putBoolean(Constants.PREF_DIAGNOSTIC, infoJSON.optBoolean("diagnostic"));

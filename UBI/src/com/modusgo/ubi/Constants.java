@@ -53,5 +53,15 @@ public class Constants {
     public static String getCheckIgnitionURL(String mobile_id){
 		return DD_API_BASE_URL+"/"+mobile_id+"/ignition_status";    	
     }
+    
+    //------------------ Branding ------------
+	public static final String PREF_BR_LOGIN_SCREEN_BG_IMAGE = "login_bg_image";
+	public static final String PREF_BR_LOGIN_SCREEN_LOGO = "login_logo";
+	public static final String PREF_BR_BUTTONS_BG_COLOR = "buttons_color";
+	public static final String PREF_BR_BUTTONS_TEXT_COLOR = "buttons_text_color";
+	public static final String PREF_BR_TITLE_BAR_BG = "title_bar_bg_image";
+	public static final String PREF_BR_TITLE_BAR_TEXT_COLOR = "title_bar_text_color";
+	public static final String PREF_BR_MENU_LOGO = "menu_logo";
+	public static final String PREF_BR_SWITCH_DRIVER_MENU_BUTTON_COLOR = "switch_driver_color";
 
 }
