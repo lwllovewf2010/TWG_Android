@@ -23,6 +23,7 @@ import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -30,6 +31,7 @@ import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.utils.RequestGet;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
@@ -66,6 +68,17 @@ public class InitActivity extends FragmentActivity {
 	    
 	    prefs = PreferenceManager.getDefaultSharedPreferences(InitActivity.this);
 	    clientId = prefs.getString(Constants.PREF_CLIENT_ID, "");
+	    
+	    ImageView imageBg = (ImageView) findViewById(R.id.imageBg);
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+        .showImageOnLoading(R.drawable.login_bg)
+        .showImageForEmptyUri(R.drawable.login_bg)
+        .showImageOnFail(R.drawable.login_bg)
+        .cacheInMemory(true)
+        .cacheOnDisk(true)
+        .build();
+    	
+    	ImageLoader.getInstance().displayImage(prefs.getString(Constants.PREF_BR_LOGIN_SCREEN_BG_IMAGE, ""), imageBg, options);
 	    
 	    layoutFields = findViewById(R.id.llFields);
 	    layoutProgress = findViewById(R.id.rlProgress);

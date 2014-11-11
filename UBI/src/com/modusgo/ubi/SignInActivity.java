@@ -33,6 +33,8 @@ import android.widget.TextView;
 
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.utils.Utils;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.viewpagerindicator.CirclePageIndicator;
 
 public class SignInActivity extends FragmentActivity {
@@ -60,6 +62,16 @@ public class SignInActivity extends FragmentActivity {
 			finish();
 	    }
 	    
+	    ImageView imageBg = (ImageView) findViewById(R.id.imageBg);
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+        .showImageOnLoading(R.drawable.login_bg)
+        .showImageForEmptyUri(R.drawable.login_bg)
+        .showImageOnFail(R.drawable.login_bg)
+        .cacheInMemory(true)
+        .cacheOnDisk(true)
+        .build();
+    	ImageLoader.getInstance().displayImage(prefs.getString(Constants.PREF_BR_LOGIN_SCREEN_BG_IMAGE, ""), imageBg, options);
+    	
 	    layoutFields = findViewById(R.id.loginFields);
 	    layoutProgress = findViewById(R.id.loginProgress);
 	    
