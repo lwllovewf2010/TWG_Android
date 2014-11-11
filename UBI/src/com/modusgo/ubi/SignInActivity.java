@@ -72,6 +72,13 @@ public class SignInActivity extends FragmentActivity {
         .build();
     	ImageLoader.getInstance().displayImage(prefs.getString(Constants.PREF_BR_LOGIN_SCREEN_BG_IMAGE, ""), imageBg, options);
     	
+    	ImageView imageLogo = (ImageView) findViewById(R.id.imageLogo);
+    	DisplayImageOptions optionsLogo = new DisplayImageOptions.Builder()
+        .cacheInMemory(true)
+        .cacheOnDisk(true)
+        .build();
+    	ImageLoader.getInstance().displayImage(prefs.getString(Constants.PREF_BR_LOGIN_SCREEN_LOGO, ""), imageLogo, optionsLogo);
+	    
 	    layoutFields = findViewById(R.id.loginFields);
 	    layoutProgress = findViewById(R.id.loginProgress);
 	    

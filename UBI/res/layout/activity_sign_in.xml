@@ -52,13 +52,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center|top"
-        android:orientation="vertical"
-        android:paddingTop="15dp" >
+        android:orientation="vertical" >
 
-        <ImageView
-            android:layout_width="wrap_content"
+        <com.modusgo.ubi.customviews.DynamicImageView
+            android:id="@+id/imageLogo"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
+            android:scaleType="centerCrop"
             android:src="@drawable/logo_login" />
 
         <com.modusgo.ubi.customviews.TypefacedEditText
