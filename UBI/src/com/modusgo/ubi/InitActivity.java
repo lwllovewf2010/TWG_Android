@@ -233,6 +233,8 @@ public class InitActivity extends FragmentActivity {
 							e.putString(Constants.PREF_BR_LOGIN_SCREEN_LOGO, "http://www.soccercoliseum.com/images/logos/sc-soccer-header-logo-759-243.gif");
 							e.putString(Constants.PREF_BR_BUTTONS_BG_COLOR, "#6DDCED");
 							e.putString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, "#222222");
+							e.putString(Constants.PREF_BR_TITLE_BAR_BG, "http://www.intercarne.de/gif/header_line01.gif");
+							e.putString(Constants.PREF_BR_TITLE_BAR_TEXT_COLOR, "#222222");
 						}
 						
 						if(responseJSON.has("info")){

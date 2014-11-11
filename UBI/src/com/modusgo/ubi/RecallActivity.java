@@ -41,7 +41,6 @@ public class RecallActivity extends MainActivity {
 		super.onCreate(savedInstanceState);
 		
 		setActionBarTitle("Recall Notice");
-		getActionBar().getCustomView().setBackgroundColor(Color.parseColor("#ef4136"));
 		
 		if(savedInstanceState!=null){
 			driverId = savedInstanceState.getLong(VehicleEntry._ID);
@@ -118,6 +117,13 @@ public class RecallActivity extends MainActivity {
 			}
 		});
 		
+	}
+	
+	@Override
+	protected void setActionBarAppearance() {
+		getActionBar().getCustomView().setBackgroundColor(Color.parseColor("#ef4136"));
+		tvActionBarTitle.setTextColor(Color.parseColor("#FFFFFF"));
+		super.setActionBarAppearance();
 	}
 
 	@Override

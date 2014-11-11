@@ -144,7 +144,6 @@ public class DriverSetupActivity extends MainActivity{
 	@Override
 	public void onResume() {
 		setNavigationDrawerItemSelected(MenuItems.DRIVERSETUP);
-		getActionBar().getCustomView().setBackgroundColor(Color.parseColor("#000000"));
 		driversAdapter.notifyDataSetChanged();
 		super.onResume();
 	}

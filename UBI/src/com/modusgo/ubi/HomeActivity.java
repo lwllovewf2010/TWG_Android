@@ -228,7 +228,6 @@ public class HomeActivity extends MainActivity{
 	@Override
 	public void onResume() {
 		setNavigationDrawerItemSelected(MenuItems.HOME);
-		getActionBar().getCustomView().setBackgroundColor(Color.parseColor("#000000"));
 		driversAdapter.notifyDataSetChanged();
 		super.onResume();
 	}

@@ -11,6 +11,9 @@ import android.app.ActionBar;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -31,12 +34,17 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+
 public class MainActivity extends FragmentActivity {
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private int mDrawerSelectedItem = -1;
     protected ImageButton btnUp;
+    protected TextView tvActionBarTitle;
     private ImageButton btnNavigationDrawer; 
     private String actionBarTitle = "";
     public Driver driver;
@@ -68,18 +76,23 @@ public class MainActivity extends FragmentActivity {
     ArrayList<MenuItems> menuItems;
     
     SharedPreferences prefs;
+	ActionBar actionBar;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_main);
 		checkForUpdates();
+        
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-		final ActionBar actionBar = getActionBar();
+		actionBar = getActionBar();
 	    actionBar.setDisplayShowHomeEnabled(false);
 	    actionBar.setDisplayShowTitleEnabled(true);
 	    actionBar.setDisplayShowCustomEnabled(true);
 	    actionBar.setCustomView(R.layout.action_bar);
+	    
+	    tvActionBarTitle = (TextView) actionBar.getCustomView().findViewById(R.id.tvTitle);
 	    
 	    btnNavigationDrawer = (ImageButton)actionBar.getCustomView().findViewById(R.id.btnMenu);
 	    btnNavigationDrawer.setOnClickListener(new OnClickListener() {
@@ -103,8 +116,6 @@ public class MainActivity extends FragmentActivity {
 	    
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        
-        prefs = PreferenceManager.getDefaultSharedPreferences(this);
         
         MenuItems[] menuItemsArray = MenuItems.values();
         menuItems = new ArrayList<MenuItems>();
@@ -224,10 +235,26 @@ public class MainActivity extends FragmentActivity {
     		btnNavigationDrawer.setVisibility(View.GONE);
     }
     
+    protected void setActionBarAppearance(){
+    	DisplayImageOptions options = new DisplayImageOptions.Builder()
+        .cacheInMemory(true)
+        .cacheOnDisk(true)
+        .build();
+    	ImageLoader.getInstance().loadImage(prefs.getString(Constants.PREF_BR_TITLE_BAR_BG, ""), options, new SimpleImageLoadingListener(){
+    		@Override
+    		public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+    			getActionBar().getCustomView().setBackgroundDrawable(new BitmapDrawable(getResources(), loadedImage));
+    			super.onLoadingComplete(imageUri, view, loadedImage);
+    		}
+    	});
+    	tvActionBarTitle.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_TITLE_BAR_TEXT_COLOR, "#FFFFFF")));
+    }
+    
     @Override
     protected void onResume() {
     	super.onResume();        
     	//overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    	setActionBarAppearance();
 		checkForCrashes();
     }
 
@@ -380,12 +407,12 @@ public class MainActivity extends FragmentActivity {
 	}
     
 	private void checkForCrashes() {
-		CrashManager.register(this, Constants.HOCKEY_APP_ID, new CrashManagerListener() {
-			@Override
-			public boolean shouldAutoUploadCrashes() {
-				return true;
-			}
-		});
+//		CrashManager.register(this, Constants.HOCKEY_APP_ID, new CrashManagerListener() {
+//			@Override
+//			public boolean shouldAutoUploadCrashes() {
+//				return true;
+//			}
+//		});
 	}
 
 	private void checkForUpdates() {

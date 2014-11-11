@@ -107,7 +107,6 @@ public class DriverActivity extends MainActivity{
 	@Override
 	protected void onResume() {
 		setNavigationDrawerItemsUnselected();
-		getActionBar().getCustomView().setBackgroundColor(Color.parseColor("#000000"));
 		super.onResume();
 	}
 	

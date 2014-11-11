@@ -18,7 +18,6 @@ public class EducationActivity extends MainActivity {
 		super.onCreate(savedInstanceState);
 		
 		setActionBarTitle("Driver Education");
-		getActionBar().getCustomView().setBackgroundColor(Color.parseColor("#00aeef"));
 		
 		if(savedInstanceState!=null){
 			infoStringResource = savedInstanceState.getInt(SAVED_STRING_RESOURCE);
@@ -36,6 +35,12 @@ public class EducationActivity extends MainActivity {
 	@Override
 	public void up() {
 		finish();
+	}
+	
+	@Override
+	protected void setActionBarAppearance() {
+		actionBar.getCustomView().setBackgroundColor(Color.parseColor("#00aeef"));
+		tvActionBarTitle.setTextColor(Color.parseColor("#FFFFFF"));
 	}
     
 	@Override
