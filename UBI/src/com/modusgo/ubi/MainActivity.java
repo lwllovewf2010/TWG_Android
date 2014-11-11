@@ -178,6 +178,16 @@ public class MainActivity extends FragmentActivity {
         // enable ActionBar app icon to behave as action to toggle nav drawer
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
+        
+        final ImageView menuLogo = (ImageView) actionBar.getCustomView().findViewById(R.id.imageLogo);
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+        .showImageOnLoading(R.drawable.logo_menu)
+        .showImageForEmptyUri(R.drawable.logo_menu)
+        .showImageOnFail(R.drawable.logo_menu)
+        .cacheInMemory(true)
+        .cacheOnDisk(true)
+        .build();
+    	ImageLoader.getInstance().displayImage(prefs.getString(Constants.PREF_BR_MENU_LOGO, ""), menuLogo, options);
 
         // ActionBarDrawerToggle ties together the the proper interactions
         // between the sliding drawer and the action bar app icon
@@ -190,7 +200,7 @@ public class MainActivity extends FragmentActivity {
                 ) {
             public void onDrawerClosed(View view) {
             	getActionBar().getCustomView().findViewById(R.id.tvTitle).setVisibility(View.VISIBLE);
-            	getActionBar().getCustomView().findViewById(R.id.imageLogo).setVisibility(View.GONE);
+            	menuLogo.setVisibility(View.GONE);
             	btnNavigationDrawer.setImageResource(R.drawable.ic_menu);
                 //getActionBar().setTitle(mTitle);
                 //invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
@@ -198,7 +208,7 @@ public class MainActivity extends FragmentActivity {
 
             public void onDrawerOpened(View drawerView) {
             	getActionBar().getCustomView().findViewById(R.id.tvTitle).setVisibility(View.GONE);
-            	getActionBar().getCustomView().findViewById(R.id.imageLogo).setVisibility(View.VISIBLE);
+            	menuLogo.setVisibility(View.VISIBLE);
             	btnNavigationDrawer.setImageResource(R.drawable.ic_menu_close);
                 //getActionBar().setTitle(mDrawerTitle);
                 //invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
