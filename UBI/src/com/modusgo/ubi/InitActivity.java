@@ -236,6 +236,7 @@ public class InitActivity extends FragmentActivity {
 							e.putString(Constants.PREF_BR_TITLE_BAR_BG, "http://www.intercarne.de/gif/header_line01.gif");
 							e.putString(Constants.PREF_BR_TITLE_BAR_TEXT_COLOR, "#222222");
 							e.putString(Constants.PREF_BR_MENU_LOGO, "http://design.ubuntu.com/wp-content/uploads/logo-ubuntu_su-orange-hex.png");
+							e.putString(Constants.PREF_BR_SWITCH_DRIVER_MENU_BUTTON_COLOR, "#FF0000");
 						}
 						
 						if(responseJSON.has("info")){

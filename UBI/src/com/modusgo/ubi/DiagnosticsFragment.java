@@ -79,6 +79,8 @@ public class DiagnosticsFragment extends Fragment{
 		
 		driver = ((DriverActivity)getActivity()).driver;
 		
+		rootView.findViewById(R.id.btnSwitchDriverMenu).setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_SWITCH_DRIVER_MENU_BUTTON_COLOR, "#f15b2a")));
+		
 		((TextView)rootView.findViewById(R.id.tvName)).setText(driver.name);
 		
 		ImageView imagePhoto = (ImageView)rootView.findViewById(R.id.imagePhoto);
