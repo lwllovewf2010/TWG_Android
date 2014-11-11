@@ -2759,6 +2759,7 @@ com.modusgo.ubi.R$id: int ifRoom
 com.modusgo.ubi.R$id: int image
 com.modusgo.ubi.R$id: int imageAlerts
 com.modusgo.ubi.R$id: int imageArrow
+com.modusgo.ubi.R$id: int imageBg
 com.modusgo.ubi.R$id: int imageDiagnostics
 com.modusgo.ubi.R$id: int imageExpandIndicator
 com.modusgo.ubi.R$id: int imageFuel
@@ -3544,6 +3545,8 @@ com.modusgo.ubi.customviews.CircularProgressBar: void setSubTitleTypeface(androi
 com.modusgo.ubi.customviews.CircularProgressBar: void setTitleTypeface(android.graphics.Typeface)
 com.modusgo.ubi.customviews.CircularProgressBar: java.lang.String getTitle()
 com.modusgo.ubi.customviews.CircularProgressBar: void setAlpha(float)
+com.modusgo.ubi.customviews.DynamicImageView
+com.modusgo.ubi.customviews.DynamicImageView: DynamicImageView(android.content.Context,android.util.AttributeSet)
 com.modusgo.ubi.customviews.ExpandableHeightGridView
 com.modusgo.ubi.customviews.ExpandableHeightGridView: ExpandableHeightGridView(android.content.Context)
 com.modusgo.ubi.customviews.ExpandableHeightGridView: ExpandableHeightGridView(android.content.Context,android.util.AttributeSet)
