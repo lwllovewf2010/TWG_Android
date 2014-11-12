@@ -198,13 +198,13 @@ public class ScoreFragment extends Fragment{
 			}
 			else if(grade.contains("B")){
 				thisMonthMessage+="Really Good Driving!\nKeep Going!";
-				tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_green));
-				tvScore.setBackgroundResource(R.drawable.circle_score_green);
+				tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_orange));
+				tvScore.setBackgroundResource(R.drawable.circle_score_orange);
 			}
 			else if(grade.contains("C")){
 				thisMonthMessage+="Average Driving\nYou can do better!";
-				tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_orange));
-				tvScore.setBackgroundResource(R.drawable.circle_score_orange);
+				tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_red));
+				tvScore.setBackgroundResource(R.drawable.circle_score_red);
 			}
 			else if(grade.contains("D")){
 				thisMonthMessage+="Off to a rough start.\nYou can do better!";
@@ -306,15 +306,15 @@ public class ScoreFragment extends Fragment{
 				b.setValue(yearStats[i].score);
 				b.setValueString(grade);
 				
-				if(grade.contains("A") || grade.contains("B")){
+				if(grade.contains("A")){
 					b.setColor(getActivity().getResources().getColor(R.color.ubi_green));
 					b.setValueColor(getActivity().getResources().getColor(R.color.ubi_green));						
 				}
-				else if(grade.contains("C")){
+				else if(grade.contains("B")){
 					b.setColor(getActivity().getResources().getColor(R.color.ubi_orange));
 					b.setValueColor(getActivity().getResources().getColor(R.color.ubi_orange));
 				}
-				else if(grade.contains("D") || grade.contains("E") || grade.contains("F")){
+				else if(grade.contains("C") || grade.contains("D") || grade.contains("E") || grade.contains("F")){
 					b.setColor(getActivity().getResources().getColor(R.color.ubi_red));
 					b.setValueColor(getActivity().getResources().getColor(R.color.ubi_red));
 				}

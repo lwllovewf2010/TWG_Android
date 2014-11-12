@@ -458,13 +458,13 @@ public class TripsFragment extends Fragment{
 			
 			String grade = t.grade;
 			holder.tvScore.setText(grade);
-			if(grade.contains("A") || grade.contains("B")){
+			if(grade.contains("A")){
 				holder.tvScore.setBackgroundResource(R.drawable.circle_score_green);
 			}
-			else if(grade.contains("C")){
+			else if(grade.contains("B")){
 				holder.tvScore.setBackgroundResource(R.drawable.circle_score_orange);
 			}
-			else if(grade.contains("D") || grade.contains("E") || grade.contains("F")){
+			else if(grade.contains("C") || grade.contains("D") || grade.contains("E") || grade.contains("F")){
 				holder.tvScore.setBackgroundResource(R.drawable.circle_score_red);
 			}
 			else{
