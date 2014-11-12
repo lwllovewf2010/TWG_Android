@@ -212,11 +212,12 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	    	ImageLoader.getInstance().displayImage(vehicle.photo, imagePhoto, options);
 	    }
 	    
-		if(vehicle.carFuelLevel>=0){
-			String fuelLestString = vehicle.carFuelLevel+"%";
-		    SpannableStringBuilder cs = new SpannableStringBuilder(fuelLestString);
-		    cs.setSpan(new SuperscriptSpan(), fuelLestString.length()-1, fuelLestString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-		    cs.setSpan(new RelativeSizeSpan(0.5f), fuelLestString.length()-1, fuelLestString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		if(vehicle.carFuelLevel>=0 && !TextUtils.isEmpty(vehicle.carFuelUnit)){
+			String fuelLeftString = vehicle.carFuelLevel+vehicle.carFuelUnit;
+			int fuelUnitLength = vehicle.carFuelUnit.length();
+		    SpannableStringBuilder cs = new SpannableStringBuilder(fuelLeftString);
+		    cs.setSpan(new SuperscriptSpan(), fuelLeftString.length()-fuelUnitLength, fuelLeftString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		    cs.setSpan(new RelativeSizeSpan(0.5f), fuelLeftString.length()-fuelUnitLength, fuelLeftString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		    tvFuel.setText(cs);
 		}
 		else{
@@ -460,8 +461,10 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 						tripJSON.optInt("harsh_events_count"), 
 						Utils.fixTimezoneZ(tripJSON.optString("start_time")), 
 						Utils.fixTimezoneZ(tripJSON.optString("end_time")), 
-						tripJSON.optDouble("mileage"),
-						tripJSON.optString("grade"));
+						tripJSON.optDouble("mileage"));
+				t.grade = tripJSON.optString("grade");
+				t.fuelLevel = tripJSON.optInt("fuel_left",-1);
+				t.fuelUnit = tripJSON.optString("fuel_unit");
 				trips.add(t);
 			}
 			

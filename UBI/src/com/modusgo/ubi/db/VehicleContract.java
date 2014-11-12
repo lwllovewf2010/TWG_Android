@@ -18,6 +18,7 @@ public class VehicleContract {
         public static final String COLUMN_NAME_CAR_MODEL = "model";
         public static final String COLUMN_NAME_CAR_YEAR = "year";
         public static final String COLUMN_NAME_CAR_FUEL = "fuel_level";
+        public static final String COLUMN_NAME_CAR_FUEL_UNIT = "fuel_unit";
         public static final String COLUMN_NAME_CAR_CHECKUP = "checkup";
         public static final String COLUMN_NAME_LATITUDE = "latitude";
         public static final String COLUMN_NAME_LONGITUDE = "longitude";

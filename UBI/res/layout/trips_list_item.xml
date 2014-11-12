@@ -123,6 +123,7 @@
             android:id="@+id/imageFuel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
             android:src="@drawable/ic_fuel_black" />
 
         <com.modusgo.ubi.customviews.TypefacedTextView
@@ -130,14 +131,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/imageFuel"
-            android:layout_marginLeft="2dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="6dp"
             android:includeFontPadding="false"
+            android:gravity="left"
             android:text="2.3"
             android:textColor="#3c454f"
             android:textSize="18sp"
             ubi:typeface="arialbd.ttf" />
 
         <com.modusgo.ubi.customviews.TypefacedTextView
+            android:id="@+id/tvFuelUnit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/imageFuel"

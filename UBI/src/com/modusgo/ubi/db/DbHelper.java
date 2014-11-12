@@ -57,6 +57,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	    VehicleEntry.COLUMN_NAME_CAR_MODEL + TEXT_TYPE + COMMA_SEP +
 	    VehicleEntry.COLUMN_NAME_CAR_YEAR + TEXT_TYPE + COMMA_SEP +
 	    VehicleEntry.COLUMN_NAME_CAR_FUEL + INT_TYPE + COMMA_SEP +
+	    VehicleEntry.COLUMN_NAME_CAR_FUEL_UNIT + TEXT_TYPE + COMMA_SEP +
 	    VehicleEntry.COLUMN_NAME_CAR_CHECKUP + INT_TYPE + COMMA_SEP +
 	    VehicleEntry.COLUMN_NAME_LATITUDE + FLOAT_TYPE + COMMA_SEP +
 	    VehicleEntry.COLUMN_NAME_LONGITUDE + FLOAT_TYPE + COMMA_SEP +
@@ -84,7 +85,9 @@ public class DbHelper extends SQLiteOpenHelper {
 		    TripEntry.COLUMN_NAME_DISTANCE + FLOAT_TYPE + COMMA_SEP +
 		    TripEntry.COLUMN_NAME_AVG_SPEED + FLOAT_TYPE + COMMA_SEP +
 		    TripEntry.COLUMN_NAME_MAX_SPEED + FLOAT_TYPE + COMMA_SEP +
-		    TripEntry.COLUMN_NAME_GRADE + TEXT_TYPE + " ); ",
+		    TripEntry.COLUMN_NAME_GRADE + TEXT_TYPE + COMMA_SEP +
+		    TripEntry.COLUMN_NAME_FUEL + INT_TYPE + COMMA_SEP +
+		    TripEntry.COLUMN_NAME_FUEL_UNIT + TEXT_TYPE + " ); ",
 	
 		    "CREATE TABLE " + RouteEntry.TABLE_NAME + " (" +
 		    RouteEntry._ID + " INTEGER PRIMARY KEY," +
@@ -212,7 +215,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	"DROP TABLE IF EXISTS " + DDEventEntry.TABLE_NAME};
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 21;
+	public static final int DATABASE_VERSION = 23;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;
@@ -324,6 +327,7 @@ public class DbHelper extends SQLiteOpenHelper {
 				VehicleEntry.COLUMN_NAME_CAR_YEAR,
 				VehicleEntry.COLUMN_NAME_CAR_VIN,
 				VehicleEntry.COLUMN_NAME_CAR_FUEL,
+				VehicleEntry.COLUMN_NAME_CAR_FUEL_UNIT,
 				VehicleEntry.COLUMN_NAME_CAR_CHECKUP,
 				VehicleEntry.COLUMN_NAME_LAST_TRIP_DATE,
 				VehicleEntry.COLUMN_NAME_LAST_TRIP_ID,
@@ -355,23 +359,24 @@ public class DbHelper extends SQLiteOpenHelper {
 			v.carYear = c.getString(6);
 			v.carVIN = c.getString(7);
 			v.carFuelLevel = c.getInt(8);
-			v.carCheckup = c.getInt(9) == 1;
-			v.lastTripDate = c.getString(10);
-			v.lastTripId = c.getLong(11);
-			v.alerts = c.getInt(12);
-			v.latitude = c.getDouble(13);
-			v.longitude = c.getDouble(14);
-			v.address = c.getString(15);
-			v.grade = c.getString(16);
-			v.score = c.getInt(17);
-			v.totalTripsCount = c.getInt(18);
-			v.totalDrivingTime = c.getInt(19);
-			v.totalDistance = c.getDouble(20);
-			v.totalBraking = c.getInt(21);
-			v.totalAcceleration = c.getInt(22);
-			v.totalSpeeding = c.getInt(23);
-			v.totalSpeedingDistance = c.getDouble(24);
-			v.odometer = c.getInt(25);
+			v.carFuelUnit = c.getString(9);
+			v.carCheckup = c.getInt(10) == 1;
+			v.lastTripDate = c.getString(11);
+			v.lastTripId = c.getLong(12);
+			v.alerts = c.getInt(13);
+			v.latitude = c.getDouble(14);
+			v.longitude = c.getDouble(15);
+			v.address = c.getString(16);
+			v.grade = c.getString(17);
+			v.score = c.getInt(18);
+			v.totalTripsCount = c.getInt(19);
+			v.totalDrivingTime = c.getInt(20);
+			v.totalDistance = c.getDouble(21);
+			v.totalBraking = c.getInt(22);
+			v.totalAcceleration = c.getInt(23);
+			v.totalSpeeding = c.getInt(24);
+			v.totalSpeedingDistance = c.getDouble(25);
+			v.odometer = c.getInt(26);
 				
 		}
 		c.close();
@@ -399,6 +404,7 @@ public class DbHelper extends SQLiteOpenHelper {
 					+ VehicleEntry.COLUMN_NAME_CAR_MODEL +","
 					+ VehicleEntry.COLUMN_NAME_CAR_YEAR +","
 					+ VehicleEntry.COLUMN_NAME_CAR_FUEL +","
+					+ VehicleEntry.COLUMN_NAME_CAR_FUEL_UNIT +","
 					+ VehicleEntry.COLUMN_NAME_CAR_CHECKUP +","
 					+ VehicleEntry.COLUMN_NAME_LATITUDE +","
 					+ VehicleEntry.COLUMN_NAME_LONGITUDE +","
@@ -416,7 +422,7 @@ public class DbHelper extends SQLiteOpenHelper {
 					+ VehicleEntry.COLUMN_NAME_TOTAL_SPEEDING_DISTANCE +","
 					+ VehicleEntry.COLUMN_NAME_ALERTS +","
 					+ VehicleEntry.COLUMN_NAME_ODOMETER +""
-					+ ") VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
+					+ ") VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
 			
 			SQLiteStatement statement = database.compileStatement(sql);
 		    database.beginTransaction();
@@ -436,23 +442,24 @@ public class DbHelper extends SQLiteOpenHelper {
 		    	statement.bindString(7, vehicle.carModel);
 		    	statement.bindString(8, vehicle.carYear);
 		    	statement.bindLong(9, vehicle.carFuelLevel);
-		    	statement.bindLong(10, vehicle.carCheckup ? 1 : 0);
-		    	statement.bindDouble(11, vehicle.latitude);
-		    	statement.bindDouble(12, vehicle.longitude);
-		    	statement.bindString(13, vehicle.address);
-		    	statement.bindString(14, vehicle.lastTripDate);
-		    	statement.bindLong(15, vehicle.lastTripId);
-		    	statement.bindLong(16, vehicle.score);
-		    	statement.bindString(17, vehicle.grade);
-		    	statement.bindLong(18, vehicle.totalTripsCount);
-		    	statement.bindLong(19, vehicle.totalDrivingTime);
-		    	statement.bindDouble(20, vehicle.totalDistance);
-		    	statement.bindLong(21, vehicle.totalBraking);
-		    	statement.bindLong(22, vehicle.totalAcceleration);
-		    	statement.bindLong(23, vehicle.totalSpeeding);
-		    	statement.bindDouble(24, vehicle.totalSpeedingDistance);
-		    	statement.bindLong(25, vehicle.alerts);
-		    	statement.bindLong(26, vehicle.odometer);
+		    	statement.bindString(10, vehicle.carFuelUnit);
+		    	statement.bindLong(11, vehicle.carCheckup ? 1 : 0);
+		    	statement.bindDouble(12, vehicle.latitude);
+		    	statement.bindDouble(13, vehicle.longitude);
+		    	statement.bindString(14, vehicle.address);
+		    	statement.bindString(15, vehicle.lastTripDate);
+		    	statement.bindLong(16, vehicle.lastTripId);
+		    	statement.bindLong(17, vehicle.score);
+		    	statement.bindString(18, vehicle.grade);
+		    	statement.bindLong(19, vehicle.totalTripsCount);
+		    	statement.bindLong(20, vehicle.totalDrivingTime);
+		    	statement.bindDouble(21, vehicle.totalDistance);
+		    	statement.bindLong(22, vehicle.totalBraking);
+		    	statement.bindLong(23, vehicle.totalAcceleration);
+		    	statement.bindLong(24, vehicle.totalSpeeding);
+		    	statement.bindDouble(25, vehicle.totalSpeedingDistance);
+		    	statement.bindLong(26, vehicle.alerts);
+		    	statement.bindLong(27, vehicle.odometer);
 		    	statement.execute();
 		    	
 			}
@@ -498,10 +505,12 @@ public class DbHelper extends SQLiteOpenHelper {
 					+ TripEntry.COLUMN_NAME_DISTANCE +","
 					+ TripEntry.COLUMN_NAME_AVG_SPEED +","
 					+ TripEntry.COLUMN_NAME_MAX_SPEED +","
-					+ TripEntry.COLUMN_NAME_GRADE +""
+					+ TripEntry.COLUMN_NAME_GRADE +","
+					+ TripEntry.COLUMN_NAME_FUEL +","
+					+ TripEntry.COLUMN_NAME_FUEL_UNIT +""
 					+ ") VALUES (?,?,?,?,?,?," +
 					"(SELECT IFNULL(NULLIF((SELECT "+TripEntry.COLUMN_NAME_AVG_SPEED+" FROM trips WHERE "+TripEntry._ID+" IS ?),0),?))," +
-					"(SELECT IFNULL(NULLIF((SELECT "+TripEntry.COLUMN_NAME_MAX_SPEED+" FROM trips WHERE "+TripEntry._ID+" IS ?),0),?)),?);";
+					"(SELECT IFNULL(NULLIF((SELECT "+TripEntry.COLUMN_NAME_MAX_SPEED+" FROM trips WHERE "+TripEntry._ID+" IS ?),0),?)),?,?,?);";
 			
 			SQLiteStatement statement = database.compileStatement(sql);
 		    database.beginTransaction();
@@ -521,6 +530,8 @@ public class DbHelper extends SQLiteOpenHelper {
 		    	statement.bindDouble(9, trip.id);
 		    	statement.bindDouble(10, trip.maxSpeed);
 		    	statement.bindString(11, trip.grade);
+		    	statement.bindLong(12, trip.fuelLevel);
+		    	statement.bindString(13, trip.fuelUnit);
 		    	statement.execute();
 			}
 		    

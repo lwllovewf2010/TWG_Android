@@ -25,6 +25,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -169,7 +170,9 @@ public class TripsFragment extends Fragment{
 				TripEntry.COLUMN_NAME_START_TIME,
 				TripEntry.COLUMN_NAME_END_TIME,
 				TripEntry.COLUMN_NAME_DISTANCE,
-				TripEntry.COLUMN_NAME_GRADE},
+				TripEntry.COLUMN_NAME_GRADE,
+				TripEntry.COLUMN_NAME_FUEL,
+				TripEntry.COLUMN_NAME_FUEL_UNIT},
 				TripEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id + " AND " +
 				"datetime(" + TripEntry.COLUMN_NAME_START_TIME + ")>=datetime('"+ Utils.fixTimeZoneColon(sdf.format(startDate)) + "') AND " +
 				"datetime(" + TripEntry.COLUMN_NAME_START_TIME + ")<=datetime('"+ Utils.fixTimeZoneColon(sdf.format(endDate)) + "')", null, null, null, "datetime("+TripEntry.COLUMN_NAME_START_TIME+") DESC");
@@ -179,13 +182,16 @@ public class TripsFragment extends Fragment{
 		ArrayList<Trip> trips = new ArrayList<Trip>();
 		if(c.moveToFirst()){
 			while(!c.isAfterLast()){
-				trips.add(new Trip(
+				Trip t = new Trip(
 						c.getLong(0), 
 						c.getInt(1), 
 						c.getString(2), 
 						c.getString(3), 
 						c.getDouble(4),
-						c.getString(5)));
+						c.getString(5));
+				t.fuelLevel = c.getInt(6);
+				t.fuelUnit = c.getString(7);
+				trips.add(t);
 				c.moveToNext();
 			}
 		}
@@ -308,6 +314,8 @@ public class TripsFragment extends Fragment{
 						Utils.fixTimezoneZ(tripJSON.optString("end_time")), 
 						tripJSON.optDouble("mileage"));
 				t.grade = tripJSON.optString("grade");
+				t.fuelLevel = tripJSON.optInt("fuel_left",-1);
+				t.fuelUnit = tripJSON.optString("fuel_unit");
 				trips.add(t);
 			}
 			
@@ -337,6 +345,7 @@ public class TripsFragment extends Fragment{
 		TextView tvEndTime;
 		TextView tvDistance;
 		TextView tvFuel;
+		TextView tvFuelUnit;
 	}
 	
 	class TripsAdapter extends BaseAdapter{
@@ -430,6 +439,7 @@ public class TripsFragment extends Fragment{
 				holder.tvEndTime = (TextView) view.findViewById(R.id.tvEndTime);
 				holder.tvScore = (TextView) view.findViewById(R.id.tvScore);
 				holder.tvFuel = (TextView) view.findViewById(R.id.tvFuel);
+				holder.tvFuelUnit = (TextView) view.findViewById(R.id.tvFuelUnit);
 				view.setTag(holder);
 			}
 			else{
@@ -460,6 +470,16 @@ public class TripsFragment extends Fragment{
 			else{
 				holder.tvScore.setBackgroundResource(R.drawable.circle_score_gray);
 				holder.tvScore.setText("N/A");
+			}
+			
+			if(t.fuelLevel>=0 && !TextUtils.isEmpty(t.fuelUnit)){
+				holder.tvFuel.setText(""+t.fuelLevel);
+				holder.tvFuelUnit.setText(t.fuelUnit);
+				holder.tvFuelUnit.setVisibility(View.VISIBLE);
+			}
+			else{
+				holder.tvFuel.setText("N/A");
+				holder.tvFuelUnit.setVisibility(View.GONE);		
 			}
 			
 			holder.tvStartTime.setText(t.getStartDateString());

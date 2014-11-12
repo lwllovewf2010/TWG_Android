@@ -24,6 +24,8 @@ public class Trip extends ListItem implements Serializable{
 	ArrayList<ArrayList<LatLng>> speedingRoute;
 	ArrayList<Event> events;
 	public String grade;
+	public int fuelLevel;
+	public String fuelUnit="";
 	
 	public enum EventType {START, STOP, HARSH_BRAKING, HARSH_ACCELERATION, SPEEDING, PHONE_USAGE, APP_USAGE};
 	
