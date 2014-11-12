@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -24,6 +25,7 @@ import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 public class DriversLocationsActivity extends MainActivity {
@@ -128,7 +130,9 @@ public class DriversLocationsActivity extends MainActivity {
 	    	final LatLng location = new LatLng(drivers.get(i).latitude, drivers.get(i).longitude);
 	    	final String address = drivers.get(i).address;
 	    	builder.include(location);
-	    	ImageLoader.getInstance().loadImage(drivers.get(i).markerIcon, options, new ImageLoadingListener() {
+	    	int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30, getResources().getDisplayMetrics());
+	    	ImageSize targetSize = new ImageSize(px, px);
+	    	ImageLoader.getInstance().loadImage(drivers.get(i).photo, targetSize, options, new ImageLoadingListener() {
 				
 				@Override
 				public void onLoadingStarted(String arg0, View arg1) {					
