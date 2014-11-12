@@ -96,17 +96,10 @@ public class LimitsFragment extends Fragment {
 		llProgress = (LinearLayout)rootView.findViewById(R.id.llProgress);
 		content = (LinearLayout)rootView.findViewById(R.id.llContent);
 		
-		limits = getLimitsFromDB();
-		if(limits.size()>0)
-			updateLimits();
-		else
-			new GetLimitsTask(getActivity()).execute("vehicles/"+driver.id+"/limits.json");
-		
 		return rootView;
 	}
 	
 	private void updateLimits(){
-		
 		content.removeAllViews();
 		
 		for (final Limit limit : limits) {
@@ -271,7 +264,7 @@ public class LimitsFragment extends Fragment {
 				TextView tvChildTitle = (TextView) childView.findViewById(R.id.tvTitle);
 				tvChildTitle.setText(child.text[0]);
 				
-				SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss", Locale.US);
+				SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.US);
 				final Calendar startCalendar = Calendar.getInstance();
 				final Calendar endCalendar = Calendar.getInstance();
 				try {
@@ -303,7 +296,7 @@ public class LimitsFragment extends Fragment {
 										Utils.enableDisableViewGroup(childLayout, false);
 										requestParams.add(new BasicNameValuePair("vehicle_id",""+driver.id));
 										requestParams.add(new BasicNameValuePair("key",limit.key));
-										requestParams.add(new BasicNameValuePair("value_from",getTime24String(hourOfDay, minutes)));
+										requestParams.add(new BasicNameValuePair("value_from",getTime12String(hourOfDay, minutes)));
 										requestParams.add(new BasicNameValuePair("active",btnToggle.isChecked() ? "true" : "false"));
 										
 										tvValue.setText(getTime12String(hourOfDay, minutes));
@@ -328,7 +321,7 @@ public class LimitsFragment extends Fragment {
 
 										startCalendar.set(2014, 0, 1, hourOfDay, minutes);
 										tvValue.setText(getTime12String(hourOfDay, minutes));
-										((LimitsTimePeriodChild)child).startTime = getTime24String(hourOfDay, minutes);
+										((LimitsTimePeriodChild)child).startTime = getTime12String(hourOfDay, minutes);
 											
 										super.onSuccess(responseJSON);
 									}
@@ -368,7 +361,7 @@ public class LimitsFragment extends Fragment {
 										Utils.enableDisableViewGroup(childLayout, false);
 										requestParams.add(new BasicNameValuePair("vehicle_id",""+driver.id));
 										requestParams.add(new BasicNameValuePair("key",limit.key));
-										requestParams.add(new BasicNameValuePair("value_to",getTime24String(hourOfDay, minutes)));
+										requestParams.add(new BasicNameValuePair("value_to",getTime12String(hourOfDay, minutes)));
 										requestParams.add(new BasicNameValuePair("active",btnToggle.isChecked() ? "true" : "false"));
 										
 										tvValue2.setText(getTime12String(hourOfDay, minutes));
@@ -446,10 +439,10 @@ public class LimitsFragment extends Fragment {
 				childLayout.addView(childView);
 			}
 			
-			btnToggle.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			btnToggle.setOnClickListener(new OnClickListener() {
+				
 				@Override
-				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-					
+				public void onClick(View v) {
 					new SetLimitsTask(getActivity()){
 						
 						@Override
@@ -505,10 +498,13 @@ public class LimitsFragment extends Fragment {
 				}
 			});
 			
-			
 			((TextView)groupView.findViewById(R.id.tvTitle)).setText(limit.title);
+			btnToggle.refreshDrawableState();
+			btnToggle.invalidate();
 			
 			content.addView(groupView);
+			content.invalidate();
+			
 		}
 	}
 	
@@ -578,6 +574,15 @@ public class LimitsFragment extends Fragment {
 	
 	@Override
 	public void onResume() {
+		limits = getLimitsFromDB();
+		if(limits.size()>0){
+			updateLimits();
+			content.invalidate();
+		}
+		else{
+			new GetLimitsTask(getActivity()).execute("vehicles/"+driver.id+"/limits.json");
+		}
+		
 		super.onResume();
 	}
 	
@@ -667,7 +672,6 @@ public class LimitsFragment extends Fragment {
 		
 		@Override
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
-			
 			if(responseJSON.has("limits")){
 				limits.clear();
 				JSONArray limitsJSON = responseJSON.getJSONArray("limits");
