@@ -36,6 +36,7 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 public class MainActivity extends FragmentActivity {
@@ -179,6 +180,11 @@ public class MainActivity extends FragmentActivity {
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
         
+        if(!ImageLoader.getInstance().isInited()){
+	        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext()).build();
+			ImageLoader.getInstance().init(config);
+        }
+        
         final ImageView menuLogo = (ImageView) actionBar.getCustomView().findViewById(R.id.imageLogo);
         DisplayImageOptions options = new DisplayImageOptions.Builder()
         .showImageOnLoading(R.drawable.logo_menu)
@@ -187,8 +193,8 @@ public class MainActivity extends FragmentActivity {
         .cacheInMemory(true)
         .cacheOnDisk(true)
         .build();
-    	ImageLoader.getInstance().displayImage(prefs.getString(Constants.PREF_BR_MENU_LOGO, ""), menuLogo, options);
 
+    	ImageLoader.getInstance().displayImage(prefs.getString(Constants.PREF_BR_MENU_LOGO, ""), menuLogo, options);
         // ActionBarDrawerToggle ties together the the proper interactions
         // between the sliding drawer and the action bar app icon
         mDrawerToggle = new ActionBarDrawerToggle(

@@ -30,7 +30,6 @@ import android.widget.TextView;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.utils.RequestGet;
 import com.modusgo.ubi.utils.Utils;
-import com.nostra13.universalimageloader.cache.memory.impl.LruMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -58,13 +57,10 @@ public class InitActivity extends FragmentActivity {
 		setContentView(R.layout.activity_init);
 	    getActionBar().hide();
 	    
-	    ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
-        .memoryCache(new LruMemoryCache(2 * 1024 * 1024))
-        .memoryCacheSize(2 * 1024 * 1024)
-        .diskCacheSize(50 * 1024 * 1024)
-        .diskCacheFileCount(100)
-        .build();
-		ImageLoader.getInstance().init(config);
+	    if(!ImageLoader.getInstance().isInited()){
+	        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext()).build();
+			ImageLoader.getInstance().init(config);
+	    }
 	    
 	    prefs = PreferenceManager.getDefaultSharedPreferences(InitActivity.this);
 	    clientId = prefs.getString(Constants.PREF_CLIENT_ID, "");
