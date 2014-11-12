@@ -178,6 +178,7 @@ public class ScoreFragment extends Fragment{
 		dbHelper.close();
 
 		updateGraph();
+		updateScoreLabels();
 	}
 	
 	private void updateScoreLabels(){
