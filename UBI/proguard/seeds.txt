@@ -2892,6 +2892,7 @@ com.modusgo.ubi.R$id: int tvEstTotalCost
 com.modusgo.ubi.R$id: int tvEvent
 com.modusgo.ubi.R$id: int tvFirstName
 com.modusgo.ubi.R$id: int tvFuel
+com.modusgo.ubi.R$id: int tvFuelUnit
 com.modusgo.ubi.R$id: int tvImportance
 com.modusgo.ubi.R$id: int tvInfo
 com.modusgo.ubi.R$id: int tvInstructions
