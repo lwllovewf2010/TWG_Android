@@ -44,8 +44,7 @@ public class CompareActivity extends MainActivity{
     LinearLayout llProgress;
 	View previousTab;
 	
-	ArrayList<Driver> drivers;
-	DriversHelper dHelper;
+	ArrayList<Vehicle> vehicles;
 	
 	DriversAdapter driverTripsAdapter;
 	DriversAdapter driverTimeAdapter;
@@ -62,8 +61,8 @@ public class CompareActivity extends MainActivity{
 		
 		setActionBarTitle("COMPARE");
 		
-		dHelper = DriversHelper.getInstance();
-		drivers = dHelper.getDrivers();
+//		vehicles = dHelper.getDrivers();
+		vehicles = new ArrayList<Vehicle>();
 		
 		//ListView lvDrivers = (ListView)rootView.findViewById(R.id.listViewDrivers);
 		Spinner spinnerTimePerion = (Spinner)findViewById(R.id.spinnerTimePeriod);
@@ -202,7 +201,7 @@ public class CompareActivity extends MainActivity{
 		}
 		
 		public void updateMaxValue(){
-			for (Driver driver : drivers) {
+			for (Vehicle driver : vehicles) {
 		    	switch (param) {
 				case TRIPS_COUNT:
 					if(driver.totalTripsCount>maxProgress)
@@ -232,12 +231,12 @@ public class CompareActivity extends MainActivity{
 		
 		@Override
 		public int getCount() {
-		    return drivers.size();
+		    return vehicles.size();
 		}
 
 		@Override
 		public Object getItem(int position) {
-		    return drivers.get(position);
+		    return vehicles.get(position);
 		}
 
 		@Override
@@ -252,7 +251,7 @@ public class CompareActivity extends MainActivity{
 		      view = lInflater.inflate(R.layout.compare_item, parent, false);
 		    }
 
-		    Driver d = getDriver(position);
+		    Vehicle d = getDriver(position);
 
 		    ((TextView) view.findViewById(R.id.tvName)).setText(d.name);
 		    ImageView imagePhoto = (ImageView)view.findViewById(R.id.imagePhoto);
@@ -296,8 +295,8 @@ public class CompareActivity extends MainActivity{
 		    return view;
 		}
 		
-		Driver getDriver(int position) {
-			return ((Driver) getItem(position));
+		Vehicle getDriver(int position) {
+			return ((Vehicle) getItem(position));
 		}
 		
 	}
@@ -339,18 +338,18 @@ public class CompareActivity extends MainActivity{
 
 			JSONArray compareJSON = responseJSON.getJSONArray("compare");
 			
-			for (int i = 0; i < compareJSON.length(); i++) {
-				JSONObject driverJSON = compareJSON.getJSONObject(i);
-				Driver d = dHelper.getDriverById(driverJSON.getLong("id"));
-				d.totalDistance = driverJSON.getDouble("mileage");
-				d.totalTripsCount = driverJSON.getInt("number_of_trips");
-				d.score = driverJSON.getInt("drive_score");
-				d.totalDrivingTime = driverJSON.getInt("driving_time");
-				
-				dHelper.setDriverById(d.id, d);
-			}
-			
-			drivers = dHelper.getDrivers();
+//			for (int i = 0; i < compareJSON.length(); i++) {
+//				JSONObject driverJSON = compareJSON.getJSONObject(i);
+//				Vehicle d = dHelper.getDriverById(driverJSON.getLong("id"));
+//				d.totalDistance = driverJSON.getDouble("mileage");
+//				d.totalTripsCount = driverJSON.getInt("number_of_trips");
+//				d.score = driverJSON.getInt("drive_score");
+//				d.totalDrivingTime = driverJSON.getInt("driving_time");
+//				
+//				dHelper.setDriverById(d.id, d);
+//			}
+//			
+//			vehicles = dHelper.getDrivers();
 			
 			driverScoreAdapter.notifyDataSetChanged();
 			driverTripsAdapter.notifyDataSetChanged();

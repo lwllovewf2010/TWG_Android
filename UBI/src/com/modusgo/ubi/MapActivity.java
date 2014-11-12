@@ -36,7 +36,7 @@ public class MapActivity extends MainActivity {
 		}
 
 		DbHelper dHelper = DbHelper.getInstance(this);
-		driver = dHelper.getDriverShort(driverId);
+		vehicle = dHelper.getVehicleShort(driverId);
 		dHelper.close();
 		
 		// Gets the MapView from the XML layout and creates it
@@ -60,8 +60,8 @@ public class MapActivity extends MainActivity {
 	}
 	
 	private void addDriverToMap(){
-		LatLng location = new LatLng(driver.latitude, driver.longitude);
-		map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_car)).title(driver.address));
+		LatLng location = new LatLng(vehicle.latitude, vehicle.longitude);
+		map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_car)).title(vehicle.address));
 		CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(location, 14);
         map.animateCamera(cameraUpdate);
 	}

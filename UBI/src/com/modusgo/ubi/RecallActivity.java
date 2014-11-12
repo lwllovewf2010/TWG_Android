@@ -52,7 +52,7 @@ public class RecallActivity extends MainActivity {
 		}
 
 		DbHelper dHelper = DbHelper.getInstance(this);
-		driver = dHelper.getDriverShort(driverId);
+		vehicle = dHelper.getVehicleShort(driverId);
 		dHelper.close();
 
 		tvCode = (TextView) findViewById(R.id.tvCode);

@@ -36,7 +36,6 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.google.android.gms.internal.bh;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -61,7 +60,7 @@ public class SettingsEditFragment extends Fragment {
 	private boolean spinnerTimezoneChanged = false;
 	private boolean spinnerCarChanged = false;
 	
-	ArrayList<Driver> vehicles;
+	ArrayList<Vehicle> vehicles;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -135,17 +134,17 @@ public class SettingsEditFragment extends Fragment {
 		});
 		
 		DbHelper dbHelper = DbHelper.getInstance(getActivity());
-		vehicles = dbHelper.getDriversShort();
+		vehicles = dbHelper.getVehiclesShort();
 		dbHelper.close();
 		
 		ArrayList<String> cars = new ArrayList<String>();
 		long vehicleId = prefs.getLong(Constants.PREF_VEHICLE_ID, -1);
 		String currentVehicle = "";
 		
-		for (Driver driver : vehicles) {
-			cars.add(driver.getCarFullName());
-			if(driver.id==vehicleId)
-				currentVehicle = driver.getCarFullName();
+		for (Vehicle vehicle : vehicles) {
+			cars.add(vehicle.getCarFullName());
+			if(vehicle.id==vehicleId)
+				currentVehicle = vehicle.getCarFullName();
 		}
 		
 		TypefacedArrayAdapter<String> adapterCars = new TypefacedArrayAdapter<String>(getActivity(),
@@ -379,9 +378,9 @@ public class SettingsEditFragment extends Fragment {
 		        	requestParams.add(new BasicNameValuePair(Constants.PREF_TIMEZONE, tz));
 		        }
 		        if(spinnerCarChanged){
-		        	for (Driver d : vehicles) {
-		        		if(d.getCarFullName().equals(spinnerCar.getSelectedItem())){
-		        			requestParams.add(new BasicNameValuePair(Constants.PREF_VEHICLE_ID, ""+d.id));
+		        	for (Vehicle v : vehicles) {
+		        		if(v.getCarFullName().equals(spinnerCar.getSelectedItem())){
+		        			requestParams.add(new BasicNameValuePair(Constants.PREF_VEHICLE_ID, ""+v.id));
 		        			break;
 		        		}
 					}
@@ -417,9 +416,9 @@ public class SettingsEditFragment extends Fragment {
 			e.commit();
 			
 			DbHelper dbHelper = DbHelper.getInstance(getActivity());
-			Driver d = dbHelper.getDriver(vehicleId);
+			Vehicle d = dbHelper.getVehicle(vehicleId);
 			d.photo = photo;
-			dbHelper.saveDriver(d);
+			dbHelper.saveVehicle(d);
 			dbHelper.close();
 
 			btnUpdate.setVisibility(View.INVISIBLE);

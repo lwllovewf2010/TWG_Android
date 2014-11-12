@@ -44,7 +44,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class TripsFragment extends Fragment{
 	
-	Driver driver;
+	Vehicle vehicle;
 	SharedPreferences prefs;
 	
 	ArrayList<ListItem> tripListItems;
@@ -63,16 +63,16 @@ public class TripsFragment extends Fragment{
 		
 		((MainActivity)getActivity()).setActionBarTitle("TRIPS");
 
-		driver = ((DriverActivity)getActivity()).driver;
+		vehicle = ((DriverActivity)getActivity()).vehicle;
 		tripListItems = new ArrayList<ListItem>();
 		
 		prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		rootView.findViewById(R.id.btnSwitchDriverMenu).setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_SWITCH_DRIVER_MENU_BUTTON_COLOR, "#f15b2a")));
 		
-		((TextView)rootView.findViewById(R.id.tvName)).setText(driver.name);
+		((TextView)rootView.findViewById(R.id.tvName)).setText(vehicle.name);
 		
 		ImageView imagePhoto = (ImageView)rootView.findViewById(R.id.imagePhoto);
-	    if(driver.photo == null || driver.photo.equals(""))
+	    if(vehicle.photo == null || vehicle.photo.equals(""))
 	    	imagePhoto.setImageResource(R.drawable.person_placeholder);
 	    else{
 	    	DisplayImageOptions options = new DisplayImageOptions.Builder()
@@ -83,7 +83,7 @@ public class TripsFragment extends Fragment{
 	        .cacheOnDisk(true)
 	        .build();
 	    	
-	    	ImageLoader.getInstance().displayImage(driver.photo, imagePhoto, options);
+	    	ImageLoader.getInstance().displayImage(vehicle.photo, imagePhoto, options);
 	    }
 		
 		rootView.findViewById(R.id.btnSwitchDriverMenu).setOnClickListener(new OnClickListener() {
@@ -170,7 +170,7 @@ public class TripsFragment extends Fragment{
 				TripEntry.COLUMN_NAME_END_TIME,
 				TripEntry.COLUMN_NAME_DISTANCE,
 				TripEntry.COLUMN_NAME_GRADE},
-				TripEntry.COLUMN_NAME_DRIVER_ID + " = " + driver.id + " AND " +
+				TripEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id + " AND " +
 				"datetime(" + TripEntry.COLUMN_NAME_START_TIME + ")>=datetime('"+ Utils.fixTimeZoneColon(sdf.format(startDate)) + "') AND " +
 				"datetime(" + TripEntry.COLUMN_NAME_START_TIME + ")<=datetime('"+ Utils.fixTimeZoneColon(sdf.format(endDate)) + "')", null, null, null, "datetime("+TripEntry.COLUMN_NAME_START_TIME+") DESC");
 
@@ -312,7 +312,7 @@ public class TripsFragment extends Fragment{
 			}
 			
 			DbHelper dbHelper = DbHelper.getInstance(getActivity());
-			dbHelper.saveTrips(driver.id, trips);
+			dbHelper.saveTrips(vehicle.id, trips);
 			dbHelper.close();
 
 			cStart.setTimeInMillis(System.currentTimeMillis());
@@ -473,7 +473,7 @@ public class TripsFragment extends Fragment{
 				@Override
 				public void onClick(View v) {
 					Intent intent = new Intent(getActivity(), TripActivity.class);
-					intent.putExtra(VehicleEntry._ID, driver.id);
+					intent.putExtra(VehicleEntry._ID, vehicle.id);
 					intent.putExtra(TripActivity.EXTRA_TRIP_ID, t.id);
 					startActivity(intent);
 				}

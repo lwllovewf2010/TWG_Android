@@ -2,8 +2,6 @@ package com.modusgo.ubi;
 
 import java.util.Locale;
 
-import com.modusgo.ubi.utils.Utils;
-
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -15,12 +13,11 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.modusgo.ubi.utils.Utils;
+
 public class DiagnosticDetailActivity extends MainActivity {
 	
 	public static final String EXTRA_DTC = "diagnosticsTroubleCodeInfo";
-	
-	DriversHelper dHelper;
-	int driverIndex = 0;
 	
 	DiagnosticsTroubleCode dtc;
     
@@ -43,16 +40,11 @@ public class DiagnosticDetailActivity extends MainActivity {
 		setActionBarTitle("DIAGNOSTIC DETAILS");
 		
 		if(savedInstanceState!=null){
-			driverIndex = savedInstanceState.getInt("id");
 			dtc = (DiagnosticsTroubleCode) savedInstanceState.getSerializable(EXTRA_DTC);
 		}
 		else if(getIntent()!=null){
-			driverIndex = getIntent().getIntExtra("id",0);
 			dtc = (DiagnosticsTroubleCode) getIntent().getSerializableExtra(EXTRA_DTC);
 		}
-
-		dHelper = DriversHelper.getInstance();
-		driver = dHelper.getDriverByIndex(driverIndex);
 
 		tvCode = (TextView) findViewById(R.id.tvCode);
 		tvImportance = (TextView) findViewById(R.id.tvImportance);
@@ -138,7 +130,6 @@ public class DiagnosticDetailActivity extends MainActivity {
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-		outState.putInt("id", driverIndex);
 		outState.putSerializable(EXTRA_DTC, dtc);
 		super.onSaveInstanceState(outState);
 	}

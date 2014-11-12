@@ -92,13 +92,13 @@ public class TripActivity extends MainActivity {
 		}
 
 		DbHelper dHelper = DbHelper.getInstance(this);
-		driver = dHelper.getDriverShort(driverId);
+		vehicle = dHelper.getVehicleShort(driverId);
 		dHelper.close();
 		
-		((TextView)findViewById(R.id.tvName)).setText(driver.name);
+		((TextView)findViewById(R.id.tvName)).setText(vehicle.name);
 		
 		ImageView imagePhoto = (ImageView)findViewById(R.id.imagePhoto);
-	    if(driver.photo == null || driver.photo.equals(""))
+	    if(vehicle.photo == null || vehicle.photo.equals(""))
 	    	imagePhoto.setImageResource(R.drawable.person_placeholder);
 	    else{
 	    	DisplayImageOptions options = new DisplayImageOptions.Builder()
@@ -109,7 +109,7 @@ public class TripActivity extends MainActivity {
 	        .cacheOnDisk(true)
 	        .build();
 	    	
-	    	ImageLoader.getInstance().displayImage(driver.photo, imagePhoto, options);
+	    	ImageLoader.getInstance().displayImage(vehicle.photo, imagePhoto, options);
 	    }
 	    
 		findViewById(R.id.btnSwitchDriverMenu).setVisibility(View.GONE);
@@ -154,7 +154,7 @@ public class TripActivity extends MainActivity {
         trip = getTripFromDB();
         
         if(trip==null || (trip!=null && trip.route.size()==0))
-        	new GetTripTask(this).execute("vehicles/"+driver.id+"/trips/"+tripId+".json");
+        	new GetTripTask(this).execute("vehicles/"+vehicle.id+"/trips/"+tripId+".json");
         else{
         	updateActivity();
         }
@@ -435,7 +435,7 @@ public class TripActivity extends MainActivity {
 		@Override
 		protected JSONObject doInBackground(String... params) {
 	        requestParams.add(new BasicNameValuePair("trip_id", ""+tripId));
-	        requestParams.add(new BasicNameValuePair("vehicle_id", ""+driver.id));
+	        requestParams.add(new BasicNameValuePair("vehicle_id", ""+vehicle.id));
 	        
 			return super.doInBackground(params);
 		}
@@ -504,7 +504,7 @@ public class TripActivity extends MainActivity {
 			}
 			
 			DbHelper dHelper = DbHelper.getInstance(TripActivity.this);
-			dHelper.saveTrip(driver.id, trip);
+			dHelper.saveTrip(vehicle.id, trip);
 			dHelper.saveRoute(trip.id, trip.route);
 			dHelper.savePoints(trip.id, trip.points);
 			dHelper.saveEvents(trip.id, trip.events);

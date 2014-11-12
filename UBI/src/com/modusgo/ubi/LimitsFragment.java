@@ -27,8 +27,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -44,7 +42,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class LimitsFragment extends Fragment {
 	
-	Driver driver;
+	Vehicle vehicle;
 	
 	LinearLayout content;
 	LinearLayout llProgress;
@@ -62,15 +60,15 @@ public class LimitsFragment extends Fragment {
 		
 		((MainActivity) getActivity()).setActionBarTitle("LIMITS");
 		
-		driver = ((DriverActivity)getActivity()).driver;
+		vehicle = ((DriverActivity)getActivity()).vehicle;
 		
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		rootView.findViewById(R.id.btnSwitchDriverMenu).setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_SWITCH_DRIVER_MENU_BUTTON_COLOR, "#f15b2a")));
 		
-		((TextView)rootView.findViewById(R.id.tvName)).setText(driver.name);
+		((TextView)rootView.findViewById(R.id.tvName)).setText(vehicle.name);
 		
 		ImageView imagePhoto = (ImageView)rootView.findViewById(R.id.imagePhoto);
-	    if(driver.photo == null || driver.photo.equals(""))
+	    if(vehicle.photo == null || vehicle.photo.equals(""))
 	    	imagePhoto.setImageResource(R.drawable.person_placeholder);
 	    else{
 	    	DisplayImageOptions options = new DisplayImageOptions.Builder()
@@ -81,7 +79,7 @@ public class LimitsFragment extends Fragment {
 	        .cacheOnDisk(true)
 	        .build();
 	    	
-	    	ImageLoader.getInstance().displayImage(driver.photo, imagePhoto, options);
+	    	ImageLoader.getInstance().displayImage(vehicle.photo, imagePhoto, options);
 	    }
 		
 		rootView.findViewById(R.id.btnSwitchDriverMenu).setOnClickListener(new OnClickListener() {
@@ -175,7 +173,7 @@ public class LimitsFragment extends Fragment {
 									protected void onPreExecute() {
 										//btnToggle.setEnabled(false);
 										Utils.enableDisableViewGroup(childLayout, false);
-										requestParams.add(new BasicNameValuePair("vehicle_id",""+driver.id));
+										requestParams.add(new BasicNameValuePair("vehicle_id",""+vehicle.id));
 										requestParams.add(new BasicNameValuePair("key",limit.key));
 										requestParams.add(new BasicNameValuePair("value",""+value));
 										requestParams.add(new BasicNameValuePair("active",btnToggle.isChecked() ? "true" : "false"));
@@ -205,7 +203,7 @@ public class LimitsFragment extends Fragment {
 										limit.active = responseJSON.optBoolean("active");
 										
 										DbHelper dbHelper = DbHelper.getInstance(getActivity());
-										dbHelper.saveLimits(driver.id, limits);
+										dbHelper.saveLimits(vehicle.id, limits);
 										dbHelper.close();
 										
 										
@@ -234,7 +232,7 @@ public class LimitsFragment extends Fragment {
 										//btnToggle.setEnabled(true);
 										Utils.enableDisableViewGroup(childLayout, true);
 									}
-								}.execute("vehicles/"+driver.id+"/limits.json");
+								}.execute("vehicles/"+vehicle.id+"/limits.json");
 								
 							}
 						})
@@ -294,7 +292,7 @@ public class LimitsFragment extends Fragment {
 									protected void onPreExecute() {
 										btnToggle.setEnabled(false);
 										Utils.enableDisableViewGroup(childLayout, false);
-										requestParams.add(new BasicNameValuePair("vehicle_id",""+driver.id));
+										requestParams.add(new BasicNameValuePair("vehicle_id",""+vehicle.id));
 										requestParams.add(new BasicNameValuePair("key",limit.key));
 										requestParams.add(new BasicNameValuePair("value_from",getTime12String(hourOfDay, minutes)));
 										requestParams.add(new BasicNameValuePair("active",btnToggle.isChecked() ? "true" : "false"));
@@ -316,7 +314,7 @@ public class LimitsFragment extends Fragment {
 										limit.active = responseJSON.optBoolean("active");
 										
 										DbHelper dbHelper = DbHelper.getInstance(getActivity());
-										dbHelper.saveLimits(driver.id, limits);
+										dbHelper.saveLimits(vehicle.id, limits);
 										dbHelper.close();
 
 										startCalendar.set(2014, 0, 1, hourOfDay, minutes);
@@ -338,7 +336,7 @@ public class LimitsFragment extends Fragment {
 										btnToggle.setEnabled(true);
 										Utils.enableDisableViewGroup(childLayout, true);
 									}
-								}.execute("vehicles/"+driver.id+"/limits.json");
+								}.execute("vehicles/"+vehicle.id+"/limits.json");
 							}
 						}, startCalendar.get(Calendar.HOUR_OF_DAY), startCalendar.get(Calendar.MINUTE), false);
 						tpd.show();
@@ -359,7 +357,7 @@ public class LimitsFragment extends Fragment {
 									protected void onPreExecute() {
 //										btnToggle.setEnabled(false);
 										Utils.enableDisableViewGroup(childLayout, false);
-										requestParams.add(new BasicNameValuePair("vehicle_id",""+driver.id));
+										requestParams.add(new BasicNameValuePair("vehicle_id",""+vehicle.id));
 										requestParams.add(new BasicNameValuePair("key",limit.key));
 										requestParams.add(new BasicNameValuePair("value_to",getTime12String(hourOfDay, minutes)));
 										requestParams.add(new BasicNameValuePair("active",btnToggle.isChecked() ? "true" : "false"));
@@ -381,7 +379,7 @@ public class LimitsFragment extends Fragment {
 										limit.active = responseJSON.optBoolean("active");
 										
 										DbHelper dbHelper = DbHelper.getInstance(getActivity());
-										dbHelper.saveLimits(driver.id, limits);
+										dbHelper.saveLimits(vehicle.id, limits);
 										dbHelper.close();
 
 										endCalendar.set(2014, 0, 1, hourOfDay, minutes);
@@ -403,7 +401,7 @@ public class LimitsFragment extends Fragment {
 //										btnToggle.setEnabled(true);
 										Utils.enableDisableViewGroup(childLayout, true);
 									}
-								}.execute("vehicles/"+driver.id+"/limits.json");
+								}.execute("vehicles/"+vehicle.id+"/limits.json");
 							}
 						}, endCalendar.get(Calendar.HOUR_OF_DAY), endCalendar.get(Calendar.MINUTE), false);
 						tpd.show();
@@ -432,7 +430,7 @@ public class LimitsFragment extends Fragment {
 					@Override
 					public void onClick(View v) {
 						Intent i = new Intent(getActivity(), ((LimitsLinkChild)child).linkActivityClass);
-						i.putExtra(VehicleEntry._ID, driver.id);
+						i.putExtra(VehicleEntry._ID, vehicle.id);
 						startActivity(i);
 					}
 				});
@@ -449,7 +447,7 @@ public class LimitsFragment extends Fragment {
 						protected void onPreExecute() {
 							btnToggle.setEnabled(false);
 							Utils.enableDisableViewGroup(childLayout, false);
-							requestParams.add(new BasicNameValuePair("vehicle_id",""+driver.id));
+							requestParams.add(new BasicNameValuePair("vehicle_id",""+vehicle.id));
 							requestParams.add(new BasicNameValuePair("key",limit.key));
 							requestParams.add(new BasicNameValuePair("active",btnToggle.isChecked() ? "true" : "false"));
 							super.onPreExecute();
@@ -467,7 +465,7 @@ public class LimitsFragment extends Fragment {
 							limit.active = responseJSON.optBoolean("active");
 							
 							DbHelper dbHelper = DbHelper.getInstance(getActivity());
-							dbHelper.saveLimits(driver.id, limits);
+							dbHelper.saveLimits(vehicle.id, limits);
 							dbHelper.close();
 							
 							if(limit.active){
@@ -494,7 +492,7 @@ public class LimitsFragment extends Fragment {
 							btnToggle.setEnabled(true);
 							Utils.enableDisableViewGroup(childLayout, true);
 						}
-					}.execute("vehicles/"+driver.id+"/limits.json");
+					}.execute("vehicles/"+vehicle.id+"/limits.json");
 				}
 			});
 			
@@ -522,7 +520,7 @@ public class LimitsFragment extends Fragment {
 				LimitsEntry.COLUMN_NAME_MAX_VALUE,
 				LimitsEntry.COLUMN_NAME_STEP,
 				LimitsEntry.COLUMN_NAME_ACTIVE,}, 
-				LimitsEntry.COLUMN_NAME_DRIVER_ID + " = " + driver.id, null, null, null, null);
+				LimitsEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id, null, null, null, null);
 		
 		ArrayList<Limit> limits = new ArrayList<Limit>();
 		if(c.moveToFirst()){
@@ -580,7 +578,7 @@ public class LimitsFragment extends Fragment {
 			content.invalidate();
 		}
 		else{
-			new GetLimitsTask(getActivity()).execute("vehicles/"+driver.id+"/limits.json");
+			new GetLimitsTask(getActivity()).execute("vehicles/"+vehicle.id+"/limits.json");
 		}
 		
 		super.onResume();
@@ -664,7 +662,7 @@ public class LimitsFragment extends Fragment {
 
 		@Override
 		protected JSONObject doInBackground(String... params) {
-	        requestParams.add(new BasicNameValuePair("driver_id", ""+driver.id));
+	        requestParams.add(new BasicNameValuePair("driver_id", ""+vehicle.id));
 			return super.doInBackground(params);
 //			status = 200;
 //			return Utils.getJSONObjectFromAssets(getActivity(), "limits.json");
@@ -691,7 +689,7 @@ public class LimitsFragment extends Fragment {
 			}
 			
 			DbHelper dbHelper = DbHelper.getInstance(getActivity());
-			dbHelper.saveLimits(driver.id, limits);
+			dbHelper.saveLimits(vehicle.id, limits);
 			dbHelper.close();
 			
 			updateLimits();
@@ -708,7 +706,7 @@ public class LimitsFragment extends Fragment {
 
 		@Override
 		protected JSONObject doInBackground(String... params) {
-	        requestParams.add(new BasicNameValuePair("driver_id", ""+driver.id));
+	        requestParams.add(new BasicNameValuePair("driver_id", ""+vehicle.id));
 			return super.doInBackground(params);
 		}
 		

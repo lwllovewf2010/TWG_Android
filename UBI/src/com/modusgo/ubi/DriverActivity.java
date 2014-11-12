@@ -64,11 +64,11 @@ public class DriverActivity extends MainActivity{
 		b.putLong("id", getIntent().getLongExtra(VehicleEntry._ID, 0));
 		
 		DbHelper dbHelper = DbHelper.getInstance(this);
-		driver = dbHelper.getDriver(getIntent().getLongExtra(VehicleEntry._ID, 0));
+		vehicle = dbHelper.getVehicle(getIntent().getLongExtra(VehicleEntry._ID, 0));
 		
 		setupTab(DriverDetailsFragment.class, b, "Driver Detail", R.drawable.ic_tab_driver, 0);
 		setupTab(TripsFragment.class, b, "Trips", R.drawable.ic_tab_trips, 0);
-		setupTab(ScoreFragment.class, b, "Score", driver.grade, 0);
+		setupTab(ScoreFragment.class, b, "Score", vehicle.grade, 0);
 		if(prefs.getBoolean(Constants.PREF_DIAGNOSTIC, false))
 			setupTab(DiagnosticsFragment.class, b, "Diagnostics", R.drawable.ic_tab_diagnostics, 0);
 		setupTab(LimitsFragment.class, b, "Limits", R.drawable.ic_tab_limits, 0);
@@ -95,12 +95,12 @@ public class DriverActivity extends MainActivity{
 			}
 		});
         
-        ListView lvDrivers = (ListView)menu.findViewById(R.id.listViewDrivers);
+        ListView lvVehicles = (ListView)menu.findViewById(R.id.listViewDrivers);
         
-		DriversAdapter driversAdapter = new DriversAdapter(this, dbHelper.getDriversShort());
+		VehiclesAdapter vehiclesAdapter = new VehiclesAdapter(this, dbHelper.getVehiclesShort());
 		dbHelper.close();
 		
-		lvDrivers.setAdapter(driversAdapter);
+		lvVehicles.setAdapter(vehiclesAdapter);
 		
 	}
 	
@@ -114,13 +114,13 @@ public class DriverActivity extends MainActivity{
 		tabHost.setCurrentTab(index);
 	}
 	
-	class DriversAdapter extends BaseAdapter{
+	class VehiclesAdapter extends BaseAdapter{
 		
 		Context ctx;
 		LayoutInflater lInflater;
-		ArrayList<Driver> objects;
+		ArrayList<Vehicle> objects;
 		
-		DriversAdapter(Context context, ArrayList<Driver> drivers) {
+		VehiclesAdapter(Context context, ArrayList<Vehicle> drivers) {
 		    ctx = context;
 		    objects = drivers;
 		    lInflater = (LayoutInflater) ctx
@@ -150,20 +150,20 @@ public class DriverActivity extends MainActivity{
 		      view = lInflater.inflate(R.layout.switch_driver_item, parent, false);
 		    }
 
-		    final Driver d = getDriver(position);
+		    final Vehicle v = getVehicle(position);
 		    
 		    final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(DriverActivity.this);
 		    if(prefs.getInt(Constants.PREF_CURRENT_DRIVER, -1)>=0 && prefs.getInt(Constants.PREF_CURRENT_DRIVER, -1)==position){
 		    	
-		    	Spannable span = new SpannableString(Html.fromHtml("<font size=\"10px\" color=\"#3c454f\" face=\"fonts/EncodeSansNormal-600-SemiBold.ttf\">CURRENT</font><br>"+d.name));
+		    	Spannable span = new SpannableString(Html.fromHtml("<font size=\"10px\" color=\"#3c454f\" face=\"fonts/EncodeSansNormal-600-SemiBold.ttf\">CURRENT</font><br>"+v.name));
 		    	span.setSpan(new RelativeSizeSpan(0.8f), 0, 7, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		    	
 		    	((TextView) view.findViewById(R.id.tvName)).setText(span);
 		    }else
-		    	((TextView) view.findViewById(R.id.tvName)).setText(d.name);
+		    	((TextView) view.findViewById(R.id.tvName)).setText(v.name);
 		    
 		    ImageView imagePhoto = (ImageView)view.findViewById(R.id.imagePhoto);
-		    if(d.photo == null || d.photo.equals(""))
+		    if(v.photo == null || v.photo.equals(""))
 		    	imagePhoto.setImageResource(R.drawable.person_placeholder);
 		    else{
 		    	DisplayImageOptions options = new DisplayImageOptions.Builder()
@@ -174,7 +174,7 @@ public class DriverActivity extends MainActivity{
 		        .cacheOnDisk(true)
 		        .build();
 		    	
-		    	ImageLoader.getInstance().displayImage(d.photo, imagePhoto, options);
+		    	ImageLoader.getInstance().displayImage(v.photo, imagePhoto, options);
 		    }
 		    
 		    view.setOnClickListener(new OnClickListener() {
@@ -186,7 +186,7 @@ public class DriverActivity extends MainActivity{
 						finish();
 						
 						Intent i = new Intent(DriverActivity.this, DriverActivity.class);
-						i.putExtra(VehicleEntry._ID, d.id);
+						i.putExtra(VehicleEntry._ID, v.id);
 						startActivity(i);
 					}
 					else{
@@ -199,8 +199,8 @@ public class DriverActivity extends MainActivity{
 		    return view;
 		}
 		
-		Driver getDriver(int position) {
-			return ((Driver) getItem(position));
+		Vehicle getVehicle(int position) {
+			return ((Vehicle) getItem(position));
 		}
 		
 	}

@@ -11,7 +11,7 @@ public class MaintenanceContract {
 	/* Inner class that defines the table contents */
 	public static abstract class MaintenanceEntry implements BaseColumns {
 		public static final String TABLE_NAME = "maintenances";
-		public static final String COLUMN_NAME_DRIVER_ID = "driver_id";
+		public static final String COLUMN_NAME_VEHICLE_ID = "vehicle_id";
 		public static final String COLUMN_NAME_CREATED_AT = "created_at";
 		public static final String COLUMN_NAME_DESCRIPTION = "description";
 		public static final String COLUMN_NAME_IMPORTANCE = "importance";

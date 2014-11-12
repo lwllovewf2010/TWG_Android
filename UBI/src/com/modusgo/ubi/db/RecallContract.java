@@ -11,7 +11,7 @@ public class RecallContract {
 	/* Inner class that defines the table contents */
 	public static abstract class RecallEntry implements BaseColumns {
 		public static final String TABLE_NAME = "recalls";
-		public static final String COLUMN_NAME_DRIVER_ID = "driver_id";
+		public static final String COLUMN_NAME_VEHICLE_ID = "vehicle_id";
 		public static final String COLUMN_NAME_CONSEQUENCE = "consequence";
 		public static final String COLUMN_NAME_CORRECTIVE_ACTION = "corrective_action";
 		public static final String COLUMN_NAME_CREATED_AT = "created_at";

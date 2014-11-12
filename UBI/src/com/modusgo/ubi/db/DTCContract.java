@@ -11,7 +11,7 @@ public class DTCContract {
 	/* Inner class that defines the table contents */
 	public static abstract class DTCEntry implements BaseColumns {
 		public static final String TABLE_NAME = "dtc";
-		public static final String COLUMN_NAME_DRIVER_ID = "driver_id";
+		public static final String COLUMN_NAME_VEHICLE_ID = "vehicle_id";
 		public static final String COLUMN_NAME_CODE = "code";
 		public static final String COLUMN_NAME_CONDITIONS = "conditions";
 		public static final String COLUMN_NAME_CREATED_AT = "created_at";

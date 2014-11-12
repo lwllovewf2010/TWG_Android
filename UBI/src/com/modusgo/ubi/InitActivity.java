@@ -235,14 +235,14 @@ public class InitActivity extends FragmentActivity {
 						
 						if(responseJSON.has("vehicles")){
 							JSONArray vehiclesJSON = responseJSON.getJSONArray("vehicles");
-							ArrayList<Driver> drivers = new ArrayList<Driver>();
+							ArrayList<Vehicle> vehicles = new ArrayList<Vehicle>();
 							for (int i = 0; i < vehiclesJSON.length(); i++) {
 								JSONObject vehicleJSON = vehiclesJSON.getJSONObject(i);
-								drivers.add(Driver.fromJSON(getApplicationContext(), vehicleJSON));
+								vehicles.add(Vehicle.fromJSON(getApplicationContext(), vehicleJSON));
 							}
 							
 							DbHelper dbHelper = DbHelper.getInstance(InitActivity.this);
-							dbHelper.saveDrivers(drivers);
+							dbHelper.saveVehicles(vehicles);
 							dbHelper.close();
 						}
 						

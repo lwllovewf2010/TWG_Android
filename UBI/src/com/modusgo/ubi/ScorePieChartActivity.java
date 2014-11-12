@@ -23,7 +23,7 @@ public class ScorePieChartActivity extends MainActivity{
 	public static final String SAVED_PIE_CHART_ROAD_TYPE = "pieChartRoadType";
 	public static final String SAVED_PIE_CHART_TIME_OF_DAY = "pieChartTimeOfDay";
 	
-	long driverId = 0;
+	long vehicleId = 0;
 	RadioGroup rgPieCharts;
 	
 	@Override
@@ -34,14 +34,14 @@ public class ScorePieChartActivity extends MainActivity{
 		setActionBarTitle("Time/Road Charts");
 		
 		if(savedInstanceState!=null){
-			driverId = savedInstanceState.getLong(VehicleEntry._ID);
+			vehicleId = savedInstanceState.getLong(VehicleEntry._ID);
 		}
 		else if(getIntent()!=null){
-			driverId = getIntent().getLongExtra(VehicleEntry._ID,0);
+			vehicleId = getIntent().getLongExtra(VehicleEntry._ID,0);
 		}
 
 		DbHelper dHelper = DbHelper.getInstance(this);
-		driver = dHelper.getDriverShort(driverId);
+		vehicle = dHelper.getVehicleShort(vehicleId);
 		dHelper.close();
 		
 		rgPieCharts = (RadioGroup) findViewById(R.id.radioGroupPieCharts);
@@ -60,7 +60,7 @@ public class ScorePieChartActivity extends MainActivity{
 		Cursor c = db.query(ScorePieChartEntry.TABLE_NAME, 
 				new String[]{
 				ScorePieChartEntry.COLUMN_NAME_TAB}, 
-				ScorePieChartEntry.COLUMN_NAME_DRIVER_ID + " = " + driver.id, null, ScorePieChartEntry.COLUMN_NAME_TAB, null, ScorePieChartEntry._ID+" ASC");
+				ScorePieChartEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id, null, ScorePieChartEntry.COLUMN_NAME_TAB, null, ScorePieChartEntry._ID+" ASC");
 		
 		String pieChartTabs[] = new String[c.getCount()];
 		
@@ -91,7 +91,7 @@ public class ScorePieChartActivity extends MainActivity{
     				ScorePieChartEntry.COLUMN_NAME_VALUE,
     				ScorePieChartEntry.COLUMN_NAME_TITLE,
     				ScorePieChartEntry.COLUMN_NAME_SUBTITLE},
-    				ScorePieChartEntry.COLUMN_NAME_DRIVER_ID + " = ? AND "+ScorePieChartEntry.COLUMN_NAME_TAB + " = ?", new String[]{Long.toString(driver.id), pieChartTabs[i]}, null, null, ScorePieChartEntry._ID+" ASC");
+    				ScorePieChartEntry.COLUMN_NAME_VEHICLE_ID + " = ? AND "+ScorePieChartEntry.COLUMN_NAME_TAB + " = ?", new String[]{Long.toString(vehicle.id), pieChartTabs[i]}, null, null, ScorePieChartEntry._ID+" ASC");
     		
             int piecesCount = c.getCount();
             float[] values = new float[piecesCount];
@@ -152,7 +152,7 @@ public class ScorePieChartActivity extends MainActivity{
 	
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
-		outState.putLong(VehicleEntry._ID, driverId);
+		outState.putLong(VehicleEntry._ID, vehicleId);
 		super.onSaveInstanceState(outState);
 	}
 	

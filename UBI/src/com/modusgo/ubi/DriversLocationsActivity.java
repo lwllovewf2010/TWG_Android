@@ -30,7 +30,7 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 public class DriversLocationsActivity extends MainActivity {
 
-	ArrayList<Driver> drivers;
+	ArrayList<Vehicle> drivers;
 	
 	MapView mapView;
     GoogleMap map;
@@ -42,7 +42,7 @@ public class DriversLocationsActivity extends MainActivity {
 		
 		setActionBarTitle("Drivers Locations");
 
-		drivers = getDrivers();
+		drivers = getVehicles();
 		
 		// Gets the MapView from the XML layout and creates it
         mapView = (MapView) findViewById(R.id.mapview);
@@ -56,7 +56,7 @@ public class DriversLocationsActivity extends MainActivity {
 			public void onMapLoaded() {
 				CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(37.8430094,-95.0098992), 1);
 		        map.animateCamera(cameraUpdate);
-		        addDriversToMap();
+		        addVehilesToMap();
 			}
 		});
 //        map.setOnMarkerClickListener(new OnMarkerClickListener() {
@@ -79,7 +79,7 @@ public class DriversLocationsActivity extends MainActivity {
 
 	}
 	
-	private ArrayList<Driver> getDrivers(){
+	private ArrayList<Vehicle> getVehicles(){
 		DbHelper dHelper = DbHelper.getInstance(this);
 		SQLiteDatabase db = dHelper.getReadableDatabase();
 		Cursor c = db.query(VehicleEntry.TABLE_NAME, 
@@ -93,10 +93,10 @@ public class DriversLocationsActivity extends MainActivity {
 				VehicleEntry.COLUMN_NAME_ADDRESS}, 
 				null, null, null, null, null);
 		
-		ArrayList<Driver> drivers = new ArrayList<Driver>();
+		ArrayList<Vehicle> vehicles = new ArrayList<Vehicle>();
 		if(c.moveToFirst()){
 			while(!c.isAfterLast()){
-				Driver d = new Driver();
+				Vehicle d = new Vehicle();
 				System.out.println("hello");
 				
 				d.id = c.getLong(0);
@@ -106,7 +106,7 @@ public class DriversLocationsActivity extends MainActivity {
 				d.latitude = c.getDouble(4);
 				d.longitude = c.getDouble(5);
 				d.address = c.getString(6);
-				drivers.add(d);
+				vehicles.add(d);
 				
 				c.moveToNext();
 			}
@@ -114,10 +114,10 @@ public class DriversLocationsActivity extends MainActivity {
 		c.close();
 		db.close();
 		dHelper.close();
-		return drivers;
+		return vehicles;
 	}
 	
-	private void addDriversToMap(){
+	private void addVehilesToMap(){
 		Builder builder = LatLngBounds.builder();
 		
 		for (int i = 0; i < drivers.size(); i++) {

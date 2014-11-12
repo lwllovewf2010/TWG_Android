@@ -268,14 +268,14 @@ public class SignInActivity extends FragmentActivity {
 			
 			if(!responseJSON.isNull("vehicles")){
 				JSONArray vehiclesJSON = responseJSON.getJSONArray("vehicles");
-				ArrayList<Driver> drivers = new ArrayList<Driver>();
+				ArrayList<Vehicle> vehicles = new ArrayList<Vehicle>();
 				for (int i = 0; i < vehiclesJSON.length(); i++) {
 					JSONObject vehicleJSON = vehiclesJSON.getJSONObject(i);
-					drivers.add(Driver.fromJSON(getApplicationContext(), vehicleJSON));
+					vehicles.add(Vehicle.fromJSON(getApplicationContext(), vehicleJSON));
 				}
 				
 				DbHelper dbHelper = DbHelper.getInstance(SignInActivity.this);
-				dbHelper.saveDrivers(drivers);
+				dbHelper.saveVehicles(vehicles);
 				dbHelper.close();
 			}
 			

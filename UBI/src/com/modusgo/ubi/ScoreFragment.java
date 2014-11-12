@@ -44,7 +44,7 @@ public class ScoreFragment extends Fragment{
 	
 	private final String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 	
-	Driver driver;
+	Vehicle vehicle;
 	
 	View llProgress;
 	View llContent;
@@ -63,15 +63,15 @@ public class ScoreFragment extends Fragment{
 		
 		((MainActivity)getActivity()).setActionBarTitle("SCORE");
 		
-		driver = ((DriverActivity)getActivity()).driver;
+		vehicle = ((DriverActivity)getActivity()).vehicle;
 		
-		((TextView)rootView.findViewById(R.id.tvName)).setText(driver.name);
+		((TextView)rootView.findViewById(R.id.tvName)).setText(vehicle.name);
 		
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		rootView.findViewById(R.id.btnSwitchDriverMenu).setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_SWITCH_DRIVER_MENU_BUTTON_COLOR, "#f15b2a")));
 		
 		ImageView imagePhoto = (ImageView)rootView.findViewById(R.id.imagePhoto);
-	    if(driver.photo == null || driver.photo.equals(""))
+	    if(vehicle.photo == null || vehicle.photo.equals(""))
 	    	imagePhoto.setImageResource(R.drawable.person_placeholder);
 	    else{
 	    	DisplayImageOptions options = new DisplayImageOptions.Builder()
@@ -82,7 +82,7 @@ public class ScoreFragment extends Fragment{
 	        .cacheOnDisk(true)
 	        .build();
 	    	
-	    	ImageLoader.getInstance().displayImage(driver.photo, imagePhoto, options);
+	    	ImageLoader.getInstance().displayImage(vehicle.photo, imagePhoto, options);
 	    }
 		
 		rootView.findViewById(R.id.btnSwitchDriverMenu).setOnClickListener(new OnClickListener() {
@@ -115,7 +115,7 @@ public class ScoreFragment extends Fragment{
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(getActivity(), ScoreInfoActivity.class);
-				i.putExtra(VehicleEntry._ID, driver.id);
+				i.putExtra(VehicleEntry._ID, vehicle.id);
 				startActivity(i);
 				getActivity().overridePendingTransition(R.anim.flip_in,R.anim.flip_out);
 			}
@@ -125,7 +125,7 @@ public class ScoreFragment extends Fragment{
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(getActivity(), ScorePieChartActivity.class);
-				i.putExtra(VehicleEntry._ID, driver.id);
+				i.putExtra(VehicleEntry._ID, vehicle.id);
 				startActivity(i);
 				getActivity().overridePendingTransition(R.anim.flip_in,R.anim.flip_out);
 			}
@@ -135,7 +135,7 @@ public class ScoreFragment extends Fragment{
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(getActivity(), ScoreCirclesActivity.class);
-				i.putExtra(VehicleEntry._ID, driver.id);
+				i.putExtra(VehicleEntry._ID, vehicle.id);
 				startActivity(i);
 				getActivity().overridePendingTransition(R.anim.flip_in,R.anim.flip_out);
 			}
@@ -144,7 +144,7 @@ public class ScoreFragment extends Fragment{
 		loadScoreGraphFromDb();
 		updateScoreLabels();
 		
-        new GetScoreTask(getActivity()).execute("vehicles/"+driver.id+"/score.json");
+        new GetScoreTask(getActivity()).execute("vehicles/"+vehicle.id+"/score.json");
         
 		return rootView;
 	}
@@ -159,7 +159,7 @@ public class ScoreFragment extends Fragment{
 				ScoreGraphEntry.COLUMN_NAME_MONTH,
 				ScoreGraphEntry.COLUMN_NAME_SCORE,
 				ScoreGraphEntry.COLUMN_NAME_GRADE}, 
-				ScoreGraphEntry.COLUMN_NAME_DRIVER_ID + " = " + driver.id, null, null, null, ScoreGraphEntry.COLUMN_NAME_MONTH+" ASC");
+				ScoreGraphEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id, null, null, null, ScoreGraphEntry.COLUMN_NAME_MONTH+" ASC");
 		
 		yearStats = new MonthStats[12];
 		for (int i = 0; i < 12; i++) {
@@ -181,7 +181,7 @@ public class ScoreFragment extends Fragment{
 	}
 	
 	private void updateScoreLabels(){
-		String grade = driver.grade.toUpperCase(Locale.getDefault());
+		String grade = vehicle.grade.toUpperCase(Locale.getDefault());
 		grade = grade.equals("NULL") || grade.equals("") ? "" : grade;
 		
 		if(!grade.equals("")){
@@ -456,7 +456,7 @@ public class ScoreFragment extends Fragment{
 							monthStats.optInt("score"),
 							monthStats.optString("grade").equals("null") ? "" : monthStats.optString("grade"));
 				}
-				dHelper.saveScoreGraph(driver.id, yearStats);
+				dHelper.saveScoreGraph(vehicle.id, yearStats);
 				loadScoreGraphFromDb();
 			}
 			
@@ -467,7 +467,7 @@ public class ScoreFragment extends Fragment{
 			percentageData.put("Smoothness", json.optInt("score_smoothness"));
 			percentageData.put("Completeness", json.optInt("score_completeness"));
 			percentageData.put("Consistency", json.optInt("score_consistency"));
-			dHelper.saveScorePercentage(driver.id, percentageData);
+			dHelper.saveScorePercentage(vehicle.id, percentageData);
 			
 			ArrayList<PieChartTab> pcTabs = new ArrayList<PieChartTab>();
 			
@@ -522,7 +522,7 @@ public class ScoreFragment extends Fragment{
 					},
 					null
 			));
-			dHelper.saveScorePieCharts(driver.id, pcTabs);
+			dHelper.saveScorePieCharts(vehicle.id, pcTabs);
 			
 			if(json.has("road_env_analysis") && json.has("road_env_stats")){
 				JSONObject jsonMarks = json.getJSONObject("road_env_analysis");
@@ -533,7 +533,7 @@ public class ScoreFragment extends Fragment{
 				circlesTabs.put("URBAN", getTabSections("urban", jsonMarks, jsonStats));
 				circlesTabs.put("RURAL", getTabSections("rural", jsonMarks, jsonStats));
 				
-				dHelper.saveScoreCircles(driver.id, circlesTabs);
+				dHelper.saveScoreCircles(vehicle.id, circlesTabs);
 			}
 			
 			dHelper.close();

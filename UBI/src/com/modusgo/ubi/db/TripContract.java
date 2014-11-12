@@ -11,7 +11,7 @@ public class TripContract {
 	/* Inner class that defines the table contents */
 	public static abstract class TripEntry implements BaseColumns {
 		public static final String TABLE_NAME = "trips";
-		public static final String COLUMN_NAME_DRIVER_ID = "driver_id";
+		public static final String COLUMN_NAME_VEHICLE_ID = "vehicle_id";
 		public static final String COLUMN_NAME_EVENTS_COUNT = "events_count";
 		public static final String COLUMN_NAME_START_TIME = "start_time";
 		public static final String COLUMN_NAME_END_TIME = "end_time";

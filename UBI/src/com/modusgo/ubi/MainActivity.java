@@ -48,7 +48,7 @@ public class MainActivity extends FragmentActivity {
     protected TextView tvActionBarTitle;
     private ImageButton btnNavigationDrawer; 
     private String actionBarTitle = "";
-    public Driver driver;
+    public Vehicle vehicle;
     
     public static enum MenuItems {HOME("HOME",0), COMPARE("COMPARE",1), SETTINGS("SETTINGS",2), DRIVERSETUP("DRIVER SETUP",3), FEEDBACK("FEEDBACK",4),
     	CALLSUPPORT("CALL SUPPORT",5), AGENT("AGENT",6), LOGOUT("LOGOUT",7); 
@@ -338,7 +338,7 @@ public class MainActivity extends FragmentActivity {
 		            break;
 		        case FEEDBACK:
 		        	//Feedback
-		        	String driverName = driver !=null ? ", "+driver.name : "";
+		        	String driverName = vehicle !=null ? ", "+vehicle.name : "";
 		        	new DialogFeedback(actionBarTitle.toLowerCase(Locale.US) + " screen" + driverName).show(getSupportFragmentManager(), "FeedbackDialog");
 		            break;
 		        case CALLSUPPORT:

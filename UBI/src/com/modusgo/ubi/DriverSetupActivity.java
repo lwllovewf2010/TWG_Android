@@ -7,13 +7,11 @@ import java.util.Locale;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -26,10 +24,10 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class DriverSetupActivity extends MainActivity{
 	
-	DriversAdapter driversAdapter;
-	ArrayList<Driver> drivers = new ArrayList<Driver>();
+	VehiclesAdapter vehiclesAdapter;
+	ArrayList<Vehicle> vehicles = new ArrayList<Vehicle>();
 
-	ListView lvDrivers;
+	ListView lvVehicles;
 	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,35 +36,35 @@ public class DriverSetupActivity extends MainActivity{
 		
 		setActionBarTitle("Driver Setup");
 
-		lvDrivers = (ListView) findViewById(R.id.listViewDrivers);
+		lvVehicles = (ListView) findViewById(R.id.listViewDrivers);
 		
-		driversAdapter = new DriversAdapter(this, drivers);
-		lvDrivers.setAdapter(driversAdapter);
+		vehiclesAdapter = new VehiclesAdapter(this, vehicles);
+		lvVehicles.setAdapter(vehiclesAdapter);
 		
 		setButtonUpVisibility(true);
 		
 		if(!prefs.getString(Constants.PREF_REG_CODE, "").equals(""))
 			startService(new Intent(this, TrackingStatusService.class));
 		
-		updateDrivers();
+		updateVehicles();
 	}
 	
-	private void updateDrivers(){
+	private void updateVehicles(){
 		DbHelper dbHelper = DbHelper.getInstance(this);
-		drivers = dbHelper.getDriversShort();
+		vehicles = dbHelper.getVehiclesShort();
 		dbHelper.close();
 		
-		if(drivers.size()==1){
+		if(vehicles.size()==1){
 			Intent i = new Intent(this, DriverActivity.class);
-			i.putExtra(VehicleEntry._ID, drivers.get(0).id);
+			i.putExtra(VehicleEntry._ID, vehicles.get(0).id);
 			startActivity(i);
 			finish();
 		}
 		
-		driversAdapter.notifyDataSetChanged();
+		vehiclesAdapter.notifyDataSetChanged();
 	}
 	
-	class DriversAdapter extends BaseAdapter{
+	class VehiclesAdapter extends BaseAdapter{
 		
 		Context ctx;
 		LayoutInflater lInflater;
@@ -74,7 +72,7 @@ public class DriverSetupActivity extends MainActivity{
 		SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
 		SimpleDateFormat sdfTo = new SimpleDateFormat("MM/dd/yyyy KK:mm aa z", Locale.getDefault());
 		
-		DriversAdapter(Context context, ArrayList<Driver> drivers) {
+		VehiclesAdapter(Context context, ArrayList<Vehicle> drivers) {
 		    ctx = context;
 		    lInflater = (LayoutInflater) ctx
 		        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -82,12 +80,12 @@ public class DriverSetupActivity extends MainActivity{
 		
 		@Override
 		public int getCount() {
-		    return drivers.size();
+		    return vehicles.size();
 		}
 
 		@Override
 		public Object getItem(int position) {
-		    return drivers.get(position);
+		    return vehicles.get(position);
 		}
 
 		@Override
@@ -103,7 +101,7 @@ public class DriverSetupActivity extends MainActivity{
 		      view = lInflater.inflate(R.layout.home_drivers_list_item, parent, false);
 		    }
 
-		    final Driver d = getDriver(position);
+		    final Vehicle d = getDriver(position);
 
 		    ((TextView) view.findViewById(R.id.tvName)).setText(d.name);
 		    ((TextView) view.findViewById(R.id.tvVehicle)).setText(d.getCarFullName());
@@ -135,8 +133,8 @@ public class DriverSetupActivity extends MainActivity{
 		    return view;
 		}
 		
-		Driver getDriver(int position) {
-			return ((Driver) getItem(position));
+		Vehicle getDriver(int position) {
+			return ((Vehicle) getItem(position));
 		}
 		
 	}
@@ -144,7 +142,7 @@ public class DriverSetupActivity extends MainActivity{
 	@Override
 	public void onResume() {
 		setNavigationDrawerItemSelected(MenuItems.DRIVERSETUP);
-		driversAdapter.notifyDataSetChanged();
+		vehiclesAdapter.notifyDataSetChanged();
 		super.onResume();
 	}
 }

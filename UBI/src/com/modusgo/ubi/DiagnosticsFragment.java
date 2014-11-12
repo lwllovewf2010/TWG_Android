@@ -52,7 +52,7 @@ public class DiagnosticsFragment extends Fragment{
 	
 	private static final String ERROR_STATUS_MESSAGE = "Gathering diagnostic information...";
 
-	Driver driver;
+	Vehicle vehicle;
 
 	SwipeRefreshLayout lRefresh;
 	LinearLayout llInfo;
@@ -77,14 +77,14 @@ public class DiagnosticsFragment extends Fragment{
 		
 	    prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		
-		driver = ((DriverActivity)getActivity()).driver;
+		vehicle = ((DriverActivity)getActivity()).vehicle;
 		
 		rootView.findViewById(R.id.btnSwitchDriverMenu).setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_SWITCH_DRIVER_MENU_BUTTON_COLOR, "#f15b2a")));
 		
-		((TextView)rootView.findViewById(R.id.tvName)).setText(driver.name);
+		((TextView)rootView.findViewById(R.id.tvName)).setText(vehicle.name);
 		
 		ImageView imagePhoto = (ImageView)rootView.findViewById(R.id.imagePhoto);
-	    if(driver.photo == null || driver.photo.equals(""))
+	    if(vehicle.photo == null || vehicle.photo.equals(""))
 	    	imagePhoto.setImageResource(R.drawable.person_placeholder);
 	    else{
 	    	DisplayImageOptions options = new DisplayImageOptions.Builder()
@@ -95,7 +95,7 @@ public class DiagnosticsFragment extends Fragment{
 	        .cacheOnDisk(true)
 	        .build();
 	    	
-	    	ImageLoader.getInstance().displayImage(driver.photo, imagePhoto, options);
+	    	ImageLoader.getInstance().displayImage(vehicle.photo, imagePhoto, options);
 	    }
 		
 		rootView.findViewById(R.id.btnSwitchDriverMenu).setOnClickListener(new OnClickListener() {
@@ -126,11 +126,11 @@ public class DiagnosticsFragment extends Fragment{
 			@Override
 			public void onRefresh() {
 				lRefresh.setRefreshing(true);
-				new GetDiagnosticsTask(getActivity()).execute("vehicles/"+driver.id+"/diagnostics.json");
+				new GetDiagnosticsTask(getActivity()).execute("vehicles/"+vehicle.id+"/diagnostics.json");
 			}
 		});
 		
-		if(driver.odometer<=0){
+		if(vehicle.odometer<=0){
 		
 			lRefresh.setVisibility(View.GONE);
 			llOdometer.setVisibility(View.VISIBLE);
@@ -160,7 +160,7 @@ public class DiagnosticsFragment extends Fragment{
 						
 						if(odo<=999999 && odo>0){
 							
-							driver.odometer = odo;
+							vehicle.odometer = odo;
 							
 							TranslateAnimation slideDownOdometerLayoutAmination = new TranslateAnimation(
 								      TranslateAnimation.RELATIVE_TO_PARENT,0.0f,
@@ -180,7 +180,7 @@ public class DiagnosticsFragment extends Fragment{
 								public void onAnimationEnd(Animation animation) {
 									llOdometer.setVisibility(View.GONE);
 									lRefresh.startAnimation(AnimationUtils.getFadeInAnmation(getActivity(), lRefresh));
-									new GetDiagnosticsTask(getActivity()).execute("vehicles/"+driver.id+"/diagnostics.json");
+									new GetDiagnosticsTask(getActivity()).execute("vehicles/"+vehicle.id+"/diagnostics.json");
 								}
 							});
 							llOdometer.startAnimation(slideDownOdometerLayoutAmination);
@@ -201,11 +201,11 @@ public class DiagnosticsFragment extends Fragment{
 			});
 		}
 		else{
-			if(!prefs.getString(Constants.PREF_DIAGNOSTICS_STATUS+driver.id, "").equals("")){
+			if(!prefs.getString(Constants.PREF_DIAGNOSTICS_STATUS+vehicle.id, "").equals("")){
 				updateInfo();
 			}
 			else{
-				new GetDiagnosticsTask(getActivity()).execute("vehicles/"+driver.id+"/diagnostics.json");
+				new GetDiagnosticsTask(getActivity()).execute("vehicles/"+vehicle.id+"/diagnostics.json");
 			}
 		}
 		
@@ -216,14 +216,14 @@ public class DiagnosticsFragment extends Fragment{
 		SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
 		SimpleDateFormat sdfTo = new SimpleDateFormat("MM/dd/yyyy KK:mm aa z", Locale.getDefault());
 
-		String lastCheckup = prefs.getString(Constants.PREF_DIAGNOSTICS_CHECKUP_DATE+driver.id, "N/A");
+		String lastCheckup = prefs.getString(Constants.PREF_DIAGNOSTICS_CHECKUP_DATE+vehicle.id, "N/A");
 		try {
 			tvLastCheckup.setText(sdfTo.format(sdfFrom.parse(lastCheckup)));
 		} catch (ParseException e) {
 			tvLastCheckup.setText(lastCheckup);
 			e.printStackTrace();
 		}
-		tvStatus.setText(prefs.getString(Constants.PREF_DIAGNOSTICS_STATUS+driver.id,ERROR_STATUS_MESSAGE));
+		tvStatus.setText(prefs.getString(Constants.PREF_DIAGNOSTICS_STATUS+vehicle.id,ERROR_STATUS_MESSAGE));
 		llContent.removeAllViews();
 		
 		//--------------------------------------------- DTC ------------------------------------
@@ -244,7 +244,7 @@ public class DiagnosticsFragment extends Fragment{
 				DTCEntry.COLUMN_NAME_PARTS_COST,
 				DTCEntry.COLUMN_NAME_TOTAL_COST
 				}, 
-				ScoreGraphEntry.COLUMN_NAME_DRIVER_ID + " = " + driver.id, null, null, null, null);
+				ScoreGraphEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id, null, null, null, null);
 		
 		if(c.moveToFirst()){
 			imageDTCAlert.setImageResource(R.drawable.ic_alerts_red_big);
@@ -312,7 +312,7 @@ public class DiagnosticsFragment extends Fragment{
 				RecallEntry.COLUMN_NAME_DESCRIPTION,
 				RecallEntry.COLUMN_NAME_RECALL_ID
 				}, 
-				RecallEntry.COLUMN_NAME_DRIVER_ID + " = " + driver.id, null, null, null, null);
+				RecallEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id, null, null, null, null);
 		
 		if(c.moveToFirst()){
 			llContent.addView(inflater.inflate(R.layout.recall_header, llContent, false));
@@ -350,7 +350,7 @@ public class DiagnosticsFragment extends Fragment{
 				MaintenanceEntry.COLUMN_NAME_MILEAGE,
 				MaintenanceEntry.COLUMN_NAME_PRICE
 				}, 
-				MaintenanceEntry.COLUMN_NAME_DRIVER_ID + " = " + driver.id, null, null, null, null);
+				MaintenanceEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id, null, null, null, null);
 		
 		if(c.moveToFirst()){
 			View header = inflater.inflate(R.layout.diagnostics_header, llContent, false);
@@ -394,7 +394,7 @@ public class DiagnosticsFragment extends Fragment{
 				WarrantyInfoEntry.COLUMN_NAME_DESCRIPTION,
 				WarrantyInfoEntry.COLUMN_NAME_MILEAGE
 				}, 
-				WarrantyInfoEntry.COLUMN_NAME_DRIVER_ID + " = " + driver.id, null, null, null, null);
+				WarrantyInfoEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id, null, null, null, null);
 		
 		if(c.moveToFirst()){
 			View header = inflater.inflate(R.layout.diagnostics_header, llContent, false);
@@ -471,8 +471,8 @@ public class DiagnosticsFragment extends Fragment{
 
 		@Override
 		protected JSONObject doInBackground(String... params) {
-	        requestParams.add(new BasicNameValuePair("driver_id", ""+driver.id));
-	        requestParams.add(new BasicNameValuePair("mileage", ""+driver.odometer));
+	        requestParams.add(new BasicNameValuePair("driver_id", ""+vehicle.id));
+	        requestParams.add(new BasicNameValuePair("mileage", ""+vehicle.odometer));
 			return super.doInBackground(params);
 		}
 		
@@ -486,7 +486,7 @@ public class DiagnosticsFragment extends Fragment{
 		@Override
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
 			DbHelper dbHelper = DbHelper.getInstance(getActivity());
-			dbHelper.saveDriver(driver);
+			dbHelper.saveVehicle(vehicle);
 			
 			System.out.println(responseJSON);
 			
@@ -494,9 +494,9 @@ public class DiagnosticsFragment extends Fragment{
 				JSONObject diagnosticsJSON = responseJSON.getJSONObject("diagnostics");
 				
 				Editor e = prefs.edit();
-				e.putString(Constants.PREF_DIAGNOSTICS_CHECKUP_DATE+driver.id, Utils.fixTimezoneZ(diagnosticsJSON.optString("last_checkup")));
-				System.out.println(Constants.PREF_DIAGNOSTICS_CHECKUP_DATE+driver.id+" = "+Utils.fixTimezoneZ(diagnosticsJSON.optString("last_checkup")));
-				e.putString(Constants.PREF_DIAGNOSTICS_STATUS+driver.id, diagnosticsJSON.optString("checkup_status",ERROR_STATUS_MESSAGE));
+				e.putString(Constants.PREF_DIAGNOSTICS_CHECKUP_DATE+vehicle.id, Utils.fixTimezoneZ(diagnosticsJSON.optString("last_checkup")));
+				System.out.println(Constants.PREF_DIAGNOSTICS_CHECKUP_DATE+vehicle.id+" = "+Utils.fixTimezoneZ(diagnosticsJSON.optString("last_checkup")));
+				e.putString(Constants.PREF_DIAGNOSTICS_STATUS+vehicle.id, diagnosticsJSON.optString("checkup_status",ERROR_STATUS_MESSAGE));
 				e.commit();
 				
 				if(diagnosticsJSON.has("diagnostics_trouble_codes")){
@@ -522,7 +522,7 @@ public class DiagnosticsFragment extends Fragment{
 									dtc.optString("parts_cost"), 
 									dtc.optString("total_cost")));
 						}
-						dbHelper.saveDTCs(driver.id, dtcs);
+						dbHelper.saveDTCs(vehicle.id, dtcs);
 					}
 				}
 				
@@ -543,7 +543,7 @@ public class DiagnosticsFragment extends Fragment{
 									recall.optString("description"), 
 									recall.optString("recall_id")));
 						}
-						dbHelper.saveRecalls(driver.id, recalls);
+						dbHelper.saveRecalls(vehicle.id, recalls);
 					}
 				}
 				
@@ -563,7 +563,7 @@ public class DiagnosticsFragment extends Fragment{
 									maintenance.optString("mileage"), 
 									maintenance.optString("price")));
 						}
-						dbHelper.saveMaintenances(driver.id, maintenances);
+						dbHelper.saveMaintenances(vehicle.id, maintenances);
 					}
 				}
 				
@@ -581,7 +581,7 @@ public class DiagnosticsFragment extends Fragment{
 									wInfoJSON.optString("description"), 
 									wInfoJSON.optString("mileage")));
 						}
-						dbHelper.saveWarrantyInformation(driver.id, warrantyInformation);
+						dbHelper.saveWarrantyInformation(vehicle.id, warrantyInformation);
 					}
 				}
 				

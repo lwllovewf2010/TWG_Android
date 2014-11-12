@@ -44,7 +44,7 @@ public class ScoreCirclesActivity extends MainActivity{
 		}
 
 		DbHelper dHelper = DbHelper.getInstance(this);
-		driver = dHelper.getDriverShort(driverId);
+		vehicle = dHelper.getVehicleShort(driverId);
 		dHelper.close();
 		
 		rgCircles = (RadioGroup) findViewById(R.id.radioGroupCircles);
@@ -68,7 +68,7 @@ public class ScoreCirclesActivity extends MainActivity{
 		Cursor c = db.query(ScoreCirclesEntry.TABLE_NAME, 
 				new String[]{
 				ScoreCirclesEntry.COLUMN_NAME_TAB}, 
-				ScoreCirclesEntry.COLUMN_NAME_DRIVER_ID + " = " + driver.id, null, ScoreCirclesEntry.COLUMN_NAME_TAB, null, ScoreCirclesEntry._ID+" ASC");
+				ScoreCirclesEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id, null, ScoreCirclesEntry.COLUMN_NAME_TAB, null, ScoreCirclesEntry._ID+" ASC");
 		
 		String circlesTabs[] = new String[c.getCount()];
 		
@@ -92,8 +92,8 @@ public class ScoreCirclesActivity extends MainActivity{
         	c = db.query(ScoreCirclesEntry.TABLE_NAME, 
     				new String[]{
     				ScoreCirclesEntry.COLUMN_NAME_SECTION}, 
-    				ScoreCirclesEntry.COLUMN_NAME_DRIVER_ID + " = ? AND " + ScoreCirclesEntry.COLUMN_NAME_TAB + " = ?",
-    				new String[]{Long.toString(driver.id), circlesTabs[i]},
+    				ScoreCirclesEntry.COLUMN_NAME_VEHICLE_ID + " = ? AND " + ScoreCirclesEntry.COLUMN_NAME_TAB + " = ?",
+    				new String[]{Long.toString(vehicle.id), circlesTabs[i]},
     				ScoreCirclesEntry.COLUMN_NAME_SECTION, null, ScoreCirclesEntry._ID+" ASC");
     		
     		String sectionTitles[] = new String[c.getCount()];
@@ -114,8 +114,8 @@ public class ScoreCirclesActivity extends MainActivity{
             			ScoreCirclesEntry._ID,
             			ScoreCirclesEntry.COLUMN_NAME_MARK,
             			ScoreCirclesEntry.COLUMN_NAME_DISTANCE},
-            			ScoreCirclesEntry.COLUMN_NAME_DRIVER_ID + " = ? AND " + ScoreCirclesEntry.COLUMN_NAME_TAB + " = ? AND " + ScoreCirclesEntry.COLUMN_NAME_SECTION + " = ?",
-            			new String[]{Long.toString(driver.id), circlesTabs[i], sectionTitles[j]},
+            			ScoreCirclesEntry.COLUMN_NAME_VEHICLE_ID + " = ? AND " + ScoreCirclesEntry.COLUMN_NAME_TAB + " = ? AND " + ScoreCirclesEntry.COLUMN_NAME_SECTION + " = ?",
+            			new String[]{Long.toString(vehicle.id), circlesTabs[i], sectionTitles[j]},
             			null, null, ScorePieChartEntry._ID+" ASC");
         		
                 int piecesCount = c.getCount();

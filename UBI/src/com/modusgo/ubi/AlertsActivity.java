@@ -34,7 +34,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class AlertsActivity extends MainActivity {
 	
-	long driverId = 0;
+	long vehicleId = 0;
 	
     ListView lvAlerts;
     LinearLayout llProgress;
@@ -50,20 +50,20 @@ public class AlertsActivity extends MainActivity {
 		setActionBarTitle("ALERTS");
 		
 		if(savedInstanceState!=null){
-			driverId = savedInstanceState.getLong(VehicleEntry._ID);
+			vehicleId = savedInstanceState.getLong(VehicleEntry._ID);
 		}
 		else if(getIntent()!=null){
-			driverId = getIntent().getLongExtra(VehicleEntry._ID,0);
+			vehicleId = getIntent().getLongExtra(VehicleEntry._ID,0);
 		}
 
 		DbHelper dHelper = DbHelper.getInstance(this);
-		driver = dHelper.getDriverShort(driverId);
+		vehicle = dHelper.getVehicleShort(vehicleId);
 		dHelper.close();
 		
-		((TextView)findViewById(R.id.tvName)).setText(driver.name);
+		((TextView)findViewById(R.id.tvName)).setText(vehicle.name);
 		
 		ImageView imagePhoto = (ImageView)findViewById(R.id.imagePhoto);
-	    if(driver.photo == null || driver.photo.equals(""))
+	    if(vehicle.photo == null || vehicle.photo.equals(""))
 	    	imagePhoto.setImageResource(R.drawable.person_placeholder);
 	    else{
 	    	DisplayImageOptions options = new DisplayImageOptions.Builder()
@@ -74,7 +74,7 @@ public class AlertsActivity extends MainActivity {
 	        .cacheOnDisk(true)
 	        .build();
 	    	
-	    	ImageLoader.getInstance().displayImage(driver.photo, imagePhoto, options);
+	    	ImageLoader.getInstance().displayImage(vehicle.photo, imagePhoto, options);
 	    }
 		
 		findViewById(R.id.btnSwitchDriverMenu).setVisibility(View.GONE);
@@ -93,13 +93,13 @@ public class AlertsActivity extends MainActivity {
 	
 	@Override
 	protected void onResume() {
-		new GetAlertsTask(this).execute("vehicles/"+driver.id+"/alerts.json");
+		new GetAlertsTask(this).execute("vehicles/"+vehicle.id+"/alerts.json");
 		super.onResume();
 	}
 	
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-		outState.putLong(VehicleEntry._ID, driverId);
+		outState.putLong(VehicleEntry._ID, vehicleId);
 		super.onSaveInstanceState(outState);
 	}
 	
@@ -187,9 +187,9 @@ public class AlertsActivity extends MainActivity {
 				
 				@Override
 				public void onClick(View v) {
-					new MarkAlertViewedTask(AlertsActivity.this, alert.id).execute("drivers/"+driver.id+"/alerts/"+alert.id+"/hide.json");
+					new MarkAlertViewedTask(AlertsActivity.this, alert.id).execute("drivers/"+vehicle.id+"/alerts/"+alert.id+"/hide.json");
 					Intent intent = new Intent(AlertsActivity.this, TripActivity.class);
-					intent.putExtra("id", driverId);
+					intent.putExtra("id", vehicleId);
 					intent.putExtra(TripActivity.EXTRA_TRIP_ID, alert.tripId);
 					startActivity(intent);	
 				}
@@ -227,7 +227,7 @@ public class AlertsActivity extends MainActivity {
 
 		@Override
 		protected JSONObject doInBackground(String... params) {
-	        requestParams.add(new BasicNameValuePair("driver_id", ""+driver.id));
+	        requestParams.add(new BasicNameValuePair("vehicle_id", ""+vehicle.id));
 	        requestParams.add(new BasicNameValuePair("page", "1"));
 	        requestParams.add(new BasicNameValuePair("per_page", "1000"));
 	        
@@ -260,7 +260,7 @@ public class AlertsActivity extends MainActivity {
 
 		@Override
 		protected JSONObject doInBackground(String... params) {
-	        requestParams.add(new BasicNameValuePair("driver_id", ""+driver.id));
+	        requestParams.add(new BasicNameValuePair("vehicle_id", ""+vehicle.id));
 	        requestParams.add(new BasicNameValuePair("alert_id", ""+alertId));
 			return super.doInBackground(params);
 		}

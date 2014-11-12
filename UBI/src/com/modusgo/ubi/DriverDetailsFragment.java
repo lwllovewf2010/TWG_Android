@@ -57,7 +57,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 public class DriverDetailsFragment extends Fragment  implements ConnectionCallbacks,
 OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	
-	Driver driver;
+	Vehicle vehicle;
 	SharedPreferences prefs;
 	
 	TextView tvName;
@@ -95,7 +95,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 		
 		prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-		driver = ((DriverActivity)getActivity()).driver;
+		vehicle = ((DriverActivity)getActivity()).vehicle;
 		
 	    tvName = (TextView) rootView.findViewById(R.id.tvName);
 	    tvVehicle = (TextView) rootView.findViewById(R.id.tvVehicle);
@@ -117,7 +117,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(getActivity(), FindMyCarActivity.class);
-				intent.putExtra(VehicleEntry._ID, driver.id);
+				intent.putExtra(VehicleEntry._ID, vehicle.id);
 				startActivity(intent);			
 			}
 		});
@@ -126,7 +126,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(getActivity(), AlertsActivity.class);
-				intent.putExtra(VehicleEntry._ID, driver.id);
+				intent.putExtra(VehicleEntry._ID, vehicle.id);
 				startActivity(intent);			
 			}
 		});
@@ -148,12 +148,12 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(getActivity(), MapActivity.class);
-				intent.putExtra(VehicleEntry._ID, driver.id);
+				intent.putExtra(VehicleEntry._ID, vehicle.id);
 				startActivity(intent);	
 			}
 		});
 	    
-	    new GetDriverTask(getActivity()).execute("vehicles/"+driver.id+".json");
+	    new GetVehiclesTask(getActivity()).execute("vehicles/"+vehicle.id+".json");
 		
 		return rootView;
 	}
@@ -182,23 +182,23 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	}
 	
 	private void updateDriverInfo(){
-		tvName.setText(driver.name);
-	    tvVehicle.setText(driver.getCarFullName());
-	    if(driver.address == null || driver.address.equals(""))
+		tvName.setText(vehicle.name);
+	    tvVehicle.setText(vehicle.getCarFullName());
+	    if(vehicle.address == null || vehicle.address.equals(""))
 	    	tvLocation.setText("Unknown location");
 	    else
-	    	tvLocation.setText(driver.address);
+	    	tvLocation.setText(vehicle.address);
 	    
 	    SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
 		SimpleDateFormat sdfTo = new SimpleDateFormat("MM/dd/yyyy KK:mm aa z", Locale.getDefault());
 		try {
-			tvDate.setText(sdfTo.format(sdfFrom.parse(driver.lastTripDate)));
+			tvDate.setText(sdfTo.format(sdfFrom.parse(vehicle.lastTripDate)));
 		} catch (ParseException e) {
-			tvDate.setText(driver.lastTripDate);
+			tvDate.setText(vehicle.lastTripDate);
 			e.printStackTrace();
 		}
 	    
-		if(driver.photo == null || driver.photo.equals(""))
+		if(vehicle.photo == null || vehicle.photo.equals(""))
 	    	imagePhoto.setImageResource(R.drawable.person_placeholder);
 	    else{
 	    	DisplayImageOptions options = new DisplayImageOptions.Builder()
@@ -209,11 +209,11 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	        .cacheOnDisk(true)
 	        .build();
 	    	
-	    	ImageLoader.getInstance().displayImage(driver.photo, imagePhoto, options);
+	    	ImageLoader.getInstance().displayImage(vehicle.photo, imagePhoto, options);
 	    }
 	    
-		if(driver.carFuelLevel>=0){
-			String fuelLestString = driver.carFuelLevel+"%";
+		if(vehicle.carFuelLevel>=0){
+			String fuelLestString = vehicle.carFuelLevel+"%";
 		    SpannableStringBuilder cs = new SpannableStringBuilder(fuelLestString);
 		    cs.setSpan(new SuperscriptSpan(), fuelLestString.length()-1, fuelLestString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		    cs.setSpan(new RelativeSizeSpan(0.5f), fuelLestString.length()-1, fuelLestString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -223,7 +223,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 			tvFuel.setText("N/A");
 		}
 	    
-	    if(driver.carCheckup){
+	    if(vehicle.carCheckup){
 	    	tvDiagnostics.setText("");
 	    	tvDiagnostics.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_diagnostics_green_medium, 0, 0, 0);
 	    }else{
@@ -231,25 +231,25 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	    	tvDiagnostics.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_diagnostics_red_medium, 0, 0, 0);		    	
 	    }
 	    
-	    if(driver.alerts<=0){
+	    if(vehicle.alerts<=0){
 	    	tvAlerts.setText("");
 	    	tvAlerts.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_alerts_green_medium, 0, 0, 0);
 	    }else{
-	    	if(driver.alerts==0)
+	    	if(vehicle.alerts==0)
 	    		tvAlerts.setText("…");
 	    	else
-	    		tvAlerts.setText(""+driver.alerts);
+	    		tvAlerts.setText(""+vehicle.alerts);
 	    	tvAlerts.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_alerts_red_medium, 0, 0, 0);		    	
 	    }
 	    
-	    if(driver.lastTripId>0){
+	    if(vehicle.lastTripId>0){
 	    	rlLastTrip.findViewById(R.id.imageArrow).setVisibility(View.VISIBLE);
 		    rlLastTrip.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					Intent intent = new Intent(getActivity(), TripActivity.class);
-					intent.putExtra(VehicleEntry._ID, driver.id);
-					intent.putExtra(TripActivity.EXTRA_TRIP_ID, driver.lastTripId);
+					intent.putExtra(VehicleEntry._ID, vehicle.id);
+					intent.putExtra(TripActivity.EXTRA_TRIP_ID, vehicle.lastTripId);
 					startActivity(intent);
 				}
 			});
@@ -258,7 +258,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	    	rlLastTrip.findViewById(R.id.imageArrow).setVisibility(View.GONE);	    	
 	    }
 	    
-	    if(TextUtils.isEmpty(driver.lastTripDate)){
+	    if(TextUtils.isEmpty(vehicle.lastTripDate)){
 	    	rlLastTrip.setVisibility(View.GONE);
 	    }
 	    
@@ -274,12 +274,12 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
     }
 
     private void setUpMap() {
-    	if(driver.latitude!=0 && driver.longitude!=0){
-    		mMap.addMarker(new MarkerOptions().position(new LatLng(driver.latitude, driver.longitude)).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_car)));
+    	if(vehicle.latitude!=0 && vehicle.longitude!=0){
+    		mMap.addMarker(new MarkerOptions().position(new LatLng(vehicle.latitude, vehicle.longitude)).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_car)));
     		float density = 1;
     		if(isAdded())
     			density = getResources().getDisplayMetrics().density;
-			mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(driver.latitude-0.016f/density, driver.longitude), 14.0f));
+			mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(vehicle.latitude-0.016f/density, vehicle.longitude), 14.0f));
     	}
     	
     	mMap.getUiSettings().setZoomControlsEnabled(false);
@@ -301,7 +301,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
     public void onLocationChanged(Location location) {
 		btnDistanceToCar.setEnabled(true);
 		
-		Location.distanceBetween(driver.latitude, driver.longitude, location.getLatitude(), location.getLongitude(), distanceToCar);
+		Location.distanceBetween(vehicle.latitude, vehicle.longitude, location.getLatitude(), location.getLongitude(), distanceToCar);
 		float distance = Utils.metersToMiles(distanceToCar[0]);
 		
 		if(distance>=10000){
@@ -359,9 +359,9 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
         }
     }
     
-    class GetDriverTask extends BaseRequestAsyncTask{
+    class GetVehiclesTask extends BaseRequestAsyncTask{
 
-		public GetDriverTask(Context context) {
+		public GetVehiclesTask(Context context) {
 			super(context);
 		}
 		
@@ -381,14 +381,14 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 			
 			JSONObject vehicleJSON = responseJSON.getJSONObject("vehicle");
 			if(isAdded()){
-				driver = Driver.fromJSON(getActivity().getApplicationContext(), vehicleJSON);
+				vehicle = Vehicle.fromJSON(getActivity().getApplicationContext(), vehicleJSON);
 				DbHelper dbHelper = DbHelper.getInstance(getActivity());
-				dbHelper.saveDriver(driver);
+				dbHelper.saveVehicle(vehicle);
 				dbHelper.close();
 				
 				updateFragment();
 			}
-			new GetTripsTask(context).execute("vehicles/"+driver.id+"/trips.json");
+			new GetTripsTask(context).execute("vehicles/"+vehicle.id+"/trips.json");
 			
 			super.onSuccess(responseJSON);
 		}
@@ -414,7 +414,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 			
 			Cursor c = db.query(TripEntry.TABLE_NAME, 
 					new String[]{TripEntry._ID},
-					TripEntry.COLUMN_NAME_DRIVER_ID + " = " + driver.id, null, null, null, null);
+					TripEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id, null, null, null, null);
 			int tripsInDb = c.getCount();
 			c.close();
 			db.close();
@@ -466,7 +466,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 			}
 			
 			DbHelper dbHelper = DbHelper.getInstance(getActivity());
-			dbHelper.saveTrips(driver.id, trips);
+			dbHelper.saveTrips(vehicle.id, trips);
 			dbHelper.close();
 			
 			super.onSuccess(responseJSON);

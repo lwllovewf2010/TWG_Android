@@ -104,9 +104,9 @@ public class SettingsViewFragment extends Fragment{
 		long vehicleId = prefs.getLong(Constants.PREF_VEHICLE_ID, -1);
 		if(vehicleId!=-1){
 			DbHelper dbHelper = DbHelper.getInstance(getActivity());
-			Driver d = dbHelper.getDriver(vehicleId);
+			Vehicle v = dbHelper.getVehicle(vehicleId);
 			dbHelper.close();
-			tvCar.setText(d.getCarFullName());
+			tvCar.setText(v.getCarFullName());
 		}
 		else{
 			tvCar.setText("N/A");			

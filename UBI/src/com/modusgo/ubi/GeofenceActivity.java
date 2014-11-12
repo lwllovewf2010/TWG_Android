@@ -68,13 +68,13 @@ public class GeofenceActivity extends MainActivity {
 		}
 
 		DbHelper dHelper = DbHelper.getInstance(this);
-		driver = dHelper.getDriverShort(driverId);
+		vehicle = dHelper.getVehicleShort(driverId);
 		dHelper.close();
 		
-		((TextView)findViewById(R.id.tvName)).setText(driver.name);
+		((TextView)findViewById(R.id.tvName)).setText(vehicle.name);
 		
 		ImageView imagePhoto = (ImageView)findViewById(R.id.imagePhoto);
-	    if(driver.photo == null || driver.photo.equals(""))
+	    if(vehicle.photo == null || vehicle.photo.equals(""))
 	    	imagePhoto.setImageResource(R.drawable.person_placeholder);
 	    else{
 	    	DisplayImageOptions options = new DisplayImageOptions.Builder()
@@ -85,7 +85,7 @@ public class GeofenceActivity extends MainActivity {
 	        .cacheOnDisk(true)
 	        .build();
 	    	
-	    	ImageLoader.getInstance().displayImage(driver.photo, imagePhoto, options);
+	    	ImageLoader.getInstance().displayImage(vehicle.photo, imagePhoto, options);
 	    }
 	    
 		findViewById(R.id.btnSwitchDriverMenu).setVisibility(View.GONE);
@@ -105,7 +105,7 @@ public class GeofenceActivity extends MainActivity {
 			public void onMapLoaded() {
 				CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(37.8430094,-95.0098992), 1);
 		        map.animateCamera(cameraUpdate);
-				new GetGeofenceTask(GeofenceActivity.this).execute("vehicles/"+driver.id+"/limits.json");
+				new GetGeofenceTask(GeofenceActivity.this).execute("vehicles/"+vehicle.id+"/limits.json");
 			}
 		});
         map.setOnMapLongClickListener(new OnMapLongClickListener() {
@@ -170,7 +170,7 @@ public class GeofenceActivity extends MainActivity {
 			        tvInstructions.setText("Press and hold anywhere on\nthe map to reset geofence borders");
 				}
 				else{
-					new SetGeofenceTask(GeofenceActivity.this).execute("vehicles/"+driver.id+"/limits.json");
+					new SetGeofenceTask(GeofenceActivity.this).execute("vehicles/"+vehicle.id+"/limits.json");
 				}
 			}
 		});
@@ -254,7 +254,7 @@ public class GeofenceActivity extends MainActivity {
 	        tvInstructions.setText("Press and hold anywhere on\nthe map to reset geofence borders");
 		}
 		else{
-	        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(driver.latitude, driver.longitude), 10);
+	        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(vehicle.latitude, vehicle.longitude), 10);
 	        map.animateCamera(cameraUpdate);
 
 			geofencingStarted = true;
@@ -307,7 +307,7 @@ public class GeofenceActivity extends MainActivity {
 		
 		@Override
 		protected void onPreExecute() {
-			requestParams.add(new BasicNameValuePair("vehicle_id",""+driver.id));
+			requestParams.add(new BasicNameValuePair("vehicle_id",""+vehicle.id));
 			requestParams.add(new BasicNameValuePair("key", "geofence"));
 			requestParams.add(new BasicNameValuePair("active", "true"));
 			super.onPreExecute();
@@ -353,7 +353,7 @@ public class GeofenceActivity extends MainActivity {
 			btnSave.setText("Saving...");
 			mapEnabled = false;
 			
-			requestParams.add(new BasicNameValuePair("vehicle_id",""+driver.id));
+			requestParams.add(new BasicNameValuePair("vehicle_id",""+vehicle.id));
 			requestParams.add(new BasicNameValuePair("key", "geofence"));
 			requestParams.add(new BasicNameValuePair("active", "true"));
 			try{

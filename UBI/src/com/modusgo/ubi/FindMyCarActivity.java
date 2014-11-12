@@ -58,7 +58,7 @@ OnConnectionFailedListener, LocationListener {
     
 	public static final String EXTRA_POINTS = "points";
 	
-	long driverId = 0;
+	long vehicleId = 0;
 	
 	MapView mapView;
     GoogleMap map;
@@ -82,14 +82,14 @@ OnConnectionFailedListener, LocationListener {
 		setActionBarTitle("FIND MY CAR");
 		
 		if(savedInstanceState!=null){
-			driverId = savedInstanceState.getLong(VehicleEntry._ID);
+			vehicleId = savedInstanceState.getLong(VehicleEntry._ID);
 		}
 		else if(getIntent()!=null){
-			driverId = getIntent().getLongExtra(VehicleEntry._ID,0);
+			vehicleId = getIntent().getLongExtra(VehicleEntry._ID,0);
 		}
 
 		DbHelper dHelper = DbHelper.getInstance(this);
-		driver = dHelper.getDriverShort(driverId);
+		vehicle = dHelper.getVehicleShort(vehicleId);
 		dHelper.close();
 		
 		points = new ArrayList<LatLng>();
@@ -183,10 +183,10 @@ OnConnectionFailedListener, LocationListener {
 	        
 		}
 		else{
-	        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(driver.latitude, driver.longitude), 10);
+	        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(vehicle.latitude, vehicle.longitude), 10);
 	        map.animateCamera(cameraUpdate);
 		}
-		map.addMarker(new MarkerOptions().position(new LatLng(driver.latitude, driver.longitude)).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_car)));
+		map.addMarker(new MarkerOptions().position(new LatLng(vehicle.latitude, vehicle.longitude)).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_car)));
 		
 		btnStart.setEnabled(true);
 	}
@@ -196,7 +196,7 @@ OnConnectionFailedListener, LocationListener {
 		
 		drawPolyline();
 		
-		map.addMarker(new MarkerOptions().position(new LatLng(driver.latitude, driver.longitude)).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_car)));
+		map.addMarker(new MarkerOptions().position(new LatLng(vehicle.latitude, vehicle.longitude)).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_car)));
 		map.addMarker(new MarkerOptions().position(new LatLng(myLocation.getLatitude(), myLocation.getLongitude())).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_mylocation)).anchor(0.5f, 0.5f));
 	}
 	
@@ -213,7 +213,7 @@ OnConnectionFailedListener, LocationListener {
     public void onLocationChanged(Location location) {
 		if(tvInfo.getVisibility()==View.VISIBLE){
 			Builder builder = LatLngBounds.builder();
-			builder.include(new LatLng(driver.latitude, driver.longitude));
+			builder.include(new LatLng(vehicle.latitude, vehicle.longitude));
 			builder.include(new LatLng(location.getLatitude(), location.getLongitude()));
 			CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(builder.build(), 150);
 	        map.animateCamera(cameraUpdate);
@@ -257,7 +257,7 @@ OnConnectionFailedListener, LocationListener {
     
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-		outState.putLong(VehicleEntry._ID, driverId);
+		outState.putLong(VehicleEntry._ID, vehicleId);
 		super.onSaveInstanceState(outState);
 	}
 	
@@ -355,7 +355,7 @@ OnConnectionFailedListener, LocationListener {
 			baseUrl = "http://maps.googleapis.com/maps/api/directions/json";
 			requestParams.clear();
 			requestParams.add(new BasicNameValuePair("origin", myLocation.getLatitude()+","+myLocation.getLongitude()));
-			requestParams.add(new BasicNameValuePair("destination", driver.latitude+","+driver.longitude));
+			requestParams.add(new BasicNameValuePair("destination", vehicle.latitude+","+vehicle.longitude));
 			requestParams.add(new BasicNameValuePair("sensor", "false"));
 			requestParams.add(new BasicNameValuePair("mode", "walking"));
 			

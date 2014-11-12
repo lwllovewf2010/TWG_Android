@@ -13,7 +13,6 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -39,10 +38,10 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 public class HomeActivity extends MainActivity{
 	
 	DriversAdapter driversAdapter;
-	ArrayList<Driver> drivers = new ArrayList<Driver>();
+	ArrayList<Vehicle> vehicles = new ArrayList<Vehicle>();
 
 	SwipeRefreshLayout lRefresh;
-	ListView lvDrivers;
+	ListView lvVehicles;
 	TextView tvError;
 	
 	@Override
@@ -53,11 +52,11 @@ public class HomeActivity extends MainActivity{
 		setActionBarTitle("HOME");
 
 		lRefresh = (SwipeRefreshLayout) findViewById(R.id.lRefresh);
-		lvDrivers = (ListView) findViewById(R.id.listViewDrivers);
+		lvVehicles = (ListView) findViewById(R.id.listViewDrivers);
 		tvError = (TextView) findViewById(R.id.tvError);
 		
-		driversAdapter = new DriversAdapter(this, drivers);
-		lvDrivers.setAdapter(driversAdapter);
+		driversAdapter = new DriversAdapter(this, vehicles);
+		lvVehicles.setAdapter(driversAdapter);
 		
 		btnUp.setImageResource(R.drawable.ic_map);
 		setButtonUpVisibility(true);
@@ -69,7 +68,7 @@ public class HomeActivity extends MainActivity{
 			public void onRefresh() {
 				lRefresh.setRefreshing(true);
 				AnimationUtils.collapse(tvError);
-				new GetDriversTask(HomeActivity.this).execute("vehicles.json");
+				new GetVehiclesTask(HomeActivity.this).execute("vehicles.json");
 			}
 		});
 		
@@ -81,12 +80,12 @@ public class HomeActivity extends MainActivity{
 	
 	private void updateDrivers(){
 		DbHelper dbHelper = DbHelper.getInstance(this);
-		drivers = dbHelper.getDriversShort();
+		vehicles = dbHelper.getVehiclesShort();
 		dbHelper.close();
 		
-		if(drivers.size()==1){
+		if(vehicles.size()==1){
 			Intent i = new Intent(this, DriverActivity.class);
-			i.putExtra(VehicleEntry._ID, drivers.get(0).id);
+			i.putExtra(VehicleEntry._ID, vehicles.get(0).id);
 			startActivity(i);
 			finish();
 		}
@@ -107,7 +106,7 @@ public class HomeActivity extends MainActivity{
 		SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
 		SimpleDateFormat sdfTo = new SimpleDateFormat("MM/dd/yyyy KK:mm aa z", Locale.getDefault());
 		
-		DriversAdapter(Context context, ArrayList<Driver> drivers) {
+		DriversAdapter(Context context, ArrayList<Vehicle> drivers) {
 		    ctx = context;
 		    lInflater = (LayoutInflater) ctx
 		        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -115,12 +114,12 @@ public class HomeActivity extends MainActivity{
 		
 		@Override
 		public int getCount() {
-		    return drivers.size();
+		    return vehicles.size();
 		}
 
 		@Override
 		public Object getItem(int position) {
-		    return drivers.get(position);
+		    return vehicles.get(position);
 		}
 
 		@Override
@@ -136,7 +135,7 @@ public class HomeActivity extends MainActivity{
 		      view = lInflater.inflate(R.layout.home_drivers_list_item, parent, false);
 		    }
 
-		    final Driver d = getDriver(position);
+		    final Vehicle d = getDriver(position);
 
 		    ((TextView) view.findViewById(R.id.tvName)).setText(d.name);
 		    ((TextView) view.findViewById(R.id.tvVehicle)).setText(d.getCarFullName());
@@ -219,8 +218,8 @@ public class HomeActivity extends MainActivity{
 		    return view;
 		}
 		
-		Driver getDriver(int position) {
-			return ((Driver) getItem(position));
+		Vehicle getDriver(int position) {
+			return ((Vehicle) getItem(position));
 		}
 		
 	}
@@ -232,9 +231,9 @@ public class HomeActivity extends MainActivity{
 		super.onResume();
 	}
 	
-	class GetDriversTask extends BaseRequestAsyncTask{
+	class GetVehiclesTask extends BaseRequestAsyncTask{
 
-		public GetDriversTask(Context context) {
+		public GetVehiclesTask(Context context) {
 			super(context);
 		}
 		
@@ -267,14 +266,14 @@ public class HomeActivity extends MainActivity{
 			tvError.setVisibility(View.GONE);
 			
 			JSONArray vehiclesJSON = responseJSON.getJSONArray("vehicles");
-			drivers.clear();
+			vehicles.clear();
 			for (int i = 0; i < vehiclesJSON.length(); i++) {
 				JSONObject vehicleJSON = vehiclesJSON.getJSONObject(i);
-				drivers.add(Driver.fromJSON(getApplicationContext(), vehicleJSON));
+				vehicles.add(Vehicle.fromJSON(getApplicationContext(), vehicleJSON));
 			}
 			
 			DbHelper dbHelper = DbHelper.getInstance(HomeActivity.this);
-			dbHelper.saveDrivers(drivers);
+			dbHelper.saveVehicles(vehicles);
 			dbHelper.close();
 			
 			updateDrivers();

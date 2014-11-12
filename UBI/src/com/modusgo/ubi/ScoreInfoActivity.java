@@ -29,7 +29,7 @@ import com.modusgo.ubi.utils.Utils;
 
 public class ScoreInfoActivity extends MainActivity{
 	
-	long driverId = 0;
+	long vehicleId = 0;
 	
 	private static final String ATTRIBUTE_NAME_VALUE = "value";
 	private static final String ATTRIBUTE_NAME_TITLE = "title";
@@ -50,13 +50,13 @@ public class ScoreInfoActivity extends MainActivity{
 		setActionBarTitle("Score Stats");
 		
 		if(savedInstanceState!=null){
-			driverId = savedInstanceState.getLong(VehicleEntry._ID);
+			vehicleId = savedInstanceState.getLong(VehicleEntry._ID);
 		}
 		else if(getIntent()!=null){
-			driverId = getIntent().getLongExtra(VehicleEntry._ID, 0);
+			vehicleId = getIntent().getLongExtra(VehicleEntry._ID, 0);
 		}
 
-		driver = getDriverFromDb(driverId);
+		vehicle = getVehicleFromDb(vehicleId);
 		
 		ExpandableHeightGridView gvPercentData = (ExpandableHeightGridView) findViewById(R.id.gvPercentData);
 		//gvPercentData.setColumnWidth(100);
@@ -115,7 +115,7 @@ public class ScoreInfoActivity extends MainActivity{
         
 	}
 	
-	private Driver getDriverFromDb(long id){
+	private Vehicle getVehicleFromDb(long id){
 		DbHelper dHelper = DbHelper.getInstance(this);
 		SQLiteDatabase db = dHelper.getReadableDatabase();
 		Cursor c = db.query(VehicleEntry.TABLE_NAME, 
@@ -127,19 +127,19 @@ public class ScoreInfoActivity extends MainActivity{
 				VehicleEntry.COLUMN_NAME_LAST_TRIP_DATE}, 
 				VehicleEntry._ID+" = ?", new String[]{Long.toString(id)}, null, null, null);
 		
-		Driver d = new Driver();
+		Vehicle v = new Vehicle();
 		
 		if(c.moveToFirst()){
-			d.id = c.getLong(0);
-			d.name = c.getString(1);
-			d.photo = c.getString(2);
-			d.carVIN = c.getString(3);
-			d.lastTripDate = c.getString(4);
+			v.id = c.getLong(0);
+			v.name = c.getString(1);
+			v.photo = c.getString(2);
+			v.carVIN = c.getString(3);
+			v.lastTripDate = c.getString(4);
 		}
 		c.close();
 		db.close();
 		dHelper.close();
-		return d;
+		return v;
 	}
 	
 	private boolean updatePercentInfoAdapter(SQLiteDatabase db){		
@@ -148,7 +148,7 @@ public class ScoreInfoActivity extends MainActivity{
 				ScorePercentageEntry._ID,
 				ScorePercentageEntry.COLUMN_NAME_STAT_NAME,
 				ScorePercentageEntry.COLUMN_NAME_STAT_VALUE}, 
-				ScorePercentageEntry.COLUMN_NAME_DRIVER_ID + " = " + driver.id, null, null, null, ScoreGraphEntry._ID+" ASC");
+				ScorePercentageEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id, null, null, null, ScoreGraphEntry._ID+" ASC");
 		
 		percentInfoData.clear();
 		Map<String, Object> m;
@@ -185,11 +185,11 @@ public class ScoreInfoActivity extends MainActivity{
 		DecimalFormat df = new DecimalFormat("0.000");
 		
 		LinkedHashMap<String, String> infoFields = new LinkedHashMap<String, String>();
-		infoFields.put("Last trip", Utils.convertTime(driver.lastTripDate, sdf));
-		infoFields.put("VIN", driver.carVIN);
+		infoFields.put("Last trip", Utils.convertTime(vehicle.lastTripDate, sdf));
+		infoFields.put("VIN", vehicle.carVIN);
 		infoFields.put("Profile date", "N/A");
 		infoFields.put("Start date", "N/A");
-		infoFields.put("Profile driving miles", df.format(driver.totalDistance)+" Miles");
+		infoFields.put("Profile driving miles", df.format(vehicle.totalDistance)+" Miles");
 		infoFields.put("Estimated annual driving", "N/A");
 		
 		LayoutInflater inflater = getLayoutInflater();
@@ -209,7 +209,7 @@ public class ScoreInfoActivity extends MainActivity{
 	
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
-		outState.putLong(VehicleEntry._ID, driverId);
+		outState.putLong(VehicleEntry._ID, vehicleId);
 		super.onSaveInstanceState(outState);
 	}
 	

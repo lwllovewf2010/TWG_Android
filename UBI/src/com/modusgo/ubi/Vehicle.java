@@ -15,7 +15,7 @@ import android.text.TextUtils;
 
 import com.modusgo.ubi.utils.Utils;
 
-public class Driver implements Serializable{
+public class Vehicle implements Serializable{
 	
 	private static final long serialVersionUID = 1315237349232671000L;
 	public long id;
@@ -52,7 +52,7 @@ public class Driver implements Serializable{
 	public String profileDate = "";
 	public int harshEvents;
 	
-	public Driver(){
+	public Vehicle(){
 	}
 	
 	public String getFirstName(){
@@ -73,8 +73,8 @@ public class Driver implements Serializable{
 		return carYear + " " + carMake + " " + carModel;
 	}
 	
-	public static Driver fromJSON(Context context, JSONObject vehicleJSON) throws JSONException{
-		Driver d = new Driver();
+	public static Vehicle fromJSON(Context context, JSONObject vehicleJSON) throws JSONException{
+		Vehicle d = new Vehicle();
 		d.id = vehicleJSON.getLong("id");
 		
 		if(!vehicleJSON.isNull("driver")){

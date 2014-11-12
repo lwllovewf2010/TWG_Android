@@ -13,7 +13,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.modusgo.ubi.DiagnosticsFragment.Maintenance;
 import com.modusgo.ubi.DiagnosticsFragment.WarrantyInformation;
 import com.modusgo.ubi.DiagnosticsTroubleCode;
-import com.modusgo.ubi.Driver;
+import com.modusgo.ubi.Vehicle;
 import com.modusgo.ubi.LimitsFragment.Limit;
 import com.modusgo.ubi.Recall;
 import com.modusgo.ubi.ScoreCirclesActivity.CirclesSection;
@@ -77,7 +77,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	    
 		    "CREATE TABLE " + TripEntry.TABLE_NAME + " (" +
 		    TripEntry._ID + " INTEGER PRIMARY KEY," +
-		    TripEntry.COLUMN_NAME_DRIVER_ID + INT_TYPE + COMMA_SEP +
+		    TripEntry.COLUMN_NAME_VEHICLE_ID + INT_TYPE + COMMA_SEP +
 		    TripEntry.COLUMN_NAME_EVENTS_COUNT + INT_TYPE + COMMA_SEP +
 		    TripEntry.COLUMN_NAME_START_TIME + TEXT_TYPE + COMMA_SEP +
 		    TripEntry.COLUMN_NAME_END_TIME + TEXT_TYPE + COMMA_SEP +
@@ -108,20 +108,20 @@ public class DbHelper extends SQLiteOpenHelper {
 	
 		    "CREATE TABLE " + ScoreGraphEntry.TABLE_NAME + " (" +
 		    ScoreGraphEntry._ID + " INTEGER PRIMARY KEY," +
-		    ScoreGraphEntry.COLUMN_NAME_DRIVER_ID + INT_TYPE + COMMA_SEP +
+		    ScoreGraphEntry.COLUMN_NAME_VEHICLE_ID + INT_TYPE + COMMA_SEP +
 		    ScoreGraphEntry.COLUMN_NAME_MONTH + INT_TYPE + COMMA_SEP +
 		    ScoreGraphEntry.COLUMN_NAME_SCORE + INT_TYPE + COMMA_SEP +
 		    ScoreGraphEntry.COLUMN_NAME_GRADE + TEXT_TYPE +  " ); ",
 	
 		    "CREATE TABLE " + ScorePercentageEntry.TABLE_NAME + " (" +
 		    ScorePercentageEntry._ID + " INTEGER PRIMARY KEY," +
-		    ScorePercentageEntry.COLUMN_NAME_DRIVER_ID + INT_TYPE + COMMA_SEP +
+		    ScorePercentageEntry.COLUMN_NAME_VEHICLE_ID + INT_TYPE + COMMA_SEP +
 		    ScorePercentageEntry.COLUMN_NAME_STAT_NAME + TEXT_TYPE + COMMA_SEP +
 		    ScorePercentageEntry.COLUMN_NAME_STAT_VALUE + INT_TYPE +  " ); ",
 	
 		    "CREATE TABLE " + ScorePieChartEntry.TABLE_NAME + " (" +
 		    ScorePieChartEntry._ID + " INTEGER PRIMARY KEY," +
-		    ScorePieChartEntry.COLUMN_NAME_DRIVER_ID + INT_TYPE + COMMA_SEP +
+		    ScorePieChartEntry.COLUMN_NAME_VEHICLE_ID + INT_TYPE + COMMA_SEP +
 		    ScorePieChartEntry.COLUMN_NAME_TAB + TEXT_TYPE + COMMA_SEP +
 		    ScorePieChartEntry.COLUMN_NAME_VALUE + FLOAT_TYPE + COMMA_SEP +
 		    ScorePieChartEntry.COLUMN_NAME_TITLE + TEXT_TYPE + COMMA_SEP +
@@ -129,7 +129,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	
 		    "CREATE TABLE " + ScoreCirclesEntry.TABLE_NAME + " (" +
 		    ScoreCirclesEntry._ID + " INTEGER PRIMARY KEY," +
-		    ScoreCirclesEntry.COLUMN_NAME_DRIVER_ID + INT_TYPE + COMMA_SEP +
+		    ScoreCirclesEntry.COLUMN_NAME_VEHICLE_ID + INT_TYPE + COMMA_SEP +
 		    ScoreCirclesEntry.COLUMN_NAME_TAB + TEXT_TYPE + COMMA_SEP +
 		    ScoreCirclesEntry.COLUMN_NAME_SECTION + TEXT_TYPE + COMMA_SEP +
 		    ScoreCirclesEntry.COLUMN_NAME_MARK + INT_TYPE + COMMA_SEP +
@@ -137,7 +137,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	
 		    "CREATE TABLE " + DTCEntry.TABLE_NAME + " (" +
 		    DTCEntry._ID + " INTEGER PRIMARY KEY," +
-		    DTCEntry.COLUMN_NAME_DRIVER_ID + INT_TYPE + COMMA_SEP +
+		    DTCEntry.COLUMN_NAME_VEHICLE_ID + INT_TYPE + COMMA_SEP +
 		    DTCEntry.COLUMN_NAME_CODE + TEXT_TYPE + COMMA_SEP +
 		    DTCEntry.COLUMN_NAME_CONDITIONS + TEXT_TYPE + COMMA_SEP +
 		    DTCEntry.COLUMN_NAME_CREATED_AT + TEXT_TYPE + COMMA_SEP +
@@ -153,7 +153,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	
 		    "CREATE TABLE " + RecallEntry.TABLE_NAME + " (" +
 		    RecallEntry._ID + " INTEGER PRIMARY KEY," +
-		    RecallEntry.COLUMN_NAME_DRIVER_ID + INT_TYPE + COMMA_SEP +
+		    RecallEntry.COLUMN_NAME_VEHICLE_ID + INT_TYPE + COMMA_SEP +
 		    RecallEntry.COLUMN_NAME_CONSEQUENCE + TEXT_TYPE + COMMA_SEP +
 		    RecallEntry.COLUMN_NAME_CORRECTIVE_ACTION + TEXT_TYPE + COMMA_SEP +
 		    RecallEntry.COLUMN_NAME_CREATED_AT + TEXT_TYPE + COMMA_SEP +
@@ -163,7 +163,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		    
 		    "CREATE TABLE " + MaintenanceEntry.TABLE_NAME + " (" +
 		    MaintenanceEntry._ID + " INTEGER PRIMARY KEY," +
-		    MaintenanceEntry.COLUMN_NAME_DRIVER_ID + INT_TYPE + COMMA_SEP +
+		    MaintenanceEntry.COLUMN_NAME_VEHICLE_ID + INT_TYPE + COMMA_SEP +
 			MaintenanceEntry.COLUMN_NAME_CREATED_AT + TEXT_TYPE + COMMA_SEP +
 			MaintenanceEntry.COLUMN_NAME_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
 			MaintenanceEntry.COLUMN_NAME_IMPORTANCE + TEXT_TYPE + COMMA_SEP +
@@ -172,14 +172,14 @@ public class DbHelper extends SQLiteOpenHelper {
 		    
 		    "CREATE TABLE " + WarrantyInfoEntry.TABLE_NAME + " (" +
 		    WarrantyInfoEntry._ID + " INTEGER PRIMARY KEY," +
-		    WarrantyInfoEntry.COLUMN_NAME_DRIVER_ID + INT_TYPE + COMMA_SEP +
+		    WarrantyInfoEntry.COLUMN_NAME_VEHICLE_ID + INT_TYPE + COMMA_SEP +
 			WarrantyInfoEntry.COLUMN_NAME_CREATED_AT + TEXT_TYPE + COMMA_SEP +
 			WarrantyInfoEntry.COLUMN_NAME_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
 			WarrantyInfoEntry.COLUMN_NAME_MILEAGE + TEXT_TYPE + " )",
 		    
 		    "CREATE TABLE " + LimitsEntry.TABLE_NAME + " (" +
 		    LimitsEntry._ID + " INTEGER PRIMARY KEY," +
-		    LimitsEntry.COLUMN_NAME_DRIVER_ID + INT_TYPE + COMMA_SEP +
+		    LimitsEntry.COLUMN_NAME_VEHICLE_ID + INT_TYPE + COMMA_SEP +
 			LimitsEntry.COLUMN_NAME_KEY + TEXT_TYPE + COMMA_SEP +
 			LimitsEntry.COLUMN_NAME_TITLE + TEXT_TYPE + COMMA_SEP +
 			LimitsEntry.COLUMN_NAME_TYPE + TEXT_TYPE + COMMA_SEP +
@@ -212,7 +212,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	"DROP TABLE IF EXISTS " + DDEventEntry.TABLE_NAME};
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 20;
+	public static final int DATABASE_VERSION = 21;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;
@@ -248,7 +248,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	    onUpgrade(db, oldVersion, newVersion);
 	}
 	
-	public ArrayList<Driver> getDriversShort(){
+	public ArrayList<Vehicle> getVehiclesShort(){
 		SQLiteDatabase db = sInstance.getReadableDatabase();
 		Cursor c = db.query(VehicleEntry.TABLE_NAME, 
 				new String[]{
@@ -263,11 +263,11 @@ public class DbHelper extends SQLiteOpenHelper {
 				VehicleEntry.COLUMN_NAME_DRIVER_PHOTO}, 
 				null, null, null, null, null);
 		
-		ArrayList<Driver> drivers = new ArrayList<Driver>();
+		ArrayList<Vehicle> drivers = new ArrayList<Vehicle>();
 		
 		if(c.moveToFirst()){
 			while (!c.isAfterLast()) {
-				Driver d = new Driver();
+				Vehicle d = new Vehicle();
 				d.id = c.getLong(0);
 				d.name = c.getString(1);
 				d.carMake = c.getString(2);
@@ -286,7 +286,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		return drivers;
 	}
 	
-	public Driver getDriverShort(long id){
+	public Vehicle getVehicleShort(long id){
 		SQLiteDatabase db = sInstance.getReadableDatabase();
 		Cursor c = db.query(VehicleEntry.TABLE_NAME, 
 				new String[]{
@@ -297,7 +297,7 @@ public class DbHelper extends SQLiteOpenHelper {
 				VehicleEntry.COLUMN_NAME_LONGITUDE}, 
 				VehicleEntry._ID+" = ?", new String[]{Long.toString(id)}, null, null, null);
 		
-		Driver d = new Driver();
+		Vehicle d = new Vehicle();
 		
 		if(c.moveToFirst()){
 			d.id = c.getLong(0);
@@ -311,7 +311,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		return d;
 	}
 	
-	public Driver getDriver(long id){
+	public Vehicle getVehicle(long id){
 		SQLiteDatabase db = sInstance.getReadableDatabase();
 		Cursor c = db.query(VehicleEntry.TABLE_NAME, 
 				new String[]{
@@ -343,49 +343,49 @@ public class DbHelper extends SQLiteOpenHelper {
 			    VehicleEntry.COLUMN_NAME_ODOMETER}, 
 				VehicleEntry._ID+" = ?", new String[]{Long.toString(id)}, null, null, null);
 		
-		Driver d = new Driver();
+		Vehicle v = new Vehicle();
 		
 		if(c.moveToFirst()){
-			d.id = c.getLong(0);
-			d.name = c.getString(1);
-			d.markerIcon = c.getString(2);
-			d.photo = c.getString(3);
-			d.carMake = c.getString(4);
-			d.carModel = c.getString(5);
-			d.carYear = c.getString(6);
-			d.carVIN = c.getString(7);
-			d.carFuelLevel = c.getInt(8);
-			d.carCheckup = c.getInt(9) == 1;
-			d.lastTripDate = c.getString(10);
-			d.lastTripId = c.getLong(11);
-			d.alerts = c.getInt(12);
-			d.latitude = c.getDouble(13);
-			d.longitude = c.getDouble(14);
-			d.address = c.getString(15);
-			d.grade = c.getString(16);
-			d.score = c.getInt(17);
-			d.totalTripsCount = c.getInt(18);
-			d.totalDrivingTime = c.getInt(19);
-			d.totalDistance = c.getDouble(20);
-			d.totalBraking = c.getInt(21);
-			d.totalAcceleration = c.getInt(22);
-			d.totalSpeeding = c.getInt(23);
-			d.totalSpeedingDistance = c.getDouble(24);
-			d.odometer = c.getInt(25);
+			v.id = c.getLong(0);
+			v.name = c.getString(1);
+			v.markerIcon = c.getString(2);
+			v.photo = c.getString(3);
+			v.carMake = c.getString(4);
+			v.carModel = c.getString(5);
+			v.carYear = c.getString(6);
+			v.carVIN = c.getString(7);
+			v.carFuelLevel = c.getInt(8);
+			v.carCheckup = c.getInt(9) == 1;
+			v.lastTripDate = c.getString(10);
+			v.lastTripId = c.getLong(11);
+			v.alerts = c.getInt(12);
+			v.latitude = c.getDouble(13);
+			v.longitude = c.getDouble(14);
+			v.address = c.getString(15);
+			v.grade = c.getString(16);
+			v.score = c.getInt(17);
+			v.totalTripsCount = c.getInt(18);
+			v.totalDrivingTime = c.getInt(19);
+			v.totalDistance = c.getDouble(20);
+			v.totalBraking = c.getInt(21);
+			v.totalAcceleration = c.getInt(22);
+			v.totalSpeeding = c.getInt(23);
+			v.totalSpeedingDistance = c.getDouble(24);
+			v.odometer = c.getInt(25);
 				
 		}
 		c.close();
 		db.close();
-		return d;
+		return v;
 	}
 	
-	public void saveDriver(Driver d){
-		ArrayList<Driver> drivers = new ArrayList<Driver>();
-		drivers.add(d);
-		saveDrivers(drivers, false);
+	public void saveVehicle(Vehicle v){
+		ArrayList<Vehicle> vehicles = new ArrayList<Vehicle>();
+		vehicles.add(v);
+		saveVehicles(vehicles, false);
 	}
 	
-	public void saveDrivers(ArrayList<Driver> drivers, boolean removeDrivers){
+	public void saveVehicles(ArrayList<Vehicle> drivers, boolean removeVehicles){
 		SQLiteDatabase database = sInstance.getWritableDatabase();
 		
 		if(database!=null && drivers!=null){
@@ -422,37 +422,37 @@ public class DbHelper extends SQLiteOpenHelper {
 		    database.beginTransaction();
 		    String ids = "";
 		    for (int i = 0; i < drivers.size(); i++) {
-		    	Driver driver = drivers.get(i);
+		    	Vehicle vehicle = drivers.get(i);
 		    	
-		    	ids+= i!=drivers.size()-1 ? driver.id+"," : driver.id;
+		    	ids+= i!=drivers.size()-1 ? vehicle.id+"," : vehicle.id;
 		    	
 		    	statement.clearBindings();
-		    	statement.bindLong(1, driver.id);
-		    	statement.bindString(2, driver.name);
-		    	statement.bindString(3, driver.markerIcon);
-		    	statement.bindString(4, driver.photo);
-		    	statement.bindString(5, driver.carVIN);
-		    	statement.bindString(6, driver.carMake);
-		    	statement.bindString(7, driver.carModel);
-		    	statement.bindString(8, driver.carYear);
-		    	statement.bindLong(9, driver.carFuelLevel);
-		    	statement.bindLong(10, driver.carCheckup ? 1 : 0);
-		    	statement.bindDouble(11, driver.latitude);
-		    	statement.bindDouble(12, driver.longitude);
-		    	statement.bindString(13, driver.address);
-		    	statement.bindString(14, driver.lastTripDate);
-		    	statement.bindLong(15, driver.lastTripId);
-		    	statement.bindLong(16, driver.score);
-		    	statement.bindString(17, driver.grade);
-		    	statement.bindLong(18, driver.totalTripsCount);
-		    	statement.bindLong(19, driver.totalDrivingTime);
-		    	statement.bindDouble(20, driver.totalDistance);
-		    	statement.bindLong(21, driver.totalBraking);
-		    	statement.bindLong(22, driver.totalAcceleration);
-		    	statement.bindLong(23, driver.totalSpeeding);
-		    	statement.bindDouble(24, driver.totalSpeedingDistance);
-		    	statement.bindLong(25, driver.alerts);
-		    	statement.bindLong(26, driver.odometer);
+		    	statement.bindLong(1, vehicle.id);
+		    	statement.bindString(2, vehicle.name);
+		    	statement.bindString(3, vehicle.markerIcon);
+		    	statement.bindString(4, vehicle.photo);
+		    	statement.bindString(5, vehicle.carVIN);
+		    	statement.bindString(6, vehicle.carMake);
+		    	statement.bindString(7, vehicle.carModel);
+		    	statement.bindString(8, vehicle.carYear);
+		    	statement.bindLong(9, vehicle.carFuelLevel);
+		    	statement.bindLong(10, vehicle.carCheckup ? 1 : 0);
+		    	statement.bindDouble(11, vehicle.latitude);
+		    	statement.bindDouble(12, vehicle.longitude);
+		    	statement.bindString(13, vehicle.address);
+		    	statement.bindString(14, vehicle.lastTripDate);
+		    	statement.bindLong(15, vehicle.lastTripId);
+		    	statement.bindLong(16, vehicle.score);
+		    	statement.bindString(17, vehicle.grade);
+		    	statement.bindLong(18, vehicle.totalTripsCount);
+		    	statement.bindLong(19, vehicle.totalDrivingTime);
+		    	statement.bindDouble(20, vehicle.totalDistance);
+		    	statement.bindLong(21, vehicle.totalBraking);
+		    	statement.bindLong(22, vehicle.totalAcceleration);
+		    	statement.bindLong(23, vehicle.totalSpeeding);
+		    	statement.bindDouble(24, vehicle.totalSpeedingDistance);
+		    	statement.bindLong(25, vehicle.alerts);
+		    	statement.bindLong(26, vehicle.odometer);
 		    	statement.execute();
 		    	
 			}
@@ -461,7 +461,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		    database.endTransaction();
 		    statement.close();
 
-		    if(removeDrivers){
+		    if(removeVehicles){
 			    SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+VehicleEntry.TABLE_NAME+" WHERE "+VehicleEntry._ID+" NOT IN (" + ids + ")");
 			    database.beginTransaction();
 			    removeStatement.clearBindings();
@@ -475,8 +475,8 @@ public class DbHelper extends SQLiteOpenHelper {
 		database.close();
 	}
 	
-	public void saveDrivers(ArrayList<Driver> drivers){
-		saveDrivers(drivers, true);		
+	public void saveVehicles(ArrayList<Vehicle> drivers){
+		saveVehicles(drivers, true);		
 	}
 	
 	public void saveTrip(long driverId, Trip trip){
@@ -491,7 +491,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		if(database!=null && database.isOpen() && trips!=null){
 			String sql = "INSERT OR REPLACE INTO "+ TripEntry.TABLE_NAME +" ("
 					+ TripEntry._ID +","
-					+ TripEntry.COLUMN_NAME_DRIVER_ID +","
+					+ TripEntry.COLUMN_NAME_VEHICLE_ID +","
 					+ TripEntry.COLUMN_NAME_EVENTS_COUNT +","
 					+ TripEntry.COLUMN_NAME_START_TIME +","
 					+ TripEntry.COLUMN_NAME_END_TIME +","
@@ -657,7 +657,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		SQLiteDatabase database = sInstance.getWritableDatabase();
 		
 		if(database!=null && yearStats!=null){
-			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+ScoreGraphEntry.TABLE_NAME+" WHERE "+ScoreGraphEntry.COLUMN_NAME_DRIVER_ID+" = "+driverId);
+			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+ScoreGraphEntry.TABLE_NAME+" WHERE "+ScoreGraphEntry.COLUMN_NAME_VEHICLE_ID+" = "+driverId);
 		    database.beginTransaction();
 		    removeStatement.clearBindings();
 	        removeStatement.execute();
@@ -666,7 +666,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		    removeStatement.close();
 			
 			String sql = "INSERT INTO "+ ScoreGraphEntry.TABLE_NAME +" ("
-					+ ScoreGraphEntry.COLUMN_NAME_DRIVER_ID +","
+					+ ScoreGraphEntry.COLUMN_NAME_VEHICLE_ID +","
 					+ ScoreGraphEntry.COLUMN_NAME_MONTH +","
 					+ ScoreGraphEntry.COLUMN_NAME_SCORE +","
 					+ ScoreGraphEntry.COLUMN_NAME_GRADE
@@ -695,7 +695,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		SQLiteDatabase database = sInstance.getWritableDatabase();
 		
 		if(database!=null && valuesMap!=null){
-			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+ScorePercentageEntry.TABLE_NAME+" WHERE "+ScorePercentageEntry.COLUMN_NAME_DRIVER_ID+" = "+driverId);
+			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+ScorePercentageEntry.TABLE_NAME+" WHERE "+ScorePercentageEntry.COLUMN_NAME_VEHICLE_ID+" = "+driverId);
 		    database.beginTransaction();
 		    removeStatement.clearBindings();
 	        removeStatement.execute();
@@ -704,7 +704,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		    removeStatement.close();
 			
 			String sql = "INSERT INTO "+ ScorePercentageEntry.TABLE_NAME +" ("
-					+ ScorePercentageEntry.COLUMN_NAME_DRIVER_ID +","
+					+ ScorePercentageEntry.COLUMN_NAME_VEHICLE_ID +","
 					+ ScorePercentageEntry.COLUMN_NAME_STAT_NAME +","
 					+ ScorePercentageEntry.COLUMN_NAME_STAT_VALUE
 					+ ") VALUES (?,?,?);";
@@ -735,7 +735,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		SQLiteDatabase database = sInstance.getWritableDatabase();
 		
 		if(database!=null && tabs!=null){
-			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+ScorePieChartEntry.TABLE_NAME+" WHERE "+ScorePieChartEntry.COLUMN_NAME_DRIVER_ID+" = "+driverId);
+			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+ScorePieChartEntry.TABLE_NAME+" WHERE "+ScorePieChartEntry.COLUMN_NAME_VEHICLE_ID+" = "+driverId);
 		    database.beginTransaction();
 		    removeStatement.clearBindings();
 	        removeStatement.execute();
@@ -744,7 +744,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		    removeStatement.close();
 			
 			String sql = "INSERT INTO "+ ScorePieChartEntry.TABLE_NAME +" ("
-					+ ScorePieChartEntry.COLUMN_NAME_DRIVER_ID +","
+					+ ScorePieChartEntry.COLUMN_NAME_VEHICLE_ID +","
 					+ ScorePieChartEntry.COLUMN_NAME_TAB +","
 					+ ScorePieChartEntry.COLUMN_NAME_VALUE +","
 					+ ScorePieChartEntry.COLUMN_NAME_TITLE +","
@@ -782,7 +782,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		SQLiteDatabase database = sInstance.getWritableDatabase();
 		
 		if(database!=null && tabs!=null){
-			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+ScoreCirclesEntry.TABLE_NAME+" WHERE "+ScoreCirclesEntry.COLUMN_NAME_DRIVER_ID+" = "+driverId);
+			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+ScoreCirclesEntry.TABLE_NAME+" WHERE "+ScoreCirclesEntry.COLUMN_NAME_VEHICLE_ID+" = "+driverId);
 		    database.beginTransaction();
 		    removeStatement.clearBindings();
 	        removeStatement.execute();
@@ -791,7 +791,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		    removeStatement.close();
 			
 			String sql = "INSERT INTO "+ ScoreCirclesEntry.TABLE_NAME +" ("
-					+ ScoreCirclesEntry.COLUMN_NAME_DRIVER_ID +","
+					+ ScoreCirclesEntry.COLUMN_NAME_VEHICLE_ID +","
 					+ ScoreCirclesEntry.COLUMN_NAME_TAB +","
 					+ ScoreCirclesEntry.COLUMN_NAME_SECTION +","
 					+ ScoreCirclesEntry.COLUMN_NAME_MARK +","
@@ -830,7 +830,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		SQLiteDatabase database = sInstance.getWritableDatabase();
 		
 		if(database!=null && dtcs!=null){
-			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+DTCEntry.TABLE_NAME+" WHERE "+DTCEntry.COLUMN_NAME_DRIVER_ID+" = "+driverId);
+			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+DTCEntry.TABLE_NAME+" WHERE "+DTCEntry.COLUMN_NAME_VEHICLE_ID+" = "+driverId);
 		    database.beginTransaction();
 		    removeStatement.clearBindings();
 	        removeStatement.execute();
@@ -839,7 +839,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		    removeStatement.close();
 			
 			String sql = "INSERT INTO "+ DTCEntry.TABLE_NAME +" ("
-					+ DTCEntry.COLUMN_NAME_DRIVER_ID +","
+					+ DTCEntry.COLUMN_NAME_VEHICLE_ID +","
 					+ DTCEntry.COLUMN_NAME_CODE +","
 					+ DTCEntry.COLUMN_NAME_CONDITIONS +","
 					+ DTCEntry.COLUMN_NAME_CREATED_AT +","
@@ -887,7 +887,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		SQLiteDatabase database = sInstance.getWritableDatabase();
 		
 		if(database!=null && recalls!=null){
-			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+RecallEntry.TABLE_NAME+" WHERE "+RecallEntry.COLUMN_NAME_DRIVER_ID+" = "+driverId);
+			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+RecallEntry.TABLE_NAME+" WHERE "+RecallEntry.COLUMN_NAME_VEHICLE_ID+" = "+driverId);
 		    database.beginTransaction();
 		    removeStatement.clearBindings();
 	        removeStatement.execute();
@@ -896,7 +896,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		    removeStatement.close();
 			
 			String sql = "INSERT INTO "+ RecallEntry.TABLE_NAME +" ("
-					+ RecallEntry.COLUMN_NAME_DRIVER_ID +","
+					+ RecallEntry.COLUMN_NAME_VEHICLE_ID +","
 					+ RecallEntry.COLUMN_NAME_CONSEQUENCE +","
 					+ RecallEntry.COLUMN_NAME_CORRECTIVE_ACTION +","
 					+ RecallEntry.COLUMN_NAME_CREATED_AT +","
@@ -932,7 +932,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		SQLiteDatabase database = sInstance.getWritableDatabase();
 		
 		if(database!=null && maintenances!=null){
-			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+MaintenanceEntry.TABLE_NAME+" WHERE "+MaintenanceEntry.COLUMN_NAME_DRIVER_ID+" = "+driverId);
+			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+MaintenanceEntry.TABLE_NAME+" WHERE "+MaintenanceEntry.COLUMN_NAME_VEHICLE_ID+" = "+driverId);
 		    database.beginTransaction();
 		    removeStatement.clearBindings();
 	        removeStatement.execute();
@@ -941,7 +941,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		    removeStatement.close();
 			
 			String sql = "INSERT INTO "+ MaintenanceEntry.TABLE_NAME +" ("
-					+ MaintenanceEntry.COLUMN_NAME_DRIVER_ID +","
+					+ MaintenanceEntry.COLUMN_NAME_VEHICLE_ID +","
 					+ MaintenanceEntry.COLUMN_NAME_CREATED_AT +","
 					+ MaintenanceEntry.COLUMN_NAME_DESCRIPTION +","
 					+ MaintenanceEntry.COLUMN_NAME_IMPORTANCE +","
@@ -975,7 +975,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		SQLiteDatabase database = sInstance.getWritableDatabase();
 		
 		if(database!=null && warrantyInfo!=null){
-			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+WarrantyInfoEntry.TABLE_NAME+" WHERE "+WarrantyInfoEntry.COLUMN_NAME_DRIVER_ID+" = "+driverId);
+			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+WarrantyInfoEntry.TABLE_NAME+" WHERE "+WarrantyInfoEntry.COLUMN_NAME_VEHICLE_ID+" = "+driverId);
 		    database.beginTransaction();
 		    removeStatement.clearBindings();
 	        removeStatement.execute();
@@ -984,7 +984,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		    removeStatement.close();
 			
 			String sql = "INSERT INTO "+ WarrantyInfoEntry.TABLE_NAME +" ("
-					+ WarrantyInfoEntry.COLUMN_NAME_DRIVER_ID +","
+					+ WarrantyInfoEntry.COLUMN_NAME_VEHICLE_ID +","
 					+ WarrantyInfoEntry.COLUMN_NAME_CREATED_AT +","
 					+ WarrantyInfoEntry.COLUMN_NAME_DESCRIPTION +","
 					+ WarrantyInfoEntry.COLUMN_NAME_MILEAGE
@@ -1014,7 +1014,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		SQLiteDatabase database = sInstance.getWritableDatabase();
 		
 		if(database!=null && limits!=null){
-			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+LimitsEntry.TABLE_NAME+" WHERE "+LimitsEntry.COLUMN_NAME_DRIVER_ID+" = "+driverId);
+			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+LimitsEntry.TABLE_NAME+" WHERE "+LimitsEntry.COLUMN_NAME_VEHICLE_ID+" = "+driverId);
 		    database.beginTransaction();
 		    removeStatement.clearBindings();
 	        removeStatement.execute();
@@ -1023,7 +1023,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		    removeStatement.close();
 			
 			String sql = "INSERT INTO "+ LimitsEntry.TABLE_NAME +" ("
-					+ LimitsEntry.COLUMN_NAME_DRIVER_ID +","
+					+ LimitsEntry.COLUMN_NAME_VEHICLE_ID +","
 					+ LimitsEntry.COLUMN_NAME_KEY +","
 					+ LimitsEntry.COLUMN_NAME_TITLE +","
 					+ LimitsEntry.COLUMN_NAME_TYPE +","
