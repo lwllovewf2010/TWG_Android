@@ -30,7 +30,7 @@ public class BaseRequestAsyncTask extends AsyncTask<String, Void, JSONObject>{
 	protected List<NameValuePair> requestParams = new ArrayList<NameValuePair>();
 	
 	public BaseRequestAsyncTask(Context context) {
-		this.context = context;
+		this.context = context.getApplicationContext();
 		prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		baseUrl = Constants.API_BASE_URL_PREFIX+prefs.getString(Constants.PREF_CLIENT_ID, "")+Constants.API_BASE_URL_POSTFIX;
 

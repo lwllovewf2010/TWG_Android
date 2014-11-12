@@ -488,7 +488,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	public void saveTrips(long driverId, ArrayList<Trip> trips){
 		SQLiteDatabase database = sInstance.getWritableDatabase();
 		
-		if(database!=null && trips!=null){
+		if(database!=null && database.isOpen() && trips!=null){
 			String sql = "INSERT OR REPLACE INTO "+ TripEntry.TABLE_NAME +" ("
 					+ TripEntry._ID +","
 					+ TripEntry.COLUMN_NAME_DRIVER_ID +","

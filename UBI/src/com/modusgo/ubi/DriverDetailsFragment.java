@@ -154,7 +154,6 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 		});
 	    
 	    new GetDriverTask(getActivity()).execute("vehicles/"+driver.id+".json");
-	    new GetTripsTask(getActivity()).execute("vehicles/"+driver.id+"/trips.json");
 		
 		return rootView;
 	}
@@ -389,6 +388,8 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 				
 				updateFragment();
 			}
+			new GetTripsTask(context).execute("vehicles/"+driver.id+"/trips.json");
+			
 			super.onSuccess(responseJSON);
 		}
 	}
@@ -415,6 +416,8 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 					new String[]{TripEntry._ID},
 					TripEntry.COLUMN_NAME_DRIVER_ID + " = " + driver.id, null, null, null, null);
 			int tripsInDb = c.getCount();
+			c.close();
+			db.close();
 			dbHelper.close();
 			
 			Calendar cStart = Calendar.getInstance();
