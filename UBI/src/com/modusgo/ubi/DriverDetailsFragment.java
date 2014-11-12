@@ -15,6 +15,8 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -46,6 +48,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.modusgo.ubi.customviews.GoogleMapFragment;
 import com.modusgo.ubi.customviews.GoogleMapFragment.OnMapReadyListener;
 import com.modusgo.ubi.db.DbHelper;
+import com.modusgo.ubi.db.TripContract.TripEntry;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -405,10 +408,22 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 		protected JSONObject doInBackground(String... params) {
 			SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);
 			
+			DbHelper dbHelper = DbHelper.getInstance(getActivity());
+			SQLiteDatabase db = dbHelper.getReadableDatabase();
+			
+			Cursor c = db.query(TripEntry.TABLE_NAME, 
+					new String[]{TripEntry._ID},
+					TripEntry.COLUMN_NAME_DRIVER_ID + " = " + driver.id, null, null, null, null);
+			int tripsInDb = c.getCount();
+			dbHelper.close();
+			
 			Calendar cStart = Calendar.getInstance();
 			Calendar cEnd = Calendar.getInstance();
 			cStart.setTimeInMillis(System.currentTimeMillis());
-			cStart.add(Calendar.DAY_OF_YEAR, -7);
+			if(tripsInDb!=0)
+				cStart.add(Calendar.DAY_OF_YEAR, -7);
+			else
+				cStart.add(Calendar.YEAR, -20);
 			cEnd.setTimeInMillis(System.currentTimeMillis());
 			
 	        requestParams.add(new BasicNameValuePair("page", "1"));

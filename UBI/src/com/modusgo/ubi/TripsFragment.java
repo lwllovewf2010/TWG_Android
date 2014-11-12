@@ -112,8 +112,6 @@ public class TripsFragment extends Fragment{
 		
 		fillTripsListView(getTripsFromDb(cStart.getTime(), cEnd.getTime()));
 		
-		new GetTripsTask(getActivity()).execute("vehicles/"+driver.id+"/trips.json");
-		
 		return rootView;
 	}
 	
@@ -175,8 +173,8 @@ public class TripsFragment extends Fragment{
 				TripEntry.COLUMN_NAME_DRIVER_ID + " = " + driver.id + " AND " +
 				"datetime(" + TripEntry.COLUMN_NAME_START_TIME + ")>=datetime('"+ Utils.fixTimeZoneColon(sdf.format(startDate)) + "') AND " +
 				"datetime(" + TripEntry.COLUMN_NAME_START_TIME + ")<=datetime('"+ Utils.fixTimeZoneColon(sdf.format(endDate)) + "')", null, null, null, "datetime("+TripEntry.COLUMN_NAME_START_TIME+") DESC");
-		
-		System.out.println("trips "+c.getCount());
+
+		System.out.println("trips from db: "+c.getCount());
 		
 		ArrayList<Trip> trips = new ArrayList<Trip>();
 		if(c.moveToFirst()){
