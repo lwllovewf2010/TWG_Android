@@ -109,6 +109,7 @@
             android:name="com.modusgo.ubi.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:parentActivityName="com.modusgo.ubi.HomeActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
