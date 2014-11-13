@@ -83,7 +83,6 @@ public class MainActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_main);
-		checkForUpdates();
         
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -438,11 +437,6 @@ public class MainActivity extends FragmentActivity {
 				return true;
 			}
 		});
-	}
-
-	private void checkForUpdates() {
-		//TODO Remove this for store builds!
-		UpdateManager.register(this, Constants.HOCKEY_APP_ID);
 	}
 	
 	public void showFeedbackActivity() {
