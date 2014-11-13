@@ -143,6 +143,10 @@ public class Utils {
 		return meters*0.00062137f;
 	}
 	
+	public static float metersToKm(float meters){
+		return meters*0.001f;
+	}
+	
 	public static int durationInMinutes(Date startDate, Date endDate)
     {
 		Calendar startCalendar = Calendar.getInstance();

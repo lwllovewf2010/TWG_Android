@@ -344,6 +344,7 @@ public class TripsFragment extends Fragment{
 		TextView tvStartTime;
 		TextView tvEndTime;
 		TextView tvDistance;
+		TextView tvDistanceUnits;
 		TextView tvFuel;
 		TextView tvFuelUnit;
 	}
@@ -352,11 +353,19 @@ public class TripsFragment extends Fragment{
 
 		final int TRIP_ITEM = 0;
 		final int HEADER_ITEM = 1;
+		String units;
 		
 		LayoutInflater lInflater;
 		
 		public TripsAdapter() {
 		    lInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		    
+			if(prefs.getString(Constants.PREF_UNITS_OF_MEASURE, "mile").equals("mile")){
+				units = "Miles";
+			}
+			else{
+				units = "KMs";
+			}
 		}
 		
 		@Override
@@ -434,6 +443,7 @@ public class TripsFragment extends Fragment{
 				view = lInflater.inflate(R.layout.trips_list_item, parent, false);
 				holder = new ViewHolderTrip();
 				holder.tvDistance = (TextView) view.findViewById(R.id.tvDistance);
+				holder.tvDistanceUnits = (TextView) view.findViewById(R.id.tvDistanceUnits);
 				holder.tvEventsCount = (TextView) view.findViewById(R.id.tvCounter);
 				holder.tvStartTime = (TextView) view.findViewById(R.id.tvStartTime);
 				holder.tvEndTime = (TextView) view.findViewById(R.id.tvEndTime);
@@ -488,6 +498,8 @@ public class TripsFragment extends Fragment{
 				holder.tvDistance.setText(new DecimalFormat("0.0").format(t.distance));
 			else
 				holder.tvDistance.setText(new DecimalFormat("0").format(t.distance));
+			
+			holder.tvDistanceUnits.setText(units);
 			
 			view.setOnClickListener(new OnClickListener() {
 				@Override

@@ -11,6 +11,7 @@ public class Constants {
 	public static final String PREF_CLIENT_ID = "clientId";
 	public static final String PREF_SHOW_TIP_POPUP = "showTipPopup";
 	public static final String PREF_WELCOME_PAGES = "welcomePagesIds";
+	public static final String PREF_UNITS_OF_MEASURE = "unitsOfMeasure";
 	public static final String PREF_DRIVER_ID = "id";
 	public static final String PREF_VEHICLE_ID = "vehicle_id";
 	public static final String PREF_FIRST_NAME = "first_name";

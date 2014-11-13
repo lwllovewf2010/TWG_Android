@@ -79,6 +79,7 @@
                             ubi:typeface="arialbd.ttf" />
 
                         <com.modusgo.ubi.customviews.TypefacedTextView
+                            android:id="@+id/tvDistanceUnits"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignBaseline="@+id/tvDistance"

@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.modusgo.ubi.ScoreCirclesActivity.CirclesSection;
 import com.modusgo.ubi.customviews.ExpandablePanel;
 import com.modusgo.ubi.customviews.ExpandablePanel.OnExpandListener;
+import com.modusgo.ubi.utils.Utils;
 
 public class CirclesFragment extends TitledFragment{
 	
@@ -40,6 +41,8 @@ public class CirclesFragment extends TitledFragment{
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		
+		prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+	    
 		if(savedInstanceState!=null){
 			title = savedInstanceState.getString(SAVED_TITLE);
 			sections = (ArrayList<CirclesSection>) savedInstanceState.getSerializable(SAVED_SECTIONS);
@@ -58,7 +61,6 @@ public class CirclesFragment extends TitledFragment{
 			rootView.addView(createNewRow(section, inflater));
 		}	
 		
-	    prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 	    showTipPopup = prefs.getBoolean(Constants.PREF_SHOW_TIP_POPUP, true);
 	    
 		return rootView;
@@ -187,9 +189,16 @@ public class CirclesFragment extends TitledFragment{
             circleItem.findViewById(R.id.circle).setBackgroundResource(circleBgResId);
             ((TextView)circleItem.findViewById(R.id.tvTitle)).setText(circleTitles[i]);
             
+            String units;
+            if(prefs.getString(Constants.PREF_UNITS_OF_MEASURE, "mile").equals("mile")){
+            	units = "miles";
+    		}
+    		else{
+            	units = "kilometers";
+    		}
             
             final String circleInfo = circlesInfo;
-            final String distanceInfo = "We have collected <font face=\"fonts/EncodeSansNormal-500-Medium.ttf\">"+df.format(section.distances[i])+" miles</font> of data for this scoring metric.";
+            final String distanceInfo = "We have collected <font face=\"fonts/EncodeSansNormal-500-Medium.ttf\">"+df.format(section.distances[i])+" "+units+"</font> of data for this scoring metric.";
             final int index = i;
             circleItem.setOnClickListener(new OnClickListener() {
 				

@@ -65,6 +65,7 @@ OnConnectionFailedListener, LocationListener {
     
     Button btnStart;
     TextView tvDistance;
+    TextView tvDistanceUnits;
     TextView tvTime;
     
     LinearLayout llInfo;
@@ -113,6 +114,7 @@ OnConnectionFailedListener, LocationListener {
         
         btnStart = (Button) findViewById(R.id.btnStart);
         tvDistance = (TextView) findViewById(R.id.tvDistance);
+        tvDistanceUnits = (TextView) findViewById(R.id.tvDistanceUnits);
         tvTime = (TextView) findViewById(R.id.tvTime);
         llInfo = (LinearLayout) findViewById(R.id.llInfo);
         tvInfo = (TextView) findViewById(R.id.tvInfo);
@@ -383,7 +385,14 @@ OnConnectionFailedListener, LocationListener {
 	                
 	                DecimalFormat df = new DecimalFormat("0.00");
 	                
-	                tvDistance.setText(""+df.format(Utils.metersToMiles(distanceForSegment)));
+	                if(prefs.getString(Constants.PREF_UNITS_OF_MEASURE, "mile").equals("mile")){
+		                tvDistance.setText(""+df.format(Utils.metersToMiles(distanceForSegment)));
+	        			tvDistanceUnits.setText("Miles");
+	        		}
+	        		else{
+		                tvDistance.setText(""+df.format(Utils.metersToKm(distanceForSegment)));
+		                tvDistanceUnits.setText("KMs");
+	        		}
 	                tvTime.setText("Time: "+timeForSegment);
 	                
 	                updateMap();

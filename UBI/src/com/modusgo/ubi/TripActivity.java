@@ -67,6 +67,9 @@ public class TripActivity extends MainActivity {
     TextView tvAvgSpeed;
     TextView tvMaxSpeed;
     TextView tvDistance;
+    TextView tvAvgSpeedUnits;
+    TextView tvMaxSpeedUnits;
+    TextView tvDistanceUnits;
     LinearLayout llTime;
     LinearLayout llContent;
     LinearLayout llEventsList;
@@ -121,6 +124,9 @@ public class TripActivity extends MainActivity {
 		tvAvgSpeed = (TextView) findViewById(R.id.tvAvgSpeed);
 		tvMaxSpeed = (TextView) findViewById(R.id.tvMaxSpeed);
 		tvDistance = (TextView) findViewById(R.id.tvDistance);
+		tvAvgSpeedUnits = (TextView) findViewById(R.id.tvAvgSpeedUnits);
+		tvMaxSpeedUnits = (TextView) findViewById(R.id.tvMaxSpeedUnits);
+		tvDistanceUnits = (TextView) findViewById(R.id.tvDistanceUnits);
 		llTime = (LinearLayout)findViewById(R.id.llTime);
 		llContent = (LinearLayout)findViewById(R.id.llContent);
 		llEventsList = (LinearLayout)findViewById(R.id.llEventsList);
@@ -267,6 +273,17 @@ public class TripActivity extends MainActivity {
 		tvAvgSpeed.setText(df.format(trip.averageSpeed));
 		tvMaxSpeed.setText(df.format(trip.maxSpeed));
 		tvDistance.setText(df.format(trip.distance));
+		
+		if(prefs.getString(Constants.PREF_UNITS_OF_MEASURE, "mile").equals("mile")){
+			tvAvgSpeedUnits.setText("MPH");
+			tvMaxSpeedUnits.setText("MPH");
+			tvDistanceUnits.setText("MILES");
+		}
+		else{
+			tvAvgSpeedUnits.setText("KPH");
+			tvMaxSpeedUnits.setText("KPH");
+			tvDistanceUnits.setText("KMs");
+		}
         
         llEventsList.removeAllViews();
         
