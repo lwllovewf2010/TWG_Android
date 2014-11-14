@@ -1979,10 +1979,290 @@ com.jeremyfeinstein.slidingmenu.lib.app.SlidingListActivity: void setContentView
 com.jeremyfeinstein.slidingmenu.lib.app.SlidingListActivity: void setBehindContentView(android.view.View)
 com.jeremyfeinstein.slidingmenu.lib.app.SlidingPreferenceActivity: void setContentView(android.view.View)
 com.jeremyfeinstein.slidingmenu.lib.app.SlidingPreferenceActivity: void setBehindContentView(android.view.View)
+com.kbeanie.imagechooser.R
+com.kbeanie.imagechooser.R: R()
+com.kbeanie.imagechooser.R$drawable
+com.kbeanie.imagechooser.R$drawable: int ic_launcher
+com.kbeanie.imagechooser.R$drawable: R$drawable()
+com.kbeanie.imagechooser.R$string
+com.kbeanie.imagechooser.R$string: int app_name
+com.kbeanie.imagechooser.R$string: R$string()
+com.kbeanie.imagechooser.R$style
+com.kbeanie.imagechooser.R$style: int AppBaseTheme
+com.kbeanie.imagechooser.R$style: int AppTheme
+com.kbeanie.imagechooser.R$style: R$style()
+com.kbeanie.imagechooser.api.BChooser
+com.kbeanie.imagechooser.api.BChooser: android.app.Activity activity
+com.kbeanie.imagechooser.api.BChooser: android.support.v4.app.Fragment fragment
+com.kbeanie.imagechooser.api.BChooser: android.app.Fragment appFragment
+com.kbeanie.imagechooser.api.BChooser: int type
+com.kbeanie.imagechooser.api.BChooser: java.lang.String foldername
+com.kbeanie.imagechooser.api.BChooser: boolean shouldCreateThumbnails
+com.kbeanie.imagechooser.api.BChooser: java.lang.String filePathOriginal
+com.kbeanie.imagechooser.api.BChooser: android.os.Bundle extras
+com.kbeanie.imagechooser.api.BChooser: BChooser(android.app.Activity,int,java.lang.String,boolean)
+com.kbeanie.imagechooser.api.BChooser: BChooser(android.support.v4.app.Fragment,int,java.lang.String,boolean)
+com.kbeanie.imagechooser.api.BChooser: BChooser(android.app.Fragment,int,java.lang.String,boolean)
+com.kbeanie.imagechooser.api.BChooser: java.lang.String choose()
+com.kbeanie.imagechooser.api.BChooser: void submit(int,android.content.Intent)
+com.kbeanie.imagechooser.api.BChooser: void checkDirectory()
+com.kbeanie.imagechooser.api.BChooser: void startActivity(android.content.Intent)
+com.kbeanie.imagechooser.api.BChooser: void reinitialize(java.lang.String)
+com.kbeanie.imagechooser.api.BChooser: void sanitizeURI(java.lang.String)
+com.kbeanie.imagechooser.api.BChooser: android.content.Context getContext()
+com.kbeanie.imagechooser.api.BChooser: boolean wasVideoSelected(android.content.Intent)
+com.kbeanie.imagechooser.api.BChooser: void setExtras(android.os.Bundle)
+com.kbeanie.imagechooser.api.ChooserType
+com.kbeanie.imagechooser.api.ChooserType: int REQUEST_PICK_PICTURE
+com.kbeanie.imagechooser.api.ChooserType: int REQUEST_CAPTURE_PICTURE
+com.kbeanie.imagechooser.api.ChooserType: int REQUEST_CAPTURE_VIDEO
+com.kbeanie.imagechooser.api.ChooserType: int REQUEST_PICK_VIDEO
+com.kbeanie.imagechooser.api.ChooserType: int REQUEST_PICK_PICTURE_OR_VIDEO
+com.kbeanie.imagechooser.api.ChosenImage
+com.kbeanie.imagechooser.api.ChosenImage: java.lang.String filePathOriginal
+com.kbeanie.imagechooser.api.ChosenImage: java.lang.String fileThumbnail
+com.kbeanie.imagechooser.api.ChosenImage: java.lang.String fileThumbnailSmall
+com.kbeanie.imagechooser.api.ChosenImage: ChosenImage()
+com.kbeanie.imagechooser.api.ChosenImage: java.lang.String getFilePathOriginal()
+com.kbeanie.imagechooser.api.ChosenImage: void setFilePathOriginal(java.lang.String)
+com.kbeanie.imagechooser.api.ChosenImage: java.lang.String getFileThumbnail()
+com.kbeanie.imagechooser.api.ChosenImage: void setFileThumbnail(java.lang.String)
+com.kbeanie.imagechooser.api.ChosenImage: java.lang.String getFileThumbnailSmall()
+com.kbeanie.imagechooser.api.ChosenImage: void setFileThumbnailSmall(java.lang.String)
+com.kbeanie.imagechooser.api.ChosenImage: java.lang.String getMediaHeight()
+com.kbeanie.imagechooser.api.ChosenImage: java.lang.String getMediaWidth()
+com.kbeanie.imagechooser.api.ChosenImage: java.lang.String getExtension()
+com.kbeanie.imagechooser.api.ChosenMedia
+com.kbeanie.imagechooser.api.ChosenMedia: ChosenMedia()
+com.kbeanie.imagechooser.api.ChosenMedia: java.lang.ref.SoftReference getBitmap(java.lang.String)
+com.kbeanie.imagechooser.api.ChosenMedia: java.lang.String getFileExtension(java.lang.String)
+com.kbeanie.imagechooser.api.ChosenMedia: java.lang.String getWidth(java.lang.String)
+com.kbeanie.imagechooser.api.ChosenMedia: java.lang.String getHeight(java.lang.String)
+com.kbeanie.imagechooser.api.ChosenMedia: java.lang.String getMediaHeight()
+com.kbeanie.imagechooser.api.ChosenMedia: java.lang.String getMediaWidth()
+com.kbeanie.imagechooser.api.ChosenVideo
+com.kbeanie.imagechooser.api.ChosenVideo: java.lang.String videoPreviewImage
+com.kbeanie.imagechooser.api.ChosenVideo: java.lang.String videoFilePath
+com.kbeanie.imagechooser.api.ChosenVideo: java.lang.String thumbnailPath
+com.kbeanie.imagechooser.api.ChosenVideo: java.lang.String thumbnailSmallPath
+com.kbeanie.imagechooser.api.ChosenVideo: ChosenVideo()
+com.kbeanie.imagechooser.api.ChosenVideo: java.lang.String getVideoFilePath()
+com.kbeanie.imagechooser.api.ChosenVideo: void setVideoFilePath(java.lang.String)
+com.kbeanie.imagechooser.api.ChosenVideo: java.lang.String getThumbnailPath()
+com.kbeanie.imagechooser.api.ChosenVideo: void setThumbnailPath(java.lang.String)
+com.kbeanie.imagechooser.api.ChosenVideo: java.lang.String getThumbnailSmallPath()
+com.kbeanie.imagechooser.api.ChosenVideo: void setThumbnailSmallPath(java.lang.String)
+com.kbeanie.imagechooser.api.ChosenVideo: java.lang.String getVideoPreviewImage()
+com.kbeanie.imagechooser.api.ChosenVideo: void setVideoPreviewImage(java.lang.String)
+com.kbeanie.imagechooser.api.ChosenVideo: java.lang.String getMediaHeight()
+com.kbeanie.imagechooser.api.ChosenVideo: java.lang.String getMediaWidth()
+com.kbeanie.imagechooser.api.ChosenVideo: java.lang.String getExtension()
+com.kbeanie.imagechooser.api.FileUtils
+com.kbeanie.imagechooser.api.FileUtils: FileUtils()
+com.kbeanie.imagechooser.api.FileUtils: java.lang.String getDirectory(java.lang.String)
+com.kbeanie.imagechooser.api.FileUtils: java.lang.String getFileExtension(java.lang.String)
+com.kbeanie.imagechooser.api.ImageChooserListener
+com.kbeanie.imagechooser.api.ImageChooserListener: void onImageChosen(com.kbeanie.imagechooser.api.ChosenImage)
+com.kbeanie.imagechooser.api.ImageChooserListener: void onError(java.lang.String)
+com.kbeanie.imagechooser.api.ImageChooserManager
+com.kbeanie.imagechooser.api.ImageChooserManager: java.lang.String TAG
+com.kbeanie.imagechooser.api.ImageChooserManager: java.lang.String DIRECTORY
+com.kbeanie.imagechooser.api.ImageChooserManager: com.kbeanie.imagechooser.api.ImageChooserListener listener
+com.kbeanie.imagechooser.api.ImageChooserManager: ImageChooserManager(android.app.Activity,int)
+com.kbeanie.imagechooser.api.ImageChooserManager: ImageChooserManager(android.support.v4.app.Fragment,int)
+com.kbeanie.imagechooser.api.ImageChooserManager: ImageChooserManager(android.app.Fragment,int)
+com.kbeanie.imagechooser.api.ImageChooserManager: ImageChooserManager(android.app.Activity,int,java.lang.String)
+com.kbeanie.imagechooser.api.ImageChooserManager: ImageChooserManager(android.support.v4.app.Fragment,int,java.lang.String)
+com.kbeanie.imagechooser.api.ImageChooserManager: ImageChooserManager(android.app.Fragment,int,java.lang.String)
+com.kbeanie.imagechooser.api.ImageChooserManager: ImageChooserManager(android.app.Activity,int,boolean)
+com.kbeanie.imagechooser.api.ImageChooserManager: ImageChooserManager(android.support.v4.app.Fragment,int,boolean)
+com.kbeanie.imagechooser.api.ImageChooserManager: ImageChooserManager(android.app.Fragment,int,boolean)
+com.kbeanie.imagechooser.api.ImageChooserManager: ImageChooserManager(android.app.Activity,int,java.lang.String,boolean)
+com.kbeanie.imagechooser.api.ImageChooserManager: ImageChooserManager(android.support.v4.app.Fragment,int,java.lang.String,boolean)
+com.kbeanie.imagechooser.api.ImageChooserManager: ImageChooserManager(android.app.Fragment,int,java.lang.String,boolean)
+com.kbeanie.imagechooser.api.ImageChooserManager: void setImageChooserListener(com.kbeanie.imagechooser.api.ImageChooserListener)
+com.kbeanie.imagechooser.api.ImageChooserManager: java.lang.String choose()
+com.kbeanie.imagechooser.api.ImageChooserManager: void choosePicture()
+com.kbeanie.imagechooser.api.ImageChooserManager: java.lang.String takePicture()
+com.kbeanie.imagechooser.api.ImageChooserManager: void submit(int,android.content.Intent)
+com.kbeanie.imagechooser.api.ImageChooserManager: void processImageFromGallery(android.content.Intent)
+com.kbeanie.imagechooser.api.ImageChooserManager: void processCameraImage()
+com.kbeanie.imagechooser.api.ImageChooserManager: void onProcessedImage(com.kbeanie.imagechooser.api.ChosenImage)
+com.kbeanie.imagechooser.api.ImageChooserManager: void onError(java.lang.String)
+com.kbeanie.imagechooser.api.MediaChooserListener
+com.kbeanie.imagechooser.api.MediaChooserManager
+com.kbeanie.imagechooser.api.MediaChooserManager: java.lang.String TAG
+com.kbeanie.imagechooser.api.MediaChooserManager: java.lang.String DIRECTORY
+com.kbeanie.imagechooser.api.MediaChooserManager: com.kbeanie.imagechooser.api.MediaChooserListener listener
+com.kbeanie.imagechooser.api.MediaChooserManager: MediaChooserManager(android.app.Activity,int)
+com.kbeanie.imagechooser.api.MediaChooserManager: MediaChooserManager(android.support.v4.app.Fragment,int)
+com.kbeanie.imagechooser.api.MediaChooserManager: MediaChooserManager(android.app.Fragment,int)
+com.kbeanie.imagechooser.api.MediaChooserManager: MediaChooserManager(android.app.Activity,int,java.lang.String)
+com.kbeanie.imagechooser.api.MediaChooserManager: MediaChooserManager(android.support.v4.app.Fragment,int,java.lang.String)
+com.kbeanie.imagechooser.api.MediaChooserManager: MediaChooserManager(android.app.Fragment,int,java.lang.String)
+com.kbeanie.imagechooser.api.MediaChooserManager: MediaChooserManager(android.app.Activity,int,boolean)
+com.kbeanie.imagechooser.api.MediaChooserManager: MediaChooserManager(android.support.v4.app.Fragment,int,boolean)
+com.kbeanie.imagechooser.api.MediaChooserManager: MediaChooserManager(android.app.Fragment,int,boolean)
+com.kbeanie.imagechooser.api.MediaChooserManager: MediaChooserManager(android.app.Activity,int,java.lang.String,boolean)
+com.kbeanie.imagechooser.api.MediaChooserManager: MediaChooserManager(android.support.v4.app.Fragment,int,java.lang.String,boolean)
+com.kbeanie.imagechooser.api.MediaChooserManager: MediaChooserManager(android.app.Fragment,int,java.lang.String,boolean)
+com.kbeanie.imagechooser.api.MediaChooserManager: void setMediaChooserListener(com.kbeanie.imagechooser.api.MediaChooserListener)
+com.kbeanie.imagechooser.api.MediaChooserManager: java.lang.String choose()
+com.kbeanie.imagechooser.api.MediaChooserManager: void chooseMedia()
+com.kbeanie.imagechooser.api.MediaChooserManager: void submit(int,android.content.Intent)
+com.kbeanie.imagechooser.api.MediaChooserManager: void processImageFromGallery(android.content.Intent)
+com.kbeanie.imagechooser.api.MediaChooserManager: void onProcessedImage(com.kbeanie.imagechooser.api.ChosenImage)
+com.kbeanie.imagechooser.api.MediaChooserManager: void onProcessedVideo(com.kbeanie.imagechooser.api.ChosenVideo)
+com.kbeanie.imagechooser.api.MediaChooserManager: void onError(java.lang.String)
+com.kbeanie.imagechooser.api.VideoChooserListener
+com.kbeanie.imagechooser.api.VideoChooserListener: void onVideoChosen(com.kbeanie.imagechooser.api.ChosenVideo)
+com.kbeanie.imagechooser.api.VideoChooserListener: void onError(java.lang.String)
+com.kbeanie.imagechooser.api.VideoChooserManager
+com.kbeanie.imagechooser.api.VideoChooserManager: java.lang.String TAG
+com.kbeanie.imagechooser.api.VideoChooserManager: java.lang.String DIRECTORY
+com.kbeanie.imagechooser.api.VideoChooserManager: com.kbeanie.imagechooser.api.VideoChooserListener listener
+com.kbeanie.imagechooser.api.VideoChooserManager: VideoChooserManager(android.app.Activity,int)
+com.kbeanie.imagechooser.api.VideoChooserManager: VideoChooserManager(android.support.v4.app.Fragment,int)
+com.kbeanie.imagechooser.api.VideoChooserManager: VideoChooserManager(android.app.Fragment,int)
+com.kbeanie.imagechooser.api.VideoChooserManager: VideoChooserManager(android.app.Activity,int,java.lang.String)
+com.kbeanie.imagechooser.api.VideoChooserManager: VideoChooserManager(android.support.v4.app.Fragment,int,java.lang.String)
+com.kbeanie.imagechooser.api.VideoChooserManager: VideoChooserManager(android.app.Fragment,int,java.lang.String)
+com.kbeanie.imagechooser.api.VideoChooserManager: VideoChooserManager(android.app.Activity,int,boolean)
+com.kbeanie.imagechooser.api.VideoChooserManager: VideoChooserManager(android.support.v4.app.Fragment,int,boolean)
+com.kbeanie.imagechooser.api.VideoChooserManager: VideoChooserManager(android.app.Fragment,int,boolean)
+com.kbeanie.imagechooser.api.VideoChooserManager: VideoChooserManager(android.app.Activity,int,java.lang.String,boolean)
+com.kbeanie.imagechooser.api.VideoChooserManager: VideoChooserManager(android.support.v4.app.Fragment,int,java.lang.String,boolean)
+com.kbeanie.imagechooser.api.VideoChooserManager: VideoChooserManager(android.app.Fragment,int,java.lang.String,boolean)
+com.kbeanie.imagechooser.api.VideoChooserManager: void setVideoChooserListener(com.kbeanie.imagechooser.api.VideoChooserListener)
+com.kbeanie.imagechooser.api.VideoChooserManager: java.lang.String choose()
+com.kbeanie.imagechooser.api.VideoChooserManager: java.lang.String captureVideo()
+com.kbeanie.imagechooser.api.VideoChooserManager: java.lang.String captureVideoCurrent()
+com.kbeanie.imagechooser.api.VideoChooserManager: java.lang.String captureVideoPatchedMethodForGingerbread()
+com.kbeanie.imagechooser.api.VideoChooserManager: void pickVideo()
+com.kbeanie.imagechooser.api.VideoChooserManager: void submit(int,android.content.Intent)
+com.kbeanie.imagechooser.api.VideoChooserManager: void processVideoFromGallery(android.content.Intent)
+com.kbeanie.imagechooser.api.VideoChooserManager: void processCameraVideo(android.content.Intent)
+com.kbeanie.imagechooser.api.VideoChooserManager: void onProcessedVideo(com.kbeanie.imagechooser.api.ChosenVideo)
+com.kbeanie.imagechooser.api.VideoChooserManager: void onError(java.lang.String)
+com.kbeanie.imagechooser.api.config.Config
+com.kbeanie.imagechooser.api.config.Config: boolean DEBUG
+com.kbeanie.imagechooser.api.utils.ImageChooserBuilder
+com.kbeanie.imagechooser.api.utils.ImageChooserBuilder: android.content.DialogInterface$OnClickListener listener
+com.kbeanie.imagechooser.api.utils.ImageChooserBuilder: android.content.Context context
+com.kbeanie.imagechooser.api.utils.ImageChooserBuilder: java.lang.String title
+com.kbeanie.imagechooser.api.utils.ImageChooserBuilder: java.lang.String titleGalleryOption
+com.kbeanie.imagechooser.api.utils.ImageChooserBuilder: java.lang.String titleTakePictureOption
+com.kbeanie.imagechooser.api.utils.ImageChooserBuilder: ImageChooserBuilder(android.content.Context,int,android.content.DialogInterface$OnClickListener)
+com.kbeanie.imagechooser.api.utils.ImageChooserBuilder: ImageChooserBuilder(android.content.Context,android.content.DialogInterface$OnClickListener)
+com.kbeanie.imagechooser.api.utils.ImageChooserBuilder: void setDialogTitle(java.lang.String)
+com.kbeanie.imagechooser.api.utils.ImageChooserBuilder: void setDialogTitle(int)
+com.kbeanie.imagechooser.api.utils.ImageChooserBuilder: void setTitleGalleryOption(java.lang.String)
+com.kbeanie.imagechooser.api.utils.ImageChooserBuilder: void setTitleGalleryOption(int)
+com.kbeanie.imagechooser.api.utils.ImageChooserBuilder: void setTitleTakePictureOption(java.lang.String)
+com.kbeanie.imagechooser.api.utils.ImageChooserBuilder: void setTitleTakePictureOption(int)
+com.kbeanie.imagechooser.api.utils.ImageChooserBuilder: void init()
+com.kbeanie.imagechooser.api.utils.ImageChooserBuilder: android.app.AlertDialog show()
+com.kbeanie.imagechooser.api.utils.ImageChooserBuilder: android.content.DialogInterface$OnClickListener access$0(com.kbeanie.imagechooser.api.utils.ImageChooserBuilder)
+com.kbeanie.imagechooser.api.utils.ImageChooserBuilder$1
+com.kbeanie.imagechooser.api.utils.ImageChooserBuilder$1: com.kbeanie.imagechooser.api.utils.ImageChooserBuilder this$0
+com.kbeanie.imagechooser.api.utils.ImageChooserBuilder$1: ImageChooserBuilder$1(com.kbeanie.imagechooser.api.utils.ImageChooserBuilder)
+com.kbeanie.imagechooser.api.utils.ImageChooserBuilder$1: void onClick(android.content.DialogInterface,int)
+com.kbeanie.imagechooser.api.utils.VideoChooserBuilder
+com.kbeanie.imagechooser.api.utils.VideoChooserBuilder: android.content.DialogInterface$OnClickListener listener
+com.kbeanie.imagechooser.api.utils.VideoChooserBuilder: android.content.Context context
+com.kbeanie.imagechooser.api.utils.VideoChooserBuilder: java.lang.String title
+com.kbeanie.imagechooser.api.utils.VideoChooserBuilder: java.lang.String titleGalleryOption
+com.kbeanie.imagechooser.api.utils.VideoChooserBuilder: java.lang.String titleCaptureVideoOption
+com.kbeanie.imagechooser.api.utils.VideoChooserBuilder: VideoChooserBuilder(android.content.Context,int,android.content.DialogInterface$OnClickListener)
+com.kbeanie.imagechooser.api.utils.VideoChooserBuilder: VideoChooserBuilder(android.content.Context,android.content.DialogInterface$OnClickListener)
+com.kbeanie.imagechooser.api.utils.VideoChooserBuilder: void init()
+com.kbeanie.imagechooser.api.utils.VideoChooserBuilder: void setDialogTitle(int)
+com.kbeanie.imagechooser.api.utils.VideoChooserBuilder: void setDialogTitle(java.lang.String)
+com.kbeanie.imagechooser.api.utils.VideoChooserBuilder: void setTitleGalleryOption(java.lang.String)
+com.kbeanie.imagechooser.api.utils.VideoChooserBuilder: void setTitleGalleryOption(int)
+com.kbeanie.imagechooser.api.utils.VideoChooserBuilder: void setTitleCaptureVideoOption(java.lang.String)
+com.kbeanie.imagechooser.api.utils.VideoChooserBuilder: void setTitleCaptureVideoOption(int)
+com.kbeanie.imagechooser.api.utils.VideoChooserBuilder: android.app.AlertDialog show()
+com.kbeanie.imagechooser.api.utils.VideoChooserBuilder: android.content.DialogInterface$OnClickListener access$0(com.kbeanie.imagechooser.api.utils.VideoChooserBuilder)
+com.kbeanie.imagechooser.api.utils.VideoChooserBuilder$1
+com.kbeanie.imagechooser.api.utils.VideoChooserBuilder$1: com.kbeanie.imagechooser.api.utils.VideoChooserBuilder this$0
+com.kbeanie.imagechooser.api.utils.VideoChooserBuilder$1: VideoChooserBuilder$1(com.kbeanie.imagechooser.api.utils.VideoChooserBuilder)
+com.kbeanie.imagechooser.api.utils.VideoChooserBuilder$1: void onClick(android.content.DialogInterface,int)
+com.kbeanie.imagechooser.threads.ImageProcessorListener
+com.kbeanie.imagechooser.threads.ImageProcessorListener: void onProcessedImage(com.kbeanie.imagechooser.api.ChosenImage)
+com.kbeanie.imagechooser.threads.ImageProcessorListener: void onError(java.lang.String)
+com.kbeanie.imagechooser.threads.ImageProcessorThread
+com.kbeanie.imagechooser.threads.ImageProcessorThread: java.lang.String TAG
+com.kbeanie.imagechooser.threads.ImageProcessorThread: com.kbeanie.imagechooser.threads.ImageProcessorListener listener
+com.kbeanie.imagechooser.threads.ImageProcessorThread: int MAX_DIRECTORY_SIZE
+com.kbeanie.imagechooser.threads.ImageProcessorThread: int MAX_THRESHOLD_DAYS
+com.kbeanie.imagechooser.threads.ImageProcessorThread: ImageProcessorThread(java.lang.String,java.lang.String,boolean)
+com.kbeanie.imagechooser.threads.ImageProcessorThread: void setListener(com.kbeanie.imagechooser.threads.ImageProcessorListener)
+com.kbeanie.imagechooser.threads.ImageProcessorThread: void setContext(android.content.Context)
+com.kbeanie.imagechooser.threads.ImageProcessorThread: void run()
+com.kbeanie.imagechooser.threads.ImageProcessorThread: void processImage()
+com.kbeanie.imagechooser.threads.ImageProcessorThread: void process()
+com.kbeanie.imagechooser.threads.ImageProcessorThread: void processingDone(java.lang.String,java.lang.String,java.lang.String)
+com.kbeanie.imagechooser.threads.MediaProcessorThread
+com.kbeanie.imagechooser.threads.MediaProcessorThread: java.lang.String TAG
+com.kbeanie.imagechooser.threads.MediaProcessorThread: int THUMBNAIL_BIG
+com.kbeanie.imagechooser.threads.MediaProcessorThread: int THUMBNAIL_SMALL
+com.kbeanie.imagechooser.threads.MediaProcessorThread: java.lang.String filePath
+com.kbeanie.imagechooser.threads.MediaProcessorThread: android.content.Context context
+com.kbeanie.imagechooser.threads.MediaProcessorThread: java.lang.String foldername
+com.kbeanie.imagechooser.threads.MediaProcessorThread: boolean shouldCreateThumnails
+com.kbeanie.imagechooser.threads.MediaProcessorThread: java.lang.String mediaExtension
+com.kbeanie.imagechooser.threads.MediaProcessorThread: MediaProcessorThread(java.lang.String,java.lang.String,boolean)
+com.kbeanie.imagechooser.threads.MediaProcessorThread: void setContext(android.content.Context)
+com.kbeanie.imagechooser.threads.MediaProcessorThread: void setMediaExtension(java.lang.String)
+com.kbeanie.imagechooser.threads.MediaProcessorThread: void downloadAndProcess(java.lang.String)
+com.kbeanie.imagechooser.threads.MediaProcessorThread: void process()
+com.kbeanie.imagechooser.threads.MediaProcessorThread: java.lang.String[] createThumbnails(java.lang.String)
+com.kbeanie.imagechooser.threads.MediaProcessorThread: java.lang.String getThumnailPath(java.lang.String)
+com.kbeanie.imagechooser.threads.MediaProcessorThread: java.lang.String getThumbnailSmallPath(java.lang.String)
+com.kbeanie.imagechooser.threads.MediaProcessorThread: java.lang.String compressAndSaveImage(java.lang.String,int)
+com.kbeanie.imagechooser.threads.MediaProcessorThread: void copyFileToDir()
+com.kbeanie.imagechooser.threads.MediaProcessorThread: java.lang.String downloadFile(java.lang.String)
+com.kbeanie.imagechooser.threads.MediaProcessorThread: void manageDiretoryCache(int,int,java.lang.String)
+com.kbeanie.imagechooser.threads.MediaProcessorThread: void processingDone(java.lang.String,java.lang.String,java.lang.String)
+com.kbeanie.imagechooser.threads.MediaProcessorThread: void processPicasaMedia(java.lang.String,java.lang.String)
+com.kbeanie.imagechooser.threads.MediaProcessorThread: void processGooglePhotosMedia(java.lang.String,java.lang.String)
+com.kbeanie.imagechooser.threads.MediaProcessorThread: java.lang.String checkExtension(android.net.Uri)
+com.kbeanie.imagechooser.threads.MediaProcessorThread: void processContentProviderMedia(java.lang.String,java.lang.String)
+com.kbeanie.imagechooser.threads.MediaProcessorThread: java.lang.String getAbsoluteImagePathFromUri(android.net.Uri)
+com.kbeanie.imagechooser.threads.MediaProcessorThread$1
+com.kbeanie.imagechooser.threads.MediaProcessorThread$1: com.kbeanie.imagechooser.threads.MediaProcessorThread this$0
+com.kbeanie.imagechooser.threads.MediaProcessorThread$1: long val$today
+com.kbeanie.imagechooser.threads.MediaProcessorThread$1: int val$maxThresholdDays
+com.kbeanie.imagechooser.threads.MediaProcessorThread$1: java.lang.String val$extension
+com.kbeanie.imagechooser.threads.MediaProcessorThread$1: MediaProcessorThread$1(com.kbeanie.imagechooser.threads.MediaProcessorThread,long,int,java.lang.String)
+com.kbeanie.imagechooser.threads.MediaProcessorThread$1: boolean accept(java.io.File)
+com.kbeanie.imagechooser.threads.VideoProcessorListener
+com.kbeanie.imagechooser.threads.VideoProcessorListener: void onProcessedVideo(com.kbeanie.imagechooser.api.ChosenVideo)
+com.kbeanie.imagechooser.threads.VideoProcessorListener: void onError(java.lang.String)
+com.kbeanie.imagechooser.threads.VideoProcessorThread
+com.kbeanie.imagechooser.threads.VideoProcessorThread: java.lang.String TAG
+com.kbeanie.imagechooser.threads.VideoProcessorThread: com.kbeanie.imagechooser.threads.VideoProcessorListener listener
+com.kbeanie.imagechooser.threads.VideoProcessorThread: int MAX_DIRECTORY_SIZE
+com.kbeanie.imagechooser.threads.VideoProcessorThread: int MAX_THRESHOLD_DAYS
+com.kbeanie.imagechooser.threads.VideoProcessorThread: java.lang.String previewImage
+com.kbeanie.imagechooser.threads.VideoProcessorThread: VideoProcessorThread(java.lang.String,java.lang.String,boolean)
+com.kbeanie.imagechooser.threads.VideoProcessorThread: void setListener(com.kbeanie.imagechooser.threads.VideoProcessorListener)
+com.kbeanie.imagechooser.threads.VideoProcessorThread: void setContext(android.content.Context)
+com.kbeanie.imagechooser.threads.VideoProcessorThread: void run()
+com.kbeanie.imagechooser.threads.VideoProcessorThread: void processVideo()
+com.kbeanie.imagechooser.threads.VideoProcessorThread: void process()
+com.kbeanie.imagechooser.threads.VideoProcessorThread: java.lang.String createPreviewImage()
+com.kbeanie.imagechooser.threads.VideoProcessorThread: java.lang.String createThumbnailOfVideo()
+com.kbeanie.imagechooser.threads.VideoProcessorThread: void processingDone(java.lang.String,java.lang.String,java.lang.String)
 com.modusgo.dd.CallReceiver
 com.modusgo.dd.CallReceiver: CallReceiver()
+com.modusgo.dd.CallSaverService
+com.modusgo.dd.CallSaverService: CallSaverService()
 com.modusgo.dd.PhoneScreenOnOffReceiver
 com.modusgo.dd.PhoneScreenOnOffReceiver: PhoneScreenOnOffReceiver()
+com.modusgo.dd.PhoneUsageSaverService
+com.modusgo.dd.PhoneUsageSaverService: PhoneUsageSaverService()
 com.modusgo.dd.RegisterByCodeActivity
 com.modusgo.dd.RegisterByCodeActivity: RegisterByCodeActivity()
 com.modusgo.dd.TrackingStatusService
@@ -2341,6 +2621,7 @@ com.modusgo.ubi.R$color: int ubi_gray
 com.modusgo.ubi.R$color: int ubi_green
 com.modusgo.ubi.R$color: int ubi_orange
 com.modusgo.ubi.R$color: int ubi_red
+com.modusgo.ubi.R$color: int ubi_yellow
 com.modusgo.ubi.R$color: int vpi__background_holo_dark
 com.modusgo.ubi.R$color: int vpi__background_holo_light
 com.modusgo.ubi.R$color: int vpi__bright_foreground_disabled_holo_dark
@@ -2510,6 +2791,7 @@ com.modusgo.ubi.R$drawable: int circle_score_gray
 com.modusgo.ubi.R$drawable: int circle_score_green
 com.modusgo.ubi.R$drawable: int circle_score_orange
 com.modusgo.ubi.R$drawable: int circle_score_red
+com.modusgo.ubi.R$drawable: int circle_score_yellow
 com.modusgo.ubi.R$drawable: int circle_yellow
 com.modusgo.ubi.R$drawable: int common_signin_btn_icon_dark
 com.modusgo.ubi.R$drawable: int common_signin_btn_icon_disabled_dark
@@ -2701,7 +2983,6 @@ com.modusgo.ubi.R$id: int btnFindMechanic
 com.modusgo.ubi.R$id: int btnForgotPassword
 com.modusgo.ubi.R$id: int btnMenu
 com.modusgo.ubi.R$id: int btnNext
-com.modusgo.ubi.R$id: int btnPhoto
 com.modusgo.ubi.R$id: int btnSave
 com.modusgo.ubi.R$id: int btnScoreCircles
 com.modusgo.ubi.R$id: int btnScoreInfo
@@ -2767,6 +3048,7 @@ com.modusgo.ubi.R$id: int imageIcon
 com.modusgo.ubi.R$id: int imageLastMonthArrow
 com.modusgo.ubi.R$id: int imageLogo
 com.modusgo.ubi.R$id: int imagePhoto
+com.modusgo.ubi.R$id: int imagePickPhoto
 com.modusgo.ubi.R$id: int imageStartTrip
 com.modusgo.ubi.R$id: int imageStopTrip
 com.modusgo.ubi.R$id: int imageView1
@@ -2872,6 +3154,7 @@ com.modusgo.ubi.R$id: int triangle
 com.modusgo.ubi.R$id: int tvAddress
 com.modusgo.ubi.R$id: int tvAlertsCount
 com.modusgo.ubi.R$id: int tvAvgSpeed
+com.modusgo.ubi.R$id: int tvAvgSpeedUnits
 com.modusgo.ubi.R$id: int tvCar
 com.modusgo.ubi.R$id: int tvCode
 com.modusgo.ubi.R$id: int tvContent
@@ -2883,6 +3166,7 @@ com.modusgo.ubi.R$id: int tvDiagnosticsCount
 com.modusgo.ubi.R$id: int tvDistance
 com.modusgo.ubi.R$id: int tvDistanceToCar
 com.modusgo.ubi.R$id: int tvDistanceToCarLabel
+com.modusgo.ubi.R$id: int tvDistanceUnits
 com.modusgo.ubi.R$id: int tvEmail
 com.modusgo.ubi.R$id: int tvEndTime
 com.modusgo.ubi.R$id: int tvError
@@ -2904,6 +3188,7 @@ com.modusgo.ubi.R$id: int tvLoading
 com.modusgo.ubi.R$id: int tvLocation
 com.modusgo.ubi.R$id: int tvLocationLabel
 com.modusgo.ubi.R$id: int tvMaxSpeed
+com.modusgo.ubi.R$id: int tvMaxSpeedUnits
 com.modusgo.ubi.R$id: int tvName
 com.modusgo.ubi.R$id: int tvParameter
 com.modusgo.ubi.R$id: int tvParameterSign
@@ -2913,6 +3198,7 @@ com.modusgo.ubi.R$id: int tvPercentValue
 com.modusgo.ubi.R$id: int tvPhone
 com.modusgo.ubi.R$id: int tvProgress
 com.modusgo.ubi.R$id: int tvRadius
+com.modusgo.ubi.R$id: int tvRadiusUnits
 com.modusgo.ubi.R$id: int tvReviewCount
 com.modusgo.ubi.R$id: int tvScore
 com.modusgo.ubi.R$id: int tvStartTime
