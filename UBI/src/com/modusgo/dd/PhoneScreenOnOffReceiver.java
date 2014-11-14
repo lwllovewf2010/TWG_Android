@@ -3,6 +3,7 @@ package com.modusgo.dd;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -29,7 +30,8 @@ public class PhoneScreenOnOffReceiver extends BroadcastReceiver {
     	
     	if(prefs.getBoolean(Constants.PREF_DD_ENABLED, false) && action.equals(Intent.ACTION_SCREEN_ON)){	    	
 	    	Calendar c = Calendar.getInstance();
-	    	SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT,Locale.getDefault());
+	    	SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT_ZULU,Locale.US);
+	    	sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 	    	String timestamp = sdf.format(c.getTime());
 	    	
 	    	DbHelper dbHelper = DbHelper.getInstance(context);
@@ -39,7 +41,8 @@ public class PhoneScreenOnOffReceiver extends BroadcastReceiver {
     	
     	if(prefs.getBoolean(Constants.PREF_DD_ENABLED, false) && action.equals(Intent.ACTION_SCREEN_OFF)){
 	    	Calendar c = Calendar.getInstance();
-	    	SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT,Locale.getDefault());
+	    	SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT_ZULU,Locale.US);
+	    	sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 	    	String timestamp = sdf.format(c.getTime());
 	    	
 	    	DbHelper dbHelper = DbHelper.getInstance(context);

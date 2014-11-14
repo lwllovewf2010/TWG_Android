@@ -3,6 +3,7 @@ package com.modusgo.dd;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -37,7 +38,8 @@ public class CallReceiver extends BroadcastReceiver {
 		    	callStartTime = System.currentTimeMillis();
 		    	
 		    	Calendar c = Calendar.getInstance();
-		    	SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT,Locale.getDefault());
+		    	SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT_ZULU,Locale.US);
+		    	sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 		    	String callStartTimestamp = sdf.format(c.getTime());
 		    	prefs.edit().putString(PREF_CALL_START, callStartTimestamp).commit();
 		    	
@@ -53,7 +55,8 @@ public class CallReceiver extends BroadcastReceiver {
 		    		callStartTime = 0;
 		    		
 			    	Calendar c = Calendar.getInstance();
-			    	SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT,Locale.getDefault());
+			    	SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT_ZULU,Locale.US);
+			    	sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 			    	String callEndTimestamp = sdf.format(c.getTime());
 			    	e.putString(PREF_CALL_END, callEndTimestamp);
 			    	e.commit();
