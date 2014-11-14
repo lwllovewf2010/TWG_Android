@@ -104,8 +104,10 @@ public class Trip extends ListItem implements Serializable{
 			for (EventType ev : events) {
 				eventsStr+=ev.toString()+" ";
 			}
-			
-			return eventsStr.substring(0, eventsStr.length()-1);
+			if(eventsStr.length()>1)
+				return eventsStr.substring(0, eventsStr.length()-1);
+			else
+				return "";
 		}
 	}
 	
