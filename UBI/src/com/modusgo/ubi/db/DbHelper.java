@@ -1095,12 +1095,18 @@ public class DbHelper extends SQLiteOpenHelper {
 		database.close();
 	}
 	
-	public void deleteDDEvent(long id){
+	public void deleteDDEvents(ArrayList<Long> ids){
 		SQLiteDatabase database = sInstance.getWritableDatabase();
 		
-		if(database!=null){
+		if(database!=null && ids!=null && ids.size()>0){
 			
-			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+DDEventEntry.TABLE_NAME+" WHERE "+DDEventEntry._ID+" = "+id);
+			String sIds = "";
+			int idsSize = ids.size();
+		    for (int i = 0; i < idsSize; i++) {
+		    	sIds+= i!=idsSize-1 ? ids.get(i)+"," : ids.get(i);
+		    }
+			
+		    SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+DDEventEntry.TABLE_NAME+" WHERE "+DDEventEntry._ID+" IN (" + sIds + ")");
 		    database.beginTransaction();
 		    removeStatement.clearBindings();
 	        removeStatement.execute();

@@ -25,8 +25,8 @@ public class BaseRequestAsyncTask extends AsyncTask<String, Void, JSONObject>{
 
 	protected Context context;
 	protected SharedPreferences prefs;
-	int status;
-	String message;
+	int status = 0;
+	String message = "";
 	protected String baseUrl;
 	
 	protected List<NameValuePair> requestParams = new ArrayList<NameValuePair>();
@@ -58,7 +58,7 @@ public class BaseRequestAsyncTask extends AsyncTask<String, Void, JSONObject>{
 	
 	@Override
 	protected void onPostExecute(JSONObject result) {
-		if(status>=200 && status<300){
+		if(status>=200 && status<300 && result.optString("status").equals("success")){
 			try {
 				onSuccess(result);
 			} catch (JSONException e) {
