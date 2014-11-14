@@ -215,6 +215,14 @@
         <service
             android:name="com.modusgo.dd.TrackingStatusService"
             android:exported="false"/>
+        
+        <service
+            android:name="com.modusgo.dd.CallSaverService"
+            android:exported="false"/>
+        
+        <service
+            android:name="com.modusgo.dd.PhoneUsageSaverService"
+            android:exported="false"/>
 
         <receiver android:name="com.modusgo.dd.PhoneScreenOnOffReceiver" >
             <intent-filter android:priority="1000" >

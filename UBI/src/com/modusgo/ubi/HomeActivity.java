@@ -73,9 +73,6 @@ public class HomeActivity extends MainActivity{
 			}
 		});
 		
-		if(!prefs.getString(Constants.PREF_REG_CODE, "").equals(""))
-			startService(new Intent(this, TrackingStatusService.class));
-		
 		updateDrivers();
 	}
 	

@@ -16,6 +16,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
+import android.telephony.TelephonyManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
@@ -27,7 +28,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.modusgo.dd.CallSaverService;
 import com.modusgo.ubi.db.DbHelper;
+import com.modusgo.ubi.requesttasks.SendEventsRequest;
 import com.modusgo.ubi.utils.RequestGet;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -88,6 +91,12 @@ public class InitActivity extends FragmentActivity {
 		fadeOutFields = getFadeOutAnmation(layoutFields);
 	    
 	    editClientId.setText(clientId);
+	    
+
+    	Intent i = new Intent(this, CallSaverService.class);
+    	i.putExtra("action", TelephonyManager.EXTRA_STATE_IDLE);
+    	startService(i);
+	    
 	    
 	    if(!clientId.equals("")){
 		    layoutFields.setVisibility(View.GONE);
@@ -278,6 +287,8 @@ public class InitActivity extends FragmentActivity {
 		protected void onPostExecute(Boolean result) {
 			if(result){
 				if(welcomeScreens!=null && welcomeScreens.length()>0){
+				    new SendEventsRequest(InitActivity.this).execute("");
+					
 					Intent i = new Intent(InitActivity.this, WelcomeActivity.class);
 					i.putExtra(WelcomeActivity.SAVED_SCREENS, welcomeScreens.toString());
 					startActivity(i);

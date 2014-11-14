@@ -30,6 +30,9 @@ public class BaseRequestAsyncTask extends AsyncTask<String, Void, JSONObject>{
 	protected String baseUrl;
 	
 	protected List<NameValuePair> requestParams = new ArrayList<NameValuePair>();
+
+	public BaseRequestAsyncTask() {
+	}
 	
 	public BaseRequestAsyncTask(Context context) {
 		this.context = context.getApplicationContext();
