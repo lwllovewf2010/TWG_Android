@@ -4,6 +4,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.modusgo.ubi.requesttasks.BasePostRequestAsyncTask;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;

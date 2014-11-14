@@ -43,6 +43,7 @@ import com.modusgo.ubi.db.MaintenanceContract.MaintenanceEntry;
 import com.modusgo.ubi.db.RecallContract.RecallEntry;
 import com.modusgo.ubi.db.ScoreGraphContract.ScoreGraphEntry;
 import com.modusgo.ubi.db.WarrantyInfoContract.WarrantyInfoEntry;
+import com.modusgo.ubi.requesttasks.BaseRequestAsyncTask;
 import com.modusgo.ubi.utils.AnimationUtils;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;

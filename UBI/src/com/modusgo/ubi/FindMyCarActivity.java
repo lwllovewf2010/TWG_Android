@@ -41,6 +41,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
+import com.modusgo.ubi.requesttasks.BaseRequestAsyncTask;
 import com.modusgo.ubi.utils.Utils;
 
 public class FindMyCarActivity extends MainActivity implements ConnectionCallbacks,

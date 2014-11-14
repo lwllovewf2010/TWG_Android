@@ -1,4 +1,4 @@
-package com.modusgo.ubi;
+package com.modusgo.ubi.requesttasks;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,16 +16,18 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
+import com.modusgo.ubi.Constants;
+import com.modusgo.ubi.SignInActivity;
 import com.modusgo.ubi.utils.RequestGet;
 import com.modusgo.ubi.utils.Utils;
 
 public class BaseRequestAsyncTask extends AsyncTask<String, Void, JSONObject>{
 
-	Context context;
-	SharedPreferences prefs;
+	protected Context context;
+	protected SharedPreferences prefs;
 	int status;
 	String message;
-	String baseUrl;
+	protected String baseUrl;
 	
 	protected List<NameValuePair> requestParams = new ArrayList<NameValuePair>();
 	

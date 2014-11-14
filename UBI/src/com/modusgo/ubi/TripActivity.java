@@ -45,6 +45,7 @@ import com.modusgo.ubi.db.PointContract.PointEntry;
 import com.modusgo.ubi.db.RouteContract.RouteEntry;
 import com.modusgo.ubi.db.TripContract.TripEntry;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
+import com.modusgo.ubi.requesttasks.BaseRequestAsyncTask;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
