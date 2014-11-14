@@ -472,9 +472,12 @@ public class TripsFragment extends Fragment{
 				holder.tvScore.setBackgroundResource(R.drawable.circle_score_green);
 			}
 			else if(grade.contains("B")){
+				holder.tvScore.setBackgroundResource(R.drawable.circle_score_yellow);
+			}
+			else if(grade.contains("C")){
 				holder.tvScore.setBackgroundResource(R.drawable.circle_score_orange);
 			}
-			else if(grade.contains("C") || grade.contains("D") || grade.contains("E") || grade.contains("F")){
+			else if(grade.contains("D") || grade.contains("E") || grade.contains("F")){
 				holder.tvScore.setBackgroundResource(R.drawable.circle_score_red);
 			}
 			else{
