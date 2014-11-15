@@ -14,6 +14,7 @@ public class PointContract {
 		public static final String COLUMN_NAME_TRIP_ID = "trip_id";
 		public static final String COLUMN_NAME_LATITUDE = "latitude";
 		public static final String COLUMN_NAME_LONGITUDE = "longitude";
-		public static final String COLUMN_NAME_EVENTS = "events";
+		public static final String COLUMN_NAME_EVENT = "event";
+		public static final String COLUMN_NAME_TITLE = "title";
 	}
 }

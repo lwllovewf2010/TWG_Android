@@ -100,7 +100,8 @@ public class DbHelper extends SQLiteOpenHelper {
 		    PointEntry.COLUMN_NAME_TRIP_ID + INT_TYPE + COMMA_SEP +
 		    PointEntry.COLUMN_NAME_LATITUDE + FLOAT_TYPE + COMMA_SEP +
 		    PointEntry.COLUMN_NAME_LONGITUDE + FLOAT_TYPE + COMMA_SEP +
-		    PointEntry.COLUMN_NAME_EVENTS + TEXT_TYPE +  " ); ",
+		    PointEntry.COLUMN_NAME_EVENT + TEXT_TYPE + COMMA_SEP +
+		    PointEntry.COLUMN_NAME_TITLE + TEXT_TYPE +  " ); ",
 	
 		    "CREATE TABLE " + EventEntry.TABLE_NAME + " (" +
 		    EventEntry._ID + " INTEGER PRIMARY KEY," +
@@ -215,7 +216,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	"DROP TABLE IF EXISTS " + DDEventEntry.TABLE_NAME};
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 23;
+	public static final int DATABASE_VERSION = 25;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;
@@ -604,8 +605,9 @@ public class DbHelper extends SQLiteOpenHelper {
 					+ PointEntry.COLUMN_NAME_TRIP_ID +","
 					+ PointEntry.COLUMN_NAME_LATITUDE +","
 					+ PointEntry.COLUMN_NAME_LONGITUDE +","
-					+ PointEntry.COLUMN_NAME_EVENTS
-					+ ") VALUES (?,?,?,?);";
+					+ PointEntry.COLUMN_NAME_EVENT +","
+					+ PointEntry.COLUMN_NAME_TITLE
+					+ ") VALUES (?,?,?,?,?);";
 			
 			SQLiteStatement statement = database.compileStatement(sql);
 		    database.beginTransaction();
@@ -614,7 +616,8 @@ public class DbHelper extends SQLiteOpenHelper {
 		    	statement.bindLong(1, tripId);
 		    	statement.bindDouble(2, p.getLatitude());
 		    	statement.bindDouble(3, p.getLongitude());
-		    	statement.bindString(4, p.getEventsString());
+		    	statement.bindString(4, p.getEvent());
+		    	statement.bindString(5, p.getTitle());
 		    	statement.execute();
 			}
 		    

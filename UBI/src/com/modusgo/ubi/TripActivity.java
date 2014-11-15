@@ -158,13 +158,9 @@ public class TripActivity extends MainActivity {
 	        map.animateCamera(cameraUpdate);
         }
         
-        trip = getTripFromDB();
-        
-        if(trip==null || (trip!=null && trip.route.size()==0))
-        	new GetTripTask(this).execute("vehicles/"+vehicle.id+"/trips/"+tripId+".json");
-        else{
-        	updateActivity();
-        }
+        updateActivity();
+	
+		new GetTripTask(this).execute("vehicles/"+vehicle.id+"/trips/"+tripId+".json");
 	}
 	
 	private Trip getTripFromDB(){
@@ -211,19 +207,12 @@ public class TripActivity extends MainActivity {
 					PointEntry._ID,
 					PointEntry.COLUMN_NAME_LATITUDE,
 					PointEntry.COLUMN_NAME_LONGITUDE,
-					PointEntry.COLUMN_NAME_EVENTS}, 
+					PointEntry.COLUMN_NAME_EVENT,
+					PointEntry.COLUMN_NAME_TITLE}, 
 					PointEntry.COLUMN_NAME_TRIP_ID+" = ?", new String[]{Long.toString(tripId)}, null, null, PointEntry._ID+" ASC");
 			if(c.moveToFirst()){
 				while (!c.isAfterLast()) {
-					
-					String eventsStr = c.getString(3);
-					String[] eventsArr = eventsStr.split(" ");
-					ArrayList<EventType> events = new ArrayList<EventType>();
-					for (String string : eventsArr) {
-						events.add(EventType.valueOf(string));
-					}
-					
-					t.points.add(new Point(new LatLng(c.getDouble(1), c.getDouble(2)), events));
+					t.points.add(new Point(new LatLng(c.getDouble(1), c.getDouble(2)), EventType.valueOf(c.getString(3)), c.getString(4)));
 					c.moveToNext();
 				}
 			}
@@ -252,6 +241,8 @@ public class TripActivity extends MainActivity {
 	}
 	
 	private void updateActivity(){
+		trip = getTripFromDB();
+		
 		if(map!=null){
 			map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
 				@Override
@@ -374,34 +365,37 @@ public class TripActivity extends MainActivity {
 			}
 	        
 	        for (Point p : trip.points) {
-	        	for (EventType e : p.events) {
-					switch (e) {
-					case START:
-						map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_start)));
-						break;
-					case STOP:
-						map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_finish)));
-						break;
-					case HARSH_BRAKING:
-						map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_brake)));
-						break;
-					case HARSH_ACCELERATION:
-						map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_accel)));
-						break;
-					case PHONE_USAGE:
-						map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_phone)));
-						break;
-					case APP_USAGE:
-						map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_app)));
-						break;
-					case SPEEDING:
-						map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_speeding)));
-						break;
-					default:
-						break;
-					}
-				}
-			}
+	        	MarkerOptions mo = new MarkerOptions();
+	        	mo.position(p.location).title(p.title);
+	        	switch (p.event) {
+	        	case START:
+	        		map.addMarker(mo.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_start)));
+	        		break;
+	        	case STOP:
+	        		map.addMarker(mo.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_finish)));
+	        		break;
+	        	case HARSH_BRAKING:
+	        		map.addMarker(mo.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_brake)));
+	        		break;
+	        	case HARSH_ACCELERATION:
+	        		map.addMarker(mo.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_accel)));
+	        		break;
+	        	case PHONE_USAGE:
+	        		map.addMarker(mo.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_phone)));
+	        		break;
+	        	case APP_USAGE:
+	        		map.addMarker(mo.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_app)));
+	        		break;
+	        	case SPEEDING:
+	        		map.addMarker(mo.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_speeding)));
+	        		break;
+	        	case UNKNOWN:
+	        		map.addMarker(mo.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_brake)));
+	        		break;
+	        	default:
+	        		break;
+	        	}
+	        }	        	
 		}
 	}
 	
@@ -435,20 +429,6 @@ public class TripActivity extends MainActivity {
 		public GetTripTask(Context context) {
 			super(context);
 		}
-		
-		@Override
-		protected void onPreExecute() {
-			llProgress.setVisibility(View.VISIBLE);
-			scrollView.setVisibility(View.GONE);
-			super.onPreExecute();
-		}
-		
-		@Override
-		protected void onPostExecute(JSONObject result) {
-			super.onPostExecute(result);
-			llProgress.setVisibility(View.GONE);
-			scrollView.setVisibility(View.VISIBLE);
-		}
 
 		@Override
 		protected JSONObject doInBackground(String... params) {
@@ -460,8 +440,7 @@ public class TripActivity extends MainActivity {
 		
 		@Override
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
-			if(trip==null)
-				trip = new Trip(tripId, 0, Utils.fixTimezoneZ(responseJSON.optString("start_time")), Utils.fixTimezoneZ(responseJSON.optString("end_time")), responseJSON.optDouble("mileage"), responseJSON.optString("grade"));
+			Trip trip = new Trip(tripId, 0, Utils.fixTimezoneZ(responseJSON.optString("start_time")), Utils.fixTimezoneZ(responseJSON.optString("end_time")), responseJSON.optDouble("mileage"), responseJSON.optString("grade"));
 			
 			trip.averageSpeed = responseJSON.optDouble("avg_speed");
 			trip.maxSpeed = responseJSON.optDouble("max_speed");
@@ -495,17 +474,9 @@ public class TripActivity extends MainActivity {
 					
 					if(pointJSON.has("location")){
 						JSONObject locationJSON = pointJSON.getJSONObject("location");
-						
-						ArrayList<EventType> events = new ArrayList<EventType>();
-						if(pointJSON.has("events")){
-							JSONArray eventsJSON = pointJSON.getJSONArray("events");	
-							for (int j = 0; j < eventsJSON.length(); j++) {
-								EventType type = getEventType(eventsJSON.optString(j));
-								if(!type.equals(""))
-									events.add(type);
-							}
-						}
-						trip.points.add(new Point(new LatLng(locationJSON.optDouble("latitude",0), locationJSON.optDouble("longitude",0)), events));				
+						trip.points.add(new Point(new LatLng(locationJSON.optDouble("latitude",0), locationJSON.optDouble("longitude",0)),
+								getEventType(pointJSON.optString("event")),
+								pointJSON.optString("title")));	
 					}
 				}
 			}
@@ -550,9 +521,8 @@ public class TripActivity extends MainActivity {
 			case "speeding":
 				return EventType.SPEEDING;
 			default:
-				break;
+				return EventType.UNKNOWN;
 			}
-			return null;
 		}
 	}
 }

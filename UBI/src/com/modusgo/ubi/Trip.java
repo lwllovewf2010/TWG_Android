@@ -27,7 +27,7 @@ public class Trip extends ListItem implements Serializable{
 	public int fuelLevel;
 	public String fuelUnit="";
 	
-	public enum EventType {START, STOP, HARSH_BRAKING, HARSH_ACCELERATION, SPEEDING, PHONE_USAGE, APP_USAGE};
+	public enum EventType {START, STOP, HARSH_BRAKING, HARSH_ACCELERATION, SPEEDING, PHONE_USAGE, APP_USAGE, UNKNOWN};
 	
 	private static SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
 	private static SimpleDateFormat sdfTo = new SimpleDateFormat("hh:mm a", Locale.getDefault());
@@ -83,12 +83,14 @@ public class Trip extends ListItem implements Serializable{
 	static public class Point {
 		
 		LatLng location;
-		ArrayList<EventType> events;
+		EventType event;
+		String title;
 		
-		public Point(LatLng location, ArrayList<EventType> events) {
+		public Point(LatLng location, EventType event, String title) {
 			super();
 			this.location = location;
-			this.events = events;
+			this.event = event;
+			this.title = title;
 		}
 		
 		public double getLatitude(){
@@ -99,15 +101,12 @@ public class Trip extends ListItem implements Serializable{
 			return location.longitude;
 		}
 		
-		public String getEventsString(){
-			String eventsStr = "";
-			for (EventType ev : events) {
-				eventsStr+=ev.toString()+" ";
-			}
-			if(eventsStr.length()>1)
-				return eventsStr.substring(0, eventsStr.length()-1);
-			else
-				return "";
+		public String getEvent(){
+			return event.toString();
+		}
+		
+		public String getTitle() {
+			return title;
 		}
 	}
 	
