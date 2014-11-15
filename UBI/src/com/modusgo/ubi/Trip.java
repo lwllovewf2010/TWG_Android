@@ -32,7 +32,7 @@ public class Trip extends ListItem implements Serializable{
 	public int fuelLevel;
 	public String fuelUnit="";
 	
-	public enum EventType {START, STOP, HARSH_BRAKING, HARSH_ACCELERATION, SPEEDING, PHONE_USAGE, APP_USAGE, UNKNOWN};
+	public enum EventType {START, STOP, HARSH_BRAKING, HARSH_ACCELERATION, SPEEDING, CALL_USAGE, PHONE_USAGE, UNKNOWN};
 	
 	private static SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
 	private static SimpleDateFormat sdfTo = new SimpleDateFormat("hh:mm a", Locale.getDefault());

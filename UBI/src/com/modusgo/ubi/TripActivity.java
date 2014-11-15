@@ -291,11 +291,11 @@ public class TripActivity extends MainActivity {
 					icon.setImageResource(R.drawable.marker_accel);
 					infoStringResource = R.string.harsh_accel;
 					break;
-				case PHONE_USAGE:
+				case CALL_USAGE:
 					icon.setImageResource(R.drawable.marker_phone);
 					infoStringResource = R.string.distracted_driving;
 					break;
-				case APP_USAGE:
+				case PHONE_USAGE:
 					icon.setImageResource(R.drawable.marker_app);
 					infoStringResource = R.string.distracted_driving;
 					break;
@@ -373,10 +373,10 @@ public class TripActivity extends MainActivity {
 	        	case HARSH_ACCELERATION:
 	        		map.addMarker(mo.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_accel)));
 	        		break;
-	        	case PHONE_USAGE:
+	        	case CALL_USAGE:
 	        		map.addMarker(mo.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_phone)));
 	        		break;
-	        	case APP_USAGE:
+	        	case PHONE_USAGE:
 	        		map.addMarker(mo.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_app)));
 	        		break;
 	        	case SPEEDING:
@@ -497,10 +497,10 @@ public class TripActivity extends MainActivity {
 				return EventType.HARSH_BRAKING;
 			case "harsh_acceleration":
 				return EventType.HARSH_ACCELERATION;
+			case "call_usage":
+				return EventType.CALL_USAGE;
 			case "phone_usage":
 				return EventType.PHONE_USAGE;
-			case "app_usage":
-				return EventType.APP_USAGE;
 			case "speeding":
 				return EventType.SPEEDING;
 			default:
