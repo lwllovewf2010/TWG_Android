@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.modusgo.ubi.AlertsActivity.Alert;
 import com.modusgo.ubi.DiagnosticsFragment.Maintenance;
 import com.modusgo.ubi.DiagnosticsFragment.WarrantyInformation;
 import com.modusgo.ubi.DiagnosticsTroubleCode;
@@ -21,6 +22,7 @@ import com.modusgo.ubi.ScorePieChartActivity.PieChartTab;
 import com.modusgo.ubi.Trip;
 import com.modusgo.ubi.Trip.Point;
 import com.modusgo.ubi.Vehicle;
+import com.modusgo.ubi.db.AlertContract.AlertEntry;
 import com.modusgo.ubi.db.DDEventContract.DDEventEntry;
 import com.modusgo.ubi.db.DTCContract.DTCEntry;
 import com.modusgo.ubi.db.LimitsContract.LimitsEntry;
@@ -185,6 +187,17 @@ public class DbHelper extends SQLiteOpenHelper {
 			LimitsEntry.COLUMN_NAME_STEP + TEXT_TYPE + COMMA_SEP +
 			LimitsEntry.COLUMN_NAME_ACTIVE + INT_TYPE + " ); ",
 		    
+		    "CREATE TABLE " + AlertEntry.TABLE_NAME + " (" +
+		    AlertEntry._ID + " INTEGER PRIMARY KEY," +
+		    AlertEntry.COLUMN_NAME_VEHICLE_ID + INT_TYPE + COMMA_SEP +
+			AlertEntry.COLUMN_NAME_TRIP_ID + INT_TYPE + COMMA_SEP +
+			AlertEntry.COLUMN_NAME_TYPE + TEXT_TYPE + COMMA_SEP +
+			AlertEntry.COLUMN_NAME_TIMESTAMP + TEXT_TYPE + COMMA_SEP +
+			AlertEntry.COLUMN_NAME_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
+			AlertEntry.COLUMN_NAME_LATITUDE + FLOAT_TYPE + COMMA_SEP +
+			AlertEntry.COLUMN_NAME_LONGITUDE + FLOAT_TYPE + COMMA_SEP +
+			AlertEntry.COLUMN_NAME_SEEN_AT + TEXT_TYPE + " ); ",
+		    
 		    "CREATE TABLE " + DDEventEntry.TABLE_NAME + " (" +
 		    DDEventEntry._ID + " INTEGER PRIMARY KEY," +
 		    DDEventEntry.COLUMN_NAME_EVENT + TEXT_TYPE + COMMA_SEP +
@@ -204,10 +217,11 @@ public class DbHelper extends SQLiteOpenHelper {
 	"DROP TABLE IF EXISTS " + MaintenanceEntry.TABLE_NAME,
 	"DROP TABLE IF EXISTS " + WarrantyInfoEntry.TABLE_NAME,
 	"DROP TABLE IF EXISTS " + LimitsEntry.TABLE_NAME,
+	"DROP TABLE IF EXISTS " + AlertEntry.TABLE_NAME,
 	"DROP TABLE IF EXISTS " + DDEventEntry.TABLE_NAME};
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 26;
+	public static final int DATABASE_VERSION = 27;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;
@@ -1017,6 +1031,55 @@ public class DbHelper extends SQLiteOpenHelper {
 			    statement.bindString(7, l.maxValue);
 			    statement.bindString(8, l.step);
 			    statement.bindLong(9, l.active ? 1 : 0);
+			    statement.execute();
+			}
+		    
+		    database.setTransactionSuccessful();	
+		    database.endTransaction();
+		    statement.close();
+		}
+		
+		database.close();
+	}
+	
+	public void saveAlerts(long vehicleId, ArrayList<Alert> alerts){
+		SQLiteDatabase database = sInstance.getWritableDatabase();
+		
+		if(database!=null && alerts!=null){
+			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+AlertEntry.TABLE_NAME+" WHERE "+AlertEntry.COLUMN_NAME_VEHICLE_ID+" = "+vehicleId);
+		    database.beginTransaction();
+		    removeStatement.clearBindings();
+	        removeStatement.execute();
+	        database.setTransactionSuccessful();
+		    database.endTransaction();
+		    removeStatement.close();
+			
+			String sql = "INSERT INTO "+ AlertEntry.TABLE_NAME +" ("
+					+ AlertEntry._ID +","
+					+ AlertEntry.COLUMN_NAME_VEHICLE_ID +","
+					+ AlertEntry.COLUMN_NAME_TRIP_ID +","
+					+ AlertEntry.COLUMN_NAME_TYPE +","
+					+ AlertEntry.COLUMN_NAME_TIMESTAMP +","
+					+ AlertEntry.COLUMN_NAME_DESCRIPTION +","
+					+ AlertEntry.COLUMN_NAME_LATITUDE +","
+					+ AlertEntry.COLUMN_NAME_LONGITUDE +","
+					+ AlertEntry.COLUMN_NAME_SEEN_AT
+					+ ") VALUES (?,?,?,?,?,?,?,?,?);";
+			
+			SQLiteStatement statement = database.compileStatement(sql);
+		    database.beginTransaction();
+		    
+		    for (Alert a : alerts) {
+		    	statement.clearBindings();
+			    statement.bindLong(1, a.id);
+			    statement.bindLong(2, vehicleId);
+			    statement.bindLong(3, a.tripId);
+			    statement.bindString(4, a.type);
+			    statement.bindString(5, a.timestamp);
+			    statement.bindString(6, a.description);
+			    statement.bindDouble(7, a.location.latitude);
+			    statement.bindDouble(8, a.location.longitude);
+			    statement.bindString(9, a.seenAt);
 			    statement.execute();
 			}
 		    

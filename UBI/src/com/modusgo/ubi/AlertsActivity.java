@@ -13,6 +13,8 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -26,6 +28,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.modusgo.ubi.db.AlertContract.AlertEntry;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.modusgo.ubi.requesttasks.BaseRequestAsyncTask;
@@ -83,13 +86,56 @@ public class AlertsActivity extends MainActivity {
 		
 		llProgress = (LinearLayout) findViewById(R.id.llProgress);
 		
-		alerts = new ArrayList<Alert>();
+		alerts = getAlertsFromDB();
 		
 		adapter = new AlertsAdapter(this, R.layout.alerts_item, alerts);
 		
 		lvAlerts = (ListView)findViewById(R.id.listViewAlerts);
 		lvAlerts.setAdapter(adapter);
+	}
+	
+	private ArrayList<Alert> getAlertsFromDB(){
+		ArrayList<Alert> alerts = new ArrayList<Alert>();
 		
+		DbHelper dbHelper = DbHelper.getInstance(this);
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		Cursor c = db.query(AlertEntry.TABLE_NAME, 
+				new String[]{
+				AlertEntry._ID,
+				AlertEntry.COLUMN_NAME_VEHICLE_ID,
+				AlertEntry.COLUMN_NAME_TRIP_ID,
+				AlertEntry.COLUMN_NAME_TYPE,
+				AlertEntry.COLUMN_NAME_TIMESTAMP,
+				AlertEntry.COLUMN_NAME_DESCRIPTION,
+				AlertEntry.COLUMN_NAME_LATITUDE,
+				AlertEntry.COLUMN_NAME_LONGITUDE,
+				AlertEntry.COLUMN_NAME_SEEN_AT}, 
+				AlertEntry.COLUMN_NAME_VEHICLE_ID+" = ?", new String[]{Long.toString(vehicle.id)}, null, null, null);
+		
+		if(c.moveToFirst()){
+			while (!c.isAfterLast()) {
+				Alert a = new Alert(c.getLong(0));
+				a.vehicleId = c.getLong(1);
+				a.tripId = c.getLong(2);
+				a.type = c.getString(3);
+				a.timestamp = c.getString(4);
+				a.description = c.getString(5);
+				a.location = new LatLng(c.getDouble(6), c.getDouble(7));
+				a.seenAt = c.getString(8);
+				alerts.add(a);
+				c.moveToNext();
+			}
+		}
+		c.close();		
+		db.close();
+		dbHelper.close();
+		
+		return alerts;
+	}
+	
+	private void updateAlertsList() {
+		alerts = getAlertsFromDB();
+		adapter.notifyDataSetChanged();
 	}
 	
 	@Override
@@ -104,18 +150,18 @@ public class AlertsActivity extends MainActivity {
 		super.onSaveInstanceState(outState);
 	}
 	
-	class Alert{
+	public class Alert{
 		
-		long id;
-		long vehicleId;
-		long tripId;
-		String type;
-		String timestamp;
-		String description;
-		LatLng location;
-		String seenAt;
+		public long id;
+		public long vehicleId;
+		public long tripId;
+		public String type;
+		public String timestamp;
+		public String description;
+		public LatLng location;
+		public String seenAt;
 		
-		public Alert(int id) {
+		public Alert(long id) {
 			super();
 			this.id = id;
 		}
@@ -201,7 +247,6 @@ public class AlertsActivity extends MainActivity {
 			
 			return view;
 		}
-		
 	}
 	
 	private class ViewHolder{
@@ -218,8 +263,10 @@ public class AlertsActivity extends MainActivity {
 		
 		@Override
 		protected void onPreExecute() {
-			llProgress.setVisibility(View.VISIBLE);
-			lvAlerts.setVisibility(View.GONE);
+			if(alerts.size()==0){
+				llProgress.setVisibility(View.VISIBLE);
+				lvAlerts.setVisibility(View.GONE);
+			}
 			super.onPreExecute();
 		}
 		
@@ -261,7 +308,11 @@ public class AlertsActivity extends MainActivity {
 				alerts.add(a);
 			}
 			
-			adapter.notifyDataSetChanged();			
+			DbHelper dbHelper = DbHelper.getInstance(context);
+			dbHelper.saveAlerts(vehicle.id, alerts);
+			dbHelper.close();
+			
+			updateAlertsList();
 			
 			super.onSuccess(responseJSON);
 		}
