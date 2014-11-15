@@ -16,6 +16,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -269,7 +270,7 @@ public class TripActivity extends MainActivity {
 	        	RelativeLayout eventItem = (RelativeLayout) getLayoutInflater().inflate(R.layout.trip_event_item, llContent, false);
 				((TextView)eventItem.findViewById(R.id.tvTitle)).setText(p.title);
 				
-				if(!p.address.equals("null"))
+				if(!TextUtils.isEmpty(p.address))
 					((TextView)eventItem.findViewById(R.id.tvAddress)).setText(p.address);
 				else
 					((TextView)eventItem.findViewById(R.id.tvAddress)).setText("Address processing in progress");
