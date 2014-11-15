@@ -259,7 +259,7 @@ public class TripActivity extends MainActivity {
 		else{
 			tvAvgSpeedUnits.setText("KPH");
 			tvMaxSpeedUnits.setText("KPH");
-			tvDistanceUnits.setText("KMs");
+			tvDistanceUnits.setText("KM");
 		}
         
         llEventsList.removeAllViews();

@@ -392,7 +392,7 @@ OnConnectionFailedListener, LocationListener {
 	        		}
 	        		else{
 		                tvDistance.setText(""+df.format(Utils.metersToKm(distanceForSegment)));
-		                tvDistanceUnits.setText("KMs");
+		                tvDistanceUnits.setText("KM");
 	        		}
 	                tvTime.setText("Time: "+timeForSegment);
 	                

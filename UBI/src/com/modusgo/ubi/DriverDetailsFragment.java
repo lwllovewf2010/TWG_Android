@@ -317,7 +317,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 		}
 		else{
 			distance = Utils.metersToKm(distanceToCar[0]);
-			tvDistanceToCarLabel.setText("KMs to Car");
+			tvDistanceToCarLabel.setText("KM to Car");
 		}
 		
 		if(distance>=10000){

@@ -370,7 +370,7 @@ public class TripsFragment extends Fragment{
 				units = "Miles";
 			}
 			else{
-				units = "KMs";
+				units = "KM";
 			}
 		}
 		
