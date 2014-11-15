@@ -370,6 +370,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
     
     @Override
 	public void onResume() {
+		Utils.gaTrackScreen(getActivity(), "Driver Details Screen");
 	    super.onResume();
     }
 

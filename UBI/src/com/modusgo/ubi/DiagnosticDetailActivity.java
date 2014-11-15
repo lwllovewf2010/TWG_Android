@@ -127,6 +127,12 @@ public class DiagnosticDetailActivity extends MainActivity {
 	    	e.printStackTrace();
 	    }
 	}
+	
+	@Override
+	protected void onResume() {
+        Utils.gaTrackScreen(this, "Diagnostic Details Screen");
+		super.onResume();
+	}
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {

@@ -403,6 +403,7 @@ public class TripActivity extends MainActivity {
 	@Override
     public void onResume() {
         mapView.onResume();
+        Utils.gaTrackScreen(this, "Trip Screen");
         super.onResume();
     }
 

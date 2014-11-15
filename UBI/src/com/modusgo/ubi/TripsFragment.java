@@ -117,7 +117,8 @@ public class TripsFragment extends Fragment{
 	
 	@Override
 	public void onResume() {
-		fillTripsListView(getTripsFromDb(cStart.getTime(), cEnd.getTime()));		
+		fillTripsListView(getTripsFromDb(cStart.getTime(), cEnd.getTime()));
+		Utils.gaTrackScreen(getActivity(), "Trips Screen");		
 		super.onResume();
 	}
 	

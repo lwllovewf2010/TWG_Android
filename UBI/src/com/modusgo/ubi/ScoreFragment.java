@@ -150,6 +150,12 @@ public class ScoreFragment extends Fragment{
 		return rootView;
 	}
 	
+	@Override
+	public void onResume() {
+		Utils.gaTrackScreen(getActivity(), "Score Screen");
+		super.onResume();
+	}
+	
 	private void loadScoreGraphFromDb(){
 		
 		DbHelper dbHelper = DbHelper.getInstance(getActivity());

@@ -34,6 +34,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -103,6 +104,7 @@ public class MainActivity extends FragmentActivity {
 					 mDrawerLayout.closeDrawer(Gravity.RIGHT);
 		         } else {
 		        	 mDrawerLayout.openDrawer(Gravity.RIGHT);
+					 Utils.gaTrackScreen(MainActivity.this, "Menu");
 		         }
 			}
 		});
@@ -340,15 +342,19 @@ public class MainActivity extends FragmentActivity {
 		        	//Feedback
 		        	String driverName = vehicle !=null ? ", "+vehicle.name : "";
 		        	new DialogFeedback(actionBarTitle.toLowerCase(Locale.US) + " screen" + driverName).show(getSupportFragmentManager(), "FeedbackDialog");
+					Utils.gaTrackScreen(MainActivity.this, "Feedback Dialog");
 		            break;
 		        case CALLSUPPORT:
 		        	//Call support
+		        	Utils.gaTrackScreen(MainActivity.this, "Call Support");
 		            break;
 		        case AGENT:
 		        	//Agent
+		        	Utils.gaTrackScreen(MainActivity.this, "Agent");
 		        	break;
 		        case LOGOUT:
 		        	//Logout
+		        	Utils.gaTrackScreen(MainActivity.this, "Logout");
 		        	prefs.edit().putString(Constants.PREF_AUTH_KEY, "").commit();
 		    		Intent intent = new Intent(MainActivity.this, InitActivity.class);
 		    		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);

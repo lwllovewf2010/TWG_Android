@@ -276,7 +276,8 @@ OnConnectionFailedListener, LocationListener {
 	@Override
     public void onResume() {
         mapView.onResume();
-        
+
+		Utils.gaTrackScreen(this, "Find My Car Screen");
         super.onResume();
     }
 

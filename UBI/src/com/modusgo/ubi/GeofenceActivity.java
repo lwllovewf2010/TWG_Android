@@ -299,6 +299,7 @@ public class GeofenceActivity extends MainActivity {
 	@Override
     public void onResume() {
         mapView.onResume();
+        Utils.gaTrackScreen(this, "Geofence Screen");
         super.onResume();
     }
 

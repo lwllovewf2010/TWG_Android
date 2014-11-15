@@ -287,6 +287,12 @@ public class SettingsEditFragment extends Fragment implements ImageChooserListen
 		return rootView;
 	}
 	
+	@Override
+	public void onResume() {
+		Utils.gaTrackScreen(getActivity(), "Settings Edit Screen");
+		super.onResume();
+	}
+	
 	private ArrayList<String> getTimezoneList(){
 		ArrayList<String> timezones = new ArrayList<String>();
 		JSONObject tzJSON = Utils.getJSONObjectFromAssets(getActivity(), "timezones.json");

@@ -32,6 +32,7 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnCloseListener;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnOpenListener;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
+import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -85,6 +86,7 @@ public class DriverActivity extends MainActivity{
 			public void onOpen() {
 				setButtonUpVisibility(false);
 				setButtonNavigationDrawerVisibility(false);
+				Utils.gaTrackScreen(DriverActivity.this, "Switch Driver Menu");
 			}
 		});
         menu.setOnCloseListener(new OnCloseListener() {

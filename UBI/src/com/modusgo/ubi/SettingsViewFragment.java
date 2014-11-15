@@ -95,6 +95,7 @@ public class SettingsViewFragment extends Fragment{
 	@Override
 	public void onResume() {
 		updateFields();
+		Utils.gaTrackScreen(getActivity(), "Settings View Screen");
 		super.onResume();
 	}
 	

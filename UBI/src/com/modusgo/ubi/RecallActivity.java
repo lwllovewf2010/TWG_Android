@@ -121,7 +121,12 @@ public class RecallActivity extends MainActivity {
 	            startActivity(callIntent);  
 			}
 		});
-		
+	}
+	
+	@Override
+	protected void onResume() {
+        Utils.gaTrackScreen(this, "Recall Screen");
+		super.onResume();
 	}
 	
 	@Override

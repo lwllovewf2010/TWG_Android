@@ -583,6 +583,7 @@ public class LimitsFragment extends Fragment {
 			new GetLimitsTask(getActivity()).execute("vehicles/"+vehicle.id+"/limits.json");
 		}
 		
+		Utils.gaTrackScreen(getActivity(), "Limits Screen");
 		super.onResume();
 	}
 	

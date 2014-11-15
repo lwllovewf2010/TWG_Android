@@ -213,6 +213,12 @@ public class DiagnosticsFragment extends Fragment{
 		return rootView;
 	}
 	
+	@Override
+	public void onResume() {
+		Utils.gaTrackScreen(getActivity(), "Diagnostics Screen");
+		super.onResume();
+	}
+	
 	private void updateInfo(){
 		SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
 		SimpleDateFormat sdfTo = new SimpleDateFormat("MM/dd/yyyy KK:mm aa z", Locale.getDefault());

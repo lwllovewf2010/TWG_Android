@@ -22,6 +22,7 @@ import com.google.android.gms.maps.model.LatLngBounds.Builder;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
+import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -164,6 +165,7 @@ public class DriversLocationsActivity extends MainActivity {
 	@Override
     public void onResume() {
         mapView.onResume();
+		Utils.gaTrackScreen(this, "Drivers Locations Screen");
         super.onResume();
     }
 

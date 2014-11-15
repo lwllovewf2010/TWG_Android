@@ -128,6 +128,12 @@ public class SignInActivity extends FragmentActivity {
 
 	}
 	
+	@Override
+	protected void onResume() {
+		 Utils.gaTrackScreen(this, "Sign In Sceen");
+		super.onResume();
+	}
+	
 	private class ScreenSlidePagerAdapter extends FragmentPagerAdapter {
         public ScreenSlidePagerAdapter(FragmentManager fm) {
             super(fm);

@@ -115,6 +115,12 @@ public class ScoreInfoActivity extends MainActivity{
         
 	}
 	
+	@Override
+	protected void onResume() {
+        Utils.gaTrackScreen(this, "Score Stats Screen");
+		super.onResume();
+	}
+	
 	private Vehicle getVehicleFromDb(long id){
 		DbHelper dHelper = DbHelper.getInstance(this);
 		SQLiteDatabase db = dHelper.getReadableDatabase();

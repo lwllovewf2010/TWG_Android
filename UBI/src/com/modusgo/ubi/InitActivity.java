@@ -28,6 +28,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
 import com.modusgo.dd.CallSaverService;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.requesttasks.SendEventsRequest;
@@ -238,6 +239,15 @@ public class InitActivity extends FragmentActivity {
 							JSONObject infoJSON = responseJSON.getJSONObject("info");
 							e.putBoolean(Constants.PREF_DIAGNOSTIC, infoJSON.optBoolean("diagnostic"));
 							e.putString(Constants.PREF_UNITS_OF_MEASURE, infoJSON.optString("unit_of_measure","mile"));
+							
+							String trackingId = infoJSON.optString("");
+							if(trackingId.equals("") || trackingId.equals("false")){
+								GoogleAnalytics.getInstance(InitActivity.this).setAppOptOut(true);
+							}
+							else{
+								GoogleAnalytics.getInstance(InitActivity.this).setAppOptOut(false);
+								e.putString(Constants.PREF_GA_TRACKING_ID, trackingId);
+							}
 							
 							if(infoJSON.has("welcome"))
 								welcomeScreens = infoJSON.getJSONArray("welcome");
