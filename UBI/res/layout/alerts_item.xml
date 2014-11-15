@@ -45,6 +45,7 @@
         ubi:typeface="EncodeSansNormal-300-Light.ttf" />
     
     <ImageView 
+        android:id="@+id/imageArrow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
