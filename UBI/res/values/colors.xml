@@ -42,9 +42,9 @@
      <color name="pie_orange">#FBAF3F</color>
      <color name="pie_blue">#00ADEF</color>
      
-     <color name="ubi_green">#a6ce4d</color>
-     <color name="ubi_red">#ef4136</color>
-     <color name="ubi_yellow">#faf236</color>
-     <color name="ubi_orange">#eaa216</color>
+     <color name="ubi_green">#519548</color>
+     <color name="ubi_red">#C21A01</color>
+     <color name="ubi_yellow">#ECBE13</color>
+     <color name="ubi_orange">#F38630</color>
      <color name="ubi_gray">#e6e9ed</color>
 </resources>
