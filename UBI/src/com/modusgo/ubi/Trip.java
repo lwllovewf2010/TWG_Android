@@ -1,11 +1,17 @@
 package com.modusgo.ubi;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+
+import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -22,7 +28,6 @@ public class Trip extends ListItem implements Serializable{
 	ArrayList<LatLng> route;
 	ArrayList<Point> points;
 	ArrayList<ArrayList<LatLng>> speedingRoute;
-	ArrayList<Event> events;
 	public String grade;
 	public int fuelLevel;
 	public String fuelUnit="";
@@ -42,7 +47,6 @@ public class Trip extends ListItem implements Serializable{
 		route = new ArrayList<LatLng>();
 		points = new ArrayList<Point>();
 		speedingRoute = new ArrayList<ArrayList<LatLng>>();
-		events = new ArrayList<Event>();
 		
 		this.distance = distance;
 	}
@@ -85,12 +89,14 @@ public class Trip extends ListItem implements Serializable{
 		LatLng location;
 		EventType event;
 		String title;
+		String address;
 		
-		public Point(LatLng location, EventType event, String title) {
+		public Point(LatLng location, EventType event, String title, String address) {
 			super();
 			this.location = location;
 			this.event = event;
 			this.title = title;
+			this.address = address;
 		}
 		
 		public double getLatitude(){
@@ -108,20 +114,22 @@ public class Trip extends ListItem implements Serializable{
 		public String getTitle() {
 			return title;
 		}
-	}
-	
-	static public class Event {
 		
-		public EventType type;
-		public String title;
-		public String address;
-		
-		public Event(EventType type, String title, String address) {
-			super();
-			this.type = type;
-			this.title = title;
-			this.address = address;
+		public String getAddress() {
+			return address;
 		}
-	}
-	
+		
+		public void fetchAddress(Context context){
+			Geocoder geocoder;
+			List<Address> addresses;
+			geocoder = new Geocoder(context, Locale.getDefault());
+			try {
+				addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1);
+				if(addresses.size()>0)
+					address = addresses.get(0).getAddressLine(0);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}	
 }

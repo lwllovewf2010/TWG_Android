@@ -36,11 +36,9 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.LatLngBounds.Builder;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.modusgo.ubi.Trip.Event;
 import com.modusgo.ubi.Trip.EventType;
 import com.modusgo.ubi.Trip.Point;
 import com.modusgo.ubi.db.DbHelper;
-import com.modusgo.ubi.db.EventContract.EventEntry;
 import com.modusgo.ubi.db.PointContract.PointEntry;
 import com.modusgo.ubi.db.RouteContract.RouteEntry;
 import com.modusgo.ubi.db.TripContract.TripEntry;
@@ -208,26 +206,12 @@ public class TripActivity extends MainActivity {
 					PointEntry.COLUMN_NAME_LATITUDE,
 					PointEntry.COLUMN_NAME_LONGITUDE,
 					PointEntry.COLUMN_NAME_EVENT,
-					PointEntry.COLUMN_NAME_TITLE}, 
+					PointEntry.COLUMN_NAME_TITLE,
+					PointEntry.COLUMN_NAME_ADDRESS}, 
 					PointEntry.COLUMN_NAME_TRIP_ID+" = ?", new String[]{Long.toString(tripId)}, null, null, PointEntry._ID+" ASC");
 			if(c.moveToFirst()){
 				while (!c.isAfterLast()) {
-					t.points.add(new Point(new LatLng(c.getDouble(1), c.getDouble(2)), EventType.valueOf(c.getString(3)), c.getString(4)));
-					c.moveToNext();
-				}
-			}
-			c.close();
-			
-			c = db.query(EventEntry.TABLE_NAME, 
-					new String[]{
-					EventEntry._ID,
-					EventEntry.COLUMN_NAME_TYPE,
-					EventEntry.COLUMN_NAME_TITLE,
-					EventEntry.COLUMN_NAME_ADDRESS}, 
-					EventEntry.COLUMN_NAME_TRIP_ID+" = ?", new String[]{Long.toString(tripId)}, null, null, EventEntry._ID+" ASC");
-			if(c.moveToFirst()){
-				while (!c.isAfterLast()) {
-					t.events.add(new Event(EventType.valueOf(c.getString(1)), c.getString(2),  c.getString(3)));
+					t.points.add(new Point(new LatLng(c.getDouble(1), c.getDouble(2)), EventType.valueOf(c.getString(3)), c.getString(4), c.getString(5)));
 					c.moveToNext();
 				}
 			}
@@ -279,59 +263,68 @@ public class TripActivity extends MainActivity {
         
         llEventsList.removeAllViews();
         
-        for (Event e : trip.events) {
-			RelativeLayout eventItem = (RelativeLayout) getLayoutInflater().inflate(R.layout.trip_event_item, llContent, false);
-			((TextView)eventItem.findViewById(R.id.tvTitle)).setText(e.title);
-			
-			if(!e.address.equals("null"))
-				((TextView)eventItem.findViewById(R.id.tvAddress)).setText(e.address);
-			else
-				((TextView)eventItem.findViewById(R.id.tvAddress)).setText("Address processing in progress");
-			
-			ImageView icon = (ImageView) eventItem.findViewById(R.id.imageIcon);
-			int infoStringResource = 0;
-			switch (e.type) {
-			case START:
-				icon.setImageResource(R.drawable.marker_start);
-				break;
-			case STOP:
-				icon.setImageResource(R.drawable.marker_finish);
-				break;
-			case HARSH_BRAKING:
-				icon.setImageResource(R.drawable.marker_brake);
-				infoStringResource = R.string.harsh_braking;
-				break;
-			case HARSH_ACCELERATION:
-				icon.setImageResource(R.drawable.marker_accel);
-				infoStringResource = R.string.harsh_accel;
-				break;
-			case PHONE_USAGE:
-				icon.setImageResource(R.drawable.marker_phone);
-				infoStringResource = R.string.distracted_driving;
-				break;
-			case APP_USAGE:
-				icon.setImageResource(R.drawable.marker_app);
-				infoStringResource = R.string.distracted_driving;
-				break;
-			case SPEEDING:
-				icon.setImageResource(R.drawable.marker_speeding);
-				infoStringResource = R.string.speeding;
-				break;
-			default:
-				break;
-			}
-			
-			final int isr = infoStringResource;
-			eventItem.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					Intent i = new Intent(TripActivity.this, EducationActivity.class);
-					i.putExtra(EducationActivity.SAVED_STRING_RESOURCE, isr);
-					startActivity(i);
+        
+        for (Point p : trip.points) {
+        	if(p.event!=EventType.START && p.event!=EventType.STOP){
+	        	RelativeLayout eventItem = (RelativeLayout) getLayoutInflater().inflate(R.layout.trip_event_item, llContent, false);
+				((TextView)eventItem.findViewById(R.id.tvTitle)).setText(p.title);
+				
+				if(!p.address.equals("null"))
+					((TextView)eventItem.findViewById(R.id.tvAddress)).setText(p.address);
+				else
+					((TextView)eventItem.findViewById(R.id.tvAddress)).setText("Address processing in progress");
+				
+				ImageView icon = (ImageView) eventItem.findViewById(R.id.imageIcon);
+				int infoStringResource = 0;
+				switch (p.event) {
+				case START:
+					icon.setImageResource(R.drawable.marker_start);
+					break;
+				case STOP:
+					icon.setImageResource(R.drawable.marker_finish);
+					break;
+				case HARSH_BRAKING:
+					icon.setImageResource(R.drawable.marker_brake);
+					infoStringResource = R.string.harsh_braking;
+					break;
+				case HARSH_ACCELERATION:
+					icon.setImageResource(R.drawable.marker_accel);
+					infoStringResource = R.string.harsh_accel;
+					break;
+				case PHONE_USAGE:
+					icon.setImageResource(R.drawable.marker_phone);
+					infoStringResource = R.string.distracted_driving;
+					break;
+				case APP_USAGE:
+					icon.setImageResource(R.drawable.marker_app);
+					infoStringResource = R.string.distracted_driving;
+					break;
+				case SPEEDING:
+					icon.setImageResource(R.drawable.marker_speeding);
+					infoStringResource = R.string.speeding;
+					break;
+				default:
+					icon.setImageResource(R.drawable.marker_unknown);
+					break;
 				}
-			});
-			
-			llEventsList.addView(eventItem);
+				
+				if(infoStringResource!=0){
+					final int isr = infoStringResource;
+					eventItem.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							Intent i = new Intent(TripActivity.this, EducationActivity.class);
+							i.putExtra(EducationActivity.SAVED_STRING_RESOURCE, isr);
+							startActivity(i);
+						}
+					});
+				}
+				else{
+					eventItem.findViewById(R.id.imageArrow).setVisibility(View.INVISIBLE);
+				}
+				
+				llEventsList.addView(eventItem);
+        	}
 		}
 	}
 	
@@ -390,7 +383,7 @@ public class TripActivity extends MainActivity {
 	        		map.addMarker(mo.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_speeding)));
 	        		break;
 	        	case UNKNOWN:
-	        		map.addMarker(mo.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_brake)));
+	        		map.addMarker(mo.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_unknown)));
 	        		break;
 	        	default:
 	        		break;
@@ -474,21 +467,12 @@ public class TripActivity extends MainActivity {
 					
 					if(pointJSON.has("location")){
 						JSONObject locationJSON = pointJSON.getJSONObject("location");
-						trip.points.add(new Point(new LatLng(locationJSON.optDouble("latitude",0), locationJSON.optDouble("longitude",0)),
+						Point p = new Point(new LatLng(locationJSON.optDouble("latitude",0), locationJSON.optDouble("longitude",0)),
 								getEventType(pointJSON.optString("event")),
-								pointJSON.optString("title")));	
+								pointJSON.optString("title"), "");
+						p.fetchAddress(context.getApplicationContext());
+						trip.points.add(p);
 					}
-				}
-			}
-			
-			if(responseJSON.has("events")){
-				JSONArray eventsJSON = responseJSON.getJSONArray("events");
-				for (int i = 0; i < eventsJSON.length(); i++) {
-					JSONObject eventJSON = eventsJSON.getJSONObject(i);
-					
-					EventType type = getEventType(eventJSON.optString("type"));
-					if(!type.equals(""))
-						trip.events.add(new Event(type, eventJSON.optString("title"), eventJSON.optString("address")));					
 				}
 			}
 			
@@ -496,7 +480,6 @@ public class TripActivity extends MainActivity {
 			dHelper.saveTrip(vehicle.id, trip);
 			dHelper.saveRoute(trip.id, trip.route);
 			dHelper.savePoints(trip.id, trip.points);
-			dHelper.saveEvents(trip.id, trip.events);
 			dHelper.close();			
 			
 			updateActivity();

@@ -16,5 +16,6 @@ public class PointContract {
 		public static final String COLUMN_NAME_LONGITUDE = "longitude";
 		public static final String COLUMN_NAME_EVENT = "event";
 		public static final String COLUMN_NAME_TITLE = "title";
+		public static final String COLUMN_NAME_ADDRESS = "address";
 	}
 }

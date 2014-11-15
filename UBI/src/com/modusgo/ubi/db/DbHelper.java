@@ -13,18 +13,16 @@ import com.google.android.gms.maps.model.LatLng;
 import com.modusgo.ubi.DiagnosticsFragment.Maintenance;
 import com.modusgo.ubi.DiagnosticsFragment.WarrantyInformation;
 import com.modusgo.ubi.DiagnosticsTroubleCode;
-import com.modusgo.ubi.Vehicle;
 import com.modusgo.ubi.LimitsFragment.Limit;
 import com.modusgo.ubi.Recall;
 import com.modusgo.ubi.ScoreCirclesActivity.CirclesSection;
 import com.modusgo.ubi.ScoreFragment.MonthStats;
 import com.modusgo.ubi.ScorePieChartActivity.PieChartTab;
 import com.modusgo.ubi.Trip;
-import com.modusgo.ubi.Trip.Event;
 import com.modusgo.ubi.Trip.Point;
+import com.modusgo.ubi.Vehicle;
 import com.modusgo.ubi.db.DDEventContract.DDEventEntry;
 import com.modusgo.ubi.db.DTCContract.DTCEntry;
-import com.modusgo.ubi.db.EventContract.EventEntry;
 import com.modusgo.ubi.db.LimitsContract.LimitsEntry;
 import com.modusgo.ubi.db.MaintenanceContract.MaintenanceEntry;
 import com.modusgo.ubi.db.PointContract.PointEntry;
@@ -101,14 +99,8 @@ public class DbHelper extends SQLiteOpenHelper {
 		    PointEntry.COLUMN_NAME_LATITUDE + FLOAT_TYPE + COMMA_SEP +
 		    PointEntry.COLUMN_NAME_LONGITUDE + FLOAT_TYPE + COMMA_SEP +
 		    PointEntry.COLUMN_NAME_EVENT + TEXT_TYPE + COMMA_SEP +
-		    PointEntry.COLUMN_NAME_TITLE + TEXT_TYPE +  " ); ",
-	
-		    "CREATE TABLE " + EventEntry.TABLE_NAME + " (" +
-		    EventEntry._ID + " INTEGER PRIMARY KEY," +
-		    EventEntry.COLUMN_NAME_TRIP_ID + INT_TYPE + COMMA_SEP +
-		    EventEntry.COLUMN_NAME_TYPE + TEXT_TYPE + COMMA_SEP +
-		    EventEntry.COLUMN_NAME_TITLE + TEXT_TYPE + COMMA_SEP +
-		    EventEntry.COLUMN_NAME_ADDRESS + TEXT_TYPE +  " ); ",
+		    PointEntry.COLUMN_NAME_TITLE + TEXT_TYPE + COMMA_SEP +
+		    PointEntry.COLUMN_NAME_ADDRESS + TEXT_TYPE +  " ); ",
 	
 		    "CREATE TABLE " + ScoreGraphEntry.TABLE_NAME + " (" +
 		    ScoreGraphEntry._ID + " INTEGER PRIMARY KEY," +
@@ -203,7 +195,6 @@ public class DbHelper extends SQLiteOpenHelper {
 	"DROP TABLE IF EXISTS " + TripEntry.TABLE_NAME,
 	"DROP TABLE IF EXISTS " + RouteEntry.TABLE_NAME,
 	"DROP TABLE IF EXISTS " + PointEntry.TABLE_NAME,
-	"DROP TABLE IF EXISTS " + EventEntry.TABLE_NAME,
 	"DROP TABLE IF EXISTS " + ScoreGraphEntry.TABLE_NAME,
 	"DROP TABLE IF EXISTS " + ScorePercentageEntry.TABLE_NAME,
 	"DROP TABLE IF EXISTS " + ScorePieChartEntry.TABLE_NAME,
@@ -216,7 +207,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	"DROP TABLE IF EXISTS " + DDEventEntry.TABLE_NAME};
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 25;
+	public static final int DATABASE_VERSION = 26;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;
@@ -606,8 +597,9 @@ public class DbHelper extends SQLiteOpenHelper {
 					+ PointEntry.COLUMN_NAME_LATITUDE +","
 					+ PointEntry.COLUMN_NAME_LONGITUDE +","
 					+ PointEntry.COLUMN_NAME_EVENT +","
-					+ PointEntry.COLUMN_NAME_TITLE
-					+ ") VALUES (?,?,?,?,?);";
+					+ PointEntry.COLUMN_NAME_TITLE +","
+					+ PointEntry.COLUMN_NAME_ADDRESS
+					+ ") VALUES (?,?,?,?,?,?);";
 			
 			SQLiteStatement statement = database.compileStatement(sql);
 		    database.beginTransaction();
@@ -618,44 +610,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		    	statement.bindDouble(3, p.getLongitude());
 		    	statement.bindString(4, p.getEvent());
 		    	statement.bindString(5, p.getTitle());
-		    	statement.execute();
-			}
-		    
-		    database.setTransactionSuccessful();	
-		    database.endTransaction();
-		    statement.close();
-		}
-		
-		database.close();
-	}
-	
-	public void saveEvents(long tripId, ArrayList<Event> events){
-		SQLiteDatabase database = sInstance.getWritableDatabase();
-		
-		if(database!=null && events!=null){
-			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+EventEntry.TABLE_NAME+" WHERE "+EventEntry.COLUMN_NAME_TRIP_ID+" = "+tripId);
-		    database.beginTransaction();
-		    removeStatement.clearBindings();
-	        removeStatement.execute();
-	        database.setTransactionSuccessful();	
-		    database.endTransaction();
-		    removeStatement.close();
-			
-			String sql = "INSERT INTO "+ EventEntry.TABLE_NAME +" ("
-					+ EventEntry.COLUMN_NAME_TRIP_ID +","
-					+ EventEntry.COLUMN_NAME_TYPE +","
-					+ EventEntry.COLUMN_NAME_TITLE +","
-					+ EventEntry.COLUMN_NAME_ADDRESS
-					+ ") VALUES (?,?,?,?);";
-			
-			SQLiteStatement statement = database.compileStatement(sql);
-		    database.beginTransaction();
-		    for (Event e : events) {
-		    	statement.clearBindings();
-		    	statement.bindLong(1, tripId);
-		    	statement.bindString(2, e.type.toString());
-		    	statement.bindString(3, e.title);
-		    	statement.bindString(4, e.address);
+		    	statement.bindString(6, p.getAddress());
 		    	statement.execute();
 			}
 		    
