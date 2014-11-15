@@ -5,12 +5,14 @@ public class Constants {
 	public static final String HOCKEY_APP_ID = "caca040742c8345b8594ac0bd7a71418";
 	
 	public static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZZZZZ";
+	public static final String DATE_TIME_FORMAT_ZULU = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 	
 	public static final String PREF_CURRENT_DRIVER = "currentDriver";
 	public static final String PREF_AUTH_KEY = "auth_key";
 	public static final String PREF_CLIENT_ID = "clientId";
 	public static final String PREF_SHOW_TIP_POPUP = "showTipPopup";
 	public static final String PREF_WELCOME_PAGES = "welcomePagesIds";
+	public static final String PREF_UNITS_OF_MEASURE = "unitsOfMeasure";
 	public static final String PREF_DRIVER_ID = "id";
 	public static final String PREF_VEHICLE_ID = "vehicle_id";
 	public static final String PREF_FIRST_NAME = "first_name";
@@ -25,8 +27,10 @@ public class Constants {
 	public static final String PREF_DEVICE_TYPE = "deviceType";
 	public static final String PREF_DEVICE_EVENTS = "deviceEvents";
 	public static final String PREF_DEVICE_TRIPS = "deviceTrips";
+	public static final String PREF_DEVICE_IN_TRIP = "deviceInTrip";
 	public static final String PREF_DEVICE_DATA_URL = "deviceDataUrl";
 	public static final String PREF_DEVICE_AUTH_KEY = "deviceAuthKey";
+	public static final String PREF_EVENTS_LAST_CHECK = "eventsLastCheck";
 	public static final String PREF_DIAGNOSTICS_CHECKUP_DATE = "diagnisticsCheckupDate";
 	public static final String PREF_DIAGNOSTICS_STATUS = "diagnisticsStatus";
 	

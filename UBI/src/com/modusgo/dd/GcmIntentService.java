@@ -74,7 +74,6 @@ public class GcmIntentService extends IntentService {
                 				setBlockEnabled(true);
                 			else{
                 				setBlockEnabled(false);
-                				new SendStatsRequest(getApplicationContext()).execute(Constants.getSendStatisticsURL(Secure.getString(getContentResolver(), Secure.ANDROID_ID)));
                 			}
                 		}
                 		else if(eventMessage.equals(EVENT_UNREGISTER)){
@@ -87,7 +86,7 @@ public class GcmIntentService extends IntentService {
     	    				editor.commit();
     	    				//Clear GCM preferences file
     	    				getSharedPreferences(MainActivity.class.getSimpleName(),Context.MODE_PRIVATE).edit().clear().commit();
-    	    				stopService(new Intent(this, TrackingStatusService.class));
+    	    				//stopService(new Intent(this, TrackingStatusService.class));
     	    				//Toast.makeText(getApplicationContext(), "Distracted Driving: device unregistered", Toast.LENGTH_SHORT);
     	    				//sendNotification("Distracted Driving", "Device unregistered, tap to reregister.");
                 		}
@@ -109,8 +108,8 @@ public class GcmIntentService extends IntentService {
     	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         prefs.edit().putBoolean(Constants.PREF_DD_ENABLED, enabled).commit();
 		
-		Intent i = new Intent(getApplicationContext(), TrackingStatusService.class);
-		startService(i); 
+//		Intent i = new Intent(getApplicationContext(), TrackingStatusService.class);
+//		startService(i); 
     	
     }
 

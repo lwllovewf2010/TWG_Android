@@ -189,7 +189,12 @@ public class ScoreInfoActivity extends MainActivity{
 		infoFields.put("VIN", vehicle.carVIN);
 		infoFields.put("Profile date", "N/A");
 		infoFields.put("Start date", "N/A");
-		infoFields.put("Profile driving miles", df.format(vehicle.totalDistance)+" Miles");
+		if(prefs.getString(Constants.PREF_UNITS_OF_MEASURE, "mile").equals("mile")){
+			infoFields.put("Profile driving miles", df.format(vehicle.totalDistance)+" Miles");
+		}
+		else{
+			infoFields.put("Profile driving kilometers", df.format(vehicle.totalDistance)+" KMs");
+		}
 		infoFields.put("Estimated annual driving", "N/A");
 		
 		LayoutInflater inflater = getLayoutInflater();

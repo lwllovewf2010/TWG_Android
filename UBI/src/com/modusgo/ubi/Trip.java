@@ -1,11 +1,17 @@
 package com.modusgo.ubi;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+
+import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -22,12 +28,11 @@ public class Trip extends ListItem implements Serializable{
 	ArrayList<LatLng> route;
 	ArrayList<Point> points;
 	ArrayList<ArrayList<LatLng>> speedingRoute;
-	ArrayList<Event> events;
 	public String grade;
 	public int fuelLevel;
 	public String fuelUnit="";
 	
-	public enum EventType {START, STOP, HARSH_BRAKING, HARSH_ACCELERATION, SPEEDING, PHONE_USAGE, APP_USAGE};
+	public enum EventType {START, STOP, HARSH_BRAKING, HARSH_ACCELERATION, SPEEDING, CALL_USAGE, PHONE_USAGE, UNKNOWN};
 	
 	private static SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
 	private static SimpleDateFormat sdfTo = new SimpleDateFormat("hh:mm a", Locale.getDefault());
@@ -42,7 +47,6 @@ public class Trip extends ListItem implements Serializable{
 		route = new ArrayList<LatLng>();
 		points = new ArrayList<Point>();
 		speedingRoute = new ArrayList<ArrayList<LatLng>>();
-		events = new ArrayList<Event>();
 		
 		this.distance = distance;
 	}
@@ -83,12 +87,16 @@ public class Trip extends ListItem implements Serializable{
 	static public class Point {
 		
 		LatLng location;
-		ArrayList<EventType> events;
+		EventType event;
+		String title;
+		String address;
 		
-		public Point(LatLng location, ArrayList<EventType> events) {
+		public Point(LatLng location, EventType event, String title, String address) {
 			super();
 			this.location = location;
-			this.events = events;
+			this.event = event;
+			this.title = title;
+			this.address = address;
 		}
 		
 		public double getLatitude(){
@@ -99,28 +107,29 @@ public class Trip extends ListItem implements Serializable{
 			return location.longitude;
 		}
 		
-		public String getEventsString(){
-			String eventsStr = "";
-			for (EventType ev : events) {
-				eventsStr+=ev.toString()+" ";
+		public String getEvent(){
+			return event.toString();
+		}
+		
+		public String getTitle() {
+			return title;
+		}
+		
+		public String getAddress() {
+			return address;
+		}
+		
+		public void fetchAddress(Context context){
+			Geocoder geocoder;
+			List<Address> addresses;
+			geocoder = new Geocoder(context, Locale.getDefault());
+			try {
+				addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1);
+				if(addresses.size()>0)
+					address = addresses.get(0).getAddressLine(0);
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-			
-			return eventsStr.substring(0, eventsStr.length()-1);
 		}
-	}
-	
-	static public class Event {
-		
-		public EventType type;
-		public String title;
-		public String address;
-		
-		public Event(EventType type, String title, String address) {
-			super();
-			this.type = type;
-			this.title = title;
-			this.address = address;
-		}
-	}
-	
+	}	
 }

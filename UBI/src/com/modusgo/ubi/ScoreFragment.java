@@ -36,6 +36,7 @@ import com.modusgo.ubi.ScorePieChartActivity.PieChartTab;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.ScoreGraphContract.ScoreGraphEntry;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
+import com.modusgo.ubi.requesttasks.BaseRequestAsyncTask;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -199,13 +200,13 @@ public class ScoreFragment extends Fragment{
 			}
 			else if(grade.contains("B")){
 				thisMonthMessage+="Really Good Driving!\nKeep Going!";
-				tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_orange));
-				tvScore.setBackgroundResource(R.drawable.circle_score_orange);
+				tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_yellow));
+				tvScore.setBackgroundResource(R.drawable.circle_score_yellow);
 			}
 			else if(grade.contains("C")){
 				thisMonthMessage+="Average Driving\nYou can do better!";
-				tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_red));
-				tvScore.setBackgroundResource(R.drawable.circle_score_red);
+				tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_orange));
+				tvScore.setBackgroundResource(R.drawable.circle_score_orange);
 			}
 			else if(grade.contains("D")){
 				thisMonthMessage+="Off to a rough start.\nYou can do better!";
@@ -312,10 +313,14 @@ public class ScoreFragment extends Fragment{
 					b.setValueColor(getActivity().getResources().getColor(R.color.ubi_green));						
 				}
 				else if(grade.contains("B")){
+					b.setColor(getActivity().getResources().getColor(R.color.ubi_yellow));
+					b.setValueColor(getActivity().getResources().getColor(R.color.ubi_yellow));
+				}
+				else if(grade.contains("C")){
 					b.setColor(getActivity().getResources().getColor(R.color.ubi_orange));
 					b.setValueColor(getActivity().getResources().getColor(R.color.ubi_orange));
 				}
-				else if(grade.contains("C") || grade.contains("D") || grade.contains("E") || grade.contains("F")){
+				else if(grade.contains("D") || grade.contains("E") || grade.contains("F")){
 					b.setColor(getActivity().getResources().getColor(R.color.ubi_red));
 					b.setValueColor(getActivity().getResources().getColor(R.color.ubi_red));
 				}

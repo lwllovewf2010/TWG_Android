@@ -39,6 +39,7 @@ import android.widget.TextView;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.TripContract.TripEntry;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
+import com.modusgo.ubi.requesttasks.BaseRequestAsyncTask;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -344,6 +345,7 @@ public class TripsFragment extends Fragment{
 		TextView tvStartTime;
 		TextView tvEndTime;
 		TextView tvDistance;
+		TextView tvDistanceUnits;
 		TextView tvFuel;
 		TextView tvFuelUnit;
 	}
@@ -352,11 +354,19 @@ public class TripsFragment extends Fragment{
 
 		final int TRIP_ITEM = 0;
 		final int HEADER_ITEM = 1;
+		String units;
 		
 		LayoutInflater lInflater;
 		
 		public TripsAdapter() {
 		    lInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		    
+			if(prefs.getString(Constants.PREF_UNITS_OF_MEASURE, "mile").equals("mile")){
+				units = "Miles";
+			}
+			else{
+				units = "KMs";
+			}
 		}
 		
 		@Override
@@ -434,6 +444,7 @@ public class TripsFragment extends Fragment{
 				view = lInflater.inflate(R.layout.trips_list_item, parent, false);
 				holder = new ViewHolderTrip();
 				holder.tvDistance = (TextView) view.findViewById(R.id.tvDistance);
+				holder.tvDistanceUnits = (TextView) view.findViewById(R.id.tvDistanceUnits);
 				holder.tvEventsCount = (TextView) view.findViewById(R.id.tvCounter);
 				holder.tvStartTime = (TextView) view.findViewById(R.id.tvStartTime);
 				holder.tvEndTime = (TextView) view.findViewById(R.id.tvEndTime);
@@ -462,9 +473,12 @@ public class TripsFragment extends Fragment{
 				holder.tvScore.setBackgroundResource(R.drawable.circle_score_green);
 			}
 			else if(grade.contains("B")){
+				holder.tvScore.setBackgroundResource(R.drawable.circle_score_yellow);
+			}
+			else if(grade.contains("C")){
 				holder.tvScore.setBackgroundResource(R.drawable.circle_score_orange);
 			}
-			else if(grade.contains("C") || grade.contains("D") || grade.contains("E") || grade.contains("F")){
+			else if(grade.contains("D") || grade.contains("E") || grade.contains("F")){
 				holder.tvScore.setBackgroundResource(R.drawable.circle_score_red);
 			}
 			else{
@@ -488,6 +502,8 @@ public class TripsFragment extends Fragment{
 				holder.tvDistance.setText(new DecimalFormat("0.0").format(t.distance));
 			else
 				holder.tvDistance.setText(new DecimalFormat("0").format(t.distance));
+			
+			holder.tvDistanceUnits.setText(units);
 			
 			view.setOnClickListener(new OnClickListener() {
 				@Override

@@ -13,6 +13,8 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -25,9 +27,11 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.modusgo.ubi.db.AlertContract.AlertEntry;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
-import com.modusgo.ubi.utils.Utils;
+import com.modusgo.ubi.requesttasks.BaseRequestAsyncTask;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -82,13 +86,56 @@ public class AlertsActivity extends MainActivity {
 		
 		llProgress = (LinearLayout) findViewById(R.id.llProgress);
 		
-		alerts = new ArrayList<Alert>();
+		alerts = getAlertsFromDB();
 		
 		adapter = new AlertsAdapter(this, R.layout.alerts_item, alerts);
 		
 		lvAlerts = (ListView)findViewById(R.id.listViewAlerts);
 		lvAlerts.setAdapter(adapter);
+	}
+	
+	private ArrayList<Alert> getAlertsFromDB(){
+		ArrayList<Alert> alerts = new ArrayList<Alert>();
 		
+		DbHelper dbHelper = DbHelper.getInstance(this);
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		Cursor c = db.query(AlertEntry.TABLE_NAME, 
+				new String[]{
+				AlertEntry._ID,
+				AlertEntry.COLUMN_NAME_VEHICLE_ID,
+				AlertEntry.COLUMN_NAME_TRIP_ID,
+				AlertEntry.COLUMN_NAME_TYPE,
+				AlertEntry.COLUMN_NAME_TIMESTAMP,
+				AlertEntry.COLUMN_NAME_DESCRIPTION,
+				AlertEntry.COLUMN_NAME_LATITUDE,
+				AlertEntry.COLUMN_NAME_LONGITUDE,
+				AlertEntry.COLUMN_NAME_SEEN_AT}, 
+				AlertEntry.COLUMN_NAME_VEHICLE_ID+" = ?", new String[]{Long.toString(vehicle.id)}, null, null, null);
+		
+		if(c.moveToFirst()){
+			while (!c.isAfterLast()) {
+				Alert a = new Alert(c.getLong(0));
+				a.vehicleId = c.getLong(1);
+				a.tripId = c.getLong(2);
+				a.type = c.getString(3);
+				a.timestamp = c.getString(4);
+				a.description = c.getString(5);
+				a.location = new LatLng(c.getDouble(6), c.getDouble(7));
+				a.seenAt = c.getString(8);
+				alerts.add(a);
+				c.moveToNext();
+			}
+		}
+		c.close();		
+		db.close();
+		dbHelper.close();
+		
+		return alerts;
+	}
+	
+	private void updateAlertsList() {
+		alerts = getAlertsFromDB();
+		adapter.notifyDataSetChanged();
 	}
 	
 	@Override
@@ -103,25 +150,21 @@ public class AlertsActivity extends MainActivity {
 		super.onSaveInstanceState(outState);
 	}
 	
-	class Alert{
+	public class Alert{
 		
-		int id;
-		int type;
-		String eventTitle;
-		String date;
-		long tripId;
-		boolean notViewed;
+		public long id;
+		public long vehicleId;
+		public long tripId;
+		public String type;
+		public String timestamp;
+		public String description;
+		public LatLng location;
+		public String seenAt;
 		
-		public Alert(int id, int type, String eventTitle, String date, boolean viewed, long tripId) {
+		public Alert(long id) {
 			super();
 			this.id = id;
-			this.type = type;
-			this.eventTitle = eventTitle;
-			this.date = date;
-			this.notViewed = viewed;
-			this.tripId = tripId;
 		}
-		
 	}
 	
 	class AlertsAdapter extends ArrayAdapter<Alert>{
@@ -151,26 +194,27 @@ public class AlertsActivity extends MainActivity {
 				holder = new ViewHolder();
 				holder.tvEvent = (TextView) view.findViewById(R.id.tvEvent);
 				holder.tvDate = (TextView) view.findViewById(R.id.tvDate);
+				holder.imageArrow = (ImageView) view.findViewById(R.id.imageArrow);
 				view.setTag(holder);
 		    }
 		    else{
 		    	holder = (ViewHolder) view.getTag();
 		    }
 
-		    holder.tvEvent.setText(alert.eventTitle);	
+		    holder.tvEvent.setText(alert.description);	
 		    try {
-		    	holder.tvDate.setText(sdfTo.format(sdfFrom.parse(alert.date)));
+		    	holder.tvDate.setText(sdfTo.format(sdfFrom.parse(alert.timestamp)));
 			} catch (ParseException e) {
-				holder.tvDate.setText(alert.date);
+				holder.tvDate.setText(alert.timestamp);
 				e.printStackTrace();
 			}
 		    
-		    if(alert.notViewed){
-		    	holder.tvEvent.setTypeface(typefaceBold);
-		    }
-		    else{
-		    	holder.tvEvent.setTypeface(typefaceLight);    	
-		    }
+//		    if(alert.notViewed){
+//		    	holder.tvEvent.setTypeface(typefaceBold);
+//		    }
+//		    else{
+//		    	holder.tvEvent.setTypeface(typefaceLight);    	
+//		    }
 		    
 //		    switch (alert.type) {
 //			case 0:
@@ -182,27 +226,33 @@ public class AlertsActivity extends MainActivity {
 //			default:
 //				break;
 //			}
-		    
-		    view.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					new MarkAlertViewedTask(AlertsActivity.this, alert.id).execute("drivers/"+vehicle.id+"/alerts/"+alert.id+"/hide.json");
-					Intent intent = new Intent(AlertsActivity.this, TripActivity.class);
-					intent.putExtra("id", vehicleId);
-					intent.putExtra(TripActivity.EXTRA_TRIP_ID, alert.tripId);
-					startActivity(intent);	
-				}
-			});
+		    if(alert.tripId!=0){
+
+		    	holder.imageArrow.setVisibility(View.VISIBLE);
+			    view.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						new MarkAlertViewedTask(AlertsActivity.this, alert.id).execute("drivers/"+vehicle.id+"/alerts/"+alert.id+"/hide.json");
+						Intent intent = new Intent(AlertsActivity.this, TripActivity.class);
+						intent.putExtra("id", vehicleId);
+						intent.putExtra(TripActivity.EXTRA_TRIP_ID, alert.tripId);
+						startActivity(intent);	
+					}
+			    });
+		    }
+		    else{
+		    	holder.imageArrow.setVisibility(View.INVISIBLE);
+		    	view.setOnClickListener(null);
+		    }
 			
 			return view;
 		}
-		
 	}
 	
 	private class ViewHolder{
 		public TextView tvEvent;
 		public TextView tvDate;
+		public ImageView imageArrow;
 	}
 	
 	class GetAlertsTask extends BaseRequestAsyncTask{
@@ -213,8 +263,10 @@ public class AlertsActivity extends MainActivity {
 		
 		@Override
 		protected void onPreExecute() {
-			llProgress.setVisibility(View.VISIBLE);
-			lvAlerts.setVisibility(View.GONE);
+			if(alerts.size()==0){
+				llProgress.setVisibility(View.VISIBLE);
+				lvAlerts.setVisibility(View.GONE);
+			}
 			super.onPreExecute();
 		}
 		
@@ -240,10 +292,27 @@ public class AlertsActivity extends MainActivity {
 			alerts.clear();
 			for (int i = 0; i < alertsJSON.length(); i++) {
 				JSONObject alertJSON = alertsJSON.getJSONObject(i);
-				alerts.add(new Alert(alertJSON.optInt("id"), 0, alertJSON.optString("title"), Utils.fixTimezoneZ(alertJSON.optString("created_at")), alertJSON.optBoolean("show_on_mobile"), alertJSON.optLong("trip_id")));
+				Alert a = new Alert(alertJSON.optInt("id"));
+				a.vehicleId = alertJSON.optLong("vehicle_id");
+				a.tripId = alertJSON.optLong("trip_id");
+				a.type = alertJSON.optString("uuid");
+				a.timestamp = alertJSON.optString("timestamp");
+				a.description = alertJSON.optString("description");
+				if(alertJSON.has("location")){
+					JSONObject locationJSON = alertJSON.getJSONObject("location");
+					a.location = new LatLng(locationJSON.optDouble("latitude"), locationJSON.optDouble("longitude"));					
+				}
+				else
+					a.location = new LatLng(0, 0);
+				a.seenAt = alertJSON.optString("seen_at");
+				alerts.add(a);
 			}
 			
-			adapter.notifyDataSetChanged();			
+			DbHelper dbHelper = DbHelper.getInstance(context);
+			dbHelper.saveAlerts(vehicle.id, alerts);
+			dbHelper.close();
+			
+			updateAlertsList();
 			
 			super.onSuccess(responseJSON);
 		}
@@ -251,9 +320,9 @@ public class AlertsActivity extends MainActivity {
 	
 	class MarkAlertViewedTask extends BaseRequestAsyncTask{
 		
-		int alertId;
+		long alertId;
 		
-		public MarkAlertViewedTask(Context context, int alertId) {
+		public MarkAlertViewedTask(Context context, long alertId) {
 			super(context);
 			this.alertId = alertId;
 		}

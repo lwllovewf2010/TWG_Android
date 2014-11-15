@@ -167,6 +167,7 @@
                             ubi:typeface="EncodeSansNarrow-700-Bold.ttf" />
 
                         <com.modusgo.ubi.customviews.TypefacedTextView
+                            android:id="@+id/tvAvgSpeedUnits"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="MPH"
@@ -205,6 +206,7 @@
                             ubi:typeface="EncodeSansNarrow-700-Bold.ttf" />
 
                         <com.modusgo.ubi.customviews.TypefacedTextView
+                            android:id="@+id/tvMaxSpeedUnits"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="MPH"
@@ -243,6 +245,7 @@
                             ubi:typeface="EncodeSansNarrow-700-Bold.ttf" />
 
                         <com.modusgo.ubi.customviews.TypefacedTextView
+                            android:id="@+id/tvDistanceUnits"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="MILES"

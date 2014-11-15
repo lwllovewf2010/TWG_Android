@@ -50,6 +50,7 @@ import com.modusgo.ubi.customviews.GoogleMapFragment.OnMapReadyListener;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.TripContract.TripEntry;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
+import com.modusgo.ubi.requesttasks.BaseRequestAsyncTask;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -66,6 +67,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	TextView tvDate;
 	ImageView imagePhoto;
 	TextView tvDistanceToCar;
+	TextView tvDistanceToCarLabel;
 	TextView tvFuel;
 	TextView tvDiagnostics;
 	TextView tvAlerts;
@@ -103,6 +105,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	    tvDate = (TextView) rootView.findViewById(R.id.tvDate);
 	    imagePhoto = (ImageView)rootView.findViewById(R.id.imagePhoto);
 	    tvDistanceToCar = (TextView)rootView.findViewById(R.id.tvDistanceToCar);
+	    tvDistanceToCarLabel = (TextView)rootView.findViewById(R.id.tvDistanceToCarLabel);
 	    tvFuel = (TextView)rootView.findViewById(R.id.tvFuel);
 	    tvDiagnostics = (TextView)rootView.findViewById(R.id.tvDiagnosticsCount);
 	    tvAlerts = (TextView)rootView.findViewById(R.id.tvAlertsCount);
@@ -303,7 +306,16 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 		btnDistanceToCar.setEnabled(true);
 		
 		Location.distanceBetween(vehicle.latitude, vehicle.longitude, location.getLatitude(), location.getLongitude(), distanceToCar);
-		float distance = Utils.metersToMiles(distanceToCar[0]);
+		float distance = 0;
+		
+		if(prefs.getString(Constants.PREF_UNITS_OF_MEASURE, "mile").equals("mile")){
+			distance = Utils.metersToMiles(distanceToCar[0]);
+			tvDistanceToCarLabel.setText("Miles to Car");
+		}
+		else{
+			distance = Utils.metersToKm(distanceToCar[0]);
+			tvDistanceToCarLabel.setText("KMs to Car");
+		}
 		
 		if(distance>=10000){
 			tvDistanceToCar.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);

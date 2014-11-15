@@ -31,7 +31,7 @@
                 android:src="@drawable/person_test3" />
 
             <ImageView
-                android:id="@+id/btnPhoto"
+                android:id="@+id/imagePickPhoto"
                 android:layout_width="102.5dp"
                 android:layout_height="102.5dp"
                 android:layout_marginBottom="18.5dp"

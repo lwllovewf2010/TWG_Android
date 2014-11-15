@@ -31,6 +31,7 @@ import android.widget.TextView;
 import com.modusgo.dd.TrackingStatusService;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
+import com.modusgo.ubi.requesttasks.BaseRequestAsyncTask;
 import com.modusgo.ubi.utils.AnimationUtils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -71,9 +72,6 @@ public class HomeActivity extends MainActivity{
 				new GetVehiclesTask(HomeActivity.this).execute("vehicles.json");
 			}
 		});
-		
-		if(!prefs.getString(Constants.PREF_REG_CODE, "").equals(""))
-			startService(new Intent(this, TrackingStatusService.class));
 		
 		updateDrivers();
 	}

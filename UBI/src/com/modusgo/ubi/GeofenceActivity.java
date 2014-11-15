@@ -34,6 +34,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
+import com.modusgo.ubi.requesttasks.BasePostRequestAsyncTask;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -48,6 +49,7 @@ public class GeofenceActivity extends MainActivity {
     Button btnSave;
     TextView tvInstructions;
     TextView tvRadius;
+    TextView tvRadiusUnits;
     
     ArrayList<LatLng> points;
     private boolean geofencingStarted = false;
@@ -117,6 +119,12 @@ public class GeofenceActivity extends MainActivity {
 						map.clear();
 						points.clear();
 						tvRadius.setText("n/a");
+						if(prefs.getString(Constants.PREF_UNITS_OF_MEASURE, "mile").equals("mile")){
+							tvRadiusUnits.setText("MILES");
+						}
+						else{
+							tvRadiusUnits.setText("KM");
+						}
 						updateSaveBtn("Finsih");
 				        tvInstructions.setText("Tap anywhere on\nthe map to begin setting up\nyour geofence borders");
 						geofencingStarted = true;
@@ -147,6 +155,7 @@ public class GeofenceActivity extends MainActivity {
         btnSave = (Button) findViewById(R.id.btnSave);
         tvInstructions = (TextView) findViewById(R.id.tvInstructions);
         tvRadius = (TextView) findViewById(R.id.tvRadius);
+        tvRadiusUnits = (TextView) findViewById(R.id.tvRadiusUnits);
 
 		btnSave.setText("Loading...");
         btnSave.setEnabled(false);
@@ -271,8 +280,14 @@ public class GeofenceActivity extends MainActivity {
 		
 		DecimalFormat df = new DecimalFormat("0.0");
 		
-		//half meters to miles		
-		tvRadius.setText(df.format(Utils.metersToMiles((distance[0]/2f))));
+		if(prefs.getString(Constants.PREF_UNITS_OF_MEASURE, "mile").equals("mile")){
+			tvRadius.setText(df.format(Utils.metersToMiles((distance[0]/2f))));
+			tvRadiusUnits.setText("MILES");
+		}
+		else{
+			tvRadius.setText(df.format(Utils.metersToKm((distance[0]/2f))));
+			tvRadiusUnits.setText("KM");
+		}
 	}
 	
 	@Override
@@ -338,6 +353,12 @@ public class GeofenceActivity extends MainActivity {
 			updateActivity();
 			
 			super.onSuccess(responseJSON);
+		}
+		
+		@Override
+		protected void onError(String message) {
+			finish();
+			super.onError(message);
 		}
 	}
     

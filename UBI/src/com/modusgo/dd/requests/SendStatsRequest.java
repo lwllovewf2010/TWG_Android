@@ -48,7 +48,7 @@ public class SendStatsRequest extends AsyncTask<String, String, String[]>{
 			c.setTimeInMillis(System.currentTimeMillis());
 			requestJSON.put("date",dateTimeformatter.format(c.getTime()));
 			requestJSON.put("usage_time",0/*prefs.getLong(Constants.PREF_USAGE_TIME, 0)/1000f*/);
-			requestJSON.put("call_time",prefs.getLong(CallReceiver.PREF_CALL_DURATION, 0)/1000f);
+			//requestJSON.put("call_time",prefs.getLong(CallReceiver.PREF_CALL_DURATION, 0)/1000f);
 			requestJSON.put("sms_count",0/*prefs.getInt(Constants.PREF_SMS_COUNT, 0)*/);
 			requestJSON.put("blocked_calls",0/*prefs.getInt(Constants.PREF_BLOCKED_CALLS_COUNT, 0)*/);
 			requestJSON.put("blocked_sms", 0/*prefs.getInt(Constants.PREF_BLOCKED_SMS_COUNT, 0)*/);
@@ -104,12 +104,12 @@ public class SendStatsRequest extends AsyncTask<String, String, String[]>{
     protected void onPostExecute(String result[]) {
         super.onPostExecute(result);
         if(!result[0].equals("error")){
-        	Editor e = prefs.edit();
-        	e.putLong(CallReceiver.PREF_CALL_DURATION, 0);
-        	e.putString(CallReceiver.PREF_CALL_START, "");
-        	e.putString(CallReceiver.PREF_CALL_END, "");
-        	e.putInt(PhoneScreenOnOffReceiver.PREF_UNLOCK_COUNT, 0);
-        	e.commit();
+//        	Editor e = prefs.edit();
+//        	e.putLong(CallReceiver.PREF_CALL_DURATION, 0);
+//        	e.putString(CallReceiver.PREF_CALL_START, "");
+//        	e.putString(CallReceiver.PREF_CALL_END, "");
+//        	e.putInt(PhoneScreenOnOffReceiver.PREF_UNLOCK_COUNT, 0);
+//        	e.commit();
         	
         	//Toast.makeText(app.getApplicationContext(), "Usage statistics sent", Toast.LENGTH_SHORT).show();
         }        

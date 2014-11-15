@@ -1,5 +1,7 @@
 package com.modusgo.ubi;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,16 +10,24 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.media.ThumbnailUtils;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
 import android.util.TypedValue;
@@ -35,16 +45,26 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.kbeanie.imagechooser.api.ChooserType;
+import com.kbeanie.imagechooser.api.ChosenImage;
+import com.kbeanie.imagechooser.api.FileUtils;
+import com.kbeanie.imagechooser.api.ImageChooserListener;
+import com.kbeanie.imagechooser.api.ImageChooserManager;
 import com.modusgo.ubi.db.DbHelper;
+import com.modusgo.ubi.requesttasks.BasePostRequestAsyncTask;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-public class SettingsEditFragment extends Fragment {
-	
-	private static final String TAG_CHANGED = "changed";
+public class SettingsEditFragment extends Fragment implements ImageChooserListener{
 
+	private static final String TAG_CHANGED = "changed";
+	private static final String PHOTOS_FOLDER = "ubi_avatars";
+
+	ImageView imagePhoto;
+	ImageView imagePickPhoto;
 	EditText editFirstName;
 	EditText editLastName;
 	EditText editPhone;
@@ -54,6 +74,12 @@ public class SettingsEditFragment extends Fragment {
 	EditText editPassword;
 	Button btnUpdate;
 	Button btnCancel;
+	
+	private DisplayImageOptions imageLoaderOptions;
+	private ImageChooserManager imageChooserManager;
+	private String filePath="";
+	private int chooserType;
+	private String imageBase64="";
 	
 	private int spinnerTimezoneDefault = 0;
 	private int spinnerCarDefault = 0;
@@ -70,14 +96,15 @@ public class SettingsEditFragment extends Fragment {
 		((MainActivity)getActivity()).setActionBarTitle("SETTINGS");
 		
 		final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-		
+
+		imagePhoto = (ImageView)rootView.findViewById(R.id.imagePhoto);
+		imagePickPhoto = (ImageView)rootView.findViewById(R.id.imagePickPhoto);
 		editFirstName = (EditText)rootView.findViewById(R.id.editFirstName);
 		editLastName = (EditText)rootView.findViewById(R.id.editLastName);
 		editPhone = (EditText)rootView.findViewById(R.id.editPhone);
 		editEmail = (EditText)rootView.findViewById(R.id.editEmail);
 		spinnerTimezone = (Spinner)rootView.findViewById(R.id.spinnerTimezone);
 		spinnerCar = (Spinner)rootView.findViewById(R.id.spinnerCar);
-		ImageView imagePhoto = (ImageView)rootView.findViewById(R.id.imagePhoto);
 		editPassword = (EditText)rootView.findViewById(R.id.editPassword);
 		final EditText editConfirmPassword = (EditText)rootView.findViewById(R.id.editConfirmPassword);
 		final TextView tvPasswordError = (TextView)rootView.findViewById(R.id.tvPasswordError);
@@ -89,21 +116,57 @@ public class SettingsEditFragment extends Fragment {
 		editPhone.setText(prefs.getString(Constants.PREF_PHONE, ""));
 		editEmail.setText(prefs.getString(Constants.PREF_EMAIL, ""));
 		
-		String photoURL = prefs.getString(Constants.PREF_PHOTO, "");
-		
-		if(TextUtils.isEmpty(photoURL))
-	    	imagePhoto.setImageResource(R.drawable.person_placeholder);
-	    else{
-	    	DisplayImageOptions options = new DisplayImageOptions.Builder()
+		if(filePath.equals("")){
+			
+			System.out.println("file path empty");
+			String photoURL = prefs.getString(Constants.PREF_PHOTO, "");
+			
+			imageLoaderOptions = new DisplayImageOptions.Builder()
 	        .showImageOnLoading(R.drawable.person_placeholder)
 	        .showImageForEmptyUri(R.drawable.person_placeholder)
 	        .showImageOnFail(R.drawable.person_placeholder)
 	        .cacheInMemory(true)
 	        .cacheOnDisk(true)
 	        .build();
-	    	
-	    	ImageLoader.getInstance().displayImage(photoURL, imagePhoto, options);
-	    }
+	
+	    	ImageLoader.getInstance().displayImage(photoURL, imagePhoto, imageLoaderOptions);
+		}
+		
+		imagePickPhoto.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+			    builder.setTitle("Pick photo")
+			           .setItems(new String[]{"From galery","Make a photo"}, new DialogInterface.OnClickListener() {
+			               public void onClick(DialogInterface dialog, int which) {
+			            	   switch (which) {
+			            	   case 0:
+			            		   chooseImage();
+			            		   break;
+			            	   case 1:
+			            		   takePicture();
+			            		   break;
+			            	   default:
+			            		   chooseImage();
+			            		   break;
+			            	   }
+			           }
+			    });
+			    builder.create().show();
+			}
+		});
+		imagePickPhoto.setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				if(event.getAction()==MotionEvent.ACTION_DOWN)
+					v.setAlpha(0.5f);
+				if(event.getAction()==MotionEvent.ACTION_UP){
+					v.setAlpha(1f);
+					v.performClick();
+				}
+				return true;
+			}
+		});	
 		
 		ArrayList<String> timezones = getTimezoneList();
 		
@@ -187,21 +250,6 @@ public class SettingsEditFragment extends Fragment {
 		
 		editPassword.setTransformationMethod(new AsteriskPasswordTransformationMethod());
 		editConfirmPassword.setTransformationMethod(new AsteriskPasswordTransformationMethod());
-		
-		ImageView btnPhoto = (ImageView)rootView.findViewById(R.id.btnPhoto);
-		btnPhoto.setOnTouchListener(new OnTouchListener() {
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				if(event.getAction()==MotionEvent.ACTION_DOWN)
-					v.setAlpha(0.5f);
-				if(event.getAction()==MotionEvent.ACTION_UP){
-					v.setAlpha(1f);
-					v.performClick();
-				}
-				return true;
-			}
-		});		
-		
 
 		btnUpdate.setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, "#f15b2a")));
 		try{
@@ -387,6 +435,11 @@ public class SettingsEditFragment extends Fragment {
 		        }
 		        if(editPassword.getTag()!=null && editPassword.getTag().equals(TAG_CHANGED))
 		        	requestParams.add(new BasicNameValuePair("password", editPassword.getText().toString()));
+		        
+		        if(!imageBase64.equals("")){
+		        	requestParams.add(new BasicNameValuePair("photo", imageBase64));
+		        }
+		        
 		        System.out.println(requestParams);
 	        }
 	        catch(NullPointerException e){
@@ -425,6 +478,11 @@ public class SettingsEditFragment extends Fragment {
 			btnCancel.setEnabled(false);
 			btnCancel.setText("Updated");
 			
+			if(!imageBase64.equals("")){
+				ImageLoader.getInstance().clearDiskCache();
+				ImageLoader.getInstance().clearMemoryCache();
+			}
+			
 			try{
 				getActivity().getSupportFragmentManager().popBackStack();
 			}
@@ -433,5 +491,151 @@ public class SettingsEditFragment extends Fragment {
 			}
 			super.onSuccess(responseJSON);
 		}
+	}
+	
+	private Bitmap decodeUri(Uri selectedImage) throws FileNotFoundException {
+
+        // Decode image size
+        BitmapFactory.Options o = new BitmapFactory.Options();
+        o.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(selectedImage), null, o);
+
+        // The new size we want to scale to
+        final int REQUIRED_SIZE = 160;
+
+        // Find the correct scale value. It should be the power of 2.
+        int width_tmp = o.outWidth, height_tmp = o.outHeight;
+        int scale = 1;
+        while (true) {
+            if (width_tmp / 2 < REQUIRED_SIZE
+               || height_tmp / 2 < REQUIRED_SIZE) {
+                break;
+            }
+            width_tmp /= 2;
+            height_tmp /= 2;
+            scale *= 2;
+        }
+
+        // Decode with inSampleSize
+        BitmapFactory.Options o2 = new BitmapFactory.Options();
+        o2.inSampleSize = scale;
+        return BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(selectedImage), null, o2);
+
+    }
+
+	private void chooseImage() {
+		chooserType = ChooserType.REQUEST_PICK_PICTURE;
+		imageChooserManager = new ImageChooserManager(this,	ChooserType.REQUEST_PICK_PICTURE, PHOTOS_FOLDER, false);
+		imageChooserManager.setImageChooserListener(this);
+		try {
+			filePath = imageChooserManager.choose();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void takePicture() {
+		chooserType = ChooserType.REQUEST_CAPTURE_PICTURE;
+		imageChooserManager = new ImageChooserManager(this, ChooserType.REQUEST_CAPTURE_PICTURE, PHOTOS_FOLDER, false);
+		imageChooserManager.setImageChooserListener(this);
+		try {
+			filePath = imageChooserManager.choose();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode == Activity.RESULT_OK
+				&& (requestCode == ChooserType.REQUEST_PICK_PICTURE || requestCode == ChooserType.REQUEST_CAPTURE_PICTURE)) {
+			if (imageChooserManager == null) {
+				reinitializeImageChooser();
+			}
+			imageChooserManager.submit(requestCode, data);
+		}
+	}
+
+	@Override
+	public void onImageChosen(final ChosenImage image) {
+		if(getActivity()!=null && image!=null){
+			Bitmap bmp = null;
+			try{
+				bmp = ThumbnailUtils.extractThumbnail(decodeUri(Uri.parse("file://"+image.getFilePathOriginal())), 160, 160, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
+				imageBase64 = Utils.encodeTobase64(bmp);
+			}
+			catch(FileNotFoundException e){
+				e.printStackTrace();
+				Toast.makeText(getActivity(), "Something gone wrong", Toast.LENGTH_LONG).show();
+			}
+			final Bitmap bitmap = bmp;
+			
+			File photos_dir = new File(FileUtils.getDirectory(PHOTOS_FOLDER));
+			if (photos_dir.isDirectory()) {
+		        String[] children = photos_dir.list();
+		        for (int i = 0; i < children.length; i++) {
+		            new File(photos_dir, children[i]).delete();
+		        }
+		    }
+			photos_dir.delete();
+			
+			getActivity().runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					if (bitmap != null) {
+						imagePhoto.setImageBitmap(bitmap);
+						ImageLoader.getInstance().cancelDisplayTask(imagePhoto);				
+					}
+					else{
+						Toast.makeText(getActivity(), "Something gone wrong", Toast.LENGTH_LONG).show();
+					}				
+				}
+			});
+		}
+	}
+
+	@Override
+	public void onError(final String reason) {
+		if(getActivity()!=null){
+			getActivity().runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					Toast.makeText(getActivity(), reason, Toast.LENGTH_LONG).show();
+				}
+			});
+		}
+	}
+
+	// Should be called if for some reason the ImageChooserManager is null (Due
+	// to destroying of activity for low memory situations)
+	private void reinitializeImageChooser() {
+		imageChooserManager = new ImageChooserManager(this, chooserType, PHOTOS_FOLDER, false);
+		imageChooserManager.setImageChooserListener(this);
+		imageChooserManager.reinitialize(filePath);
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		outState.putInt("chooser_type", chooserType);
+		outState.putString("media_path", filePath);
+		super.onSaveInstanceState(outState);
+	}
+	
+	@Override
+	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+		if (savedInstanceState != null) {
+			if (savedInstanceState.containsKey("chooser_type")) {
+				chooserType = savedInstanceState.getInt("chooser_type");
+			}
+
+			if (savedInstanceState.containsKey("media_path")) {
+				filePath = savedInstanceState.getString("media_path");
+			}
+		}
+		super.onActivityCreated(savedInstanceState);
 	}
 }

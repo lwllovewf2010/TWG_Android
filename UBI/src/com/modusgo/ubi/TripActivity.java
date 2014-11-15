@@ -16,6 +16,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -36,15 +37,14 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.LatLngBounds.Builder;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.modusgo.ubi.Trip.Event;
 import com.modusgo.ubi.Trip.EventType;
 import com.modusgo.ubi.Trip.Point;
 import com.modusgo.ubi.db.DbHelper;
-import com.modusgo.ubi.db.EventContract.EventEntry;
 import com.modusgo.ubi.db.PointContract.PointEntry;
 import com.modusgo.ubi.db.RouteContract.RouteEntry;
 import com.modusgo.ubi.db.TripContract.TripEntry;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
+import com.modusgo.ubi.requesttasks.BaseRequestAsyncTask;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -67,6 +67,9 @@ public class TripActivity extends MainActivity {
     TextView tvAvgSpeed;
     TextView tvMaxSpeed;
     TextView tvDistance;
+    TextView tvAvgSpeedUnits;
+    TextView tvMaxSpeedUnits;
+    TextView tvDistanceUnits;
     LinearLayout llTime;
     LinearLayout llContent;
     LinearLayout llEventsList;
@@ -121,6 +124,9 @@ public class TripActivity extends MainActivity {
 		tvAvgSpeed = (TextView) findViewById(R.id.tvAvgSpeed);
 		tvMaxSpeed = (TextView) findViewById(R.id.tvMaxSpeed);
 		tvDistance = (TextView) findViewById(R.id.tvDistance);
+		tvAvgSpeedUnits = (TextView) findViewById(R.id.tvAvgSpeedUnits);
+		tvMaxSpeedUnits = (TextView) findViewById(R.id.tvMaxSpeedUnits);
+		tvDistanceUnits = (TextView) findViewById(R.id.tvDistanceUnits);
 		llTime = (LinearLayout)findViewById(R.id.llTime);
 		llContent = (LinearLayout)findViewById(R.id.llContent);
 		llEventsList = (LinearLayout)findViewById(R.id.llEventsList);
@@ -151,13 +157,9 @@ public class TripActivity extends MainActivity {
 	        map.animateCamera(cameraUpdate);
         }
         
-        trip = getTripFromDB();
-        
-        if(trip==null || (trip!=null && trip.route.size()==0))
-        	new GetTripTask(this).execute("vehicles/"+vehicle.id+"/trips/"+tripId+".json");
-        else{
-        	updateActivity();
-        }
+        updateActivity();
+	
+		new GetTripTask(this).execute("vehicles/"+vehicle.id+"/trips/"+tripId+".json");
 	}
 	
 	private Trip getTripFromDB(){
@@ -204,34 +206,13 @@ public class TripActivity extends MainActivity {
 					PointEntry._ID,
 					PointEntry.COLUMN_NAME_LATITUDE,
 					PointEntry.COLUMN_NAME_LONGITUDE,
-					PointEntry.COLUMN_NAME_EVENTS}, 
+					PointEntry.COLUMN_NAME_EVENT,
+					PointEntry.COLUMN_NAME_TITLE,
+					PointEntry.COLUMN_NAME_ADDRESS}, 
 					PointEntry.COLUMN_NAME_TRIP_ID+" = ?", new String[]{Long.toString(tripId)}, null, null, PointEntry._ID+" ASC");
 			if(c.moveToFirst()){
 				while (!c.isAfterLast()) {
-					
-					String eventsStr = c.getString(3);
-					String[] eventsArr = eventsStr.split(" ");
-					ArrayList<EventType> events = new ArrayList<EventType>();
-					for (String string : eventsArr) {
-						events.add(EventType.valueOf(string));
-					}
-					
-					t.points.add(new Point(new LatLng(c.getDouble(1), c.getDouble(2)), events));
-					c.moveToNext();
-				}
-			}
-			c.close();
-			
-			c = db.query(EventEntry.TABLE_NAME, 
-					new String[]{
-					EventEntry._ID,
-					EventEntry.COLUMN_NAME_TYPE,
-					EventEntry.COLUMN_NAME_TITLE,
-					EventEntry.COLUMN_NAME_ADDRESS}, 
-					EventEntry.COLUMN_NAME_TRIP_ID+" = ?", new String[]{Long.toString(tripId)}, null, null, EventEntry._ID+" ASC");
-			if(c.moveToFirst()){
-				while (!c.isAfterLast()) {
-					t.events.add(new Event(EventType.valueOf(c.getString(1)), c.getString(2),  c.getString(3)));
+					t.points.add(new Point(new LatLng(c.getDouble(1), c.getDouble(2)), EventType.valueOf(c.getString(3)), c.getString(4), c.getString(5)));
 					c.moveToNext();
 				}
 			}
@@ -245,6 +226,8 @@ public class TripActivity extends MainActivity {
 	}
 	
 	private void updateActivity(){
+		trip = getTripFromDB();
+		
 		if(map!=null){
 			map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
 				@Override
@@ -267,62 +250,82 @@ public class TripActivity extends MainActivity {
 		tvAvgSpeed.setText(df.format(trip.averageSpeed));
 		tvMaxSpeed.setText(df.format(trip.maxSpeed));
 		tvDistance.setText(df.format(trip.distance));
+		
+		if(prefs.getString(Constants.PREF_UNITS_OF_MEASURE, "mile").equals("mile")){
+			tvAvgSpeedUnits.setText("MPH");
+			tvMaxSpeedUnits.setText("MPH");
+			tvDistanceUnits.setText("MILES");
+		}
+		else{
+			tvAvgSpeedUnits.setText("KPH");
+			tvMaxSpeedUnits.setText("KPH");
+			tvDistanceUnits.setText("KMs");
+		}
         
         llEventsList.removeAllViews();
         
-        for (Event e : trip.events) {
-			RelativeLayout eventItem = (RelativeLayout) getLayoutInflater().inflate(R.layout.trip_event_item, llContent, false);
-			((TextView)eventItem.findViewById(R.id.tvTitle)).setText(e.title);
-			
-			if(!e.address.equals("null"))
-				((TextView)eventItem.findViewById(R.id.tvAddress)).setText(e.address);
-			else
-				((TextView)eventItem.findViewById(R.id.tvAddress)).setText("Address processing in progress");
-			
-			ImageView icon = (ImageView) eventItem.findViewById(R.id.imageIcon);
-			int infoStringResource = 0;
-			switch (e.type) {
-			case START:
-				icon.setImageResource(R.drawable.marker_start);
-				break;
-			case STOP:
-				icon.setImageResource(R.drawable.marker_finish);
-				break;
-			case HARSH_BRAKING:
-				icon.setImageResource(R.drawable.marker_brake);
-				infoStringResource = R.string.harsh_braking;
-				break;
-			case HARSH_ACCELERATION:
-				icon.setImageResource(R.drawable.marker_accel);
-				infoStringResource = R.string.harsh_accel;
-				break;
-			case PHONE_USAGE:
-				icon.setImageResource(R.drawable.marker_phone);
-				infoStringResource = R.string.distracted_driving;
-				break;
-			case APP_USAGE:
-				icon.setImageResource(R.drawable.marker_app);
-				infoStringResource = R.string.distracted_driving;
-				break;
-			case SPEEDING:
-				icon.setImageResource(R.drawable.marker_speeding);
-				infoStringResource = R.string.speeding;
-				break;
-			default:
-				break;
-			}
-			
-			final int isr = infoStringResource;
-			eventItem.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					Intent i = new Intent(TripActivity.this, EducationActivity.class);
-					i.putExtra(EducationActivity.SAVED_STRING_RESOURCE, isr);
-					startActivity(i);
+        
+        for (Point p : trip.points) {
+        	if(p.event!=EventType.START && p.event!=EventType.STOP){
+	        	RelativeLayout eventItem = (RelativeLayout) getLayoutInflater().inflate(R.layout.trip_event_item, llContent, false);
+				((TextView)eventItem.findViewById(R.id.tvTitle)).setText(p.title);
+				
+				if(!TextUtils.isEmpty(p.address))
+					((TextView)eventItem.findViewById(R.id.tvAddress)).setText(p.address);
+				else
+					((TextView)eventItem.findViewById(R.id.tvAddress)).setText("Address processing in progress");
+				
+				ImageView icon = (ImageView) eventItem.findViewById(R.id.imageIcon);
+				int infoStringResource = 0;
+				switch (p.event) {
+				case START:
+					icon.setImageResource(R.drawable.marker_start);
+					break;
+				case STOP:
+					icon.setImageResource(R.drawable.marker_finish);
+					break;
+				case HARSH_BRAKING:
+					icon.setImageResource(R.drawable.marker_brake);
+					infoStringResource = R.string.harsh_braking;
+					break;
+				case HARSH_ACCELERATION:
+					icon.setImageResource(R.drawable.marker_accel);
+					infoStringResource = R.string.harsh_accel;
+					break;
+				case CALL_USAGE:
+					icon.setImageResource(R.drawable.marker_phone);
+					infoStringResource = R.string.distracted_driving;
+					break;
+				case PHONE_USAGE:
+					icon.setImageResource(R.drawable.marker_app);
+					infoStringResource = R.string.distracted_driving;
+					break;
+				case SPEEDING:
+					icon.setImageResource(R.drawable.marker_speeding);
+					infoStringResource = R.string.speeding;
+					break;
+				default:
+					icon.setImageResource(R.drawable.marker_unknown);
+					break;
 				}
-			});
-			
-			llEventsList.addView(eventItem);
+				
+				if(infoStringResource!=0){
+					final int isr = infoStringResource;
+					eventItem.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							Intent i = new Intent(TripActivity.this, EducationActivity.class);
+							i.putExtra(EducationActivity.SAVED_STRING_RESOURCE, isr);
+							startActivity(i);
+						}
+					});
+				}
+				else{
+					eventItem.findViewById(R.id.imageArrow).setVisibility(View.INVISIBLE);
+				}
+				
+				llEventsList.addView(eventItem);
+        	}
 		}
 	}
 	
@@ -356,34 +359,37 @@ public class TripActivity extends MainActivity {
 			}
 	        
 	        for (Point p : trip.points) {
-	        	for (EventType e : p.events) {
-					switch (e) {
-					case START:
-						map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_start)));
-						break;
-					case STOP:
-						map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_finish)));
-						break;
-					case HARSH_BRAKING:
-						map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_brake)));
-						break;
-					case HARSH_ACCELERATION:
-						map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_accel)));
-						break;
-					case PHONE_USAGE:
-						map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_phone)));
-						break;
-					case APP_USAGE:
-						map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_app)));
-						break;
-					case SPEEDING:
-						map.addMarker(new MarkerOptions().position(p.location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_speeding)));
-						break;
-					default:
-						break;
-					}
-				}
-			}
+	        	MarkerOptions mo = new MarkerOptions();
+	        	mo.position(p.location).title(p.title);
+	        	switch (p.event) {
+	        	case START:
+	        		map.addMarker(mo.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_start)));
+	        		break;
+	        	case STOP:
+	        		map.addMarker(mo.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_finish)));
+	        		break;
+	        	case HARSH_BRAKING:
+	        		map.addMarker(mo.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_brake)));
+	        		break;
+	        	case HARSH_ACCELERATION:
+	        		map.addMarker(mo.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_accel)));
+	        		break;
+	        	case CALL_USAGE:
+	        		map.addMarker(mo.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_phone)));
+	        		break;
+	        	case PHONE_USAGE:
+	        		map.addMarker(mo.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_app)));
+	        		break;
+	        	case SPEEDING:
+	        		map.addMarker(mo.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_speeding)));
+	        		break;
+	        	case UNKNOWN:
+	        		map.addMarker(mo.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_unknown)));
+	        		break;
+	        	default:
+	        		break;
+	        	}
+	        }	        	
 		}
 	}
 	
@@ -417,20 +423,6 @@ public class TripActivity extends MainActivity {
 		public GetTripTask(Context context) {
 			super(context);
 		}
-		
-		@Override
-		protected void onPreExecute() {
-			llProgress.setVisibility(View.VISIBLE);
-			scrollView.setVisibility(View.GONE);
-			super.onPreExecute();
-		}
-		
-		@Override
-		protected void onPostExecute(JSONObject result) {
-			super.onPostExecute(result);
-			llProgress.setVisibility(View.GONE);
-			scrollView.setVisibility(View.VISIBLE);
-		}
 
 		@Override
 		protected JSONObject doInBackground(String... params) {
@@ -442,8 +434,7 @@ public class TripActivity extends MainActivity {
 		
 		@Override
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
-			if(trip==null)
-				trip = new Trip(tripId, 0, Utils.fixTimezoneZ(responseJSON.optString("start_time")), Utils.fixTimezoneZ(responseJSON.optString("end_time")), responseJSON.optDouble("mileage"), responseJSON.optString("grade"));
+			Trip trip = new Trip(tripId, 0, Utils.fixTimezoneZ(responseJSON.optString("start_time")), Utils.fixTimezoneZ(responseJSON.optString("end_time")), responseJSON.optDouble("mileage"), responseJSON.optString("grade"));
 			
 			trip.averageSpeed = responseJSON.optDouble("avg_speed");
 			trip.maxSpeed = responseJSON.optDouble("max_speed");
@@ -477,29 +468,12 @@ public class TripActivity extends MainActivity {
 					
 					if(pointJSON.has("location")){
 						JSONObject locationJSON = pointJSON.getJSONObject("location");
-						
-						ArrayList<EventType> events = new ArrayList<EventType>();
-						if(pointJSON.has("events")){
-							JSONArray eventsJSON = pointJSON.getJSONArray("events");	
-							for (int j = 0; j < eventsJSON.length(); j++) {
-								EventType type = getEventType(eventsJSON.optString(j));
-								if(!type.equals(""))
-									events.add(type);
-							}
-						}
-						trip.points.add(new Point(new LatLng(locationJSON.optDouble("latitude",0), locationJSON.optDouble("longitude",0)), events));				
+						Point p = new Point(new LatLng(locationJSON.optDouble("latitude",0), locationJSON.optDouble("longitude",0)),
+								getEventType(pointJSON.optString("event")),
+								pointJSON.optString("title"), "");
+						p.fetchAddress(context.getApplicationContext());
+						trip.points.add(p);
 					}
-				}
-			}
-			
-			if(responseJSON.has("events")){
-				JSONArray eventsJSON = responseJSON.getJSONArray("events");
-				for (int i = 0; i < eventsJSON.length(); i++) {
-					JSONObject eventJSON = eventsJSON.getJSONObject(i);
-					
-					EventType type = getEventType(eventJSON.optString("type"));
-					if(!type.equals(""))
-						trip.events.add(new Event(type, eventJSON.optString("title"), eventJSON.optString("address")));					
 				}
 			}
 			
@@ -507,7 +481,6 @@ public class TripActivity extends MainActivity {
 			dHelper.saveTrip(vehicle.id, trip);
 			dHelper.saveRoute(trip.id, trip.route);
 			dHelper.savePoints(trip.id, trip.points);
-			dHelper.saveEvents(trip.id, trip.events);
 			dHelper.close();			
 			
 			updateActivity();
@@ -525,16 +498,15 @@ public class TripActivity extends MainActivity {
 				return EventType.HARSH_BRAKING;
 			case "harsh_acceleration":
 				return EventType.HARSH_ACCELERATION;
+			case "call_usage":
+				return EventType.CALL_USAGE;
 			case "phone_usage":
 				return EventType.PHONE_USAGE;
-			case "app_usage":
-				return EventType.APP_USAGE;
 			case "speeding":
 				return EventType.SPEEDING;
 			default:
-				break;
+				return EventType.UNKNOWN;
 			}
-			return null;
 		}
 	}
 }

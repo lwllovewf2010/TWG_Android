@@ -1,6 +1,7 @@
 package com.modusgo.ubi.utils;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -20,10 +21,13 @@ import org.json.JSONTokener;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.telephony.TelephonyManager;
+import android.util.Base64;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -143,6 +147,10 @@ public class Utils {
 		return meters*0.00062137f;
 	}
 	
+	public static float metersToKm(float meters){
+		return meters*0.001f;
+	}
+	
 	public static int durationInMinutes(Date startDate, Date endDate)
     {
 		Calendar startCalendar = Calendar.getInstance();
@@ -242,5 +250,21 @@ public class Utils {
                 Utils.getDarkerColor(c)});
 	    
 	    return csl;
+	}
+	
+	public static String encodeTobase64(Bitmap image)
+	{
+	    Bitmap immagex=image;
+	    ByteArrayOutputStream baos = new ByteArrayOutputStream();  
+	    immagex.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+	    byte[] b = baos.toByteArray();
+	    String imageEncoded = Base64.encodeToString(b,Base64.DEFAULT);
+	    return imageEncoded;
+	}
+	
+	public static Bitmap decodeBase64(String input) 
+	{
+	    byte[] decodedByte = Base64.decode(input, 0);
+	    return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length); 
 	}
 }

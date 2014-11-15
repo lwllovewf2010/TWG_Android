@@ -1,4 +1,4 @@
-package com.modusgo.ubi;
+package com.modusgo.ubi.requesttasks;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,18 +16,23 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
+import com.modusgo.ubi.Constants;
+import com.modusgo.ubi.SignInActivity;
 import com.modusgo.ubi.utils.RequestGet;
 import com.modusgo.ubi.utils.Utils;
 
 public class BaseRequestAsyncTask extends AsyncTask<String, Void, JSONObject>{
 
-	Context context;
-	SharedPreferences prefs;
-	int status;
-	String message;
-	String baseUrl;
+	protected Context context;
+	protected SharedPreferences prefs;
+	int status = 0;
+	String message = "";
+	protected String baseUrl;
 	
 	protected List<NameValuePair> requestParams = new ArrayList<NameValuePair>();
+
+	public BaseRequestAsyncTask() {
+	}
 	
 	public BaseRequestAsyncTask(Context context) {
 		this.context = context.getApplicationContext();
@@ -56,7 +61,7 @@ public class BaseRequestAsyncTask extends AsyncTask<String, Void, JSONObject>{
 	
 	@Override
 	protected void onPostExecute(JSONObject result) {
-		if(status>=200 && status<300){
+		if(status>=200 && status<300 && result.optString("status").equals("success")){
 			try {
 				onSuccess(result);
 			} catch (JSONException e) {
