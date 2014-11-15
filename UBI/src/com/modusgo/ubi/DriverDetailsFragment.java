@@ -310,7 +310,10 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 		
 		if(prefs.getString(Constants.PREF_UNITS_OF_MEASURE, "mile").equals("mile")){
 			distance = Utils.metersToMiles(distanceToCar[0]);
-			tvDistanceToCarLabel.setText("Miles to Car");
+			if(distance>=1.1)
+				tvDistanceToCarLabel.setText("Miles to Car");
+			else
+				tvDistanceToCarLabel.setText("Mile to Car");
 		}
 		else{
 			distance = Utils.metersToKm(distanceToCar[0]);
