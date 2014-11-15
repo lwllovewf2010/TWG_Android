@@ -151,6 +151,10 @@ public class Utils {
 		return meters*0.001f;
 	}
 	
+	public static float milesToFeet(float miles){
+		return miles*5280;
+	}
+	
 	public static int durationInMinutes(Date startDate, Date endDate)
     {
 		Calendar startCalendar = Calendar.getInstance();

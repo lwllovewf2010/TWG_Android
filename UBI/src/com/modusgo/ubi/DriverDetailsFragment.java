@@ -312,8 +312,14 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 			distance = Utils.metersToMiles(distanceToCar[0]);
 			if(distance>=1.1)
 				tvDistanceToCarLabel.setText("Miles to Car");
-			else
-				tvDistanceToCarLabel.setText("Mile to Car");
+			else{
+				if(distance>=0.1)
+					tvDistanceToCarLabel.setText("Mile to Car");
+				else{
+					distance = Utils.milesToFeet(distance);
+					tvDistanceToCarLabel.setText("Feet to Car");
+				}
+			}
 		}
 		else{
 			distance = Utils.metersToKm(distanceToCar[0]);
