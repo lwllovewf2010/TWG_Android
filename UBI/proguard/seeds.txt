@@ -2908,6 +2908,7 @@ com.modusgo.ubi.R$drawable: int marker_mylocation
 com.modusgo.ubi.R$drawable: int marker_phone
 com.modusgo.ubi.R$drawable: int marker_speeding
 com.modusgo.ubi.R$drawable: int marker_start
+com.modusgo.ubi.R$drawable: int marker_unknown
 com.modusgo.ubi.R$drawable: int person_placeholder
 com.modusgo.ubi.R$drawable: int person_test
 com.modusgo.ubi.R$drawable: int person_test2
