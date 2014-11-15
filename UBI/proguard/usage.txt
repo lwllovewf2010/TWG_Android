@@ -2619,8 +2619,8 @@ com.google.android.gms.ads.doubleclick.PublisherAdRequest$1
 com.google.android.gms.ads.doubleclick.PublisherAdRequest$Builder
 com.google.android.gms.ads.doubleclick.PublisherAdView
 com.google.android.gms.ads.doubleclick.PublisherInterstitialAd
-com.google.android.gms.ads.identifier.AdvertisingIdClient
-com.google.android.gms.ads.identifier.AdvertisingIdClient$Info
+com.google.android.gms.ads.identifier.AdvertisingIdClient:
+    public AdvertisingIdClient()
 com.google.android.gms.ads.mediation.MediationAdRequest
 com.google.android.gms.ads.mediation.MediationAdapter
 com.google.android.gms.ads.mediation.MediationBannerAdapter
@@ -2652,90 +2652,148 @@ com.google.android.gms.analytics.CampaignTrackingReceiver
 com.google.android.gms.analytics.CampaignTrackingService
 com.google.android.gms.analytics.ExceptionParser
 com.google.android.gms.analytics.ExceptionReporter
-com.google.android.gms.analytics.GoogleAnalytics
+com.google.android.gms.analytics.GoogleAnalytics:
+    public void enableAutoActivityReports(android.app.Application)
+    public void reportActivityStart(android.app.Activity)
+    private void f(android.app.Activity)
+    public void reportActivityStop(android.app.Activity)
+    private void g(android.app.Activity)
+    public com.google.android.gms.analytics.Tracker newTracker(int)
+    void a(com.google.android.gms.analytics.GoogleAnalytics$a)
+    void b(com.google.android.gms.analytics.GoogleAnalytics$a)
+    public void setLogger(com.google.android.gms.analytics.Logger)
+    public void setLocalDispatchPeriod(int)
+    static synthetic void a(com.google.android.gms.analytics.GoogleAnalytics,android.app.Activity)
+    static synthetic void b(com.google.android.gms.analytics.GoogleAnalytics,android.app.Activity)
 com.google.android.gms.analytics.GoogleAnalytics$a
 com.google.android.gms.analytics.GoogleAnalytics$b
-com.google.android.gms.analytics.HitBuilders
-com.google.android.gms.analytics.HitBuilders$AppViewBuilder
+com.google.android.gms.analytics.HitBuilders:
+    public HitBuilders()
 com.google.android.gms.analytics.HitBuilders$EventBuilder
 com.google.android.gms.analytics.HitBuilders$ExceptionBuilder
-com.google.android.gms.analytics.HitBuilders$HitBuilder
+com.google.android.gms.analytics.HitBuilders$HitBuilder:
+    public com.google.android.gms.analytics.HitBuilders$HitBuilder setNewSession()
+    public com.google.android.gms.analytics.HitBuilders$HitBuilder setNonInteraction(boolean)
+    public com.google.android.gms.analytics.HitBuilders$HitBuilder setCustomDimension(int,java.lang.String)
+    public com.google.android.gms.analytics.HitBuilders$HitBuilder setCustomMetric(int,float)
+    public final com.google.android.gms.analytics.HitBuilders$HitBuilder setAll(java.util.Map)
+    public com.google.android.gms.analytics.HitBuilders$HitBuilder setProductAction(com.google.android.gms.analytics.ecommerce.ProductAction)
+    public com.google.android.gms.analytics.HitBuilders$HitBuilder addImpression(com.google.android.gms.analytics.ecommerce.Product,java.lang.String)
+    public com.google.android.gms.analytics.HitBuilders$HitBuilder addPromotion(com.google.android.gms.analytics.ecommerce.Promotion)
+    public com.google.android.gms.analytics.HitBuilders$HitBuilder setPromotionAction(java.lang.String)
+    public com.google.android.gms.analytics.HitBuilders$HitBuilder addProduct(com.google.android.gms.analytics.ecommerce.Product)
+    protected com.google.android.gms.analytics.HitBuilders$HitBuilder setHitType(java.lang.String)
+    protected java.lang.String get(java.lang.String)
 com.google.android.gms.analytics.HitBuilders$ItemBuilder
 com.google.android.gms.analytics.HitBuilders$ScreenViewBuilder
 com.google.android.gms.analytics.HitBuilders$SocialBuilder
 com.google.android.gms.analytics.HitBuilders$TimingBuilder
 com.google.android.gms.analytics.HitBuilders$TransactionBuilder
-com.google.android.gms.analytics.Logger
+com.google.android.gms.analytics.Logger:
+    public abstract void error(java.lang.Exception)
 com.google.android.gms.analytics.Logger$LogLevel
 com.google.android.gms.analytics.StandardExceptionParser
-com.google.android.gms.analytics.Tracker
-com.google.android.gms.analytics.Tracker$a
-com.google.android.gms.analytics.Tracker$a$1
-com.google.android.gms.analytics.TrackerHandler
-com.google.android.gms.analytics.a
-com.google.android.gms.analytics.aa
-com.google.android.gms.analytics.ab
-com.google.android.gms.analytics.ac
-com.google.android.gms.analytics.ac$1
-com.google.android.gms.analytics.ac$a
-com.google.android.gms.analytics.ad
-com.google.android.gms.analytics.ae
-com.google.android.gms.analytics.af
-com.google.android.gms.analytics.ag
-com.google.android.gms.analytics.ah
+com.google.android.gms.analytics.Tracker:
+    private boolean xk
+    private com.google.android.gms.analytics.aj xm
+    private com.google.android.gms.analytics.ExceptionReporter xn
+    void a(com.google.android.gms.analytics.aj)
+    public void enableExceptionReporting(boolean)
+    public void setSessionTimeout(long)
+    long dy()
+    public void enableAutoActivityTracking(boolean)
+    boolean dz()
+    public java.lang.String get(java.lang.String)
+    public void setSampleRate(double)
+    public void setUseSecure(boolean)
+    public void setLocation(java.lang.String)
+    public void setReferrer(java.lang.String)
+    public void setPage(java.lang.String)
+    public void setHostname(java.lang.String)
+    public void setTitle(java.lang.String)
+    public void setLanguage(java.lang.String)
+    public void setEncoding(java.lang.String)
+    public void setScreenColors(java.lang.String)
+    public void setScreenResolution(int,int)
+    public void setViewportSize(java.lang.String)
+    public void setClientId(java.lang.String)
+    public void setAppName(java.lang.String)
+    public void setAppId(java.lang.String)
+    public void setAppInstallerId(java.lang.String)
+    public void setAppVersion(java.lang.String)
+    public void setAnonymizeIp(boolean)
+    static synthetic com.google.android.gms.analytics.Tracker$a b(com.google.android.gms.analytics.Tracker)
+    static synthetic com.google.android.gms.analytics.aj c(com.google.android.gms.analytics.Tracker)
+com.google.android.gms.analytics.Tracker$a:
+    private long xs
+    public void setSessionTimeout(long)
+    public long dy()
+    public void enableAutoActivityTracking(boolean)
+    public boolean dz()
+    private void dB()
+    public void h(android.app.Activity)
+    public void i(android.app.Activity)
+    boolean dC()
+com.google.android.gms.analytics.ae:
+    public boolean J(java.lang.String)
 com.google.android.gms.analytics.ai
 com.google.android.gms.analytics.ai$a
 com.google.android.gms.analytics.aj
-com.google.android.gms.analytics.ak
-com.google.android.gms.analytics.b
-com.google.android.gms.analytics.c
-com.google.android.gms.analytics.c$a
-com.google.android.gms.analytics.c$b
-com.google.android.gms.analytics.c$c
-com.google.android.gms.analytics.d
-com.google.android.gms.analytics.e
-com.google.android.gms.analytics.ecommerce.Product
-com.google.android.gms.analytics.ecommerce.ProductAction
-com.google.android.gms.analytics.ecommerce.Promotion
-com.google.android.gms.analytics.f
-com.google.android.gms.analytics.g
-com.google.android.gms.analytics.h
-com.google.android.gms.analytics.h$1
-com.google.android.gms.analytics.i
-com.google.android.gms.analytics.j
-com.google.android.gms.analytics.k
-com.google.android.gms.analytics.k$a
-com.google.android.gms.analytics.l
-com.google.android.gms.analytics.m
-com.google.android.gms.analytics.n
-com.google.android.gms.analytics.o
-com.google.android.gms.analytics.p
-com.google.android.gms.analytics.q
-com.google.android.gms.analytics.r
-com.google.android.gms.analytics.r$1
-com.google.android.gms.analytics.r$2
-com.google.android.gms.analytics.s
-com.google.android.gms.analytics.s$1
-com.google.android.gms.analytics.s$2
-com.google.android.gms.analytics.s$3
-com.google.android.gms.analytics.s$a
-com.google.android.gms.analytics.s$b
-com.google.android.gms.analytics.s$c
-com.google.android.gms.analytics.s$d
-com.google.android.gms.analytics.s$e
-com.google.android.gms.analytics.t
-com.google.android.gms.analytics.t$1
-com.google.android.gms.analytics.t$2
-com.google.android.gms.analytics.t$3
-com.google.android.gms.analytics.t$4
-com.google.android.gms.analytics.u
-com.google.android.gms.analytics.u$a
-com.google.android.gms.analytics.v
-com.google.android.gms.analytics.v$a
-com.google.android.gms.analytics.w
-com.google.android.gms.analytics.x
-com.google.android.gms.analytics.y
-com.google.android.gms.analytics.z
+com.google.android.gms.analytics.ak:
+    static java.lang.String v(boolean)
+com.google.android.gms.analytics.ecommerce.Product:
+    void put(java.lang.String,java.lang.String)
+    public com.google.android.gms.analytics.ecommerce.Product setId(java.lang.String)
+    public com.google.android.gms.analytics.ecommerce.Product setName(java.lang.String)
+    public com.google.android.gms.analytics.ecommerce.Product setBrand(java.lang.String)
+    public com.google.android.gms.analytics.ecommerce.Product setCategory(java.lang.String)
+    public com.google.android.gms.analytics.ecommerce.Product setVariant(java.lang.String)
+    public com.google.android.gms.analytics.ecommerce.Product setPosition(int)
+    public com.google.android.gms.analytics.ecommerce.Product setPrice(double)
+    public com.google.android.gms.analytics.ecommerce.Product setQuantity(int)
+    public com.google.android.gms.analytics.ecommerce.Product setCouponCode(java.lang.String)
+    public com.google.android.gms.analytics.ecommerce.Product setCustomDimension(int,java.lang.String)
+    public com.google.android.gms.analytics.ecommerce.Product setCustomMetric(int,int)
+com.google.android.gms.analytics.ecommerce.ProductAction:
+    public static final java.lang.String ACTION_DETAIL
+    public static final java.lang.String ACTION_CLICK
+    public static final java.lang.String ACTION_ADD
+    public static final java.lang.String ACTION_REMOVE
+    public static final java.lang.String ACTION_CHECKOUT
+    public static final java.lang.String ACTION_CHECKOUT_OPTIONS
+    public static final java.lang.String ACTION_PURCHASE
+    public static final java.lang.String ACTION_REFUND
+    void put(java.lang.String,java.lang.String)
+    public ProductAction(java.lang.String)
+    public com.google.android.gms.analytics.ecommerce.ProductAction setTransactionId(java.lang.String)
+    public com.google.android.gms.analytics.ecommerce.ProductAction setTransactionAffiliation(java.lang.String)
+    public com.google.android.gms.analytics.ecommerce.ProductAction setTransactionRevenue(double)
+    public com.google.android.gms.analytics.ecommerce.ProductAction setTransactionTax(double)
+    public com.google.android.gms.analytics.ecommerce.ProductAction setTransactionShipping(double)
+    public com.google.android.gms.analytics.ecommerce.ProductAction setTransactionCouponCode(java.lang.String)
+    public com.google.android.gms.analytics.ecommerce.ProductAction setCheckoutStep(int)
+    public com.google.android.gms.analytics.ecommerce.ProductAction setCheckoutOptions(java.lang.String)
+    public com.google.android.gms.analytics.ecommerce.ProductAction setProductActionList(java.lang.String)
+    public com.google.android.gms.analytics.ecommerce.ProductAction setProductListSource(java.lang.String)
+com.google.android.gms.analytics.ecommerce.Promotion:
+    public static final java.lang.String ACTION_CLICK
+    public static final java.lang.String ACTION_VIEW
+    void put(java.lang.String,java.lang.String)
+    public com.google.android.gms.analytics.ecommerce.Promotion setId(java.lang.String)
+    public com.google.android.gms.analytics.ecommerce.Promotion setName(java.lang.String)
+    public com.google.android.gms.analytics.ecommerce.Promotion setCreative(java.lang.String)
+    public com.google.android.gms.analytics.ecommerce.Promotion setPosition(java.lang.String)
+com.google.android.gms.analytics.g:
+    public boolean J(java.lang.String)
+com.google.android.gms.analytics.h:
+    public boolean J(java.lang.String)
+com.google.android.gms.analytics.l:
+    public void error(java.lang.Exception)
+com.google.android.gms.analytics.o:
+    static java.lang.String s(int)
+    static java.lang.String t(int)
+    public static java.lang.String y(int)
+    public static java.lang.String z(int)
 com.google.android.gms.appindexing.AppIndex
 com.google.android.gms.appindexing.AppIndexApi
 com.google.android.gms.appindexing.AppIndexApi$AppIndexingLink
@@ -2875,7 +2933,8 @@ com.google.android.gms.common.GooglePlayServicesClient:
     public abstract void registerConnectionFailedListener(com.google.android.gms.common.GooglePlayServicesClient$OnConnectionFailedListener)
     public abstract boolean isConnectionFailedListenerRegistered(com.google.android.gms.common.GooglePlayServicesClient$OnConnectionFailedListener)
     public abstract void unregisterConnectionFailedListener(com.google.android.gms.common.GooglePlayServicesClient$OnConnectionFailedListener)
-com.google.android.gms.common.GooglePlayServicesRepairableException
+com.google.android.gms.common.GooglePlayServicesRepairableException:
+    public int getConnectionStatusCode()
 com.google.android.gms.common.GooglePlayServicesUtil:
     public static final java.lang.String GMS_ERROR_DIALOG
     public static final int GOOGLE_PLAY_SERVICES_VERSION_CODE
@@ -2883,7 +2942,6 @@ com.google.android.gms.common.GooglePlayServicesUtil:
     public static final java.lang.String GOOGLE_PLAY_STORE_PACKAGE
     private GooglePlayServicesUtil()
     public static java.lang.String getErrorString(int)
-    public static void z(android.content.Context)
     public static boolean b(android.content.pm.PackageManager,java.lang.String)
     public static boolean a(android.content.pm.PackageManager,android.content.pm.PackageInfo)
     public static boolean b(android.content.pm.PackageManager)
@@ -2900,8 +2958,8 @@ com.google.android.gms.common.GooglePlayServicesUtil:
 com.google.android.gms.common.Scopes
 com.google.android.gms.common.SignInButton
 com.google.android.gms.common.SupportErrorDialogFragment
-com.google.android.gms.common.UserRecoverableException
-com.google.android.gms.common.a
+com.google.android.gms.common.UserRecoverableException:
+    public android.content.Intent getIntent()
 com.google.android.gms.common.annotation.IGooglePlayServicesRocks
 com.google.android.gms.common.annotation.IGooglePlayServicesRocks$Stub
 com.google.android.gms.common.annotation.IGooglePlayServicesRocks$Stub$a
@@ -4636,13 +4694,6 @@ com.google.android.gms.internal.f$m
 com.google.android.gms.internal.fa
 com.google.android.gms.internal.fb
 com.google.android.gms.internal.fc
-com.google.android.gms.internal.fd:
-    public fd(java.lang.String,java.lang.String,java.lang.String)
-    public java.lang.String getId()
-    public java.lang.String getValue()
-com.google.android.gms.internal.fe
-com.google.android.gms.internal.fe$a
-com.google.android.gms.internal.fe$a$a
 com.google.android.gms.internal.ff
 com.google.android.gms.internal.ff$1
 com.google.android.gms.internal.fg:
@@ -4787,7 +4838,6 @@ com.google.android.gms.internal.hj$a$a
 com.google.android.gms.internal.hm:
     public static java.lang.String b(java.lang.String,java.lang.Object)
     public static void ay(java.lang.String)
-    public static void az(java.lang.String)
 com.google.android.gms.internal.hn
 com.google.android.gms.internal.ho
 com.google.android.gms.internal.hp
@@ -5221,9 +5271,6 @@ com.google.android.gms.internal.q
 com.google.android.gms.internal.r
 com.google.android.gms.internal.r$a
 com.google.android.gms.internal.r$a$a
-com.google.android.gms.internal.s
-com.google.android.gms.internal.s$a
-com.google.android.gms.internal.s$a$a
 com.google.android.gms.internal.t:
     public abstract void onAdClicked()
 com.google.android.gms.internal.u
@@ -6718,6 +6765,7 @@ com.modusgo.ubi.Constants:
     public static final java.lang.String PREF_EVENTS_LAST_CHECK
     public static final java.lang.String PREF_DIAGNOSTICS_CHECKUP_DATE
     public static final java.lang.String PREF_DIAGNOSTICS_STATUS
+    public static final java.lang.String PREF_GA_TRACKING_ID
     public static final java.lang.String ROLE_CUSTOMER
     public static final java.lang.String API_BASE_URL_PREFIX
     public static final java.lang.String API_BASE_URL_POSTFIX
@@ -6748,8 +6796,8 @@ com.modusgo.ubi.DiagnosticsTroubleCode:
     private static final long serialVersionUID
 com.modusgo.ubi.DriverActivity:
     public static final java.lang.String SAVED_DRIVER
-    254:257:public android.view.animation.Animation fadeOutAnimation()
-    262:265:public android.view.animation.Animation fadeInAnimation()
+    256:259:public android.view.animation.Animation fadeOutAnimation()
+    264:267:public android.view.animation.Animation fadeInAnimation()
 com.modusgo.ubi.EducationActivity:
     public static final java.lang.String SAVED_STRING_RESOURCE
 com.modusgo.ubi.FindMechanicActivity:
@@ -6760,10 +6808,10 @@ com.modusgo.ubi.FindMyCarActivity$ErrorDialogFragment
 com.modusgo.ubi.LimitsFragment:
     569:572:private java.lang.String getTime24String(int,int)
 com.modusgo.ubi.MainActivity:
-    449:451:public void showFeedbackActivity()
+    455:457:public void showFeedbackActivity()
 com.modusgo.ubi.MainActivity$MenuItems:
-    69:69:public int toInt()
-    73:73:public java.lang.String[] valuesString()
+    70:70:public int toInt()
+    74:74:public java.lang.String[] valuesString()
 com.modusgo.ubi.Manifest
 com.modusgo.ubi.Manifest$permission
 com.modusgo.ubi.PieChartFragment:
@@ -6879,8 +6927,8 @@ com.modusgo.ubi.utils.AnimationUtils:
 com.modusgo.ubi.utils.RequestGet:
     19:21:public RequestGet(java.lang.String)
 com.modusgo.ubi.utils.Utils:
-    36:36:public Utils()
-    267:268:public static android.graphics.Bitmap decodeBase64(java.lang.String)
+    41:41:public Utils()
+    276:277:public static android.graphics.Bitmap decodeBase64(java.lang.String)
 com.nostra13.universalimageloader.cache.disc.DiscCacheAware:
     public abstract java.io.File getDirectory()
     public abstract boolean remove(java.lang.String)
