@@ -438,6 +438,7 @@ public class TripActivity extends MainActivity {
 			
 			trip.averageSpeed = responseJSON.optDouble("avg_speed");
 			trip.maxSpeed = responseJSON.optDouble("max_speed");
+			trip.viewed = true;
 			
 			if(responseJSON.has("route")){
 				JSONArray routeJSON = responseJSON.getJSONArray("route");
