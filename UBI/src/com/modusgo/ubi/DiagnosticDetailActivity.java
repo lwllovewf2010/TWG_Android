@@ -119,9 +119,9 @@ public class DiagnosticDetailActivity extends MainActivity {
 				startActivity(new Intent(DiagnosticDetailActivity.this, FindMechanicActivity.class));
 			}
 		});
-		btnFindMechanic.setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, "#f15b2a")));
+		btnFindMechanic.setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, Constants.BUTTON_BG_COLOR)));
 		try{
-			btnFindMechanic.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, "#edf1f9")));
+			btnFindMechanic.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, Constants.BUTTON_TEXT_COLOR)));
 		}
 	    catch(Exception e){
 	    	e.printStackTrace();

@@ -159,9 +159,9 @@ public class GeofenceActivity extends MainActivity {
 
 		btnSave.setText("Loading...");
         btnSave.setEnabled(false);
-        btnSave.setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, "#f15b2a")));
+        btnSave.setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, Constants.BUTTON_BG_COLOR)));
         try{
-        	btnSave.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, "#edf1f9")));
+        	btnSave.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, Constants.BUTTON_TEXT_COLOR)));
         }
 	    catch(Exception e){
 	    	e.printStackTrace();

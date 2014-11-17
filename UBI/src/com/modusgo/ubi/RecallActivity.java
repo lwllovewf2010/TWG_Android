@@ -62,9 +62,9 @@ public class RecallActivity extends MainActivity {
 		scrollView = (ScrollView)findViewById(R.id.svContent);
 		btnContactService = (Button)findViewById(R.id.btnContactService);
 		
-		btnContactService.setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, "#f15b2a")));
+		btnContactService.setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, Constants.BUTTON_BG_COLOR)));
 		try{
-			btnContactService.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, "#edf1f9")));
+			btnContactService.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, Constants.BUTTON_TEXT_COLOR)));
 		}
 	    catch(Exception e){
 	    	e.printStackTrace();
@@ -133,7 +133,6 @@ public class RecallActivity extends MainActivity {
 	protected void setActionBarAppearance() {
 		getActionBar().getCustomView().setBackgroundColor(Color.parseColor("#ef4136"));
 		tvActionBarTitle.setTextColor(Color.parseColor("#FFFFFF"));
-		super.setActionBarAppearance();
 	}
 
 	@Override

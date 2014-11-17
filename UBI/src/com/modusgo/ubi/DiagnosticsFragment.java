@@ -80,7 +80,8 @@ public class DiagnosticsFragment extends Fragment{
 		
 		vehicle = ((DriverActivity)getActivity()).vehicle;
 		
-		rootView.findViewById(R.id.btnSwitchDriverMenu).setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_SWITCH_DRIVER_MENU_BUTTON_COLOR, "#f15b2a")));
+		rootView.findViewById(R.id.btnSwitchDriverMenu).setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_SWITCH_DRIVER_MENU_BUTTON_COLOR, Constants.SWITCH_DRIVER_BUTTON_BG_COLOR)));
+		rootView.findViewById(R.id.bottom_line).setBackgroundColor(Color.parseColor(prefs.getString(Constants.PREF_BR_LIST_HEADER_LINE_COLOR, Constants.LIST_HEADER_LINE_COLOR)));
 		
 		((TextView)rootView.findViewById(R.id.tvName)).setText(vehicle.name);
 		
@@ -137,9 +138,9 @@ public class DiagnosticsFragment extends Fragment{
 			llOdometer.setVisibility(View.VISIBLE);
 			
 			Button btnSubmit = (Button) rootView.findViewById(R.id.btnSubmit);
-			btnSubmit.setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, "#f15b2a")));
+			btnSubmit.setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, Constants.BUTTON_BG_COLOR)));
 			try{
-				btnSubmit.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, "#edf1f9")));
+				btnSubmit.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, Constants.BUTTON_TEXT_COLOR)));
 			}
 		    catch(Exception e){
 		    	e.printStackTrace();
@@ -255,7 +256,9 @@ public class DiagnosticsFragment extends Fragment{
 		
 		if(c.moveToFirst()){
 			imageDTCAlert.setImageResource(R.drawable.ic_alerts_red_big);
-			llContent.addView(inflater.inflate(R.layout.diagnostics_header, llContent, false));
+			View headerView = inflater.inflate(R.layout.diagnostics_header, llContent, false);
+			headerView.findViewById(R.id.bottom_line).setBackgroundColor(Color.parseColor(prefs.getString(Constants.PREF_BR_LIST_HEADER_LINE_COLOR, Constants.LIST_HEADER_LINE_COLOR)));
+			llContent.addView(headerView);
 			
 			while (!c.isAfterLast()) {
 				final DiagnosticsTroubleCode dtc = new DiagnosticsTroubleCode(c.getString(0), 
@@ -360,9 +363,10 @@ public class DiagnosticsFragment extends Fragment{
 				MaintenanceEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id, null, null, null, null);
 		
 		if(c.moveToFirst()){
-			View header = inflater.inflate(R.layout.diagnostics_header, llContent, false);
-			((TextView) header.findViewById(R.id.tvTitle)).setText("Scheduled Maintenance");
-			llContent.addView(header);
+			View headerView = inflater.inflate(R.layout.diagnostics_header, llContent, false);
+			headerView.findViewById(R.id.bottom_line).setBackgroundColor(Color.parseColor(prefs.getString(Constants.PREF_BR_LIST_HEADER_LINE_COLOR, Constants.LIST_HEADER_LINE_COLOR)));
+			((TextView) headerView.findViewById(R.id.tvTitle)).setText("Scheduled Maintenance");
+			llContent.addView(headerView);
 			
 			while(!c.isAfterLast()){
 				Maintenance maintenance = new Maintenance(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4));
@@ -404,9 +408,10 @@ public class DiagnosticsFragment extends Fragment{
 				WarrantyInfoEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id, null, null, null, null);
 		
 		if(c.moveToFirst()){
-			View header = inflater.inflate(R.layout.diagnostics_header, llContent, false);
-			((TextView) header.findViewById(R.id.tvTitle)).setText("Warranty Information");
-			llContent.addView(header);
+			View headerView = inflater.inflate(R.layout.diagnostics_header, llContent, false);
+			headerView.findViewById(R.id.bottom_line).setBackgroundColor(Color.parseColor(prefs.getString(Constants.PREF_BR_LIST_HEADER_LINE_COLOR, Constants.LIST_HEADER_LINE_COLOR)));
+			((TextView) headerView.findViewById(R.id.tvTitle)).setText("Warranty Information");
+			llContent.addView(headerView);
 			
 			while(!c.isAfterLast()){
 				WarrantyInformation wi = new WarrantyInformation(c.getString(0), c.getString(1), c.getString(2));

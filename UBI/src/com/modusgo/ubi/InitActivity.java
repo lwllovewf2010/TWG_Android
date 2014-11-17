@@ -223,18 +223,6 @@ public class InitActivity extends FragmentActivity {
 							e.putString(Constants.PREF_PHOTO, driverJSON.optString(Constants.PREF_PHOTO));
 						}
 						
-						if(responseJSON.has("branding")){
-							JSONObject brandingJSON = responseJSON.getJSONObject("branding");
-							e.putString(Constants.PREF_BR_LOGIN_SCREEN_BG_IMAGE, brandingJSON.optString("login_screen_bg_image"));
-							e.putString(Constants.PREF_BR_LOGIN_SCREEN_LOGO, brandingJSON.optString("login_screen_logo"));
-							e.putString(Constants.PREF_BR_BUTTONS_BG_COLOR, brandingJSON.optString("buttons_bg_color"));
-							e.putString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, brandingJSON.optString("buttons_text_color"));
-							e.putString(Constants.PREF_BR_TITLE_BAR_BG, brandingJSON.optString("title_bar_bg"));
-							e.putString(Constants.PREF_BR_TITLE_BAR_TEXT_COLOR, brandingJSON.optString("title_bar_text_color"));
-							e.putString(Constants.PREF_BR_MENU_LOGO, brandingJSON.optString("menu_logo"));
-							e.putString(Constants.PREF_BR_SWITCH_DRIVER_MENU_BUTTON_COLOR, brandingJSON.optString("switch_driver_menu_button_bg_color"));
-						}
-						
 						if(responseJSON.has("info")){
 							JSONObject infoJSON = responseJSON.getJSONObject("info");
 							e.putBoolean(Constants.PREF_DIAGNOSTIC, infoJSON.optBoolean("diagnostic"));
@@ -251,6 +239,20 @@ public class InitActivity extends FragmentActivity {
 							
 							if(infoJSON.has("welcome"))
 								welcomeScreens = infoJSON.getJSONArray("welcome");
+							
+							if(infoJSON.has("branding")){
+								JSONObject brandingJSON = infoJSON.getJSONObject("branding");
+								e.putString(Constants.PREF_BR_LOGIN_SCREEN_BG_IMAGE, brandingJSON.optString("login_screen_bg_image"));
+								e.putString(Constants.PREF_BR_LOGIN_SCREEN_LOGO, brandingJSON.optString("login_screen_logo"));
+								e.putString(Constants.PREF_BR_BUTTONS_BG_COLOR, brandingJSON.optString("buttons_bg_color", Constants.BUTTON_BG_COLOR));
+								e.putString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, brandingJSON.optString("buttons_text_color", Constants.BUTTON_TEXT_COLOR));
+								e.putString(Constants.PREF_BR_TITLE_BAR_BG, brandingJSON.optString("title_bar_bg"));
+								e.putString(Constants.PREF_BR_TITLE_BAR_BG_COLOR, brandingJSON.optString("title_bar_bg_color", Constants.TITLE_BAR_BG_COLOR));
+								e.putString(Constants.PREF_BR_TITLE_BAR_TEXT_COLOR, brandingJSON.optString("title_bar_text_color", Constants.TITLE_BAR_TEXT_COLOR));
+								e.putString(Constants.PREF_BR_MENU_LOGO, brandingJSON.optString("menu_logo"));
+								e.putString(Constants.PREF_BR_SWITCH_DRIVER_MENU_BUTTON_COLOR, brandingJSON.optString("switch_driver_menu_button_bg_color", Constants.SWITCH_DRIVER_BUTTON_BG_COLOR));
+								e.putString(Constants.PREF_BR_LIST_HEADER_LINE_COLOR, brandingJSON.optString("list_header_line_color", Constants.LIST_HEADER_LINE_COLOR));
+							}
 						}
 						
 						if(responseJSON.has("vehicles")){

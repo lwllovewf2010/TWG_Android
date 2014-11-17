@@ -69,7 +69,8 @@ public class TripsFragment extends Fragment{
 		tripListItems = new ArrayList<ListItem>();
 		
 		prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-		rootView.findViewById(R.id.btnSwitchDriverMenu).setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_SWITCH_DRIVER_MENU_BUTTON_COLOR, "#f15b2a")));
+		rootView.findViewById(R.id.btnSwitchDriverMenu).setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_SWITCH_DRIVER_MENU_BUTTON_COLOR, Constants.SWITCH_DRIVER_BUTTON_BG_COLOR)));
+		rootView.findViewById(R.id.bottom_line).setBackgroundColor(Color.parseColor(prefs.getString(Constants.PREF_BR_LIST_HEADER_LINE_COLOR, Constants.LIST_HEADER_LINE_COLOR)));
 		
 		((TextView)rootView.findViewById(R.id.tvName)).setText(vehicle.name);
 		
@@ -429,6 +430,7 @@ public class TripsFragment extends Fragment{
 				holder = new ViewHolderHeader();
 				holder.tvDate = (TextView) view.findViewById(R.id.tvDate);
 				holder.tvTotals = (TextView) view.findViewById(R.id.tvTotals);
+				view.findViewById(R.id.bottom_line).setBackgroundColor(Color.parseColor(prefs.getString(Constants.PREF_BR_LIST_HEADER_LINE_COLOR, Constants.LIST_HEADER_LINE_COLOR)));
 				view.setTag(holder);
 			}
 			else{

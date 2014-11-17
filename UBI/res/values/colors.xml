@@ -47,4 +47,6 @@
      <color name="ubi_yellow">#ECBE13</color>
      <color name="ubi_orange">#F38630</color>
      <color name="ubi_gray">#e6e9ed</color>
+     
+     <color name="list_header_line">#00aeef</color>
 </resources>

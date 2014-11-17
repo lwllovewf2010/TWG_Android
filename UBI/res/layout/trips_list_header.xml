@@ -31,9 +31,10 @@
         ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
     <View
+        android:id="@+id/bottom_line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_alignParentBottom="true"
-        android:background="#0fb3f0" />
+        android:background="@color/list_header_line" />
 
 </RelativeLayout>

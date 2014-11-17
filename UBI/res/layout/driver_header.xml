@@ -53,8 +53,9 @@
     </LinearLayout>
 
     <View
+        android:id="@+id/bottom_line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#00aeef" />
+        android:background="@color/list_header_line" />
 
 </LinearLayout>

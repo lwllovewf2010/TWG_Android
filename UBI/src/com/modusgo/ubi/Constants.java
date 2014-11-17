@@ -65,8 +65,16 @@ public class Constants {
 	public static final String PREF_BR_BUTTONS_BG_COLOR = "buttons_color";
 	public static final String PREF_BR_BUTTONS_TEXT_COLOR = "buttons_text_color";
 	public static final String PREF_BR_TITLE_BAR_BG = "title_bar_bg_image";
+	public static final String PREF_BR_TITLE_BAR_BG_COLOR = "title_bar_bg_color";
 	public static final String PREF_BR_TITLE_BAR_TEXT_COLOR = "title_bar_text_color";
 	public static final String PREF_BR_MENU_LOGO = "menu_logo";
 	public static final String PREF_BR_SWITCH_DRIVER_MENU_BUTTON_COLOR = "switch_driver_color";
-
+	public static final String PREF_BR_LIST_HEADER_LINE_COLOR = "list_header_line_color";
+	
+	public static final String BUTTON_BG_COLOR = "#f15b2a";
+	public static final String BUTTON_TEXT_COLOR = "#edf1f9";
+	public static final String SWITCH_DRIVER_BUTTON_BG_COLOR = "#f15b2a";
+	public static final String TITLE_BAR_BG_COLOR = "#000000";
+	public static final String TITLE_BAR_TEXT_COLOR = "#f15b2a";
+	public static final String LIST_HEADER_LINE_COLOR = "#00aeef";
 }

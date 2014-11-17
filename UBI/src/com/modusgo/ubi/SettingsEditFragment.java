@@ -251,9 +251,9 @@ public class SettingsEditFragment extends Fragment implements ImageChooserListen
 		editPassword.setTransformationMethod(new AsteriskPasswordTransformationMethod());
 		editConfirmPassword.setTransformationMethod(new AsteriskPasswordTransformationMethod());
 
-		btnUpdate.setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, "#f15b2a")));
+		btnUpdate.setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, Constants.BUTTON_BG_COLOR)));
 		try{
-			btnUpdate.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, "#edf1f9")));
+			btnUpdate.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, Constants.BUTTON_TEXT_COLOR)));
 		}
 	    catch(Exception e){
 	    	e.printStackTrace();
@@ -272,7 +272,7 @@ public class SettingsEditFragment extends Fragment implements ImageChooserListen
 		});
 		
 		try{
-			btnCancel.setTextColor(Utils.getButtonTextColorStateList(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, "#f15b2a")));
+			btnCancel.setTextColor(Utils.getButtonTextColorStateList(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, Constants.BUTTON_BG_COLOR)));
 		}
 	    catch(Exception e){
 	    	e.printStackTrace();
