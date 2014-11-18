@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.farmers.ubi.R;
 import com.modusgo.ubi.utils.Utils;
 
 public class DiagnosticDetailActivity extends MainActivity {

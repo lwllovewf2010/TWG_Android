@@ -44,7 +44,7 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.modusgo.ubi.Constants;
 import com.modusgo.ubi.InitActivity;
 import com.modusgo.ubi.MainActivity;
-import com.modusgo.ubi.R;
+import com.farmers.ubi.R;
 import com.modusgo.ubi.utils.Utils;
 
 public class RegisterByCodeActivity extends FragmentActivity {

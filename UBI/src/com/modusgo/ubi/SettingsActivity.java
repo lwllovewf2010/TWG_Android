@@ -2,6 +2,8 @@ package com.modusgo.ubi;
 
 import android.os.Bundle;
 
+import com.farmers.ubi.R;
+
 public class SettingsActivity extends MainActivity {
 	
 	@Override

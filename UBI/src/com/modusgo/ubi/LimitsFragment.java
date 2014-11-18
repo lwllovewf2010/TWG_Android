@@ -34,6 +34,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.ToggleButton;
 
+import com.farmers.ubi.R;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.LimitsContract.LimitsEntry;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;

@@ -2,6 +2,7 @@ package com.modusgo.ubi;
 
 import android.os.Bundle;
 
+import com.farmers.ubi.R;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;

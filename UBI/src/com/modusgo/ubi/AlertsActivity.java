@@ -27,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.farmers.ubi.R;
 import com.google.android.gms.maps.model.LatLng;
 import com.modusgo.ubi.db.AlertContract.AlertEntry;
 import com.modusgo.ubi.db.DbHelper;

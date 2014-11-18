@@ -4,8 +4,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.modusgo.ubi.requesttasks.BasePostRequestAsyncTask;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -15,6 +13,9 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.farmers.ubi.R;
+import com.modusgo.ubi.requesttasks.BasePostRequestAsyncTask;
 
 public class DialogFeedback extends DialogFragment {
 	

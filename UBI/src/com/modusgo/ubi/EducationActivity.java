@@ -1,11 +1,12 @@
 package com.modusgo.ubi;
 
-import com.modusgo.ubi.utils.Utils;
-
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Html;
 import android.widget.TextView;
+
+import com.farmers.ubi.R;
+import com.modusgo.ubi.utils.Utils;
 
 public class EducationActivity extends MainActivity {
 	

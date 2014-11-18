@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.farmers.ubi.R;
 import com.modusgo.ubi.customviews.ExpandableHeightGridView;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.ScoreGraphContract.ScoreGraphEntry;
