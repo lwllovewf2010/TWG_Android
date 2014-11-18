@@ -298,9 +298,9 @@ public class InitActivity extends FragmentActivity {
 		@Override
 		protected void onPostExecute(Boolean result) {
 			if(result){
-				if(welcomeScreens!=null && welcomeScreens.length()>0){
-				    new SendEventsRequest(InitActivity.this).execute("");
-					
+			    new SendEventsRequest(InitActivity.this).execute("");
+			    
+				if(welcomeScreens!=null && welcomeScreens.length()>0){					
 					Intent i = new Intent(InitActivity.this, WelcomeActivity.class);
 					i.putExtra(WelcomeActivity.SAVED_SCREENS, welcomeScreens.toString());
 					startActivity(i);
