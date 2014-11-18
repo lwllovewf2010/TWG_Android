@@ -69,7 +69,8 @@ public class ScoreFragment extends Fragment{
 		((TextView)rootView.findViewById(R.id.tvName)).setText(vehicle.name);
 		
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-		rootView.findViewById(R.id.btnSwitchDriverMenu).setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_SWITCH_DRIVER_MENU_BUTTON_COLOR, "#f15b2a")));
+		rootView.findViewById(R.id.btnSwitchDriverMenu).setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_SWITCH_DRIVER_MENU_BUTTON_COLOR, Constants.SWITCH_DRIVER_BUTTON_BG_COLOR)));
+		rootView.findViewById(R.id.bottom_line).setBackgroundColor(Color.parseColor(prefs.getString(Constants.PREF_BR_LIST_HEADER_LINE_COLOR, Constants.LIST_HEADER_LINE_COLOR)));
 		
 		ImageView imagePhoto = (ImageView)rootView.findViewById(R.id.imagePhoto);
 	    if(vehicle.photo == null || vehicle.photo.equals(""))
@@ -148,6 +149,12 @@ public class ScoreFragment extends Fragment{
         new GetScoreTask(getActivity()).execute("vehicles/"+vehicle.id+"/score.json");
         
 		return rootView;
+	}
+	
+	@Override
+	public void onResume() {
+		Utils.gaTrackScreen(getActivity(), "Score Screen");
+		super.onResume();
 	}
 	
 	private void loadScoreGraphFromDb(){
@@ -463,7 +470,8 @@ public class ScoreFragment extends Fragment{
 							monthStats.optString("grade").equals("null") ? "" : monthStats.optString("grade"));
 				}
 				dHelper.saveScoreGraph(vehicle.id, yearStats);
-				loadScoreGraphFromDb();
+				if(getActivity()!=null)
+					loadScoreGraphFromDb();
 			}
 			
 			LinkedHashMap<String, Integer> percentageData = new LinkedHashMap<String, Integer>();

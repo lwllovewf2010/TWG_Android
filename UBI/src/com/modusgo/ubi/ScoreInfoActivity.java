@@ -115,6 +115,12 @@ public class ScoreInfoActivity extends MainActivity{
         
 	}
 	
+	@Override
+	protected void onResume() {
+        Utils.gaTrackScreen(this, "Score Stats Screen");
+		super.onResume();
+	}
+	
 	private Vehicle getVehicleFromDb(long id){
 		DbHelper dHelper = DbHelper.getInstance(this);
 		SQLiteDatabase db = dHelper.getReadableDatabase();
@@ -193,7 +199,7 @@ public class ScoreInfoActivity extends MainActivity{
 			infoFields.put("Profile driving miles", df.format(vehicle.totalDistance)+" Miles");
 		}
 		else{
-			infoFields.put("Profile driving kilometers", df.format(vehicle.totalDistance)+" KMs");
+			infoFields.put("Profile driving kilometers", df.format(vehicle.totalDistance)+" KM");
 		}
 		infoFields.put("Estimated annual driving", "N/A");
 		

@@ -310,11 +310,20 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 		
 		if(prefs.getString(Constants.PREF_UNITS_OF_MEASURE, "mile").equals("mile")){
 			distance = Utils.metersToMiles(distanceToCar[0]);
-			tvDistanceToCarLabel.setText("Miles to Car");
+			if(distance>=1.1)
+				tvDistanceToCarLabel.setText("Miles to Car");
+			else{
+				if(distance>=0.1)
+					tvDistanceToCarLabel.setText("Mile to Car");
+				else{
+					distance = Utils.milesToFeet(distance);
+					tvDistanceToCarLabel.setText("Feet to Car");
+				}
+			}
 		}
 		else{
 			distance = Utils.metersToKm(distanceToCar[0]);
-			tvDistanceToCarLabel.setText("KMs to Car");
+			tvDistanceToCarLabel.setText("KM to Car");
 		}
 		
 		if(distance>=10000){
@@ -361,6 +370,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
     
     @Override
 	public void onResume() {
+		Utils.gaTrackScreen(getActivity(), "Driver Details Screen");
 	    super.onResume();
     }
 

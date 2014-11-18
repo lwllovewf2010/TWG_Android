@@ -17,6 +17,7 @@ import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.ScoreCirclesContract.ScoreCirclesEntry;
 import com.modusgo.ubi.db.ScorePieChartContract.ScorePieChartEntry;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
+import com.modusgo.ubi.utils.Utils;
 
 public class ScoreCirclesActivity extends MainActivity{
 
@@ -146,7 +147,9 @@ public class ScoreCirclesActivity extends MainActivity{
             b.putSerializable(CirclesFragment.SAVED_SECTIONS, sections);
             fragment.setArguments(b);
             circleFragments.add(fragment);
-            
+
+        	final String tabName = circlesTabs[i];
+        	
             rb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 				@Override
 				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -155,6 +158,8 @@ public class ScoreCirclesActivity extends MainActivity{
 						.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
 				        .replace(R.id.circlesContainer, fragment)
 				        .commit();
+						
+        		        Utils.gaTrackScreen(ScoreCirclesActivity.this, "Behaviors Screen - "+tabName);
 					}
 				}
 			});

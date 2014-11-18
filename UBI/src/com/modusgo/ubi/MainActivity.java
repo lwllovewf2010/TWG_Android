@@ -34,6 +34,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -102,6 +103,7 @@ public class MainActivity extends FragmentActivity {
 					 mDrawerLayout.closeDrawer(Gravity.RIGHT);
 		         } else {
 		        	 mDrawerLayout.openDrawer(Gravity.RIGHT);
+					 Utils.gaTrackScreen(MainActivity.this, "Menu");
 		         }
 			}
 		});
@@ -204,20 +206,16 @@ public class MainActivity extends FragmentActivity {
                 R.string.app_name  		/* "close drawer" description for accessibility */
                 ) {
             public void onDrawerClosed(View view) {
-            	if(!prefs.getString(Constants.PREF_BR_MENU_LOGO, "").equals("")){
-	            	getActionBar().getCustomView().findViewById(R.id.tvTitle).setVisibility(View.VISIBLE);
-	            	menuLogo.setVisibility(View.GONE);
-            	}
+            	getActionBar().getCustomView().findViewById(R.id.tvTitle).setVisibility(View.VISIBLE);
+            	menuLogo.setVisibility(View.GONE);
             	btnNavigationDrawer.setImageResource(R.drawable.ic_menu);
                 //getActionBar().setTitle(mTitle);
                 //invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
             public void onDrawerOpened(View drawerView) {
-            	if(!prefs.getString(Constants.PREF_BR_MENU_LOGO, "").equals("")){
-	            	getActionBar().getCustomView().findViewById(R.id.tvTitle).setVisibility(View.GONE);
-	            	menuLogo.setVisibility(View.VISIBLE);
-            	}
+            	getActionBar().getCustomView().findViewById(R.id.tvTitle).setVisibility(View.GONE);
+            	menuLogo.setVisibility(View.VISIBLE);
             	btnNavigationDrawer.setImageResource(R.drawable.ic_menu_close);
                 //getActionBar().setTitle(mDrawerTitle);
                 //invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
@@ -255,19 +253,28 @@ public class MainActivity extends FragmentActivity {
     }
     
     protected void setActionBarAppearance(){
-    	DisplayImageOptions options = new DisplayImageOptions.Builder()
-        .cacheInMemory(true)
-        .cacheOnDisk(true)
-        .build();
-    	ImageLoader.getInstance().loadImage(prefs.getString(Constants.PREF_BR_TITLE_BAR_BG, ""), options, new SimpleImageLoadingListener(){
-    		@Override
-    		public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-    			getActionBar().getCustomView().setBackgroundDrawable(new BitmapDrawable(getResources(), loadedImage));
-    			super.onLoadingComplete(imageUri, view, loadedImage);
-    		}
-    	});
+    	String titleBarBgURL = prefs.getString(Constants.PREF_BR_TITLE_BAR_BG, "");
+    	if(!titleBarBgURL.equals("")){
+    		System.out.println("action bar color img: "+titleBarBgURL);
+	    	DisplayImageOptions options = new DisplayImageOptions.Builder()
+	        .cacheInMemory(true)
+	        .cacheOnDisk(true)
+	        .build();
+	    	ImageLoader.getInstance().loadImage(prefs.getString(Constants.PREF_BR_TITLE_BAR_BG, ""), options, new SimpleImageLoadingListener(){
+	    		@Override
+	    		public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+	    			getActionBar().getCustomView().setBackgroundDrawable(new BitmapDrawable(getResources(), loadedImage));
+	    			super.onLoadingComplete(imageUri, view, loadedImage);
+	    		}
+	    	});
+    	}
+    	else{
+    		getActionBar().getCustomView().setBackgroundColor(Color.parseColor(prefs.getString(Constants.PREF_BR_TITLE_BAR_BG_COLOR, Constants.TITLE_BAR_BG_COLOR)));
+    		System.out.println("action bar color: "+Constants.TITLE_BAR_BG_COLOR);
+    	}
+    	
     	try{
-    		tvActionBarTitle.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_TITLE_BAR_TEXT_COLOR, "#edf1f9")));
+    		tvActionBarTitle.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_TITLE_BAR_TEXT_COLOR, Constants.TITLE_BAR_TEXT_COLOR)));
     	}
 	    catch(Exception e){
 	    	e.printStackTrace();
@@ -339,15 +346,19 @@ public class MainActivity extends FragmentActivity {
 		        	//Feedback
 		        	String driverName = vehicle !=null ? ", "+vehicle.name : "";
 		        	new DialogFeedback(actionBarTitle.toLowerCase(Locale.US) + " screen" + driverName).show(getSupportFragmentManager(), "FeedbackDialog");
+					Utils.gaTrackScreen(MainActivity.this, "Feedback Dialog");
 		            break;
 		        case CALLSUPPORT:
 		        	//Call support
+		        	Utils.gaTrackScreen(MainActivity.this, "Call Support");
 		            break;
 		        case AGENT:
 		        	//Agent
+		        	Utils.gaTrackScreen(MainActivity.this, "Agent");
 		        	break;
 		        case LOGOUT:
 		        	//Logout
+		        	Utils.gaTrackScreen(MainActivity.this, "Logout");
 		        	prefs.edit().putString(Constants.PREF_AUTH_KEY, "").commit();
 		    		Intent intent = new Intent(MainActivity.this, InitActivity.class);
 		    		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);

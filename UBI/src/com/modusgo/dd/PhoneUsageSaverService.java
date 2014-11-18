@@ -118,7 +118,7 @@ public class PhoneUsageSaverService extends IntentService {
     	prefs.edit().putBoolean(PREF_PHONE_ON, false);
     	
     	DbHelper dbHelper = DbHelper.getInstance(this);
-    	dbHelper.saveDDEvent("phone_usage_stop", timestamp);
+    	dbHelper.saveDDEvent("phone_usage_end", timestamp);
     	dbHelper.close();
 	}
 

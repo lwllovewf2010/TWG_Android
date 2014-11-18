@@ -118,7 +118,7 @@ public class CallSaverService extends IntentService {
 	    	String callEndTimestamp = sdf.format(c.getTime());
 	    	
 	    	DbHelper dbHelper = DbHelper.getInstance(this);
-	    	dbHelper.saveDDEvent("call_usage_stop", callEndTimestamp);
+	    	dbHelper.saveDDEvent("call_usage_end", callEndTimestamp);
 	    	dbHelper.close();
 		}
 	}

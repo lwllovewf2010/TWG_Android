@@ -74,6 +74,7 @@ public class SignInActivity extends FragmentActivity {
         .cacheInMemory(true)
         .cacheOnDisk(true)
         .build();
+        System.out.println("BG : "+prefs.getString(Constants.PREF_BR_LOGIN_SCREEN_BG_IMAGE, ""));
     	ImageLoader.getInstance().displayImage(prefs.getString(Constants.PREF_BR_LOGIN_SCREEN_BG_IMAGE, ""), imageBg, options);
     	
     	ImageView imageLogo = (ImageView) findViewById(R.id.imageLogo);
@@ -90,9 +91,9 @@ public class SignInActivity extends FragmentActivity {
 	    editPassword = (EditText)findViewById(R.id.password);
 
 	    Button btnSignIn = (Button)findViewById(R.id.btnSignIn);
-	    btnSignIn.setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, "#f15b2a")));
+	    btnSignIn.setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, Constants.BUTTON_BG_COLOR)));
 	    try{
-	    	btnSignIn.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, "#edf1f9")));
+	    	btnSignIn.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, Constants.BUTTON_TEXT_COLOR)));
 	    }
 	    catch(Exception e){
 	    	e.printStackTrace();
@@ -128,6 +129,12 @@ public class SignInActivity extends FragmentActivity {
 
 	}
 	
+	@Override
+	protected void onResume() {
+		 Utils.gaTrackScreen(this, "Sign In Sceen");
+		super.onResume();
+	}
+	
 	private class ScreenSlidePagerAdapter extends FragmentPagerAdapter {
         public ScreenSlidePagerAdapter(FragmentManager fm) {
             super(fm);
@@ -143,7 +150,7 @@ public class SignInActivity extends FragmentActivity {
             case 2:
             	return ScreenSlidePageFragment.newInstance(R.drawable.slide_3, "Explore your trips.", "Discover driving events and how they\nimpact your discount.");
             case 3:
-            	return ScreenSlidePageFragment.newInstance(R.drawable.slide_4, "Keep your car happy.", "Monitor your vehicle’s health, preventative\nmaintenance schedule, warrantly information,\nand even recalls!");
+            	return ScreenSlidePageFragment.newInstance(R.drawable.slide_4, "Keep your car happy.", "Monitor your vehicles health, preventative\nmaintenance schedule, warrantly information,\nand even recalls!");
             default:
                 return null;
             }

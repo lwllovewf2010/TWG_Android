@@ -121,9 +121,9 @@ OnConnectionFailedListener, LocationListener {
         tvInfo = (TextView) findViewById(R.id.tvInfo);
         
         btnStart.setEnabled(false);
-        btnStart.setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, "#f15b2a")));
+        btnStart.setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, Constants.BUTTON_BG_COLOR)));
         try{
-        	btnStart.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, "#edf1f9")));
+        	btnStart.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, Constants.BUTTON_TEXT_COLOR)));
         }
 	    catch(Exception e){
 	    	e.printStackTrace();
@@ -276,7 +276,8 @@ OnConnectionFailedListener, LocationListener {
 	@Override
     public void onResume() {
         mapView.onResume();
-        
+
+		Utils.gaTrackScreen(this, "Find My Car Screen");
         super.onResume();
     }
 
@@ -392,7 +393,7 @@ OnConnectionFailedListener, LocationListener {
 	        		}
 	        		else{
 		                tvDistance.setText(""+df.format(Utils.metersToKm(distanceForSegment)));
-		                tvDistanceUnits.setText("KMs");
+		                tvDistanceUnits.setText("KM");
 	        		}
 	                tvTime.setText("Time: "+timeForSegment);
 	                

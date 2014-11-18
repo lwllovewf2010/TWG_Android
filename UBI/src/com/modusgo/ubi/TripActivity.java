@@ -212,7 +212,15 @@ public class TripActivity extends MainActivity {
 					PointEntry.COLUMN_NAME_TRIP_ID+" = ?", new String[]{Long.toString(tripId)}, null, null, PointEntry._ID+" ASC");
 			if(c.moveToFirst()){
 				while (!c.isAfterLast()) {
-					t.points.add(new Point(new LatLng(c.getDouble(1), c.getDouble(2)), EventType.valueOf(c.getString(3)), c.getString(4), c.getString(5)));
+					EventType event;
+					try{
+						event = EventType.valueOf(c.getString(3));
+					}
+					catch(IllegalArgumentException e){
+						event = EventType.UNKNOWN;
+					}
+					
+					t.points.add(new Point(new LatLng(c.getDouble(1), c.getDouble(2)), event, c.getString(4), c.getString(5)));
 					c.moveToNext();
 				}
 			}
@@ -259,7 +267,7 @@ public class TripActivity extends MainActivity {
 		else{
 			tvAvgSpeedUnits.setText("KPH");
 			tvMaxSpeedUnits.setText("KPH");
-			tvDistanceUnits.setText("KMs");
+			tvDistanceUnits.setText("KM");
 		}
         
         llEventsList.removeAllViews();
@@ -403,6 +411,7 @@ public class TripActivity extends MainActivity {
 	@Override
     public void onResume() {
         mapView.onResume();
+        Utils.gaTrackScreen(this, "Trip Screen");
         super.onResume();
     }
 
@@ -434,10 +443,11 @@ public class TripActivity extends MainActivity {
 		
 		@Override
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
-			Trip trip = new Trip(tripId, 0, Utils.fixTimezoneZ(responseJSON.optString("start_time")), Utils.fixTimezoneZ(responseJSON.optString("end_time")), responseJSON.optDouble("mileage"), responseJSON.optString("grade"));
+			Trip trip = new Trip(tripId, responseJSON.optInt("harsh_events_count"), Utils.fixTimezoneZ(responseJSON.optString("start_time")), Utils.fixTimezoneZ(responseJSON.optString("end_time")), responseJSON.optDouble("mileage"), responseJSON.optString("grade"));
 			
 			trip.averageSpeed = responseJSON.optDouble("avg_speed");
 			trip.maxSpeed = responseJSON.optDouble("max_speed");
+			trip.viewed = true;
 			
 			if(responseJSON.has("route")){
 				JSONArray routeJSON = responseJSON.getJSONArray("route");

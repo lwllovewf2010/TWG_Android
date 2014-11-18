@@ -16,6 +16,7 @@ import android.widget.RadioGroup;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.ScorePieChartContract.ScorePieChartEntry;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
+import com.modusgo.ubi.utils.Utils;
 
 public class ScorePieChartActivity extends MainActivity{
 
@@ -53,7 +54,6 @@ public class ScorePieChartActivity extends MainActivity{
 		if(!updateSuccessful){
 			finish();
 		}
-        
 	}
 	
 	private boolean updatePieCharts(SQLiteDatabase db){		
@@ -124,6 +124,8 @@ public class ScorePieChartActivity extends MainActivity{
         	fragment.setArguments(bundle);
         	pieChartFragments.add(fragment);
         	
+        	final String tabName = pieChartTabs[i];
+        	
         	rb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
         		@Override
         		public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -132,6 +134,8 @@ public class ScorePieChartActivity extends MainActivity{
         				.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
         				.replace(R.id.pieChartsContainer, fragment)
         				.commit();
+        				
+        		        Utils.gaTrackScreen(ScorePieChartActivity.this, "Time/Road Charts Screen - "+tabName);
         			}
         		}
         	});

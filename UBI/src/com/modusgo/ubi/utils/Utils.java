@@ -20,17 +20,22 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.StateListDrawable;
+import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.util.Base64;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.modusgo.ubi.Constants;
 
 public class Utils {
@@ -151,6 +156,10 @@ public class Utils {
 		return meters*0.001f;
 	}
 	
+	public static float milesToFeet(float miles){
+		return miles*5280;
+	}
+	
 	public static int durationInMinutes(Date startDate, Date endDate)
     {
 		Calendar startCalendar = Calendar.getInstance();
@@ -266,5 +275,18 @@ public class Utils {
 	{
 	    byte[] decodedByte = Base64.decode(input, 0);
 	    return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length); 
+	}
+	
+	public static void gaTrackScreen(Context context, String screenName){
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+		// Get tracker.
+        Tracker t = GoogleAnalytics.getInstance(context).newTracker(prefs.getString(Constants.PREF_GA_TRACKING_ID, ""));
+
+        // Set screen name.
+        // Where path is a String representing the screen name.
+        t.setScreenName(screenName);
+
+        // Send a screen view.
+        t.send(new HitBuilders.AppViewBuilder().build());
 	}
 }

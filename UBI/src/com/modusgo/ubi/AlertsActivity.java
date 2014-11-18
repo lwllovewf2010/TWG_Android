@@ -32,6 +32,7 @@ import com.modusgo.ubi.db.AlertContract.AlertEntry;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.modusgo.ubi.requesttasks.BaseRequestAsyncTask;
+import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -141,6 +142,7 @@ public class AlertsActivity extends MainActivity {
 	@Override
 	protected void onResume() {
 		new GetAlertsTask(this).execute("vehicles/"+vehicle.id+"/alerts.json");
+		Utils.gaTrackScreen(this, "Alerts Screen");
 		super.onResume();
 	}
 	

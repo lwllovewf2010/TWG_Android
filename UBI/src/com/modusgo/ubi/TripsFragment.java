@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Random;
 
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
@@ -22,6 +21,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -69,7 +69,8 @@ public class TripsFragment extends Fragment{
 		tripListItems = new ArrayList<ListItem>();
 		
 		prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-		rootView.findViewById(R.id.btnSwitchDriverMenu).setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_SWITCH_DRIVER_MENU_BUTTON_COLOR, "#f15b2a")));
+		rootView.findViewById(R.id.btnSwitchDriverMenu).setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_SWITCH_DRIVER_MENU_BUTTON_COLOR, Constants.SWITCH_DRIVER_BUTTON_BG_COLOR)));
+		rootView.findViewById(R.id.bottom_line).setBackgroundColor(Color.parseColor(prefs.getString(Constants.PREF_BR_LIST_HEADER_LINE_COLOR, Constants.LIST_HEADER_LINE_COLOR)));
 		
 		((TextView)rootView.findViewById(R.id.tvName)).setText(vehicle.name);
 		
@@ -112,9 +113,14 @@ public class TripsFragment extends Fragment{
 		cStart.add(Calendar.DAY_OF_YEAR, -7);
 		cEnd = Calendar.getInstance();
 		
-		fillTripsListView(getTripsFromDb(cStart.getTime(), cEnd.getTime()));
-		
 		return rootView;
+	}
+	
+	@Override
+	public void onResume() {
+		fillTripsListView(getTripsFromDb(cStart.getTime(), cEnd.getTime()));
+		Utils.gaTrackScreen(getActivity(), "Trips Screen");		
+		super.onResume();
 	}
 	
 	String[] timePeriods = new String[]{"Last 7 Days", "This Month", "Last Month", "All"};
@@ -173,8 +179,10 @@ public class TripsFragment extends Fragment{
 				TripEntry.COLUMN_NAME_DISTANCE,
 				TripEntry.COLUMN_NAME_GRADE,
 				TripEntry.COLUMN_NAME_FUEL,
-				TripEntry.COLUMN_NAME_FUEL_UNIT},
-				TripEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id + " AND " +
+				TripEntry.COLUMN_NAME_FUEL_UNIT,
+				TripEntry.COLUMN_NAME_VIEWED,
+				TripEntry.COLUMN_NAME_UPDATED_AT},
+				TripEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id + " AND " + TripEntry.COLUMN_NAME_HIDDEN + " = 0 AND " +
 				"datetime(" + TripEntry.COLUMN_NAME_START_TIME + ")>=datetime('"+ Utils.fixTimeZoneColon(sdf.format(startDate)) + "') AND " +
 				"datetime(" + TripEntry.COLUMN_NAME_START_TIME + ")<=datetime('"+ Utils.fixTimeZoneColon(sdf.format(endDate)) + "')", null, null, null, "datetime("+TripEntry.COLUMN_NAME_START_TIME+") DESC");
 
@@ -192,6 +200,8 @@ public class TripsFragment extends Fragment{
 						c.getString(5));
 				t.fuelLevel = c.getInt(6);
 				t.fuelUnit = c.getString(7);
+				t.viewed = c.getInt(8) == 1;
+				t.updatedAt = c.getString(9);
 				trips.add(t);
 				c.moveToNext();
 			}
@@ -213,7 +223,6 @@ public class TripsFragment extends Fragment{
 		Calendar cNow = Calendar.getInstance();
 		tripListItems.clear();
 		
-		Random r = new Random();
 		TripListHeader currentHeader = new TripListHeader("", "");
 		Trip prevTrip = null;
 		int tripsCount = trips.size();
@@ -365,7 +374,7 @@ public class TripsFragment extends Fragment{
 				units = "Miles";
 			}
 			else{
-				units = "KMs";
+				units = "KM";
 			}
 		}
 		
@@ -423,6 +432,7 @@ public class TripsFragment extends Fragment{
 				holder = new ViewHolderHeader();
 				holder.tvDate = (TextView) view.findViewById(R.id.tvDate);
 				holder.tvTotals = (TextView) view.findViewById(R.id.tvTotals);
+				view.findViewById(R.id.bottom_line).setBackgroundColor(Color.parseColor(prefs.getString(Constants.PREF_BR_LIST_HEADER_LINE_COLOR, Constants.LIST_HEADER_LINE_COLOR)));
 				view.setTag(holder);
 			}
 			else{
@@ -494,6 +504,15 @@ public class TripsFragment extends Fragment{
 			else{
 				holder.tvFuel.setText("N/A");
 				holder.tvFuelUnit.setVisibility(View.GONE);		
+			}
+			
+			if(t.viewed){
+				holder.tvStartTime.setTypeface(holder.tvStartTime.getTypeface(), Typeface.NORMAL);
+				holder.tvEndTime.setTypeface(holder.tvEndTime.getTypeface(), Typeface.NORMAL);
+			}
+			else{
+				holder.tvStartTime.setTypeface(holder.tvStartTime.getTypeface(), Typeface.BOLD);
+				holder.tvEndTime.setTypeface(holder.tvEndTime.getTypeface(), Typeface.BOLD);
 			}
 			
 			holder.tvStartTime.setText(t.getStartDateString());

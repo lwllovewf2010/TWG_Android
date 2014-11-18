@@ -1,5 +1,7 @@
 package com.modusgo.ubi;
 
+import com.modusgo.ubi.utils.Utils;
+
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Html;
@@ -28,8 +30,12 @@ public class EducationActivity extends MainActivity {
 
 		tvContent = (TextView) findViewById(R.id.tvContent);
 		tvContent.setText(Html.fromHtml(getResources().getString(infoStringResource)));
-        
-        
+	}
+	
+	@Override
+	protected void onResume() {
+        Utils.gaTrackScreen(this, "Education Screen");
+		super.onResume();
 	}
 	
 	@Override

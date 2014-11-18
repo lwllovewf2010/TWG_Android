@@ -28,6 +28,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
 import com.modusgo.dd.CallSaverService;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.requesttasks.SendEventsRequest;
@@ -222,25 +223,36 @@ public class InitActivity extends FragmentActivity {
 							e.putString(Constants.PREF_PHOTO, driverJSON.optString(Constants.PREF_PHOTO));
 						}
 						
-						if(responseJSON.has("branding")){
-							JSONObject brandingJSON = responseJSON.getJSONObject("branding");
-							e.putString(Constants.PREF_BR_LOGIN_SCREEN_BG_IMAGE, brandingJSON.optString("login_screen_bg_image"));
-							e.putString(Constants.PREF_BR_LOGIN_SCREEN_LOGO, brandingJSON.optString("login_screen_logo"));
-							e.putString(Constants.PREF_BR_BUTTONS_BG_COLOR, brandingJSON.optString("buttons_bg_color"));
-							e.putString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, brandingJSON.optString("buttons_text_color"));
-							e.putString(Constants.PREF_BR_TITLE_BAR_BG, brandingJSON.optString("title_bar_bg"));
-							e.putString(Constants.PREF_BR_TITLE_BAR_TEXT_COLOR, brandingJSON.optString("title_bar_text_color"));
-							e.putString(Constants.PREF_BR_MENU_LOGO, brandingJSON.optString("menu_logo"));
-							e.putString(Constants.PREF_BR_SWITCH_DRIVER_MENU_BUTTON_COLOR, brandingJSON.optString("switch_driver_menu_button_bg_color"));
-						}
-						
 						if(responseJSON.has("info")){
 							JSONObject infoJSON = responseJSON.getJSONObject("info");
 							e.putBoolean(Constants.PREF_DIAGNOSTIC, infoJSON.optBoolean("diagnostic"));
 							e.putString(Constants.PREF_UNITS_OF_MEASURE, infoJSON.optString("unit_of_measure","mile"));
 							
+							String trackingId = infoJSON.optString("");
+							if(trackingId.equals("") || trackingId.equals("false")){
+								GoogleAnalytics.getInstance(InitActivity.this).setAppOptOut(true);
+							}
+							else{
+								GoogleAnalytics.getInstance(InitActivity.this).setAppOptOut(false);
+								e.putString(Constants.PREF_GA_TRACKING_ID, trackingId);
+							}
+							
 							if(infoJSON.has("welcome"))
 								welcomeScreens = infoJSON.getJSONArray("welcome");
+							
+							if(infoJSON.has("branding")){
+								JSONObject brandingJSON = infoJSON.getJSONObject("branding");
+								e.putString(Constants.PREF_BR_LOGIN_SCREEN_BG_IMAGE, brandingJSON.optString("login_screen_bg_image"));
+								e.putString(Constants.PREF_BR_LOGIN_SCREEN_LOGO, brandingJSON.optString("login_screen_logo"));
+								e.putString(Constants.PREF_BR_BUTTONS_BG_COLOR, brandingJSON.optString("buttons_bg_color", Constants.BUTTON_BG_COLOR));
+								e.putString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, brandingJSON.optString("buttons_text_color", Constants.BUTTON_TEXT_COLOR));
+								e.putString(Constants.PREF_BR_TITLE_BAR_BG, brandingJSON.optString("title_bar_bg"));
+								e.putString(Constants.PREF_BR_TITLE_BAR_BG_COLOR, brandingJSON.optString("title_bar_bg_color", Constants.TITLE_BAR_BG_COLOR));
+								e.putString(Constants.PREF_BR_TITLE_BAR_TEXT_COLOR, brandingJSON.optString("title_bar_text_color", Constants.TITLE_BAR_TEXT_COLOR));
+								e.putString(Constants.PREF_BR_MENU_LOGO, brandingJSON.optString("menu_logo"));
+								e.putString(Constants.PREF_BR_SWITCH_DRIVER_MENU_BUTTON_COLOR, brandingJSON.optString("switch_driver_menu_button_bg_color", Constants.SWITCH_DRIVER_BUTTON_BG_COLOR));
+								e.putString(Constants.PREF_BR_LIST_HEADER_LINE_COLOR, brandingJSON.optString("list_header_line_color", Constants.LIST_HEADER_LINE_COLOR));
+							}
 						}
 						
 						if(responseJSON.has("vehicles")){
@@ -286,9 +298,9 @@ public class InitActivity extends FragmentActivity {
 		@Override
 		protected void onPostExecute(Boolean result) {
 			if(result){
-				if(welcomeScreens!=null && welcomeScreens.length()>0){
-				    new SendEventsRequest(InitActivity.this).execute("");
-					
+			    new SendEventsRequest(InitActivity.this).execute("");
+			    
+				if(welcomeScreens!=null && welcomeScreens.length()>0){					
 					Intent i = new Intent(InitActivity.this, WelcomeActivity.class);
 					i.putExtra(WelcomeActivity.SAVED_SCREENS, welcomeScreens.toString());
 					startActivity(i);

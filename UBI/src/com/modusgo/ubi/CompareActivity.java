@@ -34,6 +34,7 @@ import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 
 import com.modusgo.ubi.requesttasks.BaseRequestAsyncTask;
+import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -183,6 +184,7 @@ public class CompareActivity extends MainActivity{
 	public void onResume() {
 		setNavigationDrawerItemSelected(MenuItems.COMPARE);
 		setButtonUpVisibility(true);
+		Utils.gaTrackScreen(this, "Compare Screen");
 		super.onResume();
 	}
 	

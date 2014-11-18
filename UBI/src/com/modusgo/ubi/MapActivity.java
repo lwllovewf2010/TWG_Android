@@ -13,6 +13,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
+import com.modusgo.ubi.utils.Utils;
 
 public class MapActivity extends MainActivity {
 
@@ -69,6 +70,7 @@ public class MapActivity extends MainActivity {
 	@Override
     public void onResume() {
         mapView.onResume();
+        Utils.gaTrackScreen(this, "Current Location Screen");
         super.onResume();
     }
 
