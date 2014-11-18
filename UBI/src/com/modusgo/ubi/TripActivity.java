@@ -212,7 +212,15 @@ public class TripActivity extends MainActivity {
 					PointEntry.COLUMN_NAME_TRIP_ID+" = ?", new String[]{Long.toString(tripId)}, null, null, PointEntry._ID+" ASC");
 			if(c.moveToFirst()){
 				while (!c.isAfterLast()) {
-					t.points.add(new Point(new LatLng(c.getDouble(1), c.getDouble(2)), EventType.valueOf(c.getString(3)), c.getString(4), c.getString(5)));
+					EventType event;
+					try{
+						event = EventType.valueOf(c.getString(3));
+					}
+					catch(IllegalArgumentException e){
+						event = EventType.UNKNOWN;
+					}
+					
+					t.points.add(new Point(new LatLng(c.getDouble(1), c.getDouble(2)), event, c.getString(4), c.getString(5)));
 					c.moveToNext();
 				}
 			}
