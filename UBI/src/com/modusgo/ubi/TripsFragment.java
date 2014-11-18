@@ -180,8 +180,9 @@ public class TripsFragment extends Fragment{
 				TripEntry.COLUMN_NAME_GRADE,
 				TripEntry.COLUMN_NAME_FUEL,
 				TripEntry.COLUMN_NAME_FUEL_UNIT,
-				TripEntry.COLUMN_NAME_VIEWED},
-				TripEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id + " AND " +
+				TripEntry.COLUMN_NAME_VIEWED,
+				TripEntry.COLUMN_NAME_UPDATED_AT},
+				TripEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id + " AND " + TripEntry.COLUMN_NAME_HIDDEN + " = 0 AND " +
 				"datetime(" + TripEntry.COLUMN_NAME_START_TIME + ")>=datetime('"+ Utils.fixTimeZoneColon(sdf.format(startDate)) + "') AND " +
 				"datetime(" + TripEntry.COLUMN_NAME_START_TIME + ")<=datetime('"+ Utils.fixTimeZoneColon(sdf.format(endDate)) + "')", null, null, null, "datetime("+TripEntry.COLUMN_NAME_START_TIME+") DESC");
 
@@ -200,6 +201,7 @@ public class TripsFragment extends Fragment{
 				t.fuelLevel = c.getInt(6);
 				t.fuelUnit = c.getString(7);
 				t.viewed = c.getInt(8) == 1;
+				t.updatedAt = c.getString(9);
 				trips.add(t);
 				c.moveToNext();
 			}
