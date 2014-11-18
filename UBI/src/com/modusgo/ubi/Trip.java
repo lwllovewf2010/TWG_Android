@@ -32,6 +32,8 @@ public class Trip extends ListItem implements Serializable{
 	public int fuelLevel;
 	public String fuelUnit="";
 	public boolean viewed = false;
+	public String updatedAt = "";
+	public boolean hidden = false;
 	
 	public enum EventType {START, STOP, HARSH_BRAKING, HARSH_ACCELERATION, SPEEDING, CALL_USAGE, PHONE_USAGE, UNKNOWN};
 	

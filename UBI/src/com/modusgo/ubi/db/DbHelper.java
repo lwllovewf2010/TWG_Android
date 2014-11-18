@@ -88,7 +88,9 @@ public class DbHelper extends SQLiteOpenHelper {
 		    TripEntry.COLUMN_NAME_GRADE + TEXT_TYPE + COMMA_SEP +
 		    TripEntry.COLUMN_NAME_FUEL + INT_TYPE + COMMA_SEP +
 		    TripEntry.COLUMN_NAME_FUEL_UNIT + TEXT_TYPE + COMMA_SEP +
-		    TripEntry.COLUMN_NAME_VIEWED + INT_TYPE + " ); ",
+		    TripEntry.COLUMN_NAME_VIEWED + INT_TYPE + COMMA_SEP +
+		    TripEntry.COLUMN_NAME_UPDATED_AT + TEXT_TYPE + COMMA_SEP +
+		    TripEntry.COLUMN_NAME_HIDDEN + INT_TYPE + " ); ",
 	
 		    "CREATE TABLE " + RouteEntry.TABLE_NAME + " (" +
 		    RouteEntry._ID + " INTEGER PRIMARY KEY," +
@@ -222,7 +224,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	"DROP TABLE IF EXISTS " + DDEventEntry.TABLE_NAME};
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 28;
+	public static final int DATABASE_VERSION = 29;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;
@@ -515,11 +517,15 @@ public class DbHelper extends SQLiteOpenHelper {
 					+ TripEntry.COLUMN_NAME_GRADE +","
 					+ TripEntry.COLUMN_NAME_FUEL +","
 					+ TripEntry.COLUMN_NAME_FUEL_UNIT +","
-					+ TripEntry.COLUMN_NAME_VIEWED +""
+					+ TripEntry.COLUMN_NAME_VIEWED +","
+					+ TripEntry.COLUMN_NAME_UPDATED_AT +","
+					+ TripEntry.COLUMN_NAME_HIDDEN +""
 					+ ") VALUES (?,?,?,?,?,?," +
 					"(SELECT IFNULL(NULLIF((SELECT "+TripEntry.COLUMN_NAME_AVG_SPEED+" FROM trips WHERE "+TripEntry._ID+" IS ?),0),?))," +
 					"(SELECT IFNULL(NULLIF((SELECT "+TripEntry.COLUMN_NAME_MAX_SPEED+" FROM trips WHERE "+TripEntry._ID+" IS ?),0),?)),?,?,?," +
-					"(SELECT IFNULL(NULLIF((SELECT "+TripEntry.COLUMN_NAME_VIEWED+" FROM trips WHERE "+TripEntry._ID+" IS ?),0),?)));";
+					"(SELECT IFNULL(NULLIF((SELECT "+TripEntry.COLUMN_NAME_VIEWED+" FROM trips WHERE "+TripEntry._ID+" IS ?),0),?))," +
+					"?," +
+					"(SELECT IFNULL(NULLIF((SELECT "+TripEntry.COLUMN_NAME_HIDDEN+" FROM trips WHERE "+TripEntry._ID+" IS ?),0),?)));";
 			
 			SQLiteStatement statement = database.compileStatement(sql);
 		    database.beginTransaction();
@@ -543,6 +549,9 @@ public class DbHelper extends SQLiteOpenHelper {
 		    	statement.bindString(13, trip.fuelUnit);
 		    	statement.bindDouble(14, trip.id);
 		    	statement.bindLong(15, trip.viewed ? 1 : 0);
+		    	statement.bindString(16, trip.updatedAt);
+		    	statement.bindDouble(17, trip.id);
+		    	statement.bindLong(18, trip.hidden ? 1 : 0);
 		    	statement.execute();
 			}
 		    
