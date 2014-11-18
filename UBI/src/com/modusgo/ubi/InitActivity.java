@@ -68,7 +68,7 @@ public class InitActivity extends FragmentActivity {
 	    }
 	    
 	    prefs = PreferenceManager.getDefaultSharedPreferences(InitActivity.this);
-	    clientId = prefs.getString(Constants.PREF_CLIENT_ID, "");
+	    clientId = "farmers";//prefs.getString(Constants.PREF_CLIENT_ID, "");
 	    
 	    ImageView imageBg = (ImageView) findViewById(R.id.imageBg);
         DisplayImageOptions options = new DisplayImageOptions.Builder()
