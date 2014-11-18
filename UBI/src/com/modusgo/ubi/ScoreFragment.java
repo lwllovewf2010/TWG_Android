@@ -470,7 +470,8 @@ public class ScoreFragment extends Fragment{
 							monthStats.optString("grade").equals("null") ? "" : monthStats.optString("grade"));
 				}
 				dHelper.saveScoreGraph(vehicle.id, yearStats);
-				loadScoreGraphFromDb();
+				if(getActivity()!=null)
+					loadScoreGraphFromDb();
 			}
 			
 			LinkedHashMap<String, Integer> percentageData = new LinkedHashMap<String, Integer>();
