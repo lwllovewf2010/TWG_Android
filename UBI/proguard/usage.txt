@@ -6875,7 +6875,8 @@ com.modusgo.ubi.Trip:
     private static final long serialVersionUID
 com.modusgo.ubi.TripActivity:
     public static final java.lang.String EXTRA_TRIP_ID
-com.modusgo.ubi.TripsFragment$GetTripsTask
+com.modusgo.ubi.TripsFragment:
+    private static final int TRIPS_PER_REQUEST
 com.modusgo.ubi.Vehicle:
     private static final long serialVersionUID
     public int harshEvents

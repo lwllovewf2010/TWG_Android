@@ -32,6 +32,7 @@ public class Trip extends ListItem implements Serializable{
 	public int fuelLevel;
 	public String fuelUnit="";
 	public boolean viewed = false;
+	public String viewedAt = "";
 	public String updatedAt = "";
 	public boolean hidden = false;
 	
