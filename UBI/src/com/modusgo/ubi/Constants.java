@@ -2,7 +2,7 @@ package com.modusgo.ubi;
 
 public class Constants {
 	
-	public static final String HOCKEY_APP_ID = "caca040742c8345b8594ac0bd7a71418";
+	public static final String HOCKEY_APP_ID = "7f4c1a1a9c883ac6f127f6d223cf2efe";
 	
 	public static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZZZZZ";
 	public static final String DATE_TIME_FORMAT_ZULU = "yyyy-MM-dd'T'HH:mm:ss'Z'";
