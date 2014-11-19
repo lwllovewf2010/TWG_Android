@@ -3,6 +3,7 @@ package com.modusgo.ubi;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Locale;
 
 import org.apache.http.message.BasicNameValuePair;
@@ -175,7 +176,9 @@ public class TripActivity extends MainActivity {
 				TripEntry.COLUMN_NAME_DISTANCE,
 				TripEntry.COLUMN_NAME_AVG_SPEED,
 				TripEntry.COLUMN_NAME_MAX_SPEED,
-				TripEntry.COLUMN_NAME_GRADE}, 
+				TripEntry.COLUMN_NAME_GRADE,
+				TripEntry.COLUMN_NAME_VIEWED_AT,
+				TripEntry.COLUMN_NAME_UPDATED_AT}, 
 				TripEntry._ID+" = ?", new String[]{Long.toString(tripId)}, null, null, null);
 		
 		Trip t = null;
@@ -184,6 +187,8 @@ public class TripActivity extends MainActivity {
 			t = new Trip(c.getLong(0), c.getInt(1), c.getString(2), c.getString(3), c.getFloat(4), c.getString(7));
 			t.averageSpeed = c.getFloat(5);
 			t.maxSpeed = c.getFloat(6);
+			t.viewedAt = c.getString(8);
+			t.updatedAt = c.getString(9);
 		}
 		c.close();
 		
@@ -448,7 +453,12 @@ public class TripActivity extends MainActivity {
 			
 			trip.averageSpeed = responseJSON.optDouble("avg_speed");
 			trip.maxSpeed = responseJSON.optDouble("max_speed");
+			SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);
 			trip.viewed = true;
+			trip.updatedAt = responseJSON.optString("updated_at");
+			trip.viewedAt = sdf.format(Calendar.getInstance().getTime());
+			trip.fuelLevel = responseJSON.optInt("fuel_left");
+			trip.fuelUnit = responseJSON.optString("fuel_unit");
 			
 			if(responseJSON.has("route")){
 				JSONArray routeJSON = responseJSON.getJSONArray("route");

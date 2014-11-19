@@ -21,7 +21,7 @@ public class TripContract {
 		public static final String COLUMN_NAME_GRADE = "grade";
         public static final String COLUMN_NAME_FUEL = "fuel_level";
         public static final String COLUMN_NAME_FUEL_UNIT = "fuel_unit";
-        public static final String COLUMN_NAME_VIEWED = "viewed";
+        public static final String COLUMN_NAME_VIEWED_AT = "viewed_at";
         public static final String COLUMN_NAME_UPDATED_AT = "updated_at";
         public static final String COLUMN_NAME_HIDDEN = "hidden";
 	}

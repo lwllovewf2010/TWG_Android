@@ -3,20 +3,14 @@ package com.modusgo.ubi;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Locale;
 
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -49,7 +43,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.modusgo.ubi.customviews.GoogleMapFragment;
 import com.modusgo.ubi.customviews.GoogleMapFragment.OnMapReadyListener;
 import com.modusgo.ubi.db.DbHelper;
-import com.modusgo.ubi.db.TripContract.TripEntry;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.modusgo.ubi.requesttasks.BaseRequestAsyncTask;
 import com.modusgo.ubi.utils.Utils;
@@ -412,91 +405,91 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 				
 				updateFragment();
 			}
-			new GetTripsTask(context).execute("vehicles/"+vehicle.id+"/trips.json");
+//			new GetTripsTask(context).execute("vehicles/"+vehicle.id+"/trips.json");
 			
 			super.onSuccess(responseJSON);
 		}
 	}
     
-    class GetTripsTask extends BaseRequestAsyncTask{
-		
-		public GetTripsTask(Context context) {
-			super(context);
-		}
-		
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-		}
-
-		@Override
-		protected JSONObject doInBackground(String... params) {
-			SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);
-			
-			DbHelper dbHelper = DbHelper.getInstance(getActivity());
-			SQLiteDatabase db = dbHelper.getReadableDatabase();
-			
-			Cursor c = db.query(TripEntry.TABLE_NAME, 
-					new String[]{TripEntry._ID},
-					TripEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id, null, null, null, null);
-			int tripsInDb = c.getCount();
-			c.close();
-			db.close();
-			dbHelper.close();
-			
-			Calendar cStart = Calendar.getInstance();
-			Calendar cEnd = Calendar.getInstance();
-			cStart.setTimeInMillis(System.currentTimeMillis());
-			if(tripsInDb!=0)
-				cStart.add(Calendar.DAY_OF_YEAR, -7);
-			else
-				cStart.add(Calendar.YEAR, -20);
-			cEnd.setTimeInMillis(System.currentTimeMillis());
-			
-	        requestParams.add(new BasicNameValuePair("page", "1"));
-	        requestParams.add(new BasicNameValuePair("per_page", "1000"));
-	        requestParams.add(new BasicNameValuePair("start_time", sdf.format(cStart.getTime())));
-	        requestParams.add(new BasicNameValuePair("end_time", sdf.format(cEnd.getTime())));
-			return super.doInBackground(params);
-		}
-		
-		@Override
-		protected void onPostExecute(JSONObject result) {
-			super.onPostExecute(result);
-		}
-		
-		@Override
-		protected void onError(String message) {
-			//Do nothing
-		}
-		
-		@Override
-		protected void onSuccess(JSONObject responseJSON) throws JSONException {
-			JSONArray tripsJSON = responseJSON.getJSONArray("trips");
-			
-			ArrayList<Trip> trips = new ArrayList<Trip>();
-			
-			for (int i = 0; i < tripsJSON.length(); i++) {
-				JSONObject tripJSON = tripsJSON.getJSONObject(i);
-				
-				Trip t = new Trip(
-						tripJSON.optLong("id"), 
-						tripJSON.optInt("harsh_events_count"), 
-						Utils.fixTimezoneZ(tripJSON.optString("start_time")), 
-						Utils.fixTimezoneZ(tripJSON.optString("end_time")), 
-						tripJSON.optDouble("mileage"));
-				t.grade = tripJSON.optString("grade");
-				t.fuelLevel = tripJSON.optInt("fuel_left",-1);
-				t.fuelUnit = tripJSON.optString("fuel_unit");
-				trips.add(t);
-			}
-			
-			DbHelper dbHelper = DbHelper.getInstance(getActivity());
-			dbHelper.saveTrips(vehicle.id, trips);
-			dbHelper.close();
-			
-			super.onSuccess(responseJSON);
-		}
-	}
+//    class GetTripsTask extends BaseRequestAsyncTask{
+//		
+//		public GetTripsTask(Context context) {
+//			super(context);
+//		}
+//		
+//		@Override
+//		protected void onPreExecute() {
+//			super.onPreExecute();
+//		}
+//
+//		@Override
+//		protected JSONObject doInBackground(String... params) {
+//			SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);
+//			
+//			DbHelper dbHelper = DbHelper.getInstance(getActivity());
+//			SQLiteDatabase db = dbHelper.getReadableDatabase();
+//			
+//			Cursor c = db.query(TripEntry.TABLE_NAME, 
+//					new String[]{TripEntry._ID},
+//					TripEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id, null, null, null, null);
+//			int tripsInDb = c.getCount();
+//			c.close();
+//			db.close();
+//			dbHelper.close();
+//			
+//			Calendar cStart = Calendar.getInstance();
+//			Calendar cEnd = Calendar.getInstance();
+//			cStart.setTimeInMillis(System.currentTimeMillis());
+//			if(tripsInDb!=0)
+//				cStart.add(Calendar.DAY_OF_YEAR, -7);
+//			else
+//				cStart.add(Calendar.YEAR, -20);
+//			cEnd.setTimeInMillis(System.currentTimeMillis());
+//			
+//	        requestParams.add(new BasicNameValuePair("page", "1"));
+//	        requestParams.add(new BasicNameValuePair("per_page", "1000"));
+//	        requestParams.add(new BasicNameValuePair("start_time", sdf.format(cStart.getTime())));
+//	        requestParams.add(new BasicNameValuePair("end_time", sdf.format(cEnd.getTime())));
+//			return super.doInBackground(params);
+//		}
+//		
+//		@Override
+//		protected void onPostExecute(JSONObject result) {
+//			super.onPostExecute(result);
+//		}
+//		
+//		@Override
+//		protected void onError(String message) {
+//			//Do nothing
+//		}
+//		
+//		@Override
+//		protected void onSuccess(JSONObject responseJSON) throws JSONException {
+//			JSONArray tripsJSON = responseJSON.getJSONArray("trips");
+//			
+//			ArrayList<Trip> trips = new ArrayList<Trip>();
+//			
+//			for (int i = 0; i < tripsJSON.length(); i++) {
+//				JSONObject tripJSON = tripsJSON.getJSONObject(i);
+//				
+//				Trip t = new Trip(
+//						tripJSON.optLong("id"), 
+//						tripJSON.optInt("harsh_events_count"), 
+//						Utils.fixTimezoneZ(tripJSON.optString("start_time")), 
+//						Utils.fixTimezoneZ(tripJSON.optString("end_time")), 
+//						tripJSON.optDouble("mileage"));
+//				t.grade = tripJSON.optString("grade");
+//				t.fuelLevel = tripJSON.optInt("fuel_left",-1);
+//				t.fuelUnit = tripJSON.optString("fuel_unit");
+//				trips.add(t);
+//			}
+//			
+//			DbHelper dbHelper = DbHelper.getInstance(getActivity());
+//			dbHelper.saveTrips(vehicle.id, trips);
+//			dbHelper.close();
+//			
+//			super.onSuccess(responseJSON);
+//		}
+//	}
 
 }
