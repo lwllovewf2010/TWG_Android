@@ -441,6 +441,12 @@ public class TripActivity extends MainActivity {
         Utils.gaTrackScreen(this, "Trip Screen");
         super.onResume();
     }
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		mapView.onPause();
+	}
 
     @Override
     public void onDestroy() {
