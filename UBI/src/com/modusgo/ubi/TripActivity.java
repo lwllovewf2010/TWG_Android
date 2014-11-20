@@ -33,6 +33,7 @@ import com.google.android.gms.maps.GoogleMap.OnMapLoadedCallback;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.LatLngBounds.Builder;
@@ -367,8 +368,15 @@ public class TripActivity extends MainActivity {
 					map.addPolyline(optionsSpeeding.color(colorSpeeding).width(8).zIndex(2));
 				}
 				
-				tripCenterCameraUpdate = CameraUpdateFactory.newLatLngBounds(builder.build(), 150);
-		        map.animateCamera(tripCenterCameraUpdate);
+				try{
+					int mapPadding = (int) Math.min(mapView.getHeight()*0.2f, mapView.getWidth()*0.2f);
+					tripCenterCameraUpdate = CameraUpdateFactory.newLatLngBounds(builder.build(), mapPadding);
+			        map.animateCamera(tripCenterCameraUpdate);
+				}
+				catch(IllegalStateException e){
+					tripCenterCameraUpdate = CameraUpdateFactory.newCameraPosition(new CameraPosition(trip.route.get(trip.route.size()/2), 10, 0, 0));
+			        map.animateCamera(tripCenterCameraUpdate);
+				}
 			}
 	        
 	        for (Point p : trip.points) {
