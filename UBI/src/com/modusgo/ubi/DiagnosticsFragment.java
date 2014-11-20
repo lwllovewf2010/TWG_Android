@@ -241,6 +241,7 @@ public class DiagnosticsFragment extends Fragment{
 		Cursor c = db.query(DTCEntry.TABLE_NAME, 
 				new String[]{
 				DTCEntry.COLUMN_NAME_CODE,
+				DTCEntry.COLUMN_NAME_CONDITIONS,
 				DTCEntry.COLUMN_NAME_CREATED_AT,
 				DTCEntry.COLUMN_NAME_DESCRIPTION,
 				DTCEntry.COLUMN_NAME_DETAILS,
