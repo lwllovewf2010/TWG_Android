@@ -3,6 +3,7 @@ package com.modusgo.ubi;
 public class Constants {
 	
 	public static final String HOCKEY_APP_ID = "caca040742c8345b8594ac0bd7a71418";
+	public static final String GCM_SENDER_ID = "322787790569";
 	
 	public static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZZZZZ";
 	public static final String DATE_TIME_FORMAT_ZULU = "yyyy-MM-dd'T'HH:mm:ss'Z'";
@@ -34,6 +35,8 @@ public class Constants {
 	public static final String PREF_DIAGNOSTICS_CHECKUP_DATE = "diagnisticsCheckupDate";
 	public static final String PREF_DIAGNOSTICS_STATUS = "diagnisticsStatus";
 	public static final String PREF_GA_TRACKING_ID = "ga_trackingId";
+	public static final String PREF_GCM_REG_ID = "gmcRegId";
+	public static final String PREF_APP_VERSION = "appVersion";
 	
 	public static final String ROLE_CUSTOMER = "customer";
 

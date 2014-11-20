@@ -1,6 +1,7 @@
 package com.modusgo.ubi;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
@@ -11,9 +12,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.StateListDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -34,6 +36,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.requesttasks.BasePostRequestAsyncTask;
 import com.modusgo.ubi.utils.Utils;
@@ -42,7 +47,9 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.viewpagerindicator.CirclePageIndicator;
 
 public class SignInActivity extends FragmentActivity {
-    
+
+	private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+	
 	View layoutProgress;
 	View layoutFields;
 	EditText editUsername;
@@ -52,6 +59,11 @@ public class SignInActivity extends FragmentActivity {
     private PagerAdapter mPagerAdapter;
     
 	SharedPreferences prefs;
+
+    Context context;
+	GoogleCloudMessaging gcm;
+    AtomicInteger msgId = new AtomicInteger();
+    String regid;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -60,6 +72,7 @@ public class SignInActivity extends FragmentActivity {
 	    getActionBar().hide();
 	    
 	    prefs = PreferenceManager.getDefaultSharedPreferences(SignInActivity.this);
+	    context = getApplicationContext();
 	    
 	    if(!prefs.getString(Constants.PREF_AUTH_KEY, "").equals("")){
 	    	startActivity(new Intent(SignInActivity.this, HomeActivity.class));
@@ -107,7 +120,7 @@ public class SignInActivity extends FragmentActivity {
 	    btnSignIn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				new LoginTask(SignInActivity.this).execute("login.json");
+				startSignIn();
 			}
 		});
 	    
@@ -160,6 +173,134 @@ public class SignInActivity extends FragmentActivity {
         public int getCount() {
             return 4;
         }
+    }
+	
+	public void startSignIn(){
+        // Check device for Play Services APK. If check succeeds, proceed with GCM registration.
+        if (checkPlayServices()) {
+            gcm = GoogleCloudMessaging.getInstance(this);
+            regid = getRegistrationId(context);
+
+            if (regid.equals("")) {
+                registerInBackground();
+            }
+            else{
+            	afterGCMRegistration();
+            }
+        } else {
+        	afterGCMRegistration();
+            //registerError("No valid Google Play Services APK found.");
+        }
+	}
+	
+	/**
+     * Check the device to make sure it has the Google Play Services APK. If
+     * it doesn't, display a dialog that allows users to download the APK from
+     * the Google Play Store or enable it in the device's system settings.
+     */
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            } else {
+                //finish();
+            }
+            return false;
+        }
+        return true;
+    }
+    
+    /**
+     * Gets the current registration ID for application on GCM service, if there is one.
+     * <p>
+     * If result is empty, the app needs to register.
+     *
+     * @return registration ID, or empty string if there is no existing
+     *         registration ID.
+     */
+    private String getRegistrationId(Context context) {
+        String registrationId = prefs.getString(Constants.PREF_GCM_REG_ID, "");
+        if (registrationId.equals("")) {
+            return "";
+        }
+        // Check if app was updated; if so, it must clear the registration ID
+        // since the existing regID is not guaranteed to work with the new
+        // app version.
+        int registeredVersion = prefs.getInt(Constants.PREF_APP_VERSION, Integer.MIN_VALUE);
+        int currentVersion = getAppVersion(context);
+        if (registeredVersion != currentVersion) {
+            return "";
+        }
+        return registrationId;
+    }
+    
+    /**
+     * @return Application's version code from the {@code PackageManager}.
+     */
+    private static int getAppVersion(Context context) {
+        try {
+        	System.out.println("context null? "+(context==null));
+        	System.out.println("pack man null? "+(context.getPackageManager()==null));
+        	
+            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            return packageInfo.versionCode;
+        } catch (NameNotFoundException e) {
+            // should never happen
+            throw new RuntimeException("Could not get package name: " + e);
+        }
+    }
+    
+    private void registerInBackground() {
+        new AsyncTask<Void, Void, String>() {
+        	
+            @Override
+            protected String doInBackground(Void... params) {
+                String msg = "";
+                try {
+                    if (gcm == null) {
+                        gcm = GoogleCloudMessaging.getInstance(context);
+                    }
+                    regid = gcm.register(Constants.GCM_SENDER_ID);
+                    msg = "Device registered, registration ID=" + regid;
+
+                    // Persist the regID - no need to register again.
+                    storeRegistrationId(regid);
+                } catch (Exception ex) {
+                    msg = "Error: " + ex.getMessage();
+                    ex.printStackTrace();
+                    // If there is an error, don't just keep trying to register.
+                    // Require the user to click a button again, or perform
+                    // exponential back-off.
+                }
+                return msg;
+            }
+
+            @Override
+            protected void onPostExecute(String msg) {
+            	System.out.println("gcm message: "+msg);
+            	afterGCMRegistration();
+            }
+        }.execute(null, null, null);
+    }
+    
+    /**
+     * Stores the registration ID and the app versionCode in the application's
+     * {@code SharedPreferences}.
+     *
+     * @param regId registration ID
+     */
+    private void storeRegistrationId(String regId) {
+        int appVersion = getAppVersion(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(Constants.PREF_GCM_REG_ID, regId);
+        editor.putInt(Constants.PREF_APP_VERSION, appVersion);
+        editor.commit();
+    }
+    
+    private void afterGCMRegistration(){
+    	new LoginTask(SignInActivity.this).execute("login.json");
     }
 	
 	public static class ScreenSlidePageFragment extends Fragment {
@@ -253,6 +394,8 @@ public class SignInActivity extends FragmentActivity {
 	        requestParams.add(new BasicNameValuePair("password", editPassword.getText().toString()));
 	        requestParams.add(new BasicNameValuePair("platform", Constants.API_PLATFORM));
 	        requestParams.add(new BasicNameValuePair("mobile_id", Utils.getUUID(SignInActivity.this)));
+	        requestParams.add(new BasicNameValuePair("push_id", prefs.getString(Constants.PREF_GCM_REG_ID, "")));
+	        System.out.println(requestParams);
 			
 	        return super.doInBackground(params);
 		}
