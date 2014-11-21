@@ -236,7 +236,7 @@ public class AlertsActivity extends MainActivity {
 					public void onClick(View v) {
 						new MarkAlertViewedTask(AlertsActivity.this, alert.id).execute("vehicles/"+vehicle.id+"/alerts/"+alert.id);
 						Intent intent = new Intent(AlertsActivity.this, TripActivity.class);
-						intent.putExtra("id", vehicleId);
+						intent.putExtra(VehicleEntry._ID, vehicleId);
 						intent.putExtra(TripActivity.EXTRA_TRIP_ID, alert.tripId);
 						startActivity(intent);	
 					}

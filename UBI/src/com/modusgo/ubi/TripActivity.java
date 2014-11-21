@@ -163,19 +163,7 @@ public class TripActivity extends MainActivity {
         
         updateActivity();
         
-        SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);
         
-        try{
-	        Calendar cViewedAt = Calendar.getInstance();
-	        cViewedAt.setTime(sdf.parse(trip.viewedAt));
-	        
-	        long timeDifference = System.currentTimeMillis() - cViewedAt.getTimeInMillis();
-	        if(timeDifference<5000)
-	    		new GetTripTask(this).execute("vehicles/"+vehicle.id+"/trips/"+tripId+".json");
-        }
-        catch(ParseException e){
-        	e.printStackTrace();
-        }
 	}
 	
 	private Trip getTripFromDB(){
@@ -256,15 +244,34 @@ public class TripActivity extends MainActivity {
 	private void updateActivity(){
 		trip = getTripFromDB();
 		
-		if(map!=null){
-			map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
-				@Override
-				public void onMapLoaded() {
-					updateMap();					
-				}
-			});
+		if(trip!=null){
+			if(map!=null){
+				map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
+					@Override
+					public void onMapLoaded() {
+						updateMap();
+					}
+				});
+			}
+			
+			SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);
+	        
+	        try{
+		        Calendar cViewedAt = Calendar.getInstance();
+		        cViewedAt.setTime(sdf.parse(trip.viewedAt));
+		        
+		        long timeDifference = System.currentTimeMillis() - cViewedAt.getTimeInMillis();
+		        if(timeDifference<5000)
+		    		new GetTripTask(this).execute("vehicles/"+vehicle.id+"/trips/"+tripId+".json");
+	        }
+	        catch(ParseException e){
+	        	e.printStackTrace();
+	        }
+			
+			updateLabels();
 		}
-		updateLabels();
+		else
+			new GetTripTask(this).execute("vehicles/"+vehicle.id+"/trips/"+tripId+".json");
 	}
 	
 	private void updateLabels(){
