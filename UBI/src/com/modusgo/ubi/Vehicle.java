@@ -77,6 +77,7 @@ public class Vehicle implements Serializable{
 	public static Vehicle fromJSON(Context context, JSONObject vehicleJSON) throws JSONException{
 		Vehicle d = new Vehicle();
 		d.id = vehicleJSON.getLong("id");
+		d.alerts = vehicleJSON.optInt("count_new_alerts");
 		
 		if(!vehicleJSON.isNull("driver")){
 			JSONObject driverJSON = vehicleJSON.getJSONObject("driver");
@@ -129,7 +130,6 @@ public class Vehicle implements Serializable{
 			d.totalAcceleration = statsJSON.optInt("acceleration");
 			d.totalSpeeding = statsJSON.optInt("speeding");
 			d.totalSpeedingDistance = statsJSON.optDouble("speeding_distance");
-			d.alerts = statsJSON.optInt("new_alerts");
 		}
 		
 		return d;

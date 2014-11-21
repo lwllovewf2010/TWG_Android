@@ -234,7 +234,7 @@ public class AlertsActivity extends MainActivity {
 			    view.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						new MarkAlertViewedTask(AlertsActivity.this, alert.id).execute("drivers/"+vehicle.id+"/alerts/"+alert.id+"/hide.json");
+						new MarkAlertViewedTask(AlertsActivity.this, alert.id).execute("vehicles/"+vehicle.id+"/alerts/"+alert.id);
 						Intent intent = new Intent(AlertsActivity.this, TripActivity.class);
 						intent.putExtra("id", vehicleId);
 						intent.putExtra(TripActivity.EXTRA_TRIP_ID, alert.tripId);

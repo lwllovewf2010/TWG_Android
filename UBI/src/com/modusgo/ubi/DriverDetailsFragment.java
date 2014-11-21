@@ -232,10 +232,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	    	tvAlerts.setText("");
 	    	tvAlerts.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_alerts_green_medium, 0, 0, 0);
 	    }else{
-	    	if(vehicle.alerts==0)
-	    		tvAlerts.setText("…");
-	    	else
-	    		tvAlerts.setText(""+vehicle.alerts);
+	    	tvAlerts.setText(""+vehicle.alerts);
 	    	tvAlerts.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_alerts_red_medium, 0, 0, 0);		    	
 	    }
 	    
