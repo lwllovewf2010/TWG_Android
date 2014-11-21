@@ -15,6 +15,7 @@ android.support.v4.app.FragmentTabHost$SavedState
 android.support.v4.app.FragmentTabHost$SavedState: android.os.Parcelable$Creator CREATOR
 android.support.v4.content.ModernAsyncTask$Status: android.support.v4.content.ModernAsyncTask$Status[] values()
 android.support.v4.content.ModernAsyncTask$Status: android.support.v4.content.ModernAsyncTask$Status valueOf(java.lang.String)
+android.support.v4.content.WakefulBroadcastReceiver: WakefulBroadcastReceiver()
 android.support.v4.view.PagerTabStrip
 android.support.v4.view.PagerTabStrip: PagerTabStrip(android.content.Context)
 android.support.v4.view.PagerTabStrip: PagerTabStrip(android.content.Context,android.util.AttributeSet)
@@ -2259,6 +2260,10 @@ com.modusgo.dd.CallReceiver
 com.modusgo.dd.CallReceiver: CallReceiver()
 com.modusgo.dd.CallSaverService
 com.modusgo.dd.CallSaverService: CallSaverService()
+com.modusgo.dd.GcmBroadcastReceiver
+com.modusgo.dd.GcmBroadcastReceiver: GcmBroadcastReceiver()
+com.modusgo.dd.GcmIntentService
+com.modusgo.dd.GcmIntentService: GcmIntentService()
 com.modusgo.dd.PhoneScreenOnOffReceiver
 com.modusgo.dd.PhoneScreenOnOffReceiver: PhoneScreenOnOffReceiver()
 com.modusgo.dd.PhoneUsageSaverService
@@ -2980,7 +2985,6 @@ com.modusgo.ubi.R$id: int book_now
 com.modusgo.ubi.R$id: int bottom
 com.modusgo.ubi.R$id: int bottom_line
 com.modusgo.ubi.R$id: int btnCancel
-com.modusgo.ubi.R$id: int btnContactService
 com.modusgo.ubi.R$id: int btnEdit
 com.modusgo.ubi.R$id: int btnFindMechanic
 com.modusgo.ubi.R$id: int btnForgotPassword
