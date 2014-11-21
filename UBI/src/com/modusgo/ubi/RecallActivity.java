@@ -33,7 +33,6 @@ public class RecallActivity extends MainActivity {
     LinearLayout llInfoList;
     LinearLayout llList;
     ScrollView scrollView;
-    Button btnContactService;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -60,15 +59,6 @@ public class RecallActivity extends MainActivity {
 		llInfoList = (LinearLayout)findViewById(R.id.llInfoList);
 		llList = (LinearLayout)findViewById(R.id.llList);
 		scrollView = (ScrollView)findViewById(R.id.svContent);
-		btnContactService = (Button)findViewById(R.id.btnContactService);
-		
-		btnContactService.setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, Constants.BUTTON_BG_COLOR)));
-		try{
-			btnContactService.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, Constants.BUTTON_TEXT_COLOR)));
-		}
-	    catch(Exception e){
-	    	e.printStackTrace();
-	    }
 		
 		tvCode.setText("Recall id - "+recall.recall_id);
 		
@@ -112,15 +102,6 @@ public class RecallActivity extends MainActivity {
 			tvText.setText(recall.defect_description);
 			llList.addView(rowView);
 		}
-		
-		btnContactService.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent callIntent = new Intent(Intent.ACTION_VIEW);          
-	            callIntent.setData(Uri.parse("tel:1-800-392-3673"));          
-	            startActivity(callIntent);  
-			}
-		});
 	}
 	
 	@Override
