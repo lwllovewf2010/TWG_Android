@@ -39,12 +39,14 @@ import com.google.android.gms.maps.GoogleMap.OnMapLoadedCallback;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.LatLngBounds.Builder;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.ui.IconGenerator;
 import com.modusgo.ubi.requesttasks.BaseRequestAsyncTask;
+import com.modusgo.ubi.utils.Utils;
 
 public class FindMechanicActivity extends MainActivity implements ConnectionCallbacks,
 OnConnectionFailedListener, LocationListener{
@@ -61,6 +63,7 @@ OnConnectionFailedListener, LocationListener{
     MechanicsAdapter adapter;
     
     private LocationClient mLocationClient;
+    LatLng currentLocation;
 
     // These settings are the same as the settings for the map. They will in fact give you updates
     // at the maximal rates currently possible.
@@ -122,8 +125,16 @@ OnConnectionFailedListener, LocationListener{
 				map.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromBitmap(mi.icon)).position(mi.coordinate));
 				builder.include(mi.coordinate);
 			}
-			CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(builder.build(), 150);
-	        map.animateCamera(cameraUpdate);
+			
+			try{
+				int mapPadding = (int) Math.min(mapView.getHeight()*0.2f, mapView.getWidth()*0.2f);
+				CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(builder.build(), mapPadding);
+		        map.animateCamera(cameraUpdate);
+			}
+			catch(IllegalStateException e){
+				CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(new CameraPosition(currentLocation, 10, 0, 0));
+		        map.animateCamera(cameraUpdate);
+			}
 		}
         
 	}
@@ -131,6 +142,8 @@ OnConnectionFailedListener, LocationListener{
 	@Override
     public void onResume() {
         mapView.onResume();
+		setNavigationDrawerItemSelected(MenuItems.FINDAMECHANIC);
+        Utils.gaTrackScreen(this, "Find A Mechanic Screen");
         super.onResume();
     }
 
@@ -157,8 +170,8 @@ OnConnectionFailedListener, LocationListener{
     
     @Override
     public void onLocationChanged(Location location) {
-		
-    	new GetMechanicsTask(this, location.getLatitude(), location.getLongitude()).execute("find_mechanic.json");
+		currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+    	new GetMechanicsTask(this).execute("find_mechanic.json");
 
         if (mLocationClient != null) {
             mLocationClient.disconnect();
@@ -191,6 +204,7 @@ OnConnectionFailedListener, LocationListener{
     @Override
     public void onPause() {
         super.onPause();
+        mapView.onPause();
         if (mLocationClient != null) {
             mLocationClient.disconnect();
         }
@@ -293,10 +307,10 @@ OnConnectionFailedListener, LocationListener{
     
     class GetMechanicsTask extends BaseRequestAsyncTask{
 
-		public GetMechanicsTask(Context context, double lat, double lng) {
+		public GetMechanicsTask(Context context) {
 			super(context);
-	        requestParams.add(new BasicNameValuePair("latitude", ""+lat));
-	        requestParams.add(new BasicNameValuePair("longitude", ""+lng));
+	        requestParams.add(new BasicNameValuePair("latitude", ""+currentLocation.latitude));
+	        requestParams.add(new BasicNameValuePair("longitude", ""+currentLocation.longitude));
 		}
 		
 		@Override

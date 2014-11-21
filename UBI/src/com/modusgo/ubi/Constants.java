@@ -37,6 +37,8 @@ public class Constants {
 	public static final String PREF_GA_TRACKING_ID = "ga_trackingId";
 	public static final String PREF_GCM_REG_ID = "gmcRegId";
 	public static final String PREF_APP_VERSION = "appVersion";
+	public static final String PREF_CONTACT_PHONE = "contactPhone";
+	public static final String PREF_AGENT_PHONE = "agentPhone";
 	
 	public static final String ROLE_CUSTOMER = "customer";
 
