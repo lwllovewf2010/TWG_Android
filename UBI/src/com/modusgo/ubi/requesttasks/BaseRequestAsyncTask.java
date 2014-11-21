@@ -61,7 +61,7 @@ public class BaseRequestAsyncTask extends AsyncTask<String, Void, JSONObject>{
 	
 	@Override
 	protected void onPostExecute(JSONObject result) {
-		if(status>=200 && status<300 && result.optString("status").equals("success")){
+		if(status>=200 && status<300 && result!=null && result.optString("status").equals("success")){
 			try {
 				onSuccess(result);
 			} catch (JSONException e) {

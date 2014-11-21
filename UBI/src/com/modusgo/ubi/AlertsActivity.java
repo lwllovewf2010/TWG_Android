@@ -30,6 +30,7 @@ import android.widget.TextView;
 import com.google.android.gms.maps.model.LatLng;
 import com.modusgo.ubi.db.AlertContract.AlertEntry;
 import com.modusgo.ubi.db.DbHelper;
+import com.modusgo.ubi.db.TripContract.TripEntry;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.modusgo.ubi.requesttasks.BaseRequestAsyncTask;
 import com.modusgo.ubi.utils.Utils;
@@ -87,7 +88,9 @@ public class AlertsActivity extends MainActivity {
 		
 		llProgress = (LinearLayout) findViewById(R.id.llProgress);
 		
-		alerts = getAlertsFromDB();
+		alerts = new ArrayList<Alert>();
+		
+		updateAlertsList();
 		
 		adapter = new AlertsAdapter(this, R.layout.alerts_item, alerts);
 		
@@ -111,7 +114,7 @@ public class AlertsActivity extends MainActivity {
 				AlertEntry.COLUMN_NAME_LATITUDE,
 				AlertEntry.COLUMN_NAME_LONGITUDE,
 				AlertEntry.COLUMN_NAME_SEEN_AT}, 
-				AlertEntry.COLUMN_NAME_VEHICLE_ID+" = ?", new String[]{Long.toString(vehicle.id)}, null, null, null);
+				AlertEntry.COLUMN_NAME_VEHICLE_ID+" = ?", new String[]{Long.toString(vehicle.id)}, null, null, "datetime("+AlertEntry.COLUMN_NAME_TIMESTAMP+") DESC");
 		
 		if(c.moveToFirst()){
 			while (!c.isAfterLast()) {
@@ -135,8 +138,10 @@ public class AlertsActivity extends MainActivity {
 	}
 	
 	private void updateAlertsList() {
-		alerts = getAlertsFromDB();
-		adapter.notifyDataSetChanged();
+		alerts.clear();
+		alerts.addAll(getAlertsFromDB());
+		if(adapter!=null)
+			adapter.notifyDataSetChanged();
 	}
 	
 	@Override
@@ -291,7 +296,7 @@ public class AlertsActivity extends MainActivity {
 		@Override
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
 			JSONArray alertsJSON = responseJSON.getJSONArray("alerts");
-			alerts.clear();
+			ArrayList<Alert> alerts = new ArrayList<Alert>();
 			for (int i = 0; i < alertsJSON.length(); i++) {
 				JSONObject alertJSON = alertsJSON.getJSONObject(i);
 				Alert a = new Alert(alertJSON.optInt("id"));
@@ -334,6 +339,11 @@ public class AlertsActivity extends MainActivity {
 	        requestParams.add(new BasicNameValuePair("vehicle_id", ""+vehicle.id));
 	        requestParams.add(new BasicNameValuePair("alert_id", ""+alertId));
 			return super.doInBackground(params);
+		}
+		
+		@Override
+		protected void onError(String message) {
+			// Do nothing
 		}
 	}
 	
