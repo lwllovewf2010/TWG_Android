@@ -334,7 +334,6 @@ android.support.v4.app.NotificationCompat$BigTextStyle:
     1326:1328:public NotificationCompat$BigTextStyle(android.support.v4.app.NotificationCompat$Builder)
     1335:1336:public android.support.v4.app.NotificationCompat$BigTextStyle setBigContentTitle(java.lang.CharSequence)
     1343:1345:public android.support.v4.app.NotificationCompat$BigTextStyle setSummaryText(java.lang.CharSequence)
-    1353:1354:public android.support.v4.app.NotificationCompat$BigTextStyle bigText(java.lang.CharSequence)
 android.support.v4.app.NotificationCompat$Builder:
     690:691:public android.support.v4.app.NotificationCompat$Builder setWhen(long)
     706:707:public android.support.v4.app.NotificationCompat$Builder setUsesChronometer(boolean)
@@ -346,7 +345,6 @@ android.support.v4.app.NotificationCompat$Builder:
     801:802:public android.support.v4.app.NotificationCompat$Builder setContent(android.widget.RemoteViews)
     826:827:public android.support.v4.app.NotificationCompat$Builder setDeleteIntent(android.app.PendingIntent)
     844:846:public android.support.v4.app.NotificationCompat$Builder setFullScreenIntent(android.app.PendingIntent,boolean)
-    854:855:public android.support.v4.app.NotificationCompat$Builder setTicker(java.lang.CharSequence)
     864:866:public android.support.v4.app.NotificationCompat$Builder setTicker(java.lang.CharSequence,android.widget.RemoteViews)
     873:874:public android.support.v4.app.NotificationCompat$Builder setLargeIcon(android.graphics.Bitmap)
     881:883:public android.support.v4.app.NotificationCompat$Builder setSound(android.net.Uri)
@@ -355,10 +353,8 @@ android.support.v4.app.NotificationCompat$Builder:
     915:921:public android.support.v4.app.NotificationCompat$Builder setLights(int,int,int)
     936:937:public android.support.v4.app.NotificationCompat$Builder setOngoing(boolean)
     945:946:public android.support.v4.app.NotificationCompat$Builder setOnlyAlertOnce(boolean)
-    956:957:public android.support.v4.app.NotificationCompat$Builder setAutoCancel(boolean)
     967:968:public android.support.v4.app.NotificationCompat$Builder setLocalOnly(boolean)
     982:986:public android.support.v4.app.NotificationCompat$Builder setDefaults(int)
-    990:995:private void setFlag(int,boolean)
     1015:1016:public android.support.v4.app.NotificationCompat$Builder setPriority(int)
     1031:1032:public android.support.v4.app.NotificationCompat$Builder setGroup(java.lang.String)
     1043:1044:public android.support.v4.app.NotificationCompat$Builder setGroupSummary(boolean)
@@ -368,7 +364,6 @@ android.support.v4.app.NotificationCompat$Builder:
     1110:1113:public android.os.Bundle getExtras()
     1133:1134:public android.support.v4.app.NotificationCompat$Builder addAction(int,java.lang.CharSequence,android.app.PendingIntent)
     1152:1153:public android.support.v4.app.NotificationCompat$Builder addAction(android.support.v4.app.NotificationCompat$Action)
-    1165:1171:public android.support.v4.app.NotificationCompat$Builder setStyle(android.support.v4.app.NotificationCompat$Style)
     1179:1180:public android.support.v4.app.NotificationCompat$Builder extend(android.support.v4.app.NotificationCompat$Extender)
     1188:1188:public android.app.Notification getNotification()
 android.support.v4.app.NotificationCompat$Extender
@@ -424,8 +419,6 @@ android.support.v4.app.NotificationCompat$NotificationCompatImplKitKat:
     500:500:public boolean isGroupSummary(android.app.Notification)
     505:505:public java.lang.String getSortKey(android.app.Notification)
 android.support.v4.app.NotificationCompat$Style:
-    android.support.v4.app.NotificationCompat$Builder mBuilder
-    1214:1220:public void setBuilder(android.support.v4.app.NotificationCompat$Builder)
     1223:1227:public android.app.Notification build()
 android.support.v4.app.NotificationCompat$WearableExtender
 android.support.v4.app.NotificationCompatApi20:
@@ -6716,11 +6709,9 @@ com.jeremyfeinstein.slidingmenu.lib.app.SlidingPreferenceActivity
 com.modusgo.dd.CallSaverService:
     public static final java.lang.String PREF_CALL_STARTED
 com.modusgo.dd.GcmIntentService:
+    public static final int NOTIFICATION_ID
+    android.support.v4.app.NotificationCompat$Builder builder
     public static final java.lang.String TAG
-    private static final java.lang.String MESSAGE_EVENT
-    private static final java.lang.String MESSAGE_IGNITION
-    private static final java.lang.String EVENT_IGNITION
-    private static final java.lang.String EVENT_UNREGISTER
 com.modusgo.dd.PhoneUsageSaverService:
     public static final java.lang.String PREF_UNLOCK_COUNT
     private static final java.lang.String PREF_PHONE_ON
@@ -6767,8 +6758,6 @@ com.modusgo.ubi.Constants:
     public static final java.lang.String PREF_DEVICE_DATA_URL
     public static final java.lang.String PREF_DEVICE_AUTH_KEY
     public static final java.lang.String PREF_EVENTS_LAST_CHECK
-    public static final java.lang.String PREF_DIAGNOSTICS_CHECKUP_DATE
-    public static final java.lang.String PREF_DIAGNOSTICS_STATUS
     public static final java.lang.String PREF_GA_TRACKING_ID
     public static final java.lang.String PREF_GCM_REG_ID
     public static final java.lang.String PREF_APP_VERSION
@@ -6890,8 +6879,8 @@ com.modusgo.ubi.TripsFragment:
 com.modusgo.ubi.Vehicle:
     private static final long serialVersionUID
     public int harshEvents
-    60:60:public java.lang.String getFirstName()
-    64:70:public java.lang.String getLastName()
+    62:62:public java.lang.String getFirstName()
+    66:72:public java.lang.String getLastName()
 com.modusgo.ubi.WelcomeActivity:
     public static final java.lang.String SAVED_SCREENS
 com.modusgo.ubi.customviews.CircularProgressBar
