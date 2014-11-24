@@ -29,7 +29,9 @@ public class Vehicle implements Serializable{
 	public String carYear = "";
 	public int carFuelLevel;
 	public String carFuelUnit="";
-	public boolean carCheckup;
+	public int carDTCCount;
+	public String carLastCheckup;
+	public String carCheckupStatus;
 
 	public int alerts;
 	
@@ -94,7 +96,9 @@ public class Vehicle implements Serializable{
 			d.carYear = carJSON.optString("year");
 			d.carFuelLevel = carJSON.optInt("fuel_left", -1);
 			d.carFuelUnit = carJSON.optString("fuel_unit");
-			d.carCheckup = carJSON.optBoolean("checkup", true);
+			d.carDTCCount = carJSON.optInt("dtc_count");
+			d.carLastCheckup = carJSON.optString("last_checkup");
+			d.carCheckupStatus = carJSON.optString("checkup_status");
 			d.odometer = carJSON.optInt("odometer");
 		}
 		

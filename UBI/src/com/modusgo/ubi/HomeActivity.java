@@ -172,7 +172,7 @@ public class HomeActivity extends MainActivity{
 		    ImageButton btnDiagnostic = (ImageButton) view.findViewById(R.id.imageDiagnostics);
 		    
 		    if(prefs.getBoolean(Constants.PREF_DIAGNOSTIC, false)){
-			    if(vehicle.carCheckup){
+			    if(vehicle.carDTCCount<=0){
 			    	btnDiagnostic.setImageResource(R.drawable.ic_diagnostics_green);
 			    }else{
 			    	btnDiagnostic.setImageResource(R.drawable.ic_diagnostics_red);		    	

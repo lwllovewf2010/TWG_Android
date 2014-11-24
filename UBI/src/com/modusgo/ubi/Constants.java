@@ -32,8 +32,6 @@ public class Constants {
 	public static final String PREF_DEVICE_DATA_URL = "deviceDataUrl";
 	public static final String PREF_DEVICE_AUTH_KEY = "deviceAuthKey";
 	public static final String PREF_EVENTS_LAST_CHECK = "eventsLastCheck";
-	public static final String PREF_DIAGNOSTICS_CHECKUP_DATE = "diagnisticsCheckupDate";
-	public static final String PREF_DIAGNOSTICS_STATUS = "diagnisticsStatus";
 	public static final String PREF_GA_TRACKING_ID = "ga_trackingId";
 	public static final String PREF_GCM_REG_ID = "gmcRegId";
 	public static final String PREF_APP_VERSION = "appVersion";
