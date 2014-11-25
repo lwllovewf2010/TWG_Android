@@ -1,6 +1,7 @@
 package com.modusgo.ubi;
 
 import android.graphics.Color;
+import android.graphics.PorterDuff.Mode;
 import android.os.Bundle;
 import android.text.Html;
 import android.widget.TextView;
@@ -48,6 +49,12 @@ public class EducationActivity extends MainActivity {
 	protected void setActionBarAppearance() {
 		actionBar.getCustomView().setBackgroundColor(Color.parseColor("#00aeef"));
 		tvActionBarTitle.setTextColor(Color.parseColor("#FFFFFF"));
+		Mode mMode = Mode.SRC_ATOP;
+	    getResources().getDrawable(R.drawable.ic_arrow_left).setColorFilter(Color.parseColor("#FFFFFF"),mMode);
+	    getResources().getDrawable(R.drawable.ic_menu).setColorFilter(Color.parseColor("#FFFFFF"),mMode);
+	    getResources().getDrawable(R.drawable.ic_menu_close).setColorFilter(Color.parseColor("#FFFFFF"),mMode);
+	    getResources().getDrawable(R.drawable.ic_map).setColorFilter(Color.parseColor("#FFFFFF"),mMode);
+	    
 	}
     
 	@Override

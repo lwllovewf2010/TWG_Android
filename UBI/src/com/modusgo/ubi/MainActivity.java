@@ -13,7 +13,9 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -52,8 +54,8 @@ public class MainActivity extends FragmentActivity {
     private String actionBarTitle = "";
     public Vehicle vehicle;
     
-    public static enum MenuItems {HOME("HOME",0), COMPARE("COMPARE",1), SETTINGS("SETTINGS",2), DRIVERSETUP("DRIVER SETUP",3), FEEDBACK("FEEDBACK",4),
-    	CALLSUPPORT("CALL SUPPORT",5), AGENT("AGENT",6), LOGOUT("LOGOUT",7); 
+    public static enum MenuItems {HOME("HOME",0), COMPARE("COMPARE",1), CALLSUPPORT("CONTACT CLAIMS",2), AGENT("CALL MY AGENT",3),
+    	FEEDBACK("FEEDBACK",4), FINDAMECHANIC("FIND A MECHANIC",5), SETTINGS("SETTINGS",6), DRIVERSETUP("DRIVER SETUP",7), LOGOUT("LOGOUT",8); 
 	    private MenuItems(final String text, final int num) {
 	        this.text = text;
 	        this.num = num;
@@ -123,14 +125,16 @@ public class MainActivity extends FragmentActivity {
         
         MenuItems[] menuItemsArray = MenuItems.values();
         menuItems = new ArrayList<MenuItems>();
-        for (int i = 0; i < menuItemsArray.length; i++) {
-        	if(!menuItemsArray[i].equals(MenuItems.DRIVERSETUP))
-        		menuItems.add(menuItemsArray[i]);
-        	else{
-//        		if(prefs.getString(Constants.PREF_ROLE, "").equals(Constants.ROLE_CUSTOMER))
-//            		menuItems.add(menuItemsArray[i]);
-        	}
-		}
+
+        //menuItems.add(MenuItems.HOME);
+        //menuItems.add(MenuItems.COMPARE);
+        menuItems.add(MenuItems.CALLSUPPORT);
+        menuItems.add(MenuItems.AGENT);
+        menuItems.add(MenuItems.FEEDBACK);
+        menuItems.add(MenuItems.FINDAMECHANIC);
+        menuItems.add(MenuItems.SETTINGS);
+        //menuItems.add(MenuItems.DRIVERSETUP);
+        menuItems.add(MenuItems.LOGOUT);
        
         ArrayAdapter<MenuItems> adapter = new ArrayAdapter<MenuItems>(this, R.layout.drawer_list_item, menuItemsArray){
         	
@@ -159,9 +163,9 @@ public class MainActivity extends FragmentActivity {
         		if(menuItems.get(position).equals(MenuItems.LOGOUT))
         			holder.tvTitle.setTextColor(getResources().getColor(R.color.orange));
         		
-        		if(menuItems.get(position).equals(MenuItems.AGENT))
-        			holder.imageIcon.setImageResource(R.drawable.ic_external_link);
-        		else
+//        		if(menuItems.get(position).equals(MenuItems.AGENT))
+//        			holder.imageIcon.setImageResource(R.drawable.ic_external_link);
+//        		else
         			holder.imageIcon.setVisibility(View.GONE);
         		
         		/*if( ((HashMap<?, ?>)getItem(position)).get("text").equals("Alerts") ){
@@ -277,6 +281,12 @@ public class MainActivity extends FragmentActivity {
     	
     	try{
     		tvActionBarTitle.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_TITLE_BAR_TEXT_COLOR, Constants.TITLE_BAR_TEXT_COLOR)));
+    		Mode mMode = Mode.SRC_ATOP;
+    	    getResources().getDrawable(R.drawable.ic_arrow_left).setColorFilter(Color.parseColor(prefs.getString(Constants.PREF_BR_TITLE_BAR_BUTTONS_COLOR, Constants.TITLE_BAR_BUTTONS_COLOR)),mMode);
+    	    getResources().getDrawable(R.drawable.ic_menu).setColorFilter(Color.parseColor(prefs.getString(Constants.PREF_BR_TITLE_BAR_BUTTONS_COLOR, Constants.TITLE_BAR_BUTTONS_COLOR)),mMode);
+    	    getResources().getDrawable(R.drawable.ic_menu_close).setColorFilter(Color.parseColor(prefs.getString(Constants.PREF_BR_TITLE_BAR_BUTTONS_COLOR, Constants.TITLE_BAR_BUTTONS_COLOR)),mMode);
+    	    getResources().getDrawable(R.drawable.ic_map).setColorFilter(Color.parseColor(prefs.getString(Constants.PREF_BR_TITLE_BAR_BUTTONS_COLOR, Constants.TITLE_BAR_BUTTONS_COLOR)),mMode);
+    	    
     	}
 	    catch(Exception e){
 	    	e.printStackTrace();
@@ -322,26 +332,21 @@ public class MainActivity extends FragmentActivity {
         	System.out.println();
         	
         	if(position!=mDrawerSelectedItem){
-	        	boolean changeSelectedItem = false;
         		switch (menuItems.get(position)) {
 		        case HOME:
 		        	//Home
-		        	changeSelectedItem = true;
 		        	startActivity(new Intent(MainActivity.this, HomeActivity.class));
 		            break;
 		        case COMPARE:
 		        	//Compare
-		        	changeSelectedItem = true;
 		        	startActivity(new Intent(MainActivity.this, CompareActivity.class));
 		            break;
 		        case SETTINGS:
 		        	//Settings
-		        	changeSelectedItem = true;
 		        	startActivity(new Intent(MainActivity.this, SettingsActivity.class));
 		            break;
 		        case DRIVERSETUP:
 		        	//Driver setup
-		        	changeSelectedItem = true;
 		        	startActivity(new Intent(MainActivity.this, DriverSetupActivity.class));		        	
 		            break;
 		        case FEEDBACK:
@@ -350,13 +355,31 @@ public class MainActivity extends FragmentActivity {
 		        	new DialogFeedback(actionBarTitle.toLowerCase(Locale.US) + " screen" + driverName).show(getSupportFragmentManager(), "FeedbackDialog");
 					Utils.gaTrackScreen(MainActivity.this, "Feedback Dialog");
 		            break;
+		        case FINDAMECHANIC:
+		        	//Feedback
+		        	startActivity(new Intent(MainActivity.this, FindMechanicActivity.class));
+		            break;
 		        case CALLSUPPORT:
 		        	//Call support
-		        	Utils.gaTrackScreen(MainActivity.this, "Call Support");
+		        	String contactPhone = prefs.getString(Constants.PREF_CONTACT_PHONE, "");
+		        	if(!contactPhone.equals("")){
+						Intent callSupportIntent = new Intent(Intent.ACTION_VIEW);
+			            callSupportIntent.setData(Uri.parse("tel:"+contactPhone));
+			            startActivity(callSupportIntent);
+		        	}
+
+		        	Utils.gaTrackScreen(MainActivity.this, "Contact claims");
 		            break;
 		        case AGENT:
 		        	//Agent
-		        	Utils.gaTrackScreen(MainActivity.this, "Agent");
+		        	String agentPhone = prefs.getString(Constants.PREF_AGENT_PHONE, "");
+		        	if(!agentPhone.equals("")){
+						Intent callAgentIntent = new Intent(Intent.ACTION_VIEW);
+			            callAgentIntent.setData(Uri.parse("tel:"+agentPhone));
+			            startActivity(callAgentIntent);
+		        	}
+
+		        	Utils.gaTrackScreen(MainActivity.this, "Call my agent");
 		        	break;
 		        case LOGOUT:
 		        	//Logout
@@ -367,11 +390,7 @@ public class MainActivity extends FragmentActivity {
 		    		startActivity(intent);
 		            break;
 	        	}
-	        	
-        		if(changeSelectedItem){
-        			mDrawerSelectedItem = position;
-        		}
-    	        mDrawerList.setItemChecked(mDrawerSelectedItem, true);        			
+        		
         		mDrawerLayout.closeDrawers();
         	}
         }
@@ -382,13 +401,19 @@ public class MainActivity extends FragmentActivity {
      * @param item MenuItem num
      */
     public void setNavigationDrawerItemSelected(MenuItems item){
-    	mDrawerSelectedItem = item.num;
-    	mDrawerList.setItemChecked(item.num, true);
+    	for (int i = 0; i < menuItems.size(); i++) {
+			if(menuItems.get(i).equals(item)){
+				mDrawerSelectedItem = i;
+				break;
+			}
+		}
+    	
+    	mDrawerList.setItemChecked(mDrawerSelectedItem, true);
     }
     
     public void setNavigationDrawerItemsUnselected(){
     	mDrawerSelectedItem = -1;
-    	int menuItemsSize = MenuItems.values().length;
+    	int menuItemsSize = menuItems.size();
     	for (int i = 0; i < menuItemsSize; i++) {
         	mDrawerList.setItemChecked(i, false);	
 		}
@@ -408,6 +433,7 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+        setNavigationDrawerItemsUnselected();
         // Sync the toggle state after onRestoreInstanceState has occurred.
         mDrawerToggle.syncState();
     }

@@ -22,6 +22,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -128,7 +129,6 @@ public class DiagnosticsFragment extends Fragment{
 			
 			@Override
 			public void onRefresh() {
-				lRefresh.setRefreshing(true);
 				new GetDiagnosticsTask(getActivity()).execute("vehicles/"+vehicle.id+"/diagnostics.json");
 			}
 		});
@@ -204,10 +204,9 @@ public class DiagnosticsFragment extends Fragment{
 			});
 		}
 		else{
-			if(!prefs.getString(Constants.PREF_DIAGNOSTICS_STATUS+vehicle.id, "").equals("")){
-				updateInfo();
-			}
-			else{
+			updateInfo();
+			
+			if(llContent.getChildCount()==0){
 				new GetDiagnosticsTask(getActivity()).execute("vehicles/"+vehicle.id+"/diagnostics.json");
 			}
 		}
@@ -225,14 +224,17 @@ public class DiagnosticsFragment extends Fragment{
 		SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
 		SimpleDateFormat sdfTo = new SimpleDateFormat("MM/dd/yyyy KK:mm aa z", Locale.getDefault());
 
-		String lastCheckup = prefs.getString(Constants.PREF_DIAGNOSTICS_CHECKUP_DATE+vehicle.id, "N/A");
 		try {
-			tvLastCheckup.setText(sdfTo.format(sdfFrom.parse(lastCheckup)));
+			tvLastCheckup.setText(sdfTo.format(sdfFrom.parse(vehicle.carLastCheckup)));
 		} catch (ParseException e) {
-			tvLastCheckup.setText(lastCheckup);
+			tvLastCheckup.setText("N/A");
 			e.printStackTrace();
 		}
-		tvStatus.setText(prefs.getString(Constants.PREF_DIAGNOSTICS_STATUS+vehicle.id,ERROR_STATUS_MESSAGE));
+		if(!TextUtils.isEmpty(vehicle.carCheckupStatus))
+			tvStatus.setText(vehicle.carCheckupStatus);
+		else
+			tvStatus.setText(ERROR_STATUS_MESSAGE);
+		
 		llContent.removeAllViews();
 		
 		//--------------------------------------------- DTC ------------------------------------
@@ -242,6 +244,7 @@ public class DiagnosticsFragment extends Fragment{
 		Cursor c = db.query(DTCEntry.TABLE_NAME, 
 				new String[]{
 				DTCEntry.COLUMN_NAME_CODE,
+				DTCEntry.COLUMN_NAME_CONDITIONS,
 				DTCEntry.COLUMN_NAME_CREATED_AT,
 				DTCEntry.COLUMN_NAME_DESCRIPTION,
 				DTCEntry.COLUMN_NAME_DETAILS,
@@ -474,6 +477,7 @@ public class DiagnosticsFragment extends Fragment{
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
+			lRefresh.setRefreshing(true);
 		}
 		
 		@Override
@@ -491,26 +495,22 @@ public class DiagnosticsFragment extends Fragment{
 		
 		@Override
 		protected void onError(String message) {
-			tvLastCheckup.setText("N/A");
-			tvStatus.setText(ERROR_STATUS_MESSAGE);
 //			super.onError(message);
 		}
 		
 		@Override
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
 			DbHelper dbHelper = DbHelper.getInstance(getActivity());
-			dbHelper.saveVehicle(vehicle);
-			
 			System.out.println(responseJSON);
 			
 			if(responseJSON.has("diagnostics")){
 				JSONObject diagnosticsJSON = responseJSON.getJSONObject("diagnostics");
 				
-				Editor e = prefs.edit();
-				e.putString(Constants.PREF_DIAGNOSTICS_CHECKUP_DATE+vehicle.id, Utils.fixTimezoneZ(diagnosticsJSON.optString("last_checkup")));
-				System.out.println(Constants.PREF_DIAGNOSTICS_CHECKUP_DATE+vehicle.id+" = "+Utils.fixTimezoneZ(diagnosticsJSON.optString("last_checkup")));
-				e.putString(Constants.PREF_DIAGNOSTICS_STATUS+vehicle.id, diagnosticsJSON.optString("checkup_status",ERROR_STATUS_MESSAGE));
-				e.commit();
+//				Editor e = prefs.edit();
+//				e.putString(Constants.PREF_DIAGNOSTICS_CHECKUP_DATE+vehicle.id, Utils.fixTimezoneZ(diagnosticsJSON.optString("last_checkup")));
+//				System.out.println(Constants.PREF_DIAGNOSTICS_CHECKUP_DATE+vehicle.id+" = "+Utils.fixTimezoneZ(diagnosticsJSON.optString("last_checkup")));
+//				e.putString(Constants.PREF_DIAGNOSTICS_STATUS+vehicle.id, diagnosticsJSON.optString("checkup_status",ERROR_STATUS_MESSAGE));
+//				e.commit();
 				
 				if(diagnosticsJSON.has("diagnostics_trouble_codes")){
 					Object dtcsObject = diagnosticsJSON.get("diagnostics_trouble_codes");
@@ -535,6 +535,8 @@ public class DiagnosticsFragment extends Fragment{
 									dtc.optString("parts_cost"), 
 									dtc.optString("total_cost")));
 						}
+						vehicle.carDTCCount = dtcs.size();
+						
 						dbHelper.saveDTCs(vehicle.id, dtcs);
 					}
 				}
@@ -597,6 +599,10 @@ public class DiagnosticsFragment extends Fragment{
 						dbHelper.saveWarrantyInformation(vehicle.id, warrantyInformation);
 					}
 				}
+				
+				vehicle.carCheckupStatus = diagnosticsJSON.optString("checkup_status");
+				vehicle.carLastCheckup = diagnosticsJSON.optString("last_checkup");
+				dbHelper.saveVehicle(vehicle);
 				
 				updateInfo();
 			}

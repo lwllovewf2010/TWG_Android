@@ -158,7 +158,7 @@ public class DriverActivity extends MainActivity{
 		    if(prefs.getInt(Constants.PREF_CURRENT_DRIVER, -1)>=0 && prefs.getInt(Constants.PREF_CURRENT_DRIVER, -1)==position){
 		    	
 		    	Spannable span = new SpannableString(Html.fromHtml("<font size=\"10px\" color=\"#3c454f\" face=\"fonts/EncodeSansNormal-600-SemiBold.ttf\">CURRENT</font><br>"+v.name));
-		    	span.setSpan(new RelativeSizeSpan(0.8f), 0, 7, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		    	span.setSpan(new RelativeSizeSpan(0.95f), 0, 7, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		    	
 		    	((TextView) view.findViewById(R.id.tvName)).setText(span);
 		    }else

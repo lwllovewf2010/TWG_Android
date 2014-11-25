@@ -561,7 +561,6 @@ public class TripsFragment extends Fragment{
 						SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);
 						t.viewed = true;
 						t.viewedAt = sdf.format(Calendar.getInstance().getTime());
-						System.out.println("trip viedwd = "+t.viewedAt);
 						DbHelper dHelper = DbHelper.getInstance(getActivity());
 						dHelper.saveTrip(vehicle.id, t);
 						dHelper.close();

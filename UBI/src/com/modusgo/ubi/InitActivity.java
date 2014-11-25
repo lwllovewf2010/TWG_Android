@@ -228,6 +228,8 @@ public class InitActivity extends FragmentActivity {
 							JSONObject infoJSON = responseJSON.getJSONObject("info");
 							e.putBoolean(Constants.PREF_DIAGNOSTIC, infoJSON.optBoolean("diagnostic"));
 							e.putString(Constants.PREF_UNITS_OF_MEASURE, infoJSON.optString("unit_of_measure","mile"));
+							e.putString(Constants.PREF_CONTACT_PHONE, infoJSON.optString("contact_phone"));
+							e.putString(Constants.PREF_AGENT_PHONE, infoJSON.optString("agent_phone"));
 							
 							String trackingId = infoJSON.optString("");
 							if(trackingId.equals("") || trackingId.equals("false")){

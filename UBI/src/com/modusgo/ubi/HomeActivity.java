@@ -39,7 +39,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class HomeActivity extends MainActivity{
 	
-	DriversAdapter driversAdapter;
+	VehiclesAdapter driversAdapter;
 	ArrayList<Vehicle> vehicles = new ArrayList<Vehicle>();
 
 	SwipeRefreshLayout lRefresh;
@@ -57,7 +57,7 @@ public class HomeActivity extends MainActivity{
 		lvVehicles = (ListView) findViewById(R.id.listViewDrivers);
 		tvError = (TextView) findViewById(R.id.tvError);
 		
-		driversAdapter = new DriversAdapter(this, vehicles);
+		driversAdapter = new VehiclesAdapter(this, vehicles);
 		lvVehicles.setAdapter(driversAdapter);
 		
 		btnUp.setImageResource(R.drawable.ic_map);
@@ -97,7 +97,7 @@ public class HomeActivity extends MainActivity{
 		startActivity(new Intent(this, DriversLocationsActivity.class));
 	}
 	
-	class DriversAdapter extends BaseAdapter{
+	class VehiclesAdapter extends BaseAdapter{
 		
 		Context ctx;
 		LayoutInflater lInflater;
@@ -105,7 +105,7 @@ public class HomeActivity extends MainActivity{
 		SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
 		SimpleDateFormat sdfTo = new SimpleDateFormat("MM/dd/yyyy KK:mm aa z", Locale.getDefault());
 		
-		DriversAdapter(Context context, ArrayList<Vehicle> drivers) {
+		VehiclesAdapter(Context context, ArrayList<Vehicle> drivers) {
 		    ctx = context;
 		    lInflater = (LayoutInflater) ctx
 		        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -134,12 +134,12 @@ public class HomeActivity extends MainActivity{
 		      view = lInflater.inflate(R.layout.home_drivers_list_item, parent, false);
 		    }
 
-		    final Vehicle d = getDriver(position);
+		    final Vehicle vehicle = getVehicle(position);
 
-		    ((TextView) view.findViewById(R.id.tvName)).setText(d.name);
-		    ((TextView) view.findViewById(R.id.tvVehicle)).setText(d.getCarFullName());
+		    ((TextView) view.findViewById(R.id.tvName)).setText(vehicle.name);
+		    ((TextView) view.findViewById(R.id.tvVehicle)).setText(vehicle.getCarFullName());
 		    
-		    if(TextUtils.isEmpty(d.lastTripDate)){
+		    if(TextUtils.isEmpty(vehicle.lastTripDate)){
 		    	view.findViewById(R.id.tvDateLabel).setVisibility(View.INVISIBLE);
 		    	view.findViewById(R.id.tvDate).setVisibility(View.INVISIBLE);
 		    }
@@ -148,15 +148,15 @@ public class HomeActivity extends MainActivity{
 		    	TextView tvDate = (TextView) view.findViewById(R.id.tvDate);
 		    	tvDate.setVisibility(View.VISIBLE);
 		    	try {
-		    		tvDate.setText(sdfTo.format(sdfFrom.parse(d.lastTripDate)));
+		    		tvDate.setText(sdfTo.format(sdfFrom.parse(vehicle.lastTripDate)));
 				} catch (ParseException e) {
-					tvDate.setText(d.lastTripDate);
+					tvDate.setText(vehicle.lastTripDate);
 					e.printStackTrace();
 				}
 		    }
 		    
 		    ImageView imagePhoto = (ImageView)view.findViewById(R.id.imagePhoto);
-		    if(d.photo == null || d.photo.equals(""))
+		    if(vehicle.photo == null || vehicle.photo.equals(""))
 		    	imagePhoto.setImageResource(R.drawable.person_placeholder);
 		    else{
 		    	DisplayImageOptions options = new DisplayImageOptions.Builder()
@@ -167,13 +167,13 @@ public class HomeActivity extends MainActivity{
 		        .cacheOnDisk(true)
 		        .build();
 		    	
-		    	ImageLoader.getInstance().displayImage(d.photo, imagePhoto, options);
+		    	ImageLoader.getInstance().displayImage(vehicle.photo, imagePhoto, options);
 		    }
 		    
 		    ImageButton btnDiagnostic = (ImageButton) view.findViewById(R.id.imageDiagnostics);
 		    
 		    if(prefs.getBoolean(Constants.PREF_DIAGNOSTIC, false)){
-			    if(d.carCheckup){
+			    if(vehicle.carDTCCount<=0){
 			    	btnDiagnostic.setImageResource(R.drawable.ic_diagnostics_green);
 			    }else{
 			    	btnDiagnostic.setImageResource(R.drawable.ic_diagnostics_red);		    	
@@ -185,7 +185,7 @@ public class HomeActivity extends MainActivity{
 		    
 		    ImageButton btnAlerts = (ImageButton) view.findViewById(R.id.imageAlerts);
 		    
-		    if(d.alerts<=0){
+		    if(vehicle.alerts<=0){
 		    	btnAlerts.setImageResource(R.drawable.ic_alerts_green);
 		    }else{
 		    	btnAlerts.setImageResource(R.drawable.ic_alerts_red);
@@ -195,7 +195,7 @@ public class HomeActivity extends MainActivity{
 				@Override
 				public void onClick(View v) {
 					Intent i = new Intent(HomeActivity.this, AlertsActivity.class);
-					i.putExtra(VehicleEntry._ID, d.id);
+					i.putExtra(VehicleEntry._ID, vehicle.id);
 					startActivity(i);
 				}
 			});
@@ -208,7 +208,7 @@ public class HomeActivity extends MainActivity{
 					prefs.edit().putInt(Constants.PREF_CURRENT_DRIVER, position).commit();
 					
 					Intent i = new Intent(HomeActivity.this, DriverActivity.class);
-					i.putExtra(VehicleEntry._ID, d.id);
+					i.putExtra(VehicleEntry._ID, vehicle.id);
 					//i.putExtra(DriverActivity.SAVED_DRIVER, drivers.get(position));
 					startActivity(i);
 				}
@@ -217,7 +217,7 @@ public class HomeActivity extends MainActivity{
 		    return view;
 		}
 		
-		Vehicle getDriver(int position) {
+		Vehicle getVehicle(int position) {
 			return ((Vehicle) getItem(position));
 		}
 		

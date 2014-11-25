@@ -1,18 +1,21 @@
 package com.modusgo.dd;
 
 import android.app.IntentService;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.Settings.Secure;
+import android.support.v4.app.NotificationCompat;
+import android.text.TextUtils;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.modusgo.dd.requests.SendStatsRequest;
 import com.modusgo.ubi.Constants;
-import com.modusgo.ubi.MainActivity;
+import com.modusgo.ubi.InitActivity;
+import com.farmers.ubi.R;
 
 /**
  * This {@code IntentService} does the actual handling of the GCM message.
@@ -22,22 +25,15 @@ import com.modusgo.ubi.MainActivity;
  * wake lock.
  */
 public class GcmIntentService extends IntentService {
-//    public static final int NOTIFICATION_ID = 1;
-//    private NotificationManager mNotificationManager;
-//    NotificationCompat.Builder builder;
+    public static final int NOTIFICATION_ID = 1;
+    private NotificationManager mNotificationManager;
+    NotificationCompat.Builder builder;
 
     public GcmIntentService() {
         super("GcmIntentService");
     }
     
-    public static final String TAG = "DistractedDriving GCM";
-    
-    private static final String MESSAGE_EVENT = "event";
-    private static final String MESSAGE_IGNITION = "ignition";
-    
-    private static final String EVENT_IGNITION = "ignition";
-    private static final String EVENT_UNREGISTER = "unregister";
-    
+    public static final String TAG = "UBI GCM";    
 
     @Override
     protected void onHandleIntent(Intent intent) {
@@ -59,81 +55,48 @@ public class GcmIntentService extends IntentService {
                 //sendNotification("Deleted messages on server: " + extras.toString());
             // If it's a regular GCM message, do some work.
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
-                
-                // Post notification of received message.
-                //sendNotification("Received: " + extras.toString());
-                SharedPreferences prefs =  PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                
-                //если пользователь зарегистрирован
-                if(!prefs.getString(Constants.PREF_REG_CODE, "").equals("") || !prefs.getString(Constants.PREF_AUTH_KEY, "").equals("")){
-	                //тогда парсить сообщения gcm
-                	String eventMessage = extras.getString(MESSAGE_EVENT);
-                	if(eventMessage!=null){
-                		if(eventMessage.equals(EVENT_IGNITION)){
-                			if(extras.getString(MESSAGE_IGNITION).equals("1"))
-                				setBlockEnabled(true);
-                			else{
-                				setBlockEnabled(false);
-                			}
-                		}
-                		else if(eventMessage.equals(EVENT_UNREGISTER)){
-                			if(prefs.getBoolean(Constants.PREF_DD_ENABLED, false)){
-    	                		setBlockEnabled(false);
-    	                	}
-    	                	
-    	                	Editor editor = prefs.edit();
-    						editor.putString(Constants.PREF_REG_CODE, "");
-    	    				editor.commit();
-    	    				//Clear GCM preferences file
-    	    				getSharedPreferences(MainActivity.class.getSimpleName(),Context.MODE_PRIVATE).edit().clear().commit();
-    	    				//stopService(new Intent(this, TrackingStatusService.class));
-    	    				//Toast.makeText(getApplicationContext(), "Distracted Driving: device unregistered", Toast.LENGTH_SHORT);
-    	    				//sendNotification("Distracted Driving", "Device unregistered, tap to reregister.");
-                		}
-                	}
-                }
-                else{
-                }
+            	
+            	if(extras.getString("in_trip").equals("1"))
+            		setInTrip(true);
+            	else
+            		setInTrip(false);
+
+                String message = extras.getString("message");
+            	if(!TextUtils.isEmpty(message))
+            		sendNotification(getResources().getString(R.string.app_name), message);  
             }
         }
-        
-        Intent i = new Intent(Constants.INTENT_ACTION_UPDATE_MAIN);
-        sendBroadcast(i);
         
         // Release the wake lock provided by the WakefulBroadcastReceiver.
         GcmBroadcastReceiver.completeWakefulIntent(intent);
     }
     
-    private void setBlockEnabled(boolean enabled){
+    private void setInTrip(boolean inTrip){
     	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        prefs.edit().putBoolean(Constants.PREF_DD_ENABLED, enabled).commit();
-		
-//		Intent i = new Intent(getApplicationContext(), TrackingStatusService.class);
-//		startService(i); 
-    	
+        prefs.edit().putBoolean(Constants.PREF_DEVICE_IN_TRIP, inTrip).commit();
     }
 
     // Put the message into a notification and post it.
     // This is just one simple example of what you might choose to do with
     // a GCM message.
-//    private void sendNotification(String title, String msg) {
-//        mNotificationManager = (NotificationManager)
-//                this.getSystemService(Context.NOTIFICATION_SERVICE);
-//
-//        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, UserRegisterActivity.class), 0);
-//
-//        NotificationCompat.Builder mBuilder =
-//                new NotificationCompat.Builder(this)
-//        .setSmallIcon(R.drawable.ic_launcher)
-//        .setContentTitle(title)
-//        .setStyle(new NotificationCompat.BigTextStyle().bigText(msg))
-//        .setAutoCancel(true)
-//        .setTicker(msg)
-//        .setContentText(msg);
-//
-//        mBuilder.setContentIntent(contentIntent);
-//        Notification n = mBuilder.build();
-//        //n.flags = Notification.DEFAULT_LIGHTS | Notification.FLAG_AUTO_CANCEL;
-//        mNotificationManager.notify(NOTIFICATION_ID, n);
-//    }
+    private void sendNotification(String title, String msg) {
+        mNotificationManager = (NotificationManager)
+                this.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, InitActivity.class), 0);
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+        .setSmallIcon(R.drawable.ic_launcher)
+        .setContentTitle(title)
+        .setStyle(new NotificationCompat.BigTextStyle().bigText(msg))
+        .setAutoCancel(true)
+        .setTicker(msg)
+        .setContentText(msg);
+
+        mBuilder.setContentIntent(contentIntent);
+        Notification n = mBuilder.build();
+        n.flags = Notification.DEFAULT_LIGHTS | Notification.FLAG_AUTO_CANCEL;
+        mNotificationManager.notify(NOTIFICATION_ID, n);
+    }
 }

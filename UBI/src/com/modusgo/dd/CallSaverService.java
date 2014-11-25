@@ -61,7 +61,7 @@ public class CallSaverService extends IntentService {
 				e.putBoolean(Constants.PREF_DEVICE_EVENTS, responseJSON.optBoolean("events"));
 				e.putBoolean(Constants.PREF_DEVICE_TRIPS, responseJSON.optBoolean("trips"));
 				e.putBoolean(Constants.PREF_DEVICE_IN_TRIP, responseJSON.optBoolean("in_trip"));
-				e.putBoolean(Constants.PREF_DEVICE_TYPE, responseJSON.optBoolean("type"));
+				e.putString(Constants.PREF_DEVICE_TYPE, responseJSON.optString("type"));
 				e.putLong(Constants.PREF_EVENTS_LAST_CHECK, System.currentTimeMillis());			
 				e.commit();
 				

@@ -28,6 +28,7 @@ public class BaseRequestAsyncTask extends AsyncTask<String, Void, JSONObject>{
 	int status = 0;
 	String message = "";
 	protected String baseUrl;
+	protected boolean checkSuccess = true;
 	
 	protected List<NameValuePair> requestParams = new ArrayList<NameValuePair>();
 
@@ -61,7 +62,7 @@ public class BaseRequestAsyncTask extends AsyncTask<String, Void, JSONObject>{
 	
 	@Override
 	protected void onPostExecute(JSONObject result) {
-		if(status>=200 && status<300 && result.optString("status").equals("success")){
+		if(status>=200 && status<300 && result!=null && (result.optString("status").equals("success") || !checkSuccess)){
 			try {
 				onSuccess(result);
 			} catch (JSONException e) {

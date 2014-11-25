@@ -1,6 +1,7 @@
 package com.modusgo.ubi;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -16,6 +17,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -34,6 +36,7 @@ import com.google.android.gms.maps.GoogleMap.OnMapLoadedCallback;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.LatLngBounds.Builder;
@@ -160,8 +163,8 @@ public class TripActivity extends MainActivity {
         }
         
         updateActivity();
-	
-		new GetTripTask(this).execute("vehicles/"+vehicle.id+"/trips/"+tripId+".json");
+        
+        
 	}
 	
 	private Trip getTripFromDB(){
@@ -242,15 +245,34 @@ public class TripActivity extends MainActivity {
 	private void updateActivity(){
 		trip = getTripFromDB();
 		
-		if(map!=null){
-			map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
-				@Override
-				public void onMapLoaded() {
-					updateMap();					
-				}
-			});
+		if(trip!=null){
+			if(map!=null){
+				map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
+					@Override
+					public void onMapLoaded() {
+						updateMap();
+					}
+				});
+			}
+			
+			SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);
+	        
+	        try{
+		        Calendar cViewedAt = Calendar.getInstance();
+		        cViewedAt.setTime(sdf.parse(trip.viewedAt));
+		        
+		        long timeDifference = System.currentTimeMillis() - cViewedAt.getTimeInMillis();
+		        if(timeDifference<5000)
+		    		new GetTripTask(this).execute("vehicles/"+vehicle.id+"/trips/"+tripId+".json");
+	        }
+	        catch(ParseException e){
+	        	e.printStackTrace();
+	        }
+			
+			updateLabels();
 		}
-		updateLabels();
+		else
+			new GetTripTask(this).execute("vehicles/"+vehicle.id+"/trips/"+tripId+".json");
 	}
 	
 	private void updateLabels(){
@@ -368,8 +390,15 @@ public class TripActivity extends MainActivity {
 					map.addPolyline(optionsSpeeding.color(colorSpeeding).width(8).zIndex(2));
 				}
 				
-				tripCenterCameraUpdate = CameraUpdateFactory.newLatLngBounds(builder.build(), 150);
-		        map.animateCamera(tripCenterCameraUpdate);
+				try{
+					int mapPadding = (int) Math.min(mapView.getHeight()*0.2f, mapView.getWidth()*0.2f);
+					tripCenterCameraUpdate = CameraUpdateFactory.newLatLngBounds(builder.build(), mapPadding);
+			        map.animateCamera(tripCenterCameraUpdate);
+				}
+				catch(IllegalStateException e){
+					tripCenterCameraUpdate = CameraUpdateFactory.newCameraPosition(new CameraPosition(trip.route.get(trip.route.size()/2), 10, 0, 0));
+			        map.animateCamera(tripCenterCameraUpdate);
+				}
 			}
 	        
 	        for (Point p : trip.points) {
@@ -420,6 +449,12 @@ public class TripActivity extends MainActivity {
         Utils.gaTrackScreen(this, "Trip Screen");
         super.onResume();
     }
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		mapView.onPause();
+	}
 
     @Override
     public void onDestroy() {
@@ -492,7 +527,6 @@ public class TripActivity extends MainActivity {
 						Point p = new Point(new LatLng(locationJSON.optDouble("latitude",0), locationJSON.optDouble("longitude",0)),
 								getEventType(pointJSON.optString("event")),
 								pointJSON.optString("title"), "");
-						p.fetchAddress(context.getApplicationContext());
 						trip.points.add(p);
 					}
 				}
@@ -502,9 +536,11 @@ public class TripActivity extends MainActivity {
 			dHelper.saveTrip(vehicle.id, trip);
 			dHelper.saveRoute(trip.id, trip.route);
 			dHelper.savePoints(trip.id, trip.points);
-			dHelper.close();			
+			dHelper.close();
 			
 			updateActivity();
+
+        	new FetchAddresses(context).execute();
 			
 			super.onSuccess(responseJSON);
 		}
@@ -530,4 +566,38 @@ public class TripActivity extends MainActivity {
 			}
 		}
 	}
+    
+    class FetchAddresses extends AsyncTask<Void, Void, Void> {
+    	
+    	Context context;
+    	
+    	public FetchAddresses(Context context) {
+    		this.context = context;
+		}
+
+		@Override
+		protected Void doInBackground(Void... params) {
+			boolean needSavePoints = false;
+			
+			for (Point p : trip.points) {
+				if(TextUtils.isEmpty(p.address)){
+					needSavePoints = true;
+					p.fetchAddress(context.getApplicationContext());
+				}
+			}
+			
+			if(needSavePoints){
+				DbHelper dHelper = DbHelper.getInstance(TripActivity.this);
+				dHelper.savePoints(trip.id, trip.points);
+				dHelper.close();
+			}
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(Void result) {
+			updateLabels();
+			super.onPostExecute(result);
+		}
+    }
 }
