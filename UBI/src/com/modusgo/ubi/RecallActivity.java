@@ -6,6 +6,7 @@ import java.util.Locale;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.PorterDuff.Mode;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -114,6 +115,11 @@ public class RecallActivity extends MainActivity {
 	protected void setActionBarAppearance() {
 		getActionBar().getCustomView().setBackgroundColor(Color.parseColor("#ef4136"));
 		tvActionBarTitle.setTextColor(Color.parseColor("#FFFFFF"));
+		Mode mMode = Mode.SRC_ATOP;
+	    getResources().getDrawable(R.drawable.ic_arrow_left).setColorFilter(Color.parseColor("#FFFFFF"),mMode);
+	    getResources().getDrawable(R.drawable.ic_menu).setColorFilter(Color.parseColor("#FFFFFF"),mMode);
+	    getResources().getDrawable(R.drawable.ic_menu_close).setColorFilter(Color.parseColor("#FFFFFF"),mMode);
+	    getResources().getDrawable(R.drawable.ic_map).setColorFilter(Color.parseColor("#FFFFFF"),mMode);
 	}
 
 	@Override

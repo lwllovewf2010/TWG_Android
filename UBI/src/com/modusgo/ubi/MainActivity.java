@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -279,6 +280,12 @@ public class MainActivity extends FragmentActivity {
     	
     	try{
     		tvActionBarTitle.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_TITLE_BAR_TEXT_COLOR, Constants.TITLE_BAR_TEXT_COLOR)));
+    		Mode mMode = Mode.SRC_ATOP;
+    	    getResources().getDrawable(R.drawable.ic_arrow_left).setColorFilter(Color.parseColor(prefs.getString(Constants.PREF_BR_TITLE_BAR_BUTTONS_COLOR, Constants.TITLE_BAR_BUTTONS_COLOR)),mMode);
+    	    getResources().getDrawable(R.drawable.ic_menu).setColorFilter(Color.parseColor(prefs.getString(Constants.PREF_BR_TITLE_BAR_BUTTONS_COLOR, Constants.TITLE_BAR_BUTTONS_COLOR)),mMode);
+    	    getResources().getDrawable(R.drawable.ic_menu_close).setColorFilter(Color.parseColor(prefs.getString(Constants.PREF_BR_TITLE_BAR_BUTTONS_COLOR, Constants.TITLE_BAR_BUTTONS_COLOR)),mMode);
+    	    getResources().getDrawable(R.drawable.ic_map).setColorFilter(Color.parseColor(prefs.getString(Constants.PREF_BR_TITLE_BAR_BUTTONS_COLOR, Constants.TITLE_BAR_BUTTONS_COLOR)),mMode);
+    	    
     	}
 	    catch(Exception e){
 	    	e.printStackTrace();
