@@ -428,7 +428,6 @@ public class SettingsEditFragment extends Fragment implements ImageChooserListen
 	        	
 		        if(spinnerTimezoneChanged){
 		        	String tz = ((TextView)spinnerTimezone.getSelectedView()).getText().toString();
-		        	tz = tz.substring(0,10).replace(" ", "");
 		        	requestParams.add(new BasicNameValuePair(Constants.PREF_TIMEZONE, tz));
 		        }
 		        if(spinnerCarChanged){
