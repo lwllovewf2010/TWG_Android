@@ -6783,6 +6783,7 @@ com.modusgo.ubi.Constants:
     public static final java.lang.String PREF_BR_TITLE_BAR_BG
     public static final java.lang.String PREF_BR_TITLE_BAR_BG_COLOR
     public static final java.lang.String PREF_BR_TITLE_BAR_TEXT_COLOR
+    public static final java.lang.String PREF_BR_TITLE_BAR_BUTTONS_COLOR
     public static final java.lang.String PREF_BR_MENU_LOGO
     public static final java.lang.String PREF_BR_SWITCH_DRIVER_MENU_BUTTON_COLOR
     public static final java.lang.String PREF_BR_LIST_HEADER_LINE_COLOR
@@ -6792,6 +6793,7 @@ com.modusgo.ubi.Constants:
     public static final java.lang.String TITLE_BAR_BG_COLOR
     public static final java.lang.String TITLE_BAR_TEXT_COLOR
     public static final java.lang.String LIST_HEADER_LINE_COLOR
+    public static final java.lang.String TITLE_BAR_BUTTONS_COLOR
     3:3:public Constants()
 com.modusgo.ubi.DiagnosticDetailActivity:
     public static final java.lang.String EXTRA_DTC
@@ -6813,10 +6815,10 @@ com.modusgo.ubi.FindMyCarActivity$ErrorDialogFragment
 com.modusgo.ubi.LimitsFragment:
     571:574:private java.lang.String getTime24String(int,int)
 com.modusgo.ubi.MainActivity:
-    479:481:public void showFeedbackActivity()
+    486:488:public void showFeedbackActivity()
 com.modusgo.ubi.MainActivity$MenuItems:
-    71:71:public int toInt()
-    75:75:public java.lang.String[] valuesString()
+    72:72:public int toInt()
+    76:76:public java.lang.String[] valuesString()
 com.modusgo.ubi.Manifest
 com.modusgo.ubi.Manifest$permission
 com.modusgo.ubi.PieChartFragment:
@@ -6929,7 +6931,7 @@ com.modusgo.ubi.db.VehicleContract$VehicleEntry
 com.modusgo.ubi.db.WarrantyInfoContract
 com.modusgo.ubi.db.WarrantyInfoContract$WarrantyInfoEntry
 com.modusgo.ubi.requesttasks.BaseRequestAsyncTask:
-    34:35:public BaseRequestAsyncTask()
+    35:36:public BaseRequestAsyncTask()
 com.modusgo.ubi.utils.AnimationUtils:
     10:10:public AnimationUtils()
 com.modusgo.ubi.utils.RequestGet:
