@@ -163,7 +163,7 @@ public class SignInActivity extends FragmentActivity {
             case 2:
             	return ScreenSlidePageFragment.newInstance(R.drawable.slide_3, "Explore your trips.", "Discover driving events and how they\nimpact your discount.");
             case 3:
-            	return ScreenSlidePageFragment.newInstance(R.drawable.slide_4, "Keep your car happy.", "Monitor your vehicles health, preventative\nmaintenance schedule, warrantly information,\nand even recalls!");
+            	return ScreenSlidePageFragment.newInstance(R.drawable.slide_4, "Keep your car happy.", "Monitor your vehicle's health, preventative\nmaintenance schedule, warrantly information,\nand even recalls!");
             default:
                 return null;
             }

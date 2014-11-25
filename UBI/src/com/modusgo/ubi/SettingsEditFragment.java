@@ -136,8 +136,8 @@ public class SettingsEditFragment extends Fragment implements ImageChooserListen
 			@Override
 			public void onClick(View v) {
 				AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-			    builder.setTitle("Pick photo")
-			           .setItems(new String[]{"From galery","Make a photo"}, new DialogInterface.OnClickListener() {
+			    builder.setTitle("Choose Photo")
+			           .setItems(new String[]{"From Gallery","Take a Picture"}, new DialogInterface.OnClickListener() {
 			               public void onClick(DialogInterface dialog, int which) {
 			            	   switch (which) {
 			            	   case 0:
