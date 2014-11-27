@@ -73,6 +73,8 @@ public class DriverActivity extends MainActivity{
 		if(prefs.getBoolean(Constants.PREF_DIAGNOSTIC, false))
 			setupTab(DiagnosticsFragment.class, b, "Diagnostics", R.drawable.ic_tab_diagnostics, 0);
 		setupTab(LimitsFragment.class, b, "Limits", R.drawable.ic_tab_limits, 0);
+
+		setButtonUpVisibility(false);
 		
 		menu = new SlidingMenu(this);
         menu.setMode(SlidingMenu.LEFT);
@@ -84,7 +86,6 @@ public class DriverActivity extends MainActivity{
         menu.setOnOpenListener(new OnOpenListener() {
 			@Override
 			public void onOpen() {
-				setButtonUpVisibility(false);
 				setButtonNavigationDrawerVisibility(false);
 				Utils.gaTrackScreen(DriverActivity.this, "Switch Driver Menu");
 			}
@@ -92,7 +93,6 @@ public class DriverActivity extends MainActivity{
         menu.setOnCloseListener(new OnCloseListener() {
 			@Override
 			public void onClose() {
-				setButtonUpVisibility(true);
 				setButtonNavigationDrawerVisibility(true);			
 			}
 		});
