@@ -1115,6 +1115,40 @@ public class DbHelper extends SQLiteOpenHelper {
 		database.close();
 	}
 	
+	public void deleteAlert(long vehicleId, long alertId){
+		SQLiteDatabase database = sInstance.getWritableDatabase();
+		
+		if(database!=null){
+			SQLiteStatement removeStatement = database.compileStatement(
+					"DELETE FROM "+AlertEntry.TABLE_NAME+" WHERE "+AlertEntry.COLUMN_NAME_VEHICLE_ID+" = "+vehicleId + " AND " + AlertEntry._ID + " = " + alertId);
+		    database.beginTransaction();
+		    removeStatement.clearBindings();
+	        removeStatement.execute();
+	        database.setTransactionSuccessful();
+		    database.endTransaction();
+		    removeStatement.close();
+		}
+		
+		database.close();
+	}
+	
+	public void deleteAllAlerts(long vehicleId){
+		SQLiteDatabase database = sInstance.getWritableDatabase();
+		
+		if(database!=null){
+			SQLiteStatement removeStatement = database.compileStatement(
+					"DELETE FROM "+AlertEntry.TABLE_NAME+" WHERE "+AlertEntry.COLUMN_NAME_VEHICLE_ID+" = "+vehicleId);
+		    database.beginTransaction();
+		    removeStatement.clearBindings();
+	        removeStatement.execute();
+	        database.setTransactionSuccessful();
+		    database.endTransaction();
+		    removeStatement.close();
+		}
+		
+		database.close();
+	}
+	
 	public void saveDDEvent(String event, String timestamp){
 		SQLiteDatabase database = sInstance.getWritableDatabase();
 		
