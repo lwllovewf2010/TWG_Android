@@ -19,6 +19,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -278,12 +279,12 @@ public class AlertsActivity extends MainActivity {
 				e.printStackTrace();
 			}
 		    
-//		    if(alert.notViewed){
-//		    	holder.tvEvent.setTypeface(typefaceBold);
-//		    }
-//		    else{
-//		    	holder.tvEvent.setTypeface(typefaceLight);    	
-//		    }
+		    if(TextUtils.isEmpty(alert.seenAt)){
+		    	holder.tvEvent.setTypeface(typefaceBold);
+		    }
+		    else{
+		    	holder.tvEvent.setTypeface(typefaceLight);    	
+		    }
 		    
 //		    switch (alert.type) {
 //			case 0:
