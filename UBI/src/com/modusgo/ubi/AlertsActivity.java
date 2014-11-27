@@ -124,20 +124,6 @@ public class AlertsActivity extends MainActivity {
 		
 		lvAlerts = (ListView)findViewById(R.id.listViewAlerts);
 		lvAlerts.setAdapter(adapter);
-		
-		lvAlerts.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				final Alert alert = adapter.getItem(position);
-				new MarkAlertViewedTask(AlertsActivity.this, alert.id, position).execute("vehicles/"+vehicle.id+"/alerts/"+alert.id);
-				if(alert.tripId!=0){
-					Intent intent = new Intent(AlertsActivity.this, TripActivity.class);
-					intent.putExtra(VehicleEntry._ID, vehicleId);
-					intent.putExtra(TripActivity.EXTRA_TRIP_ID, alert.tripId);
-					startActivity(intent);	
-			    }
-			}
-		});
 	}
 	
 	private ArrayList<Alert> getAlertsFromDB(){
@@ -204,7 +190,19 @@ public class AlertsActivity extends MainActivity {
 					});
 			lvAlerts.setOnTouchListener(touchListener);
 			lvAlerts.setOnScrollListener(touchListener.makeScrollListener());
-			
+			lvAlerts.setOnItemClickListener(new OnItemClickListener() {
+				@Override
+				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+					final Alert alert = adapter.getItem(position);
+					new MarkAlertViewedTask(AlertsActivity.this, alert.id, position).execute("vehicles/"+vehicle.id+"/alerts/"+alert.id);
+					if(alert.tripId!=0){
+						Intent intent = new Intent(AlertsActivity.this, TripActivity.class);
+						intent.putExtra(VehicleEntry._ID, vehicleId);
+						intent.putExtra(TripActivity.EXTRA_TRIP_ID, alert.tripId);
+						startActivity(intent);	
+				    }
+				}
+			});
 		}
 	}
 	

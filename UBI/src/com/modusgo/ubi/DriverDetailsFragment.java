@@ -148,8 +148,6 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 				startActivity(intent);	
 			}
 		});
-	    
-	    new GetVehiclesTask(getActivity()).execute("vehicles/"+vehicle.id+".json");
 		
 		return rootView;
 	}
@@ -360,6 +358,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
     
     @Override
 	public void onResume() {
+    	new GetVehiclesTask(getActivity()).execute("vehicles/"+vehicle.id+".json");
 		Utils.gaTrackScreen(getActivity(), "Driver Details Screen");
 	    super.onResume();
     }
