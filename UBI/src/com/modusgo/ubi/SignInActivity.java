@@ -15,6 +15,7 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -24,6 +25,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -111,6 +113,25 @@ public class SignInActivity extends FragmentActivity {
 	    catch(Exception e){
 	    	e.printStackTrace();
 	    }
+	    
+	    Button btnForgotPassword = (Button) findViewById(R.id.btnForgotPassword);
+	    final String clientId = prefs.getString(Constants.PREF_CLIENT_ID, "");
+		if(!TextUtils.isEmpty(clientId)){
+			btnForgotPassword.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					String url = "http://" + clientId + ".test.modusgo.com/drivers/password/new";
+					Intent i = new Intent(Intent.ACTION_VIEW);
+					i.setData(Uri.parse(url));
+					startActivity(i);
+				}
+			});
+		}
+		else{
+			btnForgotPassword.setVisibility(View.INVISIBLE);
+		}
+		
+	    
 	    
 	    ProgressBar pb = (ProgressBar)findViewById(R.id.progressLogging);
 	    Animation a = AnimationUtils.loadAnimation(this, R.anim.rotate);
