@@ -41,7 +41,7 @@ public class DriverSetupActivity extends MainActivity{
 		vehiclesAdapter = new VehiclesAdapter(this, vehicles);
 		lvVehicles.setAdapter(vehiclesAdapter);
 		
-		setButtonUpVisibility(true);
+		setButtonUpVisibility(false);
 		
 		updateVehicles();
 	}

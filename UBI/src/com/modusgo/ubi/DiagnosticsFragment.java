@@ -528,7 +528,7 @@ public class DiagnosticsFragment extends Fragment{
 									dtc.optString("description"), 
 									dtc.optString("details"), 
 									dtc.optString("full_description"), 
-									dtc.optString("importance"), 
+									dtc.optString("importance_text"), 
 									dtc.optString("labor_cost"), 
 									dtc.optString("labor_hours"), 
 									dtc.optString("parts"), 

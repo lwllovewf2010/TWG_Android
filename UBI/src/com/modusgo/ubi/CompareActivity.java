@@ -184,7 +184,7 @@ public class CompareActivity extends MainActivity{
 	@Override
 	public void onResume() {
 		setNavigationDrawerItemSelected(MenuItems.COMPARE);
-		setButtonUpVisibility(true);
+		setButtonUpVisibility(false);
 		Utils.gaTrackScreen(this, "Compare Screen");
 		super.onResume();
 	}

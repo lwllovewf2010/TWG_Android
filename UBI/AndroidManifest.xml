@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.farmers.ubi"
-    android:versionCode="98"
-    android:versionName="0.9.8" >
+    android:versionCode="99"
+    android:versionName="0.9.9" >
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -211,6 +211,14 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.modusgo.ubi.DriverActivity" />
+        </activity>
+        
+        <activity
+            android:name="com.modusgo.ubi.AlertMapActivity"
+            android:parentActivityName="com.modusgo.ubi.AlertsActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.modusgo.ubi.AlertsActivity" />
         </activity>
         <activity android:name="net.hockeyapp.android.UpdateActivity" />
         
