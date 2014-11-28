@@ -2272,6 +2272,8 @@ com.modusgo.dd.RegisterByCodeActivity
 com.modusgo.dd.RegisterByCodeActivity: RegisterByCodeActivity()
 com.modusgo.dd.TrackingStatusService
 com.modusgo.dd.TrackingStatusService: TrackingStatusService()
+com.modusgo.ubi.AlertMapActivity
+com.modusgo.ubi.AlertMapActivity: AlertMapActivity()
 com.modusgo.ubi.AlertsActivity
 com.modusgo.ubi.AlertsActivity: AlertsActivity()
 com.modusgo.ubi.CompareActivity
@@ -3260,6 +3262,7 @@ com.modusgo.ubi.R$layout: int abc_popup_menu_item_layout
 com.modusgo.ubi.R$layout: int abc_search_dropdown_item_icons_2line
 com.modusgo.ubi.R$layout: int abc_search_view
 com.modusgo.ubi.R$layout: int action_bar
+com.modusgo.ubi.R$layout: int activity_alert_map
 com.modusgo.ubi.R$layout: int activity_alerts
 com.modusgo.ubi.R$layout: int activity_compare
 com.modusgo.ubi.R$layout: int activity_diagnostic_detail
