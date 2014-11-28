@@ -212,6 +212,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.modusgo.ubi.DriverActivity" />
         </activity>
+        
+        <activity
+            android:name="com.modusgo.ubi.AlertMapActivity"
+            android:parentActivityName="com.modusgo.ubi.AlertsActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.modusgo.ubi.AlertsActivity" />
+        </activity>
         <activity android:name="net.hockeyapp.android.UpdateActivity" />
         
         <service

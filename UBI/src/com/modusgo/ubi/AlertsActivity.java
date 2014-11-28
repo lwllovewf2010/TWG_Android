@@ -124,6 +124,16 @@ public class AlertsActivity extends MainActivity {
 		
 		lvAlerts = (ListView)findViewById(R.id.listViewAlerts);
 		lvAlerts.setAdapter(adapter);
+		lvAlerts.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				final Alert alert = adapter.getItem(position);
+				Intent intent = new Intent(AlertsActivity.this, AlertMapActivity.class);
+				intent.putExtra(VehicleEntry._ID, vehicleId);
+				intent.putExtra(AlertMapActivity.EXTRA_ALERT_ID, alert.id);
+				startActivity(intent);
+			}
+		});
 	}
 	
 	private ArrayList<Alert> getAlertsFromDB(){
@@ -190,19 +200,6 @@ public class AlertsActivity extends MainActivity {
 					});
 			lvAlerts.setOnTouchListener(touchListener);
 			lvAlerts.setOnScrollListener(touchListener.makeScrollListener());
-			lvAlerts.setOnItemClickListener(new OnItemClickListener() {
-				@Override
-				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-					final Alert alert = adapter.getItem(position);
-					new MarkAlertViewedTask(AlertsActivity.this, alert.id, position).execute("vehicles/"+vehicle.id+"/alerts/"+alert.id);
-					if(alert.tripId!=0){
-						Intent intent = new Intent(AlertsActivity.this, TripActivity.class);
-						intent.putExtra(VehicleEntry._ID, vehicleId);
-						intent.putExtra(TripActivity.EXTRA_TRIP_ID, alert.tripId);
-						startActivity(intent);	
-				    }
-				}
-			});
 		}
 	}
 	
@@ -217,23 +214,6 @@ public class AlertsActivity extends MainActivity {
 	protected void onSaveInstanceState(Bundle outState) {
 		outState.putLong(VehicleEntry._ID, vehicleId);
 		super.onSaveInstanceState(outState);
-	}
-	
-	public class Alert{
-		
-		public long id;
-		public long vehicleId;
-		public long tripId;
-		public String type;
-		public String timestamp;
-		public String description;
-		public LatLng location;
-		public String seenAt;
-		
-		public Alert(long id) {
-			super();
-			this.id = id;
-		}
 	}
 	
 	class AlertsAdapter extends ArrayAdapter<Alert>{
@@ -295,12 +275,12 @@ public class AlertsActivity extends MainActivity {
 //			default:
 //				break;
 //			}
-		    if(alert.tripId!=0){
-		    	holder.imageArrow.setVisibility(View.VISIBLE);
-		    }
-		    else{
-		    	holder.imageArrow.setVisibility(View.INVISIBLE);
-		    }
+//		    if(alert.tripId!=0){
+//		    	holder.imageArrow.setVisibility(View.VISIBLE);
+//		    }
+//		    else{
+//		    	holder.imageArrow.setVisibility(View.INVISIBLE);
+//		    }
 			
 			return view;
 		}
@@ -354,6 +334,7 @@ public class AlertsActivity extends MainActivity {
 				a.tripId = alertJSON.optLong("trip_id");
 				a.type = alertJSON.optString("uuid");
 				a.timestamp = alertJSON.optString("timestamp");
+				a.title = alertJSON.optString("title");
 				a.description = alertJSON.optString("description");
 				if(alertJSON.has("location")){
 					JSONObject locationJSON = alertJSON.getJSONObject("location");
@@ -372,42 +353,6 @@ public class AlertsActivity extends MainActivity {
 			updateAlertsList();
 			
 			super.onSuccess(responseJSON);
-		}
-	}
-	
-	class MarkAlertViewedTask extends BaseRequestAsyncTask{
-		
-		long alertId;
-		int alertPosition;
-		
-		public MarkAlertViewedTask(Context context, long alertId, int alertPosition) {
-			super(context);
-			this.alertId = alertId;
-			this.alertPosition = alertPosition;
-		}
-
-		@Override
-		protected JSONObject doInBackground(String... params) {
-	        requestParams.add(new BasicNameValuePair("vehicle_id", ""+vehicle.id));
-	        requestParams.add(new BasicNameValuePair("alert_id", ""+alertId));
-			return super.doInBackground(params);
-		}
-		
-		@Override
-		protected void onSuccess(JSONObject responseJSON) throws JSONException {
-			try{
-				adapter.getItem(alertPosition).seenAt = responseJSON.optString("seen_at");
-				adapter.notifyDataSetChanged();
-			}
-			catch(Exception e ){
-				e.printStackTrace();
-			}
-			super.onSuccess(responseJSON);
-		}
-		
-		@Override
-		protected void onError(String message) {
-			// Do nothing
 		}
 	}
 	

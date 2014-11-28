@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.modusgo.ubi.AlertsActivity.Alert;
+import com.modusgo.ubi.Alert;
 import com.modusgo.ubi.DiagnosticsFragment.Maintenance;
 import com.modusgo.ubi.DiagnosticsFragment.WarrantyInformation;
 import com.modusgo.ubi.DiagnosticsTroubleCode;
@@ -198,10 +198,12 @@ public class DbHelper extends SQLiteOpenHelper {
 			AlertEntry.COLUMN_NAME_TRIP_ID + INT_TYPE + COMMA_SEP +
 			AlertEntry.COLUMN_NAME_TYPE + TEXT_TYPE + COMMA_SEP +
 			AlertEntry.COLUMN_NAME_TIMESTAMP + TEXT_TYPE + COMMA_SEP +
+			AlertEntry.COLUMN_NAME_TITLE + TEXT_TYPE + COMMA_SEP +
 			AlertEntry.COLUMN_NAME_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
 			AlertEntry.COLUMN_NAME_LATITUDE + FLOAT_TYPE + COMMA_SEP +
 			AlertEntry.COLUMN_NAME_LONGITUDE + FLOAT_TYPE + COMMA_SEP +
-			AlertEntry.COLUMN_NAME_SEEN_AT + TEXT_TYPE + " ); ",
+			AlertEntry.COLUMN_NAME_SEEN_AT + TEXT_TYPE + COMMA_SEP +
+			AlertEntry.COLUMN_NAME_ADDRESS + TEXT_TYPE + " ); ",
 		    
 		    "CREATE TABLE " + DDEventEntry.TABLE_NAME + " (" +
 		    DDEventEntry._ID + " INTEGER PRIMARY KEY," +
@@ -226,7 +228,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	"DROP TABLE IF EXISTS " + DDEventEntry.TABLE_NAME};
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 31;
+	public static final int DATABASE_VERSION = 34;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;
@@ -1066,6 +1068,49 @@ public class DbHelper extends SQLiteOpenHelper {
 		database.close();
 	}
 	
+	public void saveAlert(long vehicleId, Alert alert){
+		SQLiteDatabase database = sInstance.getWritableDatabase();
+		
+		if(database!=null){		    
+		    String sql = "INSERT OR REPLACE INTO "+ AlertEntry.TABLE_NAME +" ("
+					+ AlertEntry._ID +","
+					+ AlertEntry.COLUMN_NAME_VEHICLE_ID +","
+					+ AlertEntry.COLUMN_NAME_TRIP_ID +","
+					+ AlertEntry.COLUMN_NAME_TYPE +","
+					+ AlertEntry.COLUMN_NAME_TIMESTAMP +","
+					+ AlertEntry.COLUMN_NAME_TITLE +","
+					+ AlertEntry.COLUMN_NAME_DESCRIPTION +","
+					+ AlertEntry.COLUMN_NAME_LATITUDE +","
+					+ AlertEntry.COLUMN_NAME_LONGITUDE +","
+					+ AlertEntry.COLUMN_NAME_SEEN_AT +","
+					+ AlertEntry.COLUMN_NAME_ADDRESS
+					+ ") VALUES (?,?,?,?,?,?,?,?,?,?,?);";
+		    
+			SQLiteStatement statement = database.compileStatement(sql);
+		    database.beginTransaction();
+		    
+		    statement.clearBindings();
+		    statement.bindLong(1, alert.id);
+		    statement.bindLong(2, vehicleId);
+		    statement.bindLong(3, alert.tripId);
+		    statement.bindString(4, alert.type);
+		    statement.bindString(5, alert.timestamp);
+		    statement.bindString(6, alert.title);
+		    statement.bindString(7, alert.description);
+		    statement.bindDouble(8, alert.location.latitude);
+		    statement.bindDouble(9, alert.location.longitude);
+		    statement.bindString(10, alert.seenAt);
+		    statement.bindString(11, alert.address);
+		    statement.execute();
+			
+		    database.setTransactionSuccessful();	
+		    database.endTransaction();
+		    statement.close();
+			
+			database.close();
+		}
+	}
+	
 	public void saveAlerts(long vehicleId, ArrayList<Alert> alerts){
 		SQLiteDatabase database = sInstance.getWritableDatabase();
 		
@@ -1084,11 +1129,13 @@ public class DbHelper extends SQLiteOpenHelper {
 					+ AlertEntry.COLUMN_NAME_TRIP_ID +","
 					+ AlertEntry.COLUMN_NAME_TYPE +","
 					+ AlertEntry.COLUMN_NAME_TIMESTAMP +","
+					+ AlertEntry.COLUMN_NAME_TITLE +","
 					+ AlertEntry.COLUMN_NAME_DESCRIPTION +","
 					+ AlertEntry.COLUMN_NAME_LATITUDE +","
 					+ AlertEntry.COLUMN_NAME_LONGITUDE +","
-					+ AlertEntry.COLUMN_NAME_SEEN_AT
-					+ ") VALUES (?,?,?,?,?,?,?,?,?);";
+					+ AlertEntry.COLUMN_NAME_SEEN_AT +","
+					+ AlertEntry.COLUMN_NAME_ADDRESS
+					+ ") VALUES (?,?,?,?,?,?,?,?,?,?,?);";
 			
 			SQLiteStatement statement = database.compileStatement(sql);
 		    database.beginTransaction();
@@ -1100,10 +1147,12 @@ public class DbHelper extends SQLiteOpenHelper {
 			    statement.bindLong(3, a.tripId);
 			    statement.bindString(4, a.type);
 			    statement.bindString(5, a.timestamp);
-			    statement.bindString(6, a.description);
-			    statement.bindDouble(7, a.location.latitude);
-			    statement.bindDouble(8, a.location.longitude);
-			    statement.bindString(9, a.seenAt);
+			    statement.bindString(6, a.title);
+			    statement.bindString(7, a.description);
+			    statement.bindDouble(8, a.location.latitude);
+			    statement.bindDouble(9, a.location.longitude);
+			    statement.bindString(10, a.seenAt);
+			    statement.bindString(11, a.address);
 			    statement.execute();
 			}
 		    
