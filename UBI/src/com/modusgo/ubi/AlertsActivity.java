@@ -142,10 +142,10 @@ public class AlertsActivity extends MainActivity {
 		lvAlerts.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				final Alert alert = adapter.getItem(position);
+				alerts.get(position).seenAt = "1";
 				Intent intent = new Intent(AlertsActivity.this, AlertMapActivity.class);
 				intent.putExtra(VehicleEntry._ID, vehicleId);
-				intent.putExtra(AlertMapActivity.EXTRA_ALERT_ID, alert.id);
+				intent.putExtra(AlertMapActivity.EXTRA_ALERT_ID, alerts.get(position).id);
 				startActivity(intent);
 			}
 		});
@@ -222,6 +222,7 @@ public class AlertsActivity extends MainActivity {
 	
 	@Override
 	protected void onResume() {
+		updateAlertsList();
 		Utils.gaTrackScreen(this, "Alerts Screen");
 		super.onResume();
 	}

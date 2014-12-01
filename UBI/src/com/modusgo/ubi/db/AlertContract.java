@@ -20,6 +20,7 @@ public class AlertContract {
 		public static final String COLUMN_NAME_LATITUDE = "latitude";
 		public static final String COLUMN_NAME_LONGITUDE = "longitude";
 		public static final String COLUMN_NAME_SEEN_AT = "seen_at";
+		public static final String COLUMN_NAME_GEOFENCE = "geofence";
 		public static final String COLUMN_NAME_ADDRESS = "address";
 	}
 }
