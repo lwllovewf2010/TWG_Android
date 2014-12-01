@@ -1113,7 +1113,6 @@ public class DbHelper extends SQLiteOpenHelper {
 	}
 	
 	public void saveAlert(long vehicleId, Alert alert){
-		System.out.println("save alert ");
 		SQLiteDatabase database = sInstance.getWritableDatabase();
 		
 		if(database!=null){		    
@@ -1157,7 +1156,6 @@ public class DbHelper extends SQLiteOpenHelper {
 	}
 	
 	public void saveAlerts(long vehicleId, ArrayList<Alert> alerts){
-		System.out.println("save alerts "+alerts.size());
 		SQLiteDatabase database = sInstance.getWritableDatabase();
 		
 		if(database!=null && alerts!=null){
@@ -1181,7 +1179,6 @@ public class DbHelper extends SQLiteOpenHelper {
 		    database.beginTransaction();
 		    
 		    for (Alert a : alerts) {
-		    	System.out.println(a.title);
 		    	statement.clearBindings();
 			    statement.bindLong(1, a.id);
 			    statement.bindLong(2, vehicleId);
@@ -1207,7 +1204,6 @@ public class DbHelper extends SQLiteOpenHelper {
 	}
 	
 	public void deleteAlert(long vehicleId, long alertId){
-		System.out.println("delete alert");
 		SQLiteDatabase database = sInstance.getWritableDatabase();
 		
 		if(database!=null){
@@ -1225,7 +1221,6 @@ public class DbHelper extends SQLiteOpenHelper {
 	}
 	
 	public void deleteAllAlerts(long vehicleId){
-		System.out.println("delete alerts");
 		SQLiteDatabase database = sInstance.getWritableDatabase();
 		
 		if(database!=null){

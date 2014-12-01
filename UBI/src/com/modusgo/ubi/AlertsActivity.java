@@ -151,7 +151,6 @@ public class AlertsActivity extends MainActivity {
 		});
 		
 		new GetAlertsTask(this, true).execute("vehicles/"+vehicle.id+"/alerts.json");
-		System.out.println("on create");
 	}
 	
 	private ArrayList<Alert> getAlertsFromDB(String endDate, int count){
@@ -173,9 +172,6 @@ public class AlertsActivity extends MainActivity {
 				AlertEntry.COLUMN_NAME_SEEN_AT}, 
 				AlertEntry.COLUMN_NAME_VEHICLE_ID+" = " + Long.toString(vehicle.id) + " AND " +
 				"datetime(" + AlertEntry.COLUMN_NAME_TIMESTAMP + ")<datetime('"+ Utils.fixTimezoneZ(Utils.fixTimeZoneColon(endDate)) + "')", null, null, null, "datetime("+AlertEntry.COLUMN_NAME_TIMESTAMP+") DESC", ""+count);
-		
-		System.out.println("date "+endDate);
-		System.out.println("alerts: "+c.getCount());
 		
 		if(c.moveToFirst()){
 			while (!c.isAfterLast()) {

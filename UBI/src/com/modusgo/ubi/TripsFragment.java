@@ -279,6 +279,7 @@ public class TripsFragment extends Fragment{
 		@Override
 		protected JSONObject doInBackground(String... params) {
 			SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);
+			requestParams.add(new BasicNameValuePair("vehicle_id", ""+vehicle.id));
 			requestParams.add(new BasicNameValuePair("page", "1"));
 	        requestParams.add(new BasicNameValuePair("per_page", ""+TRIPS_PER_REQUEST));
 	        requestParams.add(new BasicNameValuePair("end_time", sdf.format(cEndTime.getTime())));
