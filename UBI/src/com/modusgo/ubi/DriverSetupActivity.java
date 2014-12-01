@@ -138,8 +138,8 @@ public class DriverSetupActivity extends MainActivity{
 	
 	@Override
 	public void onResume() {
+		super.onResume();
 		setNavigationDrawerItemSelected(MenuItems.DRIVERSETUP);
 		vehiclesAdapter.notifyDataSetChanged();
-		super.onResume();
 	}
 }

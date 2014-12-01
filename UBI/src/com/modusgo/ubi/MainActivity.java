@@ -297,6 +297,7 @@ public class MainActivity extends FragmentActivity {
     protected void onResume() {
     	super.onResume();        
     	//overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    	setNavigationDrawerItemsUnselected();
     	setActionBarAppearance();
 		checkForCrashes();
     }
@@ -353,6 +354,7 @@ public class MainActivity extends FragmentActivity {
 		        	//Feedback
 		        	String driverName = vehicle !=null ? ", "+vehicle.name : "";
 		        	new DialogFeedback(actionBarTitle.toLowerCase(Locale.US) + " screen" + driverName).show(getSupportFragmentManager(), "FeedbackDialog");
+		    		setNavigationDrawerItemsUnselected();
 					Utils.gaTrackScreen(MainActivity.this, "Feedback Dialog");
 		            break;
 		        case FINDAMECHANIC:

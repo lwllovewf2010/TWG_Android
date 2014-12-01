@@ -224,10 +224,10 @@ public class HomeActivity extends MainActivity{
 	
 	@Override
 	public void onResume() {
+		super.onResume();
 		setNavigationDrawerItemSelected(MenuItems.HOME);
 		driversAdapter.notifyDataSetChanged();
 		Utils.gaTrackScreen(this, "Home Screen");
-		super.onResume();
 	}
 	
 	class GetVehiclesTask extends BaseRequestAsyncTask{
