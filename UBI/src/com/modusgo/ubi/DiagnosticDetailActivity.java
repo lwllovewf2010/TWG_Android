@@ -57,8 +57,8 @@ public class DiagnosticDetailActivity extends MainActivity {
 		scrollView = (ScrollView)findViewById(R.id.svContent);
 		btnFindMechanic = (Button)findViewById(R.id.btnFindMechanic);
 		
-		tvCode.setText(dtc.code+" - "+dtc.description);
-		tvDescription.setText(dtc.full_description);
+		tvCode.setText(dtc.code);
+		tvDescription.setText(dtc.description);
 		tvLaborHours.setText(dtc.labor_hours);
 		tvEstLaborCost.setText("$"+dtc.labor_cost);
 		tvEstPartsCost.setText("$"+dtc.parts_cost);
