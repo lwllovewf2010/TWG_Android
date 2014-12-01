@@ -1113,6 +1113,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	}
 	
 	public void saveAlert(long vehicleId, Alert alert){
+		System.out.println("save alert ");
 		SQLiteDatabase database = sInstance.getWritableDatabase();
 		
 		if(database!=null){		    
@@ -1156,18 +1157,12 @@ public class DbHelper extends SQLiteOpenHelper {
 	}
 	
 	public void saveAlerts(long vehicleId, ArrayList<Alert> alerts){
+		System.out.println("save alerts "+alerts.size());
 		SQLiteDatabase database = sInstance.getWritableDatabase();
 		
 		if(database!=null && alerts!=null){
-			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+AlertEntry.TABLE_NAME+" WHERE "+AlertEntry.COLUMN_NAME_VEHICLE_ID+" = "+vehicleId);
-		    database.beginTransaction();
-		    removeStatement.clearBindings();
-	        removeStatement.execute();
-	        database.setTransactionSuccessful();
-		    database.endTransaction();
-		    removeStatement.close();
 			
-			String sql = "INSERT INTO "+ AlertEntry.TABLE_NAME +" ("
+			String sql = "INSERT OR REPLACE INTO "+ AlertEntry.TABLE_NAME +" ("
 					+ AlertEntry._ID +","
 					+ AlertEntry.COLUMN_NAME_VEHICLE_ID +","
 					+ AlertEntry.COLUMN_NAME_TRIP_ID +","
@@ -1179,12 +1174,14 @@ public class DbHelper extends SQLiteOpenHelper {
 					+ AlertEntry.COLUMN_NAME_LONGITUDE +","
 					+ AlertEntry.COLUMN_NAME_SEEN_AT +","
 					+ AlertEntry.COLUMN_NAME_ADDRESS
-					+ ") VALUES (?,?,?,?,?,?,?,?,?,?,?);";
+					+ ") VALUES (?,?,?,?,?,?,?,?,?,?," +
+					"(SELECT IFNULL(NULLIF((SELECT "+AlertEntry.COLUMN_NAME_ADDRESS+" FROM " + AlertEntry.TABLE_NAME + " WHERE "+AlertEntry._ID+" IS ?),''),?)));";
 			
 			SQLiteStatement statement = database.compileStatement(sql);
 		    database.beginTransaction();
 		    
 		    for (Alert a : alerts) {
+		    	System.out.println(a.title);
 		    	statement.clearBindings();
 			    statement.bindLong(1, a.id);
 			    statement.bindLong(2, vehicleId);
@@ -1196,7 +1193,8 @@ public class DbHelper extends SQLiteOpenHelper {
 			    statement.bindDouble(8, a.location.latitude);
 			    statement.bindDouble(9, a.location.longitude);
 			    statement.bindString(10, a.seenAt);
-			    statement.bindString(11, a.address);
+			    statement.bindLong(11, a.id);
+			    statement.bindString(12, a.address);
 			    statement.execute();
 			}
 		    
@@ -1209,6 +1207,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	}
 	
 	public void deleteAlert(long vehicleId, long alertId){
+		System.out.println("delete alert");
 		SQLiteDatabase database = sInstance.getWritableDatabase();
 		
 		if(database!=null){
@@ -1226,6 +1225,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	}
 	
 	public void deleteAllAlerts(long vehicleId){
+		System.out.println("delete alerts");
 		SQLiteDatabase database = sInstance.getWritableDatabase();
 		
 		if(database!=null){
