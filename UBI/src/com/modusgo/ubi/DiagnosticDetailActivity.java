@@ -58,12 +58,19 @@ public class DiagnosticDetailActivity extends MainActivity {
 		scrollView = (ScrollView)findViewById(R.id.svContent);
 		btnFindMechanic = (Button)findViewById(R.id.btnFindMechanic);
 		
-		tvCode.setText(dtc.code+" - "+dtc.description);
-		tvDescription.setText(dtc.full_description);
+		tvCode.setText(dtc.code);
+		tvDescription.setText(dtc.description);
 		tvLaborHours.setText(dtc.labor_hours);
-		tvEstLaborCost.setText("$"+dtc.labor_cost);
-		tvEstPartsCost.setText("$"+dtc.parts_cost);
-		tvEstTotalCost.setText("$"+dtc.total_cost);
+		if(prefs.getBoolean(Constants.PREF_DTC_PRICES_ENABLED, false)){
+			tvEstLaborCost.setText("$"+dtc.labor_cost);
+			tvEstPartsCost.setText("$"+dtc.parts_cost);
+			tvEstTotalCost.setText("$"+dtc.total_cost);
+		}
+		else{
+			findViewById(R.id.llEstLaborCost).setVisibility(View.GONE);
+			findViewById(R.id.llEstPartsCost).setVisibility(View.GONE);
+			findViewById(R.id.llEstTotalCost).setVisibility(View.GONE);
+		}
 		
 		switch (dtc.importance.toLowerCase(Locale.US)) {
 		case "high":
@@ -114,19 +121,24 @@ public class DiagnosticDetailActivity extends MainActivity {
 			llList.addView(rowView);
 		}
 		
-		btnFindMechanic.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				startActivity(new Intent(DiagnosticDetailActivity.this, FindMechanicActivity.class));
+		if(prefs.getBoolean(Constants.PREF_FIND_MECHANIC_ENABLED, false)){
+			btnFindMechanic.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					startActivity(new Intent(DiagnosticDetailActivity.this, FindMechanicActivity.class));
+				}
+			});
+			btnFindMechanic.setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, Constants.BUTTON_BG_COLOR)));
+			try{
+				btnFindMechanic.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, Constants.BUTTON_TEXT_COLOR)));
 			}
-		});
-		btnFindMechanic.setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, Constants.BUTTON_BG_COLOR)));
-		try{
-			btnFindMechanic.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, Constants.BUTTON_TEXT_COLOR)));
+		    catch(Exception e){
+		    	e.printStackTrace();
+		    }
 		}
-	    catch(Exception e){
-	    	e.printStackTrace();
-	    }
+		else{
+			btnFindMechanic.setVisibility(View.GONE);
+		}
 	}
 	
 	@Override

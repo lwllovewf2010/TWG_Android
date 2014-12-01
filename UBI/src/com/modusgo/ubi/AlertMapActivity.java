@@ -53,12 +53,15 @@ public class AlertMapActivity extends MainActivity {
 	long vehicleId = 0;
 	long alertId = 0;
 	Alert alert;
+	Trip trip;
 	
 	MapView mapView;
     GoogleMap map;
     TextView tvDescription;
     TextView tvDate;
     TextView tvAddress;
+    
+    CameraUpdate cameraUpdate;
     
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -94,14 +97,15 @@ public class AlertMapActivity extends MainActivity {
         map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
 			@Override
 			public void onMapLoaded() {
-				CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(37.8430094,-95.0098992), 14);
-		        map.animateCamera(cameraUpdate);
+				cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(37.8430094,-95.0098992), 1);
+		        updateMap(true);
 			}
 		});
         
         MapsInitializer.initialize(this);     
 
         alert = getAlertFromDB();
+        trip = getTripFromDB();
         
         updateActivity();
         
@@ -119,79 +123,70 @@ public class AlertMapActivity extends MainActivity {
 			tvAddress.setText("Updating address...");
 			new FetchAddresses(this).execute();
 		}
-		
-		if(map!=null){
-			map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
-				@Override
-				public void onMapLoaded() {
-					updateMap(true);
-				}
-			});
-		}
 	}
 	
 	private void updateMap(boolean animate){
-		map.clear();
-		
-		final Builder builder = LatLngBounds.builder();	
-		
         //Trip
-		Trip trip = getTripFromDB();
-		if(trip==null)
-			new GetTripTask(this).execute("vehicles/"+vehicle.id+"/trips/"+alert.tripId+".json");
-		else{
-			if(trip.route.size()>0){
-				PolylineOptions options = new PolylineOptions();
-				for (LatLng point : trip.route) {
-					options.add(point);
-					builder.include(point);
-				}
-		
-				int color = Color.parseColor("#009900");
-				map.addPolyline(options.color(color).width(8).zIndex(1));
-		
-				int colorSpeeding = Color.parseColor("#ef4136");
-				for (ArrayList<LatLng> route : trip.speedingRoute) {
-					PolylineOptions optionsSpeeding = new PolylineOptions();
-					for (LatLng point : route) {
-						optionsSpeeding.add(point);
+		if(map!=null){
+			map.clear();
+			final Builder builder = LatLngBounds.builder();	
+			
+			if(trip!=null){
+				if(trip.route.size()>0){
+					PolylineOptions options = new PolylineOptions();
+					for (LatLng point : trip.route) {
+						options.add(point);
+						builder.include(point);
 					}
-					map.addPolyline(optionsSpeeding.color(colorSpeeding).width(8).zIndex(2));
+					
+					int color = Color.parseColor("#009900");
+					map.addPolyline(options.color(color).width(8).zIndex(1));
+					
+					int colorSpeeding = Color.parseColor("#ef4136");
+					for (ArrayList<LatLng> route : trip.speedingRoute) {
+						PolylineOptions optionsSpeeding = new PolylineOptions();
+						for (LatLng point : route) {
+							optionsSpeeding.add(point);
+						}
+						map.addPolyline(optionsSpeeding.color(colorSpeeding).width(8).zIndex(2));
+					}
+					
+					map.addMarker(new MarkerOptions().position(trip.route.get(0)).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_start)).title(vehicle.address));
+					map.addMarker(new MarkerOptions().position(trip.route.get(trip.route.size()-1)).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_finish)).title(vehicle.address));
+				}
+			}
+			
+			//Geofence
+			if(alert!=null){
+				if(alert.geofence!=null && alert.geofence.size()>0){
+					PolylineOptions options = new PolylineOptions();
+					for (LatLng point : alert.geofence) {
+						options.add(point);
+						builder.include(point);
+						map.addMarker(new MarkerOptions().position(point).anchor(0.5f, 0.5f).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_geofence_point)));
+					}
+					
+					options.add(alert.geofence.get(0));		
+					int color = Color.parseColor("#FFFFFF");
+					map.addPolyline(options.color(color).width(8));
 				}
 				
-				map.addMarker(new MarkerOptions().position(trip.route.get(0)).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_start)).title(vehicle.address));
-				map.addMarker(new MarkerOptions().position(trip.route.get(trip.route.size()-1)).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_finish)).title(vehicle.address));
+				//Alert marker
+				LatLng location = new LatLng(alert.location.latitude, alert.location.longitude);
+				builder.include(location);
+				map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_unknown)).title(vehicle.address));
+				if(animate){			
+					try{
+						int mapPadding = (int) Math.min(mapView.getHeight()*0.2f, mapView.getWidth()*0.2f);
+						cameraUpdate = CameraUpdateFactory.newLatLngBounds(builder.build(), mapPadding);
+					}
+					catch(IllegalStateException e){
+						cameraUpdate = CameraUpdateFactory.newLatLngZoom(location, 15);
+					}
+				}
 			}
-		}
-		
-        //Geofence
-		System.out.println("goefence null: "+(alert.geofence==null));
-		if(alert.geofence!=null){
-			PolylineOptions options = new PolylineOptions();
-			for (LatLng point : alert.geofence) {
-				options.add(point);
-				builder.include(point);
-				map.addMarker(new MarkerOptions().position(point).anchor(0.5f, 0.5f).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_geofence_point)));
-			}
-			options.add(alert.geofence.get(0));		
-			int color = Color.parseColor("#FFFFFF");
-			map.addPolyline(options.color(color).width(8));
-		}
-		
-		//Alert marker
-		LatLng location = new LatLng(alert.location.latitude, alert.location.longitude);
-		builder.include(location);
-		map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_unknown)).title(vehicle.address));
-		if(animate){			
-			try{
-				int mapPadding = (int) Math.min(mapView.getHeight()*0.2f, mapView.getWidth()*0.2f);
-				CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(builder.build(), mapPadding);
-		        map.animateCamera(cameraUpdate);
-			}
-			catch(IllegalStateException e){
-				CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(location, 15);
-				map.animateCamera(cameraUpdate);
-			}
+			
+			map.animateCamera(cameraUpdate);
 		}
 		
 	}
@@ -212,7 +207,9 @@ public class AlertMapActivity extends MainActivity {
 				AlertEntry.COLUMN_NAME_DESCRIPTION,
 				AlertEntry.COLUMN_NAME_LATITUDE,
 				AlertEntry.COLUMN_NAME_LONGITUDE,
-				AlertEntry.COLUMN_NAME_SEEN_AT}, 
+				AlertEntry.COLUMN_NAME_SEEN_AT,
+				AlertEntry.COLUMN_NAME_GEOFENCE,
+				AlertEntry.COLUMN_NAME_ADDRESS}, 
 				AlertEntry.COLUMN_NAME_VEHICLE_ID+" = ? AND " +AlertEntry._ID + " = ?", new String[]{Long.toString(vehicle.id), Long.toString(alertId)}, null, null, null);
 		
 		if(c.moveToFirst()){
@@ -224,6 +221,8 @@ public class AlertMapActivity extends MainActivity {
 			alert.description = c.getString(6);
 			alert.location = new LatLng(c.getDouble(7), c.getDouble(8));
 			alert.seenAt = c.getString(9);
+			alert.setGeofence(c.getString(10));
+			alert.address = c.getString(11);
 		}
 		c.close();		
 		db.close();
@@ -312,17 +311,7 @@ public class AlertMapActivity extends MainActivity {
 			alert.seenAt = responseJSON.optString("seen_at");
 			
 			if(responseJSON.has("geofence") && responseJSON.get("geofence") instanceof JSONArray){
-				JSONArray geofence = responseJSON.getJSONArray("geofence");
-				
-				alert.geofence = new ArrayList<LatLng>();
-				for (int j = 0; j < geofence.length(); j++) {
-					try {
-						JSONArray point = geofence.getJSONArray(j);
-						alert.geofence.add(new LatLng(point.getDouble(0), point.getDouble(1)));
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
+				alert.setGeofence(responseJSON.getJSONArray("geofence").toString());
 			}
 			
 			DbHelper dbHelper = DbHelper.getInstance(context);
@@ -330,6 +319,11 @@ public class AlertMapActivity extends MainActivity {
 			dbHelper.close();
 			
 			updateActivity();
+			
+			if(trip==null)
+				new GetTripTask(getApplicationContext()).execute("vehicles/"+vehicle.id+"/trips/"+alert.tripId+".json");
+			else
+				updateMap(true);
 			
 			super.onSuccess(responseJSON);
 		}
@@ -356,7 +350,7 @@ public class AlertMapActivity extends MainActivity {
 		
 		@Override
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
-			Trip trip = new Trip(alert.tripId, responseJSON.optInt("harsh_events_count"), Utils.fixTimezoneZ(responseJSON.optString("start_time")), Utils.fixTimezoneZ(responseJSON.optString("end_time")), responseJSON.optDouble("mileage"), responseJSON.optString("grade"));
+			trip = new Trip(alert.tripId, responseJSON.optInt("harsh_events_count"), Utils.fixTimezoneZ(responseJSON.optString("start_time")), Utils.fixTimezoneZ(responseJSON.optString("end_time")), responseJSON.optDouble("mileage"), responseJSON.optString("grade"));
 			
 			trip.averageSpeed = responseJSON.optDouble("avg_speed");
 			trip.maxSpeed = responseJSON.optDouble("max_speed");
@@ -410,9 +404,13 @@ public class AlertMapActivity extends MainActivity {
 			dHelper.savePoints(trip.id, trip.points);
 			dHelper.close();
 			
-			updateMap(false);
-			
 			super.onSuccess(responseJSON);
+		}
+		
+		@Override
+		protected void onPostExecute(JSONObject result) {
+			updateMap(true);
+			super.onPostExecute(result);
 		}
 		
 		@Override

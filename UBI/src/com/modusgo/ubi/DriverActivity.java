@@ -108,8 +108,8 @@ public class DriverActivity extends MainActivity{
 	
 	@Override
 	protected void onResume() {
-		setNavigationDrawerItemsUnselected();
 		super.onResume();
+		setNavigationDrawerItemsUnselected();
 	}
 	
 	public void switchTab(int index){

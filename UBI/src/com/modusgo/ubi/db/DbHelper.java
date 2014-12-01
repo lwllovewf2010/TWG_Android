@@ -210,6 +210,7 @@ public class DbHelper extends SQLiteOpenHelper {
 			AlertEntry.COLUMN_NAME_LATITUDE + FLOAT_TYPE + COMMA_SEP +
 			AlertEntry.COLUMN_NAME_LONGITUDE + FLOAT_TYPE + COMMA_SEP +
 			AlertEntry.COLUMN_NAME_SEEN_AT + TEXT_TYPE + COMMA_SEP +
+			AlertEntry.COLUMN_NAME_GEOFENCE + TEXT_TYPE + COMMA_SEP +
 			AlertEntry.COLUMN_NAME_ADDRESS + TEXT_TYPE + " ); ",
 		    
 		    "CREATE TABLE " + DDEventEntry.TABLE_NAME + " (" +
@@ -236,7 +237,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	"DROP TABLE IF EXISTS " + DDEventEntry.TABLE_NAME};
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 35;
+	public static final int DATABASE_VERSION = 36;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;
@@ -1127,8 +1128,9 @@ public class DbHelper extends SQLiteOpenHelper {
 					+ AlertEntry.COLUMN_NAME_LATITUDE +","
 					+ AlertEntry.COLUMN_NAME_LONGITUDE +","
 					+ AlertEntry.COLUMN_NAME_SEEN_AT +","
+					+ AlertEntry.COLUMN_NAME_GEOFENCE +","
 					+ AlertEntry.COLUMN_NAME_ADDRESS
-					+ ") VALUES (?,?,?,?,?,?,?,?,?,?,?);";
+					+ ") VALUES (?,?,?,?,?,?,?,?,?,?,?,?);";
 		    
 			SQLiteStatement statement = database.compileStatement(sql);
 		    database.beginTransaction();
@@ -1144,7 +1146,8 @@ public class DbHelper extends SQLiteOpenHelper {
 		    statement.bindDouble(8, alert.location.latitude);
 		    statement.bindDouble(9, alert.location.longitude);
 		    statement.bindString(10, alert.seenAt);
-		    statement.bindString(11, alert.address);
+		    statement.bindString(11, alert.geofenceString);
+		    statement.bindString(12, alert.address);
 		    statement.execute();
 			
 		    database.setTransactionSuccessful();	
@@ -1159,15 +1162,8 @@ public class DbHelper extends SQLiteOpenHelper {
 		SQLiteDatabase database = sInstance.getWritableDatabase();
 		
 		if(database!=null && alerts!=null){
-			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+AlertEntry.TABLE_NAME+" WHERE "+AlertEntry.COLUMN_NAME_VEHICLE_ID+" = "+vehicleId);
-		    database.beginTransaction();
-		    removeStatement.clearBindings();
-	        removeStatement.execute();
-	        database.setTransactionSuccessful();
-		    database.endTransaction();
-		    removeStatement.close();
 			
-			String sql = "INSERT INTO "+ AlertEntry.TABLE_NAME +" ("
+			String sql = "INSERT OR REPLACE INTO "+ AlertEntry.TABLE_NAME +" ("
 					+ AlertEntry._ID +","
 					+ AlertEntry.COLUMN_NAME_VEHICLE_ID +","
 					+ AlertEntry.COLUMN_NAME_TRIP_ID +","
@@ -1178,8 +1174,10 @@ public class DbHelper extends SQLiteOpenHelper {
 					+ AlertEntry.COLUMN_NAME_LATITUDE +","
 					+ AlertEntry.COLUMN_NAME_LONGITUDE +","
 					+ AlertEntry.COLUMN_NAME_SEEN_AT +","
+					+ AlertEntry.COLUMN_NAME_GEOFENCE +","
 					+ AlertEntry.COLUMN_NAME_ADDRESS
-					+ ") VALUES (?,?,?,?,?,?,?,?,?,?,?);";
+					+ ") VALUES (?,?,?,?,?,?,?,?,?,?,?," +
+					"(SELECT IFNULL(NULLIF((SELECT "+AlertEntry.COLUMN_NAME_ADDRESS+" FROM " + AlertEntry.TABLE_NAME + " WHERE "+AlertEntry._ID+" IS ?),''),?)));";
 			
 			SQLiteStatement statement = database.compileStatement(sql);
 		    database.beginTransaction();
@@ -1196,7 +1194,9 @@ public class DbHelper extends SQLiteOpenHelper {
 			    statement.bindDouble(8, a.location.latitude);
 			    statement.bindDouble(9, a.location.longitude);
 			    statement.bindString(10, a.seenAt);
-			    statement.bindString(11, a.address);
+			    statement.bindString(11, a.geofenceString);
+			    statement.bindLong(12, a.id);
+			    statement.bindString(13, a.address);
 			    statement.execute();
 			}
 		    

@@ -183,10 +183,10 @@ public class CompareActivity extends MainActivity{
 	
 	@Override
 	public void onResume() {
+		super.onResume();
 		setNavigationDrawerItemSelected(MenuItems.COMPARE);
 		setButtonUpVisibility(false);
 		Utils.gaTrackScreen(this, "Compare Screen");
-		super.onResume();
 	}
 	
 	class DriversAdapter extends BaseAdapter{

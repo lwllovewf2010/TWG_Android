@@ -37,6 +37,9 @@ public class Constants {
 	public static final String PREF_APP_VERSION = "appVersion";
 	public static final String PREF_CONTACT_PHONE = "contactPhone";
 	public static final String PREF_AGENT_PHONE = "agentPhone";
+	public static final String PREF_FIND_MECHANIC_ENABLED = "findMechanicEnabled";
+	public static final String PREF_DTC_PRICES_ENABLED = "dtcPricesEnabled";
+	public static final String PREF_MAINTENANCE_PRICES_ENABLED = "maintenancePricesEnabled";
 	
 	public static final String ROLE_CUSTOMER = "customer";
 

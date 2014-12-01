@@ -2557,26 +2557,6 @@ com.echo.holographlibrary.R$styleable:
     33:33:public R$styleable()
 com.echo.holographlibrary.Utils:
     8:8:public Utils()
-com.farmers.ubi.BuildConfig
-com.farmers.ubi.Manifest
-com.farmers.ubi.Manifest$permission
-com.farmers.ubi.R:
-    10:10:public R()
-com.farmers.ubi.R$anim
-com.farmers.ubi.R$array
-com.farmers.ubi.R$attr
-com.farmers.ubi.R$bool
-com.farmers.ubi.R$color
-com.farmers.ubi.R$dimen
-com.farmers.ubi.R$drawable
-com.farmers.ubi.R$id
-com.farmers.ubi.R$integer
-com.farmers.ubi.R$layout
-com.farmers.ubi.R$string
-com.farmers.ubi.R$style
-com.farmers.ubi.R$styleable:
-    3132:3132:public R$styleable()
-com.farmers.ubi.R$xml
 com.google.ads.AdRequest
 com.google.ads.AdRequest$ErrorCode
 com.google.ads.AdRequest$Gender
@@ -6748,6 +6728,9 @@ com.modusgo.dd.TrackingStatusService:
     java.util.ArrayList blacklist
 com.modusgo.ubi.AlertMapActivity:
     public static final java.lang.String EXTRA_ALERT_ID
+com.modusgo.ubi.AlertsActivity:
+    private static final int ALERTS_PER_REQUEST
+com.modusgo.ubi.BuildConfig
 com.modusgo.ubi.CirclesFragment:
     public static final java.lang.String SAVED_SECTIONS
 com.modusgo.ubi.Constants:
@@ -6784,6 +6767,9 @@ com.modusgo.ubi.Constants:
     public static final java.lang.String PREF_APP_VERSION
     public static final java.lang.String PREF_CONTACT_PHONE
     public static final java.lang.String PREF_AGENT_PHONE
+    public static final java.lang.String PREF_FIND_MECHANIC_ENABLED
+    public static final java.lang.String PREF_DTC_PRICES_ENABLED
+    public static final java.lang.String PREF_MAINTENANCE_PRICES_ENABLED
     public static final java.lang.String ROLE_CUSTOMER
     public static final java.lang.String API_BASE_URL_PREFIX
     public static final java.lang.String API_BASE_URL_POSTFIX
@@ -6834,20 +6820,39 @@ com.modusgo.ubi.FindMyCarActivity:
     public static final java.lang.String EXTRA_POINTS
 com.modusgo.ubi.FindMyCarActivity$ErrorDialogFragment
 com.modusgo.ubi.LimitsFragment:
-    572:575:private java.lang.String getTime24String(int,int)
+    571:574:private java.lang.String getTime24String(int,int)
 com.modusgo.ubi.MainActivity:
-    487:489:public void showFeedbackActivity()
+    489:491:public void showFeedbackActivity()
 com.modusgo.ubi.MainActivity$MenuItems:
-    73:73:public int toInt()
-    77:77:public java.lang.String[] valuesString()
+    72:72:public int toInt()
+    76:76:public java.lang.String[] valuesString()
+com.modusgo.ubi.Manifest
+com.modusgo.ubi.Manifest$permission
 com.modusgo.ubi.PieChartFragment:
     public static final java.lang.String SAVED_VISIBILITIES
     public static final java.lang.String SAVED_VALUES
     public static final java.lang.String SAVED_SUBTITLES
     public static final java.lang.String SAVED_TITLES
-    42:48:public PieChartFragment(float[],java.lang.String[],java.lang.String[])
-    96:106:private void hideMarker(android.view.View,long)
-    109:119:private void showMarker(android.view.View,long)
+    41:47:public PieChartFragment(float[],java.lang.String[],java.lang.String[])
+    95:105:private void hideMarker(android.view.View,long)
+    108:118:private void showMarker(android.view.View,long)
+com.modusgo.ubi.R:
+    10:10:public R()
+com.modusgo.ubi.R$anim
+com.modusgo.ubi.R$array
+com.modusgo.ubi.R$attr
+com.modusgo.ubi.R$bool
+com.modusgo.ubi.R$color
+com.modusgo.ubi.R$dimen
+com.modusgo.ubi.R$drawable
+com.modusgo.ubi.R$id
+com.modusgo.ubi.R$integer
+com.modusgo.ubi.R$layout
+com.modusgo.ubi.R$string
+com.modusgo.ubi.R$style
+com.modusgo.ubi.R$styleable:
+    3135:3135:public R$styleable()
+com.modusgo.ubi.R$xml
 com.modusgo.ubi.Recall:
     private static final long serialVersionUID
 com.modusgo.ubi.RecallActivity:
@@ -6908,7 +6913,7 @@ com.modusgo.ubi.db.DbHelper:
     private static final java.lang.String COMMA_SEP
     public static final int DATABASE_VERSION
     public static final java.lang.String DATABASE_NAME
-    632:665:public void saveSpeedingRoute(long,java.util.ArrayList)
+    633:666:public void saveSpeedingRoute(long,java.util.ArrayList)
 com.modusgo.ubi.db.LimitsContract
 com.modusgo.ubi.db.LimitsContract$LimitsEntry
 com.modusgo.ubi.db.MaintenanceContract

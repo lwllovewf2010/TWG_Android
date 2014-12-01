@@ -20,7 +20,7 @@ public class SettingsActivity extends MainActivity {
 
 	@Override
 	public void onResume() {
-		setNavigationDrawerItemSelected(MenuItems.SETTINGS);
 		super.onResume();
+		setNavigationDrawerItemSelected(MenuItems.SETTINGS);
 	}
 }

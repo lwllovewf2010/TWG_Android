@@ -143,9 +143,9 @@ OnConnectionFailedListener, LocationListener{
 	@Override
     public void onResume() {
         mapView.onResume();
+        super.onResume();
 		setNavigationDrawerItemSelected(MenuItems.FINDAMECHANIC);
         Utils.gaTrackScreen(this, "Find A Mechanic Screen");
-        super.onResume();
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.modusgo.ubi;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -19,6 +20,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +32,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -47,15 +49,20 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 
 public class AlertsActivity extends MainActivity {
+
+	private final static int ALERTS_PER_REQUEST = 10;
 	
 	long vehicleId = 0;
 	
     ListView lvAlerts;
-    LinearLayout llProgress;
+    SwipeRefreshLayout lRefresh;
     
     ArrayList<Alert> alerts;
     AlertsAdapter adapter;
-	
+
+	private boolean offlineMode = false;
+	private boolean thereAreOlderTrips = true;
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_alerts);
@@ -115,7 +122,15 @@ public class AlertsActivity extends MainActivity {
 			}
 		});
 		
-		llProgress = (LinearLayout) findViewById(R.id.llProgress);
+		lRefresh = (SwipeRefreshLayout) findViewById(R.id.lRefresh);
+		
+		lRefresh.setColorSchemeResources(R.color.ubi_gray, R.color.ubi_green, R.color.ubi_orange, R.color.ubi_red);
+		lRefresh.setOnRefreshListener(new OnRefreshListener() {
+			@Override
+			public void onRefresh() {
+				new GetAlertsTask(getApplicationContext(), true).execute("vehicles/"+vehicle.id+"/alerts.json");
+			}
+		});
 		
 		alerts = new ArrayList<Alert>();
 		
@@ -128,20 +143,23 @@ public class AlertsActivity extends MainActivity {
 		lvAlerts.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				final Alert alert = adapter.getItem(position);
+				alerts.get(position).seenAt = "1";
 				Intent intent = new Intent(AlertsActivity.this, AlertMapActivity.class);
 				intent.putExtra(VehicleEntry._ID, vehicleId);
-				intent.putExtra(AlertMapActivity.EXTRA_ALERT_ID, alert.id);
+				intent.putExtra(AlertMapActivity.EXTRA_ALERT_ID, alerts.get(position).id);
 				startActivity(intent);
 			}
 		});
+		
+		new GetAlertsTask(this, true).execute("vehicles/"+vehicle.id+"/alerts.json");
 	}
 	
-	private ArrayList<Alert> getAlertsFromDB(){
+	private ArrayList<Alert> getAlertsFromDB(String endDate, int count){
 		ArrayList<Alert> alerts = new ArrayList<Alert>();
 		
 		DbHelper dbHelper = DbHelper.getInstance(this);
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		
 		Cursor c = db.query(AlertEntry.TABLE_NAME, 
 				new String[]{
 				AlertEntry._ID,
@@ -153,7 +171,8 @@ public class AlertsActivity extends MainActivity {
 				AlertEntry.COLUMN_NAME_LATITUDE,
 				AlertEntry.COLUMN_NAME_LONGITUDE,
 				AlertEntry.COLUMN_NAME_SEEN_AT}, 
-				AlertEntry.COLUMN_NAME_VEHICLE_ID+" = ?", new String[]{Long.toString(vehicle.id)}, null, null, "datetime("+AlertEntry.COLUMN_NAME_TIMESTAMP+") DESC");
+				AlertEntry.COLUMN_NAME_VEHICLE_ID+" = " + Long.toString(vehicle.id) + " AND " +
+				"datetime(" + AlertEntry.COLUMN_NAME_TIMESTAMP + ")<datetime('"+ Utils.fixTimezoneZ(Utils.fixTimeZoneColon(endDate)) + "')", null, null, null, "datetime("+AlertEntry.COLUMN_NAME_TIMESTAMP+") DESC", ""+count);
 		
 		if(c.moveToFirst()){
 			while (!c.isAfterLast()) {
@@ -177,8 +196,6 @@ public class AlertsActivity extends MainActivity {
 	}
 	
 	private void updateAlertsList() {
-		alerts.clear();
-		alerts.addAll(getAlertsFromDB());
 		if(adapter!=null){
 			adapter.notifyDataSetChanged();
 			
@@ -206,7 +223,7 @@ public class AlertsActivity extends MainActivity {
 	
 	@Override
 	protected void onResume() {
-		new GetAlertsTask(this).execute("vehicles/"+vehicle.id+"/alerts.json");
+		updateAlertsList();
 		Utils.gaTrackScreen(this, "Alerts Screen");
 		super.onResume();
 	}
@@ -233,6 +250,8 @@ public class AlertsActivity extends MainActivity {
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
+			if(thereAreOlderTrips && position == getCount() - 1)
+				new GetAlertsTask(getApplicationContext(), false).execute("vehicles/"+vehicle.id+"/alerts.json");
 			
 			final Alert alert = getItem(position);
 			ViewHolder holder;
@@ -294,32 +313,37 @@ public class AlertsActivity extends MainActivity {
 	}
 	
 	class GetAlertsTask extends BaseRequestAsyncTask{
+
+		boolean loadNewAlerts = false;
 		
-		public GetAlertsTask(Context context) {
+		public GetAlertsTask(Context context, boolean getNewTrips) {
 			super(context);
+			this.loadNewAlerts = getNewTrips;
 		}
 		
 		@Override
 		protected void onPreExecute() {
-			if(alerts.size()==0){
-				llProgress.setVisibility(View.VISIBLE);
-				lvAlerts.setVisibility(View.GONE);
-			}
+			lRefresh.setRefreshing(true);
 			super.onPreExecute();
 		}
 		
 		@Override
 		protected void onPostExecute(JSONObject result) {
 			super.onPostExecute(result);
-			llProgress.setVisibility(View.GONE);
-			lvAlerts.setVisibility(View.VISIBLE);
+			lRefresh.setRefreshing(false);
 		}
 
 		@Override
 		protected JSONObject doInBackground(String... params) {
 	        requestParams.add(new BasicNameValuePair("vehicle_id", ""+vehicle.id));
-	        requestParams.add(new BasicNameValuePair("page", "1"));
-	        requestParams.add(new BasicNameValuePair("per_page", "1000"));
+			requestParams.add(new BasicNameValuePair("page", "1"));
+	        requestParams.add(new BasicNameValuePair("per_page", ""+ALERTS_PER_REQUEST));
+	        if(loadNewAlerts){
+				SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);
+				requestParams.add(new BasicNameValuePair("end_time", sdf.format(Calendar.getInstance().getTime())));
+	        }
+			else
+		        requestParams.add(new BasicNameValuePair("end_time", alerts.get(alerts.size()-1).timestamp));
 	        
 			return super.doInBackground(params);
 		}
@@ -327,14 +351,18 @@ public class AlertsActivity extends MainActivity {
 		@Override
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
 			JSONArray alertsJSON = responseJSON.getJSONArray("alerts");
-			ArrayList<Alert> alerts = new ArrayList<Alert>();
+			ArrayList<Alert> loadedAlerts = new ArrayList<Alert>();
+			Alert firstOldAlert = null;
+			if(alerts.size()>0 && !offlineMode)
+				firstOldAlert = alerts.get(0);
+			
 			for (int i = 0; i < alertsJSON.length(); i++) {
 				JSONObject alertJSON = alertsJSON.getJSONObject(i);
 				Alert a = new Alert(alertJSON.optInt("id"));
 				a.vehicleId = alertJSON.optLong("vehicle_id");
 				a.tripId = alertJSON.optLong("trip_id");
 				a.type = alertJSON.optString("uuid");
-				a.timestamp = alertJSON.optString("timestamp");
+				a.timestamp = Utils.fixTimezoneZ(Utils.fixTimeZoneColon(alertJSON.optString("timestamp")));
 				a.title = alertJSON.optString("title");
 				a.description = alertJSON.optString("description");
 				if(alertJSON.has("location")){
@@ -344,16 +372,58 @@ public class AlertsActivity extends MainActivity {
 				else
 					a.location = new LatLng(0, 0);
 				a.seenAt = alertJSON.optString("seen_at");
-				alerts.add(a);
+				
+				if(firstOldAlert != null && a.id == firstOldAlert.id){
+					break;
+				}
+				
+				loadedAlerts.add(a);
 			}
-			
 			DbHelper dbHelper = DbHelper.getInstance(context);
-			dbHelper.saveAlerts(vehicle.id, alerts);
-			dbHelper.close();
 			
+			if(loadNewAlerts) {
+				if(loadedAlerts.size()>0 || offlineMode){
+					offlineMode = false;
+					dbHelper.deleteAllAlerts(vehicle.id);
+					dbHelper.close();
+					alerts.clear();
+				}
+				alerts.addAll(0, loadedAlerts);
+			}
+			else {
+				if(loadedAlerts.size() == 0)
+					thereAreOlderTrips = false;
+				alerts.addAll(loadedAlerts);
+			}
+
+			dbHelper.saveAlerts(vehicle.id, loadedAlerts);
+			dbHelper.close();
+
 			updateAlertsList();
 			
 			super.onSuccess(responseJSON);
+		}
+		
+		@Override
+		protected void onError(String message) {
+			offlineMode = true;
+			if(!loadNewAlerts || alerts.size()==0){
+				String endDate;
+				if(alerts.size()==0){
+					SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);
+					endDate = sdf.format(Calendar.getInstance().getTime());
+				}
+				else
+					endDate = alerts.get(alerts.size()-1).timestamp;
+				
+				ArrayList<Alert> dbAlerts = getAlertsFromDB(endDate, ALERTS_PER_REQUEST);
+				if(dbAlerts.size()!=0)
+					alerts.addAll(dbAlerts);
+				else
+					thereAreOlderTrips = false;
+				updateAlertsList();
+			}
+			super.onError(message);
 		}
 	}
 	
@@ -394,8 +464,7 @@ public class AlertsActivity extends MainActivity {
 
 		@Override
 		protected void onPreExecute() {
-			llProgress.setVisibility(View.VISIBLE);
-			lvAlerts.setVisibility(View.GONE);
+			lRefresh.setRefreshing(true);
 			super.onPreExecute();
 		}
 		
@@ -407,8 +476,7 @@ public class AlertsActivity extends MainActivity {
 		
 		@Override
 		protected void onPostExecute(JSONObject result) {
-			llProgress.setVisibility(View.GONE);
-			lvAlerts.setVisibility(View.VISIBLE);
+			lRefresh.setRefreshing(false);
 			super.onPostExecute(result);
 		}
 		
@@ -420,10 +488,5 @@ public class AlertsActivity extends MainActivity {
 			updateAlertsList();
 			super.onSuccess(responseJSON);
 		}
-		
-		@Override
-		protected void onError(String message) {
-			// Do nothing
-		}	
 	}
 }

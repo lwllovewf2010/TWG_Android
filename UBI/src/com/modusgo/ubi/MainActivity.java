@@ -131,7 +131,8 @@ public class MainActivity extends FragmentActivity {
         menuItems.add(MenuItems.CALLSUPPORT);
         menuItems.add(MenuItems.AGENT);
         menuItems.add(MenuItems.FEEDBACK);
-        menuItems.add(MenuItems.FINDAMECHANIC);
+        if(prefs.getBoolean(Constants.PREF_FIND_MECHANIC_ENABLED, false))
+        	menuItems.add(MenuItems.FINDAMECHANIC);
         menuItems.add(MenuItems.SETTINGS);
         //menuItems.add(MenuItems.DRIVERSETUP);
         menuItems.add(MenuItems.LOGOUT);
@@ -297,6 +298,7 @@ public class MainActivity extends FragmentActivity {
     protected void onResume() {
     	super.onResume();        
     	//overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    	setNavigationDrawerItemsUnselected();
     	setActionBarAppearance();
 		checkForCrashes();
     }
@@ -353,6 +355,7 @@ public class MainActivity extends FragmentActivity {
 		        	//Feedback
 		        	String driverName = vehicle !=null ? ", "+vehicle.name : "";
 		        	new DialogFeedback(actionBarTitle.toLowerCase(Locale.US) + " screen" + driverName).show(getSupportFragmentManager(), "FeedbackDialog");
+		    		setNavigationDrawerItemsUnselected();
 					Utils.gaTrackScreen(MainActivity.this, "Feedback Dialog");
 		            break;
 		        case FINDAMECHANIC:
