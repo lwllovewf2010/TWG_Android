@@ -13,7 +13,6 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -574,7 +573,7 @@ public class DiagnosticsFragment extends Fragment{
 									Utils.fixTimezoneZ(maintenance.optString("created_at")), 
 									maintenance.optString("description"), 
 									maintenance.optString("importance"), 
-									maintenance.optString("mileage"), 
+									Integer.toString(maintenance.optInt("mileage")), 
 									maintenance.optString("price")));
 						}
 						dbHelper.saveMaintenances(vehicle.id, maintenances);
