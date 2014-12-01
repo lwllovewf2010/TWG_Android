@@ -3073,6 +3073,9 @@ com.modusgo.ubi.R$id: int list_item
 com.modusgo.ubi.R$id: int llChilds
 com.modusgo.ubi.R$id: int llCircles
 com.modusgo.ubi.R$id: int llContent
+com.modusgo.ubi.R$id: int llEstLaborCost
+com.modusgo.ubi.R$id: int llEstPartsCost
+com.modusgo.ubi.R$id: int llEstTotalCost
 com.modusgo.ubi.R$id: int llEventsList
 com.modusgo.ubi.R$id: int llFields
 com.modusgo.ubi.R$id: int llInfo
