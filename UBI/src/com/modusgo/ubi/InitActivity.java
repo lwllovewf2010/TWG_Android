@@ -230,6 +230,8 @@ public class InitActivity extends FragmentActivity {
 							e.putString(Constants.PREF_CONTACT_PHONE, infoJSON.optString("contact_phone"));
 							e.putString(Constants.PREF_AGENT_PHONE, infoJSON.optString("agent_phone"));
 							e.putBoolean(Constants.PREF_FIND_MECHANIC_ENABLED, infoJSON.optBoolean("find_mechanic_enabled"));
+							e.putBoolean(Constants.PREF_DTC_PRICES_ENABLED, infoJSON.optBoolean("dtc_prices_enabled"));
+							e.putBoolean(Constants.PREF_MAINTENANCE_PRICES_ENABLED, infoJSON.optBoolean("maintenance_prices"));
 							
 							String trackingId = infoJSON.optString("");
 							if(trackingId.equals("") || trackingId.equals("false")){

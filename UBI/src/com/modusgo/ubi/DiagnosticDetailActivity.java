@@ -60,9 +60,16 @@ public class DiagnosticDetailActivity extends MainActivity {
 		tvCode.setText(dtc.code);
 		tvDescription.setText(dtc.description);
 		tvLaborHours.setText(dtc.labor_hours);
-		tvEstLaborCost.setText("$"+dtc.labor_cost);
-		tvEstPartsCost.setText("$"+dtc.parts_cost);
-		tvEstTotalCost.setText("$"+dtc.total_cost);
+		if(prefs.getBoolean(Constants.PREF_DTC_PRICES_ENABLED, false)){
+			tvEstLaborCost.setText("$"+dtc.labor_cost);
+			tvEstPartsCost.setText("$"+dtc.parts_cost);
+			tvEstTotalCost.setText("$"+dtc.total_cost);
+		}
+		else{
+			findViewById(R.id.llEstLaborCost).setVisibility(View.GONE);
+			findViewById(R.id.llEstPartsCost).setVisibility(View.GONE);
+			findViewById(R.id.llEstTotalCost).setVisibility(View.GONE);
+		}
 		
 		switch (dtc.importance.toLowerCase(Locale.US)) {
 		case "high":
