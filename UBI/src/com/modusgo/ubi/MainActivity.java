@@ -130,7 +130,8 @@ public class MainActivity extends FragmentActivity {
         menuItems.add(MenuItems.CALLSUPPORT);
         menuItems.add(MenuItems.AGENT);
         menuItems.add(MenuItems.FEEDBACK);
-        menuItems.add(MenuItems.FINDAMECHANIC);
+        if(prefs.getBoolean(Constants.PREF_FIND_MECHANIC_ENABLED, false))
+        	menuItems.add(MenuItems.FINDAMECHANIC);
         menuItems.add(MenuItems.SETTINGS);
         //menuItems.add(MenuItems.DRIVERSETUP);
         menuItems.add(MenuItems.LOGOUT);

@@ -113,19 +113,24 @@ public class DiagnosticDetailActivity extends MainActivity {
 			llList.addView(rowView);
 		}
 		
-		btnFindMechanic.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				startActivity(new Intent(DiagnosticDetailActivity.this, FindMechanicActivity.class));
+		if(prefs.getBoolean(Constants.PREF_FIND_MECHANIC_ENABLED, false)){
+			btnFindMechanic.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					startActivity(new Intent(DiagnosticDetailActivity.this, FindMechanicActivity.class));
+				}
+			});
+			btnFindMechanic.setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, Constants.BUTTON_BG_COLOR)));
+			try{
+				btnFindMechanic.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, Constants.BUTTON_TEXT_COLOR)));
 			}
-		});
-		btnFindMechanic.setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, Constants.BUTTON_BG_COLOR)));
-		try{
-			btnFindMechanic.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, Constants.BUTTON_TEXT_COLOR)));
+		    catch(Exception e){
+		    	e.printStackTrace();
+		    }
 		}
-	    catch(Exception e){
-	    	e.printStackTrace();
-	    }
+		else{
+			btnFindMechanic.setVisibility(View.GONE);
+		}
 	}
 	
 	@Override
