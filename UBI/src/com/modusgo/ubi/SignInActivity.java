@@ -422,9 +422,19 @@ public class SignInActivity extends FragmentActivity {
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
 			Editor e = prefs.edit();
 			e.putString(Constants.PREF_AUTH_KEY, responseJSON.getString("auth_key"));
-			if(!responseJSON.isNull("driver"))
-				e.putString(Constants.PREF_ROLE, responseJSON.getJSONObject("driver").optString("role"));
-			if(!responseJSON.isNull("device")){
+			if(responseJSON.has("driver")){
+				JSONObject driverJSON = responseJSON.getJSONObject("driver");
+				e.putLong(Constants.PREF_DRIVER_ID, driverJSON.optLong(Constants.PREF_DRIVER_ID));
+				e.putLong(Constants.PREF_VEHICLE_ID, driverJSON.optLong(Constants.PREF_VEHICLE_ID));
+				e.putString(Constants.PREF_FIRST_NAME, driverJSON.optString(Constants.PREF_FIRST_NAME));
+				e.putString(Constants.PREF_LAST_NAME, driverJSON.optString(Constants.PREF_LAST_NAME));
+				e.putString(Constants.PREF_EMAIL, driverJSON.optString(Constants.PREF_EMAIL));
+				e.putString(Constants.PREF_ROLE, driverJSON.optString(Constants.PREF_ROLE));
+				e.putString(Constants.PREF_PHONE, driverJSON.optString(Constants.PREF_PHONE));
+				e.putString(Constants.PREF_TIMEZONE, driverJSON.optString(Constants.PREF_TIMEZONE));
+				e.putString(Constants.PREF_PHOTO, driverJSON.optString(Constants.PREF_PHOTO));
+			}
+			if(responseJSON.has("device")){
 				JSONObject deviceJSON = responseJSON.getJSONObject("device");
 				e.putString(Constants.PREF_DEVICE_MEID, deviceJSON.optString("meid"));
 				e.putString(Constants.PREF_DEVICE_TYPE, deviceJSON.optString("type"));
@@ -435,7 +445,7 @@ public class SignInActivity extends FragmentActivity {
 			}
 			e.commit();
 			
-			if(!responseJSON.isNull("vehicles")){
+			if(responseJSON.has("vehicles")){
 				JSONArray vehiclesJSON = responseJSON.getJSONArray("vehicles");
 				ArrayList<Vehicle> vehicles = new ArrayList<Vehicle>();
 				for (int i = 0; i < vehiclesJSON.length(); i++) {
