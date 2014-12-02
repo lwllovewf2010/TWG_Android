@@ -29,8 +29,10 @@ public class Trip extends ListItem implements Serializable{
 	ArrayList<Point> points;
 	ArrayList<ArrayList<LatLng>> speedingRoute;
 	public String grade;
-	public int fuelLevel;
+	public float fuel = 0;
 	public String fuelUnit="";
+	public float fuelCost = 0;
+	public String fuelStatus = "";
 	public boolean viewed = false;
 	public String viewedAt = "";
 	public String updatedAt = "";

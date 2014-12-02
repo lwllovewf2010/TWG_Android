@@ -89,8 +89,10 @@ public class DbHelper extends SQLiteOpenHelper {
 		    TripEntry.COLUMN_NAME_AVG_SPEED + FLOAT_TYPE + COMMA_SEP +
 		    TripEntry.COLUMN_NAME_MAX_SPEED + FLOAT_TYPE + COMMA_SEP +
 		    TripEntry.COLUMN_NAME_GRADE + TEXT_TYPE + COMMA_SEP +
-		    TripEntry.COLUMN_NAME_FUEL + INT_TYPE + COMMA_SEP +
+		    TripEntry.COLUMN_NAME_FUEL + FLOAT_TYPE + COMMA_SEP +
 		    TripEntry.COLUMN_NAME_FUEL_UNIT + TEXT_TYPE + COMMA_SEP +
+		    TripEntry.COLUMN_NAME_FUEL_COST + FLOAT_TYPE + COMMA_SEP +
+		    TripEntry.COLUMN_NAME_FUEL_STATUS + TEXT_TYPE + COMMA_SEP +
 		    TripEntry.COLUMN_NAME_VIEWED_AT + TEXT_TYPE + COMMA_SEP +
 		    TripEntry.COLUMN_NAME_UPDATED_AT + TEXT_TYPE + COMMA_SEP +
 		    TripEntry.COLUMN_NAME_HIDDEN + INT_TYPE + " ); ",
@@ -237,7 +239,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	"DROP TABLE IF EXISTS " + DDEventEntry.TABLE_NAME};
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 38;
+	public static final int DATABASE_VERSION = 39;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;
@@ -538,12 +540,14 @@ public class DbHelper extends SQLiteOpenHelper {
 					+ TripEntry.COLUMN_NAME_GRADE +","
 					+ TripEntry.COLUMN_NAME_FUEL +","
 					+ TripEntry.COLUMN_NAME_FUEL_UNIT +","
+					+ TripEntry.COLUMN_NAME_FUEL_COST +","
+					+ TripEntry.COLUMN_NAME_FUEL_STATUS +","
 					+ TripEntry.COLUMN_NAME_VIEWED_AT +","
 					+ TripEntry.COLUMN_NAME_UPDATED_AT +","
 					+ TripEntry.COLUMN_NAME_HIDDEN +""
 					+ ") VALUES (?,?,?,?,?,?," +
 					"(SELECT IFNULL(NULLIF((SELECT "+TripEntry.COLUMN_NAME_AVG_SPEED+" FROM trips WHERE "+TripEntry._ID+" IS ?),0),?))," +
-					"(SELECT IFNULL(NULLIF((SELECT "+TripEntry.COLUMN_NAME_MAX_SPEED+" FROM trips WHERE "+TripEntry._ID+" IS ?),0),?)),?,?,?," +
+					"(SELECT IFNULL(NULLIF((SELECT "+TripEntry.COLUMN_NAME_MAX_SPEED+" FROM trips WHERE "+TripEntry._ID+" IS ?),0),?)),?,?,?,?,?," +
 					"(SELECT IFNULL(NULLIF((SELECT "+TripEntry.COLUMN_NAME_VIEWED_AT+" FROM trips WHERE "+TripEntry._ID+" IS ?),''),?))," +
 					"?," +
 					"(SELECT IFNULL(NULLIF((SELECT "+TripEntry.COLUMN_NAME_HIDDEN+" FROM trips WHERE "+TripEntry._ID+" IS ?),0),?)));";
@@ -566,13 +570,15 @@ public class DbHelper extends SQLiteOpenHelper {
 		    	statement.bindDouble(9, trip.id);
 		    	statement.bindDouble(10, trip.maxSpeed);
 		    	statement.bindString(11, trip.grade);
-		    	statement.bindLong(12, trip.fuelLevel);
+		    	statement.bindDouble(12, trip.fuel);
 		    	statement.bindString(13, trip.fuelUnit);
-		    	statement.bindDouble(14, trip.id);
-		    	statement.bindString(15, trip.viewedAt);
-		    	statement.bindString(16, trip.updatedAt);
-		    	statement.bindDouble(17, trip.id);
-		    	statement.bindLong(18, trip.hidden ? 1 : 0);
+		    	statement.bindDouble(14, trip.fuelCost);
+		    	statement.bindString(15, trip.fuelStatus);
+		    	statement.bindDouble(16, trip.id);
+		    	statement.bindString(17, trip.viewedAt);
+		    	statement.bindString(18, trip.updatedAt);
+		    	statement.bindDouble(19, trip.id);
+		    	statement.bindLong(20, trip.hidden ? 1 : 0);
 		    	statement.execute();
 			}
 		    

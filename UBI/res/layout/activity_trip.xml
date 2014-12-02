@@ -82,12 +82,12 @@
                         android:id="@+id/llTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:background="@color/btn_transparent_orange_light"
                         android:gravity="left|center_vertical"
                         android:orientation="horizontal"
-                        android:paddingLeft="15dp"
                         android:paddingBottom="18dp"
-                        android:paddingTop="11dp"
-                        android:background="@color/btn_transparent_orange_light" >
+                        android:paddingLeft="15dp"
+                        android:paddingTop="11dp" >
 
                         <ImageView
                             android:layout_width="wrap_content"
@@ -252,6 +252,150 @@
                             android:textColor="#00AEEF"
                             android:textSize="10sp"
                             ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="11dp"
+                    android:layout_marginRight="11dp"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal" >
+
+                    <LinearLayout
+                        android:id="@+id/llScore"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="11dp"
+                        android:layout_marginRight="11dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:paddingBottom="10dp"
+                        android:paddingTop="10dp" >
+
+                        <com.modusgo.ubi.customviews.TypefacedTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Score"
+                            android:textAllCaps="true"
+                            android:textColor="#697078"
+                            android:textSize="10sp"
+                            ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
+
+                        <com.modusgo.ubi.customviews.TypefacedTextView
+                            android:id="@+id/tvScore"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="N/A"
+                            android:textColor="#00AEEF"
+                            android:textSize="31sp"
+                            ubi:typeface="EncodeSansNarrow-700-Bold.ttf" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/llFuelUsed"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="11dp"
+                        android:layout_marginRight="11dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:paddingBottom="10dp"
+                        android:paddingTop="10dp" >
+
+                        <com.modusgo.ubi.customviews.TypefacedTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Fuel Used"
+                            android:textAllCaps="true"
+                            android:textColor="#697078"
+                            android:textSize="10sp"
+                            ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
+
+                        <com.modusgo.ubi.customviews.TypefacedTextView
+                            android:id="@+id/tvFuelUsed"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="N/A"
+                            android:textColor="#00AEEF"
+                            android:textSize="31sp"
+                            ubi:typeface="EncodeSansNarrow-700-Bold.ttf" />
+
+                        <com.modusgo.ubi.customviews.TypefacedTextView
+                            android:id="@+id/tvFuelUnits"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="GAL"
+                            android:textColor="#00AEEF"
+                            android:textSize="10sp"
+                            ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+                    </LinearLayout>
+
+                    <com.modusgo.ubi.customviews.TypefacedTextView
+                        android:id="@+id/tvFuelStatus"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="11dp"
+                        android:layout_marginRight="11dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingTop="10dp"
+                        android:text=""
+                        android:textColor="#697078"
+                        android:textSize="10sp"
+                        android:visibility="gone"
+                        ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+
+                    <LinearLayout
+                        android:id="@+id/llFuelCost"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="11dp"
+                        android:layout_marginRight="11dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:paddingBottom="10dp"
+                        android:paddingTop="10dp" >
+
+                        <com.modusgo.ubi.customviews.TypefacedTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Est. Fuel Cost"
+                            android:textAllCaps="true"
+                            android:textColor="#697078"
+                            android:textSize="10sp"
+                            ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
+
+                        <com.modusgo.ubi.customviews.TypefacedTextView
+                            android:id="@+id/tvFuelCost"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="N/A"
+                            android:textColor="#00AEEF"
+                            android:textSize="31sp"
+                            ubi:typeface="EncodeSansNarrow-700-Bold.ttf" />
+
+                        <com.modusgo.ubi.customviews.TypefacedTextView
+                            android:id="@+id/tvDistanceUnits"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="DOLLARS"
+                            android:textColor="#00AEEF"
+                            android:textSize="10sp"
+                            ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+
+                        <com.modusgo.ubi.customviews.TypefacedTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Est. Fuel Cost"
+                            android:textAllCaps="true"
+                            android:textColor="#697078"
+                            android:textSize="10sp"
+                            ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
                     </LinearLayout>
                 </LinearLayout>
 

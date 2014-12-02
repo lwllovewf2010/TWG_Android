@@ -357,7 +357,7 @@ public class AlertMapActivity extends MainActivity {
 			trip.viewed = true;
 			trip.updatedAt = responseJSON.optString("updated_at");
 			trip.viewedAt = sdf.format(Calendar.getInstance().getTime());
-			trip.fuelLevel = responseJSON.optInt("fuel_left");
+			trip.fuel = responseJSON.optInt("fuel_left");
 			trip.fuelUnit = responseJSON.optString("fuel_unit");
 			
 			if(responseJSON.has("route")){

@@ -74,6 +74,13 @@ public class TripActivity extends MainActivity {
     TextView tvAvgSpeedUnits;
     TextView tvMaxSpeedUnits;
     TextView tvDistanceUnits;
+    TextView tvScore;
+    TextView tvFuelUsed;
+    TextView tvFuelCost;
+    TextView tvFuelUnits;
+    TextView tvFuelStatus;
+    LinearLayout llFuelUsed;
+    LinearLayout llFuelCost;
     LinearLayout llTime;
     LinearLayout llContent;
     LinearLayout llEventsList;
@@ -131,6 +138,13 @@ public class TripActivity extends MainActivity {
 		tvAvgSpeedUnits = (TextView) findViewById(R.id.tvAvgSpeedUnits);
 		tvMaxSpeedUnits = (TextView) findViewById(R.id.tvMaxSpeedUnits);
 		tvDistanceUnits = (TextView) findViewById(R.id.tvDistanceUnits);
+	    tvScore = (TextView) findViewById(R.id.tvScore);
+	    tvFuelUsed = (TextView) findViewById(R.id.tvFuelUsed);
+	    tvFuelCost = (TextView) findViewById(R.id.tvFuelCost);
+	    tvFuelUnits = (TextView) findViewById(R.id.tvFuelUnits);
+	    tvFuelStatus = (TextView) findViewById(R.id.tvFuelStatus);
+	    llFuelUsed = (LinearLayout)findViewById(R.id.llFuelUsed);
+	    llFuelCost = (LinearLayout)findViewById(R.id.llFuelCost);
 		llTime = (LinearLayout)findViewById(R.id.llTime);
 		llContent = (LinearLayout)findViewById(R.id.llContent);
 		llEventsList = (LinearLayout)findViewById(R.id.llEventsList);
@@ -296,7 +310,27 @@ public class TripActivity extends MainActivity {
 			tvMaxSpeedUnits.setText("KPH");
 			tvDistanceUnits.setText("KM");
 		}
-        
+		
+		tvScore.setText(trip.grade);
+		if(trip.fuelCost==0)
+			llFuelCost.setVisibility(View.GONE);
+		else{
+			DecimalFormat moneyDf = new DecimalFormat("0.00");
+			tvFuelCost.setText(moneyDf.format(trip.fuelCost));
+		}
+		
+		if(trip.fuel >= 0 && !TextUtils.isEmpty(trip.fuelUnit)){
+			tvFuelUsed.setText(df.format(trip.fuel));
+			tvFuelUnits.setText(trip.fuelUnit);
+		}
+		else{
+			llFuelUsed.setVisibility(View.GONE);
+			if(!TextUtils.isEmpty(trip.fuelStatus)){
+				tvFuelStatus.setVisibility(View.VISIBLE);
+				tvFuelStatus.setText(trip.fuelStatus);
+			}
+		}
+		
         llEventsList.removeAllViews();
         
         
@@ -491,7 +525,7 @@ public class TripActivity extends MainActivity {
 			trip.viewed = true;
 			trip.updatedAt = responseJSON.optString("updated_at");
 			trip.viewedAt = sdf.format(Calendar.getInstance().getTime());
-			trip.fuelLevel = responseJSON.optInt("fuel_left");
+			trip.fuel = responseJSON.optInt("fuel_left");
 			trip.fuelUnit = responseJSON.optString("fuel_unit");
 			
 			if(responseJSON.has("route")){
