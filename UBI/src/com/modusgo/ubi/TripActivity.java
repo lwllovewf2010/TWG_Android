@@ -46,6 +46,7 @@ import com.modusgo.ubi.Trip.Point;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.PointContract.PointEntry;
 import com.modusgo.ubi.db.RouteContract.RouteEntry;
+import com.modusgo.ubi.db.SpeedingRouteContract.SpeedingRouteEntry;
 import com.modusgo.ubi.db.TripContract.TripEntry;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.modusgo.ubi.requesttasks.BaseRequestAsyncTask;
@@ -218,6 +219,30 @@ public class TripActivity extends MainActivity {
 			if(c.moveToFirst()){
 				while (!c.isAfterLast()) {
 					t.route.add(new LatLng(c.getDouble(1), c.getDouble(2)));
+					c.moveToNext();
+				}
+			}
+			c.close();
+			
+			c = db.query(SpeedingRouteEntry.TABLE_NAME, 
+					new String[]{
+					SpeedingRouteEntry._ID,
+					SpeedingRouteEntry.COLUMN_NAME_NUM,
+					SpeedingRouteEntry.COLUMN_NAME_LATITUDE,
+					SpeedingRouteEntry.COLUMN_NAME_LONGITUDE}, 
+					SpeedingRouteEntry.COLUMN_NAME_TRIP_ID+" = ?", new String[]{Long.toString(tripId)}, null, null, SpeedingRouteEntry._ID+" ASC");
+			if(c.moveToFirst()){
+
+			    System.out.println("Loading speeding, "+c.getCount());
+				int lastNum = 0;
+				ArrayList<LatLng> speedingRoute = new ArrayList<LatLng>();
+				while (!c.isAfterLast()) {
+					if(lastNum!=c.getInt(1)){
+						t.speedingRoutes.add(speedingRoute);
+						speedingRoute = new ArrayList<LatLng>();
+					}
+					speedingRoute.add(new LatLng(c.getDouble(2), c.getDouble(3)));
+					lastNum = c.getInt(1);
 					c.moveToNext();
 				}
 			}
@@ -415,7 +440,7 @@ public class TripActivity extends MainActivity {
 				map.addPolyline(options.color(color).width(8).zIndex(1));
 		
 				int colorSpeeding = Color.parseColor("#ef4136");
-				for (ArrayList<LatLng> route : trip.speedingRoute) {
+				for (ArrayList<LatLng> route : trip.speedingRoutes) {
 					PolylineOptions optionsSpeeding = new PolylineOptions();
 					for (LatLng point : route) {
 						optionsSpeeding.add(point);
@@ -546,7 +571,7 @@ public class TripActivity extends MainActivity {
 						JSONArray pointJSON = speedingRouteJSON.getJSONArray(j);
 						speedingRoute.add(new LatLng(pointJSON.optDouble(0,0), pointJSON.optDouble(1,0)));	
 					}
-					trip.speedingRoute.add(speedingRoute);				
+					trip.speedingRoutes.add(speedingRoute);				
 				}
 			}
 			
@@ -568,6 +593,7 @@ public class TripActivity extends MainActivity {
 			DbHelper dHelper = DbHelper.getInstance(TripActivity.this);
 			dHelper.saveTrip(vehicle.id, trip);
 			dHelper.saveRoute(trip.id, trip.route);
+			dHelper.saveSpeedingRoute(trip.id, trip.speedingRoutes);
 			dHelper.savePoints(trip.id, trip.points);
 			dHelper.close();
 			

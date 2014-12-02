@@ -107,6 +107,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		    "CREATE TABLE " + SpeedingRouteEntry.TABLE_NAME + " (" +
 		    SpeedingRouteEntry._ID + " INTEGER PRIMARY KEY," +
 		    SpeedingRouteEntry.COLUMN_NAME_TRIP_ID + INT_TYPE + COMMA_SEP +
+		    SpeedingRouteEntry.COLUMN_NAME_NUM + INT_TYPE + COMMA_SEP +
 		    SpeedingRouteEntry.COLUMN_NAME_LATITUDE + FLOAT_TYPE + COMMA_SEP +
 		    SpeedingRouteEntry.COLUMN_NAME_LONGITUDE + FLOAT_TYPE +  " ); ",
 	
@@ -240,7 +241,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	"DROP TABLE IF EXISTS " + DDEventEntry.TABLE_NAME};
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 40;
+	public static final int DATABASE_VERSION = 41;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;
@@ -640,10 +641,10 @@ public class DbHelper extends SQLiteOpenHelper {
 		database.close();
 	}
 	
-	public void saveSpeedingRoute(long tripId, ArrayList<LatLng> route){
+	public void saveSpeedingRoute(long tripId, ArrayList<ArrayList<LatLng>> routes){
 		SQLiteDatabase database = sInstance.getWritableDatabase();
 		
-		if(database!=null && route!=null){
+		if(database!=null && routes!=null){
 			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+SpeedingRouteEntry.TABLE_NAME+" WHERE "+SpeedingRouteEntry.COLUMN_NAME_TRIP_ID+" = "+tripId);
 		    database.beginTransaction();
 		    removeStatement.clearBindings();
@@ -654,18 +655,25 @@ public class DbHelper extends SQLiteOpenHelper {
 			
 			String sql = "INSERT INTO "+ SpeedingRouteEntry.TABLE_NAME +" ("
 					+ SpeedingRouteEntry.COLUMN_NAME_TRIP_ID +","
+					+ SpeedingRouteEntry.COLUMN_NAME_NUM +","
 					+ SpeedingRouteEntry.COLUMN_NAME_LATITUDE +","
 					+ SpeedingRouteEntry.COLUMN_NAME_LONGITUDE
-					+ ") VALUES (?,?,?);";
+					+ ") VALUES (?,?,?,?);";
 			
 			SQLiteStatement statement = database.compileStatement(sql);
 		    database.beginTransaction();
-		    for (LatLng loc : route) {
-		    	statement.clearBindings();
-		    	statement.bindLong(1, tripId);
-		    	statement.bindDouble(2, loc.latitude);
-		    	statement.bindDouble(3, loc.longitude);
-		    	statement.execute();
+		    int routesCount = routes.size();
+		    System.out.println("Saving speeding, "+routesCount);
+		    for (int i = 0; i < routesCount; i++) {
+		    	ArrayList<LatLng> route = routes.get(i);
+		    	for (LatLng loc : route) {
+			    	statement.clearBindings();
+			    	statement.bindLong(1, tripId);
+			    	statement.bindLong(2, i);
+			    	statement.bindDouble(3, loc.latitude);
+			    	statement.bindDouble(4, loc.longitude);
+			    	statement.execute();
+				}
 			}
 		    
 		    database.setTransactionSuccessful();	

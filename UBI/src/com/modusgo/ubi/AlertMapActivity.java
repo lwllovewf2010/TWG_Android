@@ -142,7 +142,7 @@ public class AlertMapActivity extends MainActivity {
 					map.addPolyline(options.color(color).width(8).zIndex(1));
 					
 					int colorSpeeding = Color.parseColor("#ef4136");
-					for (ArrayList<LatLng> route : trip.speedingRoute) {
+					for (ArrayList<LatLng> route : trip.speedingRoutes) {
 						PolylineOptions optionsSpeeding = new PolylineOptions();
 						for (LatLng point : route) {
 							optionsSpeeding.add(point);
@@ -378,7 +378,7 @@ public class AlertMapActivity extends MainActivity {
 						JSONArray pointJSON = speedingRouteJSON.getJSONArray(j);
 						speedingRoute.add(new LatLng(pointJSON.optDouble(0,0), pointJSON.optDouble(1,0)));	
 					}
-					trip.speedingRoute.add(speedingRoute);				
+					trip.speedingRoutes.add(speedingRoute);				
 				}
 			}
 			

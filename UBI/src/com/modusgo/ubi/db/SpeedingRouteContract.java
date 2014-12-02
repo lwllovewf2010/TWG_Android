@@ -12,6 +12,7 @@ public class SpeedingRouteContract {
 	public static abstract class SpeedingRouteEntry implements BaseColumns {
 		public static final String TABLE_NAME = "speeding_routes";
 		public static final String COLUMN_NAME_TRIP_ID = "trip_id";
+		public static final String COLUMN_NAME_NUM = "num";
 		public static final String COLUMN_NAME_LATITUDE = "latitude";
 		public static final String COLUMN_NAME_LONGITUDE = "longitude";
 	}
