@@ -148,6 +148,13 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 				startActivity(intent);	
 			}
 		});
+	    
+	    imagePhoto.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+	        	startActivity(new Intent(getActivity(), SettingsActivity.class));
+			}
+		});
 		
 		return rootView;
 	}
