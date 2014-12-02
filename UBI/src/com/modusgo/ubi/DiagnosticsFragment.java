@@ -3,6 +3,7 @@ package com.modusgo.ubi;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 
 import org.apache.http.message.BasicNameValuePair;
@@ -73,6 +74,8 @@ public class DiagnosticsFragment extends Fragment{
 	SharedPreferences prefs;
 	
 	int maintenancesCount = 0;
+	HashMap <String, Integer> maintenancesByMileage;
+	HashMap <String, View> maintenancesHeaders;
 	int recallCount = 0;
 	
 	@Override
@@ -399,7 +402,7 @@ public class DiagnosticsFragment extends Fragment{
 				MaintenanceEntry.COLUMN_NAME_MILEAGE,
 				MaintenanceEntry.COLUMN_NAME_PRICE
 				}, 
-				MaintenanceEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id, null, null, null, null);
+				MaintenanceEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id, null, null, null, MaintenanceEntry.COLUMN_NAME_MILEAGE + " DESC");
 		
 		if(c.moveToFirst()){
 			final View headerView = inflater.inflate(R.layout.diagnostics_header, llContent, false);
@@ -407,9 +410,35 @@ public class DiagnosticsFragment extends Fragment{
 			((TextView) headerView.findViewById(R.id.tvTitle)).setText("Scheduled Maintenance");
 			llContent.addView(headerView);
 			
+			String lastMileage = "";
+			maintenancesByMileage = new HashMap<String, Integer>();
+			maintenancesHeaders = new HashMap<String, View>();
+			
 			while(!c.isAfterLast()){
 				final Maintenance maintenance = new Maintenance(c.getLong(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5));
-				final SwipeLayout rowView = (SwipeLayout) inflater.inflate(R.layout.diagnostics_item, llContent, false);
+				
+				if(!lastMileage.equals(maintenance.mileage)){
+					lastMileage = maintenance.mileage;
+					View mileageHeader = inflater.inflate(R.layout.scheduled_maintenance_header, llContent, false);
+					String mileageUnit = "";
+					if(prefs.getString(Constants.PREF_UNITS_OF_MEASURE, "mile").equals("mile"))
+						mileageUnit = "miles";
+					else
+						mileageUnit = "km";
+					((TextView)mileageHeader.findViewById(R.id.tvTitle)).setText(lastMileage + " " + mileageUnit);
+					
+					maintenancesHeaders.put(maintenance.mileage, mileageHeader);
+					llContent.addView(mileageHeader);
+				}
+				
+				if(maintenancesByMileage.containsKey(maintenance.mileage)){
+					int value = maintenancesByMileage.get(maintenance.mileage);
+					maintenancesByMileage.put(maintenance.mileage, value+1);
+				}
+				else
+					maintenancesByMileage.put(maintenance.mileage, 1);
+				
+				final SwipeLayout rowView = (SwipeLayout) inflater.inflate(R.layout.scheduled_maintenance_item, llContent, false);
 				rowView.setShowMode(SwipeLayout.ShowMode.PullOut);
 				rowView.findViewById(R.id.btnDelete).setOnClickListener(new OnClickListener() {
 					@Override
@@ -417,18 +446,25 @@ public class DiagnosticsFragment extends Fragment{
 						maintenancesCount--;
 						llContent.removeView(rowView);
 						new HideMaintenanceTask(getActivity().getApplicationContext(), maintenance.id).execute("vehicles/"+vehicle.id+"/diagnostics/vehicle_maintenances/" + maintenance.id + "/hide.json");
+						
+						if(maintenancesByMileage.containsKey(maintenance.mileage)){
+							int maintenanceByMileageCount = maintenancesByMileage.get(maintenance.mileage);
+							maintenancesByMileage.put(maintenance.mileage, maintenanceByMileageCount-1);
+							
+							if(maintenancesByMileage.get(maintenance.mileage)==0){
+								llContent.removeView(maintenancesHeaders.get(maintenance.mileage));
+								maintenancesHeaders.remove(maintenance.mileage);
+							}
+						}
+						
 						if(maintenancesCount==0)
 							llContent.removeView(headerView);
 					}
 				});
 				
-				TextView tvCode = (TextView) rowView.findViewById(R.id.tvCode);
 				TextView tvDescription = (TextView) rowView.findViewById(R.id.tvDescription);
 				TextView tvImportance = (TextView) rowView.findViewById(R.id.tvImportance);
-				View imageArrow = rowView.findViewById(R.id.imageArrow);
-				imageArrow.setVisibility(View.GONE);
-				tvCode.setText(maintenance.mileage);
-				tvDescription.setText(maintenance.description);
+				tvDescription.setText("⚫" + maintenance.description);
 				tvImportance.setText(maintenance.importance);
 				switch (maintenance.importance.toLowerCase(Locale.US)) {
 				case "high":
