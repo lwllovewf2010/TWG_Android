@@ -37,8 +37,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="9dp"
                     android:orientation="horizontal"
-                    android:paddingLeft="17dp"
-                    android:paddingRight="17dp" >
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp" >
 
                     <RelativeLayout
                         android:layout_width="0dp"
@@ -199,8 +199,8 @@
                     android:layout_height="wrap_content"
                     android:background="@color/btn_transparent_orange_light"
                     android:paddingBottom="3dp"
-                    android:paddingLeft="17dp"
-                    android:paddingRight="17dp"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
                     android:paddingTop="3dp" >
 
                     <com.modusgo.ubi.customviews.TypefacedTextView
@@ -236,8 +236,8 @@
                     android:layout_height="wrap_content"
                     android:background="@color/btn_transparent_orange_light"
                     android:paddingBottom="3dp"
-                    android:paddingLeft="17dp"
-                    android:paddingRight="17dp"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
                     android:paddingTop="3dp" >
 
                     <com.modusgo.ubi.customviews.TypefacedTextView
@@ -281,7 +281,7 @@
                 android:id="@+id/imagePhoto"
                 android:layout_width="102dp"
                 android:layout_height="102dp"
-                android:layout_marginLeft="25dp"
+                android:layout_marginLeft="20dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/person_test3" />
 
