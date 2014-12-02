@@ -225,11 +225,14 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 		    cs.setSpan(new SuperscriptSpan(), fuelLeftString.length()-fuelUnitLength, fuelLeftString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		    cs.setSpan(new RelativeSizeSpan(0.5f), fuelLeftString.length()-fuelUnitLength, fuelLeftString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		    tvFuel.setText(cs);
-		    
+		    tvFuel.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_fuel_green, 0, 0, 0);
 		    fuelBlock.setOnClickListener(null);
+		    fuelBlock.setClickable(false);
 		}
 		else{
 			if(!TextUtils.isEmpty(vehicle.carFuelStatus)){
+				tvFuel.setText("");
+				tvFuel.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_fuel_green, 0, R.drawable.ic_fuel_arrow_down, 0);
 				fuelBlock.setClickable(true);
 				fuelBlock.setOnClickListener(new OnClickListener() {
 					@Override
