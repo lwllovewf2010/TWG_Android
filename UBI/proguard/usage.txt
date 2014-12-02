@@ -2504,6 +2504,51 @@ android.support.v7.widget.SuggestionsAdapter:
     static final int INVALID_INDEX
     124:124:public int getQueryRefinement()
     172:174:public void close()
+com.daimajia.swipe.BuildConfig
+com.daimajia.swipe.SwipeLayout:
+    87:88:public void removeSwipeListener(com.daimajia.swipe.SwipeLayout$SwipeListener)
+    104:105:public void addSwipeDenier(com.daimajia.swipe.SwipeLayout$SwipeDenier)
+    108:109:public void removeSwipeDenier(com.daimajia.swipe.SwipeLayout$SwipeDenier)
+    112:113:public void removeAllSwipeDeniers()
+    125:137:public void addRevealListener(int,com.daimajia.swipe.SwipeLayout$OnRevealListener)
+    145:147:public void addRevealListener(int[],com.daimajia.swipe.SwipeLayout$OnRevealListener)
+    150:158:public void removeRevealListener(int,com.daimajia.swipe.SwipeLayout$OnRevealListener)
+    161:166:public void removeAllRevealListeners(int)
+    609:611:public void removeOnLayoutListener(com.daimajia.swipe.SwipeLayout$OnLayout)
+    900:900:private boolean insideAdapterView()
+    1145:1146:public void open(boolean)
+    1181:1182:public void close(boolean)
+    1210:1211:public void toggle()
+    1214:1218:public void toggle(boolean)
+com.daimajia.swipe.adapters.ArraySwipeAdapter
+com.daimajia.swipe.adapters.BaseSwipeAdapter:
+    public abstract int getSwipeLayoutResourceId(int)
+    59:60:public void openItem(int)
+    64:65:public void closeItem(int)
+    69:70:public void closeAllExcept(com.daimajia.swipe.SwipeLayout)
+    74:74:public java.util.List getOpenItems()
+    79:79:public java.util.List getOpenLayouts()
+    84:85:public void removeShownLayouts(com.daimajia.swipe.SwipeLayout)
+    89:89:public boolean isOpen(int)
+    94:94:public com.daimajia.swipe.implments.SwipeItemMangerImpl$Mode getMode()
+com.daimajia.swipe.adapters.CursorSwipeAdapter
+com.daimajia.swipe.adapters.SimpleCursorSwipeAdapter
+com.daimajia.swipe.implments.SwipeItemMangerImpl:
+    47:47:public com.daimajia.swipe.implments.SwipeItemMangerImpl$Mode getMode()
+    92:99:public void openItem(int)
+    122:123:public void removeShownLayouts(com.daimajia.swipe.SwipeLayout)
+    127:130:public java.util.List getOpenItems()
+    136:136:public java.util.List getOpenLayouts()
+com.daimajia.swipe.interfaces.SwipeItemMangerInterface:
+    public abstract void openItem(int)
+    public abstract void closeItem(int)
+    public abstract void closeAllExcept(com.daimajia.swipe.SwipeLayout)
+    public abstract java.util.List getOpenItems()
+    public abstract java.util.List getOpenLayouts()
+    public abstract void removeShownLayouts(com.daimajia.swipe.SwipeLayout)
+    public abstract boolean isOpen(int)
+    public abstract com.daimajia.swipe.implments.SwipeItemMangerImpl$Mode getMode()
+    public abstract void setMode(com.daimajia.swipe.implments.SwipeItemMangerImpl$Mode)
 com.echo.holographlibrary.Bar:
     private float mOldValue
     private float mGoalValue
@@ -6770,6 +6815,8 @@ com.modusgo.ubi.Constants:
     public static final java.lang.String PREF_FIND_MECHANIC_ENABLED
     public static final java.lang.String PREF_DTC_PRICES_ENABLED
     public static final java.lang.String PREF_MAINTENANCE_PRICES_ENABLED
+    public static final java.lang.String PREF_DIAGNOSTICS_DELETE_POPUP_SHOWED
+    public static final java.lang.String PREF_ALERTS_DELETE_POPUP_SHOWED
     public static final java.lang.String ROLE_CUSTOMER
     public static final java.lang.String API_BASE_URL_PREFIX
     public static final java.lang.String API_BASE_URL_POSTFIX
@@ -6851,7 +6898,7 @@ com.modusgo.ubi.R$layout
 com.modusgo.ubi.R$string
 com.modusgo.ubi.R$style
 com.modusgo.ubi.R$styleable:
-    3135:3135:public R$styleable()
+    3148:3148:public R$styleable()
 com.modusgo.ubi.R$xml
 com.modusgo.ubi.Recall:
     private static final long serialVersionUID
@@ -6888,8 +6935,8 @@ com.modusgo.ubi.TripsFragment:
 com.modusgo.ubi.Vehicle:
     private static final long serialVersionUID
     public int harshEvents
-    62:62:public java.lang.String getFirstName()
-    66:72:public java.lang.String getLastName()
+    63:63:public java.lang.String getFirstName()
+    67:73:public java.lang.String getLastName()
 com.modusgo.ubi.WelcomeActivity:
     public static final java.lang.String SAVED_SCREENS
 com.modusgo.ubi.customviews.CircularProgressBar
@@ -6913,7 +6960,7 @@ com.modusgo.ubi.db.DbHelper:
     private static final java.lang.String COMMA_SEP
     public static final int DATABASE_VERSION
     public static final java.lang.String DATABASE_NAME
-    633:666:public void saveSpeedingRoute(long,java.util.ArrayList)
+    644:677:public void saveSpeedingRoute(long,java.util.ArrayList)
 com.modusgo.ubi.db.LimitsContract
 com.modusgo.ubi.db.LimitsContract$LimitsEntry
 com.modusgo.ubi.db.MaintenanceContract
@@ -6946,6 +6993,13 @@ com.modusgo.ubi.utils.AnimationUtils:
     10:10:public AnimationUtils()
 com.modusgo.ubi.utils.RequestGet:
     19:21:public RequestGet(java.lang.String)
+com.modusgo.ubi.utils.SwipeDismissListViewTouchListener
+com.modusgo.ubi.utils.SwipeDismissListViewTouchListener$1
+com.modusgo.ubi.utils.SwipeDismissListViewTouchListener$2
+com.modusgo.ubi.utils.SwipeDismissListViewTouchListener$3
+com.modusgo.ubi.utils.SwipeDismissListViewTouchListener$4
+com.modusgo.ubi.utils.SwipeDismissListViewTouchListener$DismissCallbacks
+com.modusgo.ubi.utils.SwipeDismissListViewTouchListener$PendingDismissData
 com.modusgo.ubi.utils.Utils:
     41:41:public Utils()
     276:277:public static android.graphics.Bitmap decodeBase64(java.lang.String)
@@ -7375,11 +7429,13 @@ net.hockeyapp.android.Constants:
     public static final java.lang.String SDK_NAME
     public static final java.lang.String SDK_VERSION
     51:51:public Constants()
-net.hockeyapp.android.CrashManager:
-    71:71:public CrashManager()
-    89:90:public static void register(android.content.Context,java.lang.String)
-    127:128:public static void initialize(android.content.Context,java.lang.String,net.hockeyapp.android.CrashManagerListener)
-    142:143:public static void initialize(android.content.Context,java.lang.String,java.lang.String,net.hockeyapp.android.CrashManagerListener)
+net.hockeyapp.android.CrashManager
+net.hockeyapp.android.CrashManager$1
+net.hockeyapp.android.CrashManager$2
+net.hockeyapp.android.CrashManager$3
+net.hockeyapp.android.CrashManager$4
+net.hockeyapp.android.CrashManagerListener
+net.hockeyapp.android.ExceptionHandler
 net.hockeyapp.android.FeedbackActivity
 net.hockeyapp.android.FeedbackActivity$1
 net.hockeyapp.android.FeedbackActivity$2
@@ -7452,8 +7508,8 @@ net.hockeyapp.android.tasks.CheckUpdateTaskWithUI:
     79:81:public void detach()
 net.hockeyapp.android.tasks.ParseFeedbackTask
 net.hockeyapp.android.tasks.SendFeedbackTask
-net.hockeyapp.android.utils.ConnectionManager$ConnectionManagerHolder:
-    48:48:private ConnectionManager$ConnectionManagerHolder()
+net.hockeyapp.android.utils.ConnectionManager
+net.hockeyapp.android.utils.ConnectionManager$ConnectionManagerHolder
 net.hockeyapp.android.utils.DeviceUtils
 net.hockeyapp.android.utils.DeviceUtils$DeviceUtilsHolder
 net.hockeyapp.android.utils.FeedbackParser
