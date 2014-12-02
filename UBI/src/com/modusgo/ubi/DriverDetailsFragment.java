@@ -27,6 +27,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
@@ -67,6 +68,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	
 	View btnDistanceToCar;
 	View rlLastTrip;
+	View spaceFuel;
 
 	private GoogleMapFragment mMapFragment;
     private GoogleMap mMap;
@@ -104,6 +106,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	    tvAlerts = (TextView)rootView.findViewById(R.id.tvAlertsCount);
 	    btnDistanceToCar = (View)tvDistanceToCar.getParent();
 	    rlLastTrip = rootView.findViewById(R.id.rlDate);
+	    spaceFuel = rootView.findViewById(R.id.spaceFuel);
 	    
 	    updateFragment();
 	    
@@ -212,7 +215,9 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	    	
 	    	ImageLoader.getInstance().displayImage(vehicle.photo, imagePhoto, options);
 	    }
-	    
+		
+		View fuelBlock = (View)tvFuel.getParent();
+		
 		if(vehicle.carFuelLevel>=0 && !TextUtils.isEmpty(vehicle.carFuelUnit)){
 			String fuelLeftString = vehicle.carFuelLevel+vehicle.carFuelUnit;
 			int fuelUnitLength = vehicle.carFuelUnit.length();
@@ -220,9 +225,23 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 		    cs.setSpan(new SuperscriptSpan(), fuelLeftString.length()-fuelUnitLength, fuelLeftString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		    cs.setSpan(new RelativeSizeSpan(0.5f), fuelLeftString.length()-fuelUnitLength, fuelLeftString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		    tvFuel.setText(cs);
+		    
+		    fuelBlock.setOnClickListener(null);
 		}
 		else{
-			tvFuel.setText("N/A");
+			if(!TextUtils.isEmpty(vehicle.carFuelStatus)){
+				fuelBlock.setClickable(true);
+				fuelBlock.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						Toast.makeText(getActivity(), vehicle.carFuelStatus, Toast.LENGTH_SHORT).show();
+					}
+				});
+			}
+			else{
+				spaceFuel.setVisibility(View.GONE);
+				fuelBlock.setVisibility(View.GONE);
+			}
 		}
 	    
 	    if(vehicle.carDTCCount<=0){
