@@ -10,7 +10,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -211,6 +213,18 @@ public class DiagnosticsFragment extends Fragment{
 			if(llContent.getChildCount()==0){
 				new GetDiagnosticsTask(getActivity()).execute("vehicles/"+vehicle.id+"/diagnostics.json");
 			}
+		}
+		
+		if(!prefs.getBoolean(Constants.PREF_DIAGNOSTICS_DELETE_POPUP_SHOWED, false)){
+			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+	        builder.setMessage("Swipe to delete")
+	               .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+	                   public void onClick(DialogInterface dialog, int id) {
+	                	   prefs.edit().putBoolean(Constants.PREF_DIAGNOSTICS_DELETE_POPUP_SHOWED, true).commit();
+	                       dialog.dismiss();
+	                   }
+	               });
+	        builder.show();
 		}
 		
 		return rootView;

@@ -40,6 +40,8 @@ public class Constants {
 	public static final String PREF_FIND_MECHANIC_ENABLED = "findMechanicEnabled";
 	public static final String PREF_DTC_PRICES_ENABLED = "dtcPricesEnabled";
 	public static final String PREF_MAINTENANCE_PRICES_ENABLED = "maintenancePricesEnabled";
+	public static final String PREF_DIAGNOSTICS_DELETE_POPUP_SHOWED = "diagsDeletePopup";
+	public static final String PREF_ALERTS_DELETE_POPUP_SHOWED = "alertsDeletePopup";
 	
 	public static final String ROLE_CUSTOMER = "customer";
 
