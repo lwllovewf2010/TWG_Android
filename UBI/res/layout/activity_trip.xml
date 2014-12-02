@@ -309,7 +309,7 @@
                         <com.modusgo.ubi.customviews.TypefacedTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Fuel Used"
+                            android:text="Fuel"
                             android:textAllCaps="true"
                             android:textColor="#697078"
                             android:textSize="10sp"
