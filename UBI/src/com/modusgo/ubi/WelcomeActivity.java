@@ -49,6 +49,15 @@ public class WelcomeActivity extends FragmentActivity {
 	    
 	    prefs = PreferenceManager.getDefaultSharedPreferences(WelcomeActivity.this);
 	    
+	    ImageView imageBg = (ImageView) findViewById(R.id.imageBg);
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+        .cacheInMemory(true)
+        .cacheOnDisk(true)
+        .build();
+    	
+    	ImageLoader.getInstance().displayImage(prefs.getString(Constants.PREF_BR_LOGIN_SCREEN_BG_IMAGE, ""), imageBg, options);
+	    
+	    
 	    layoutFields = findViewById(R.id.llFields);
 	    layoutProgress = findViewById(R.id.rlProgress);
 	    tvTitle = (TextView) findViewById(R.id.tvTitle);
