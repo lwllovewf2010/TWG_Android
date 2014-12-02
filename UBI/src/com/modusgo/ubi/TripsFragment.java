@@ -382,8 +382,10 @@ public class TripsFragment extends Fragment{
 		TextView tvEndTime;
 		TextView tvDistance;
 		TextView tvDistanceUnits;
+		View lFuel;
 		TextView tvFuel;
 		TextView tvFuelUnit;
+		ImageView imageFuelArrow;
 	}
 	
 	class TripsAdapter extends BaseAdapter{
@@ -489,8 +491,10 @@ public class TripsFragment extends Fragment{
 				holder.tvStartTime = (TextView) view.findViewById(R.id.tvStartTime);
 				holder.tvEndTime = (TextView) view.findViewById(R.id.tvEndTime);
 				holder.tvScore = (TextView) view.findViewById(R.id.tvScore);
+				holder.lFuel = view.findViewById(R.id.lFuel);
 				holder.tvFuel = (TextView) view.findViewById(R.id.tvFuel);
 				holder.tvFuelUnit = (TextView) view.findViewById(R.id.tvFuelUnit);
+				holder.imageFuelArrow = (ImageView) view.findViewById(R.id.imageFuelArrow);
 				view.setTag(holder);
 			}
 			else{
@@ -527,13 +531,23 @@ public class TripsFragment extends Fragment{
 			}
 			
 			if(t.fuel>=0 && !TextUtils.isEmpty(t.fuelUnit)){
+				holder.lFuel.setVisibility(View.VISIBLE);
 				holder.tvFuel.setText(""+t.fuel);
+				holder.tvFuel.setVisibility(View.VISIBLE);
 				holder.tvFuelUnit.setText(t.fuelUnit);
 				holder.tvFuelUnit.setVisibility(View.VISIBLE);
+				holder.imageFuelArrow.setVisibility(View.GONE);
 			}
 			else{
-				holder.tvFuel.setText("N/A");
-				holder.tvFuelUnit.setVisibility(View.GONE);		
+				if(!TextUtils.isEmpty(t.fuelStatus)){
+					holder.lFuel.setVisibility(View.VISIBLE);
+					holder.tvFuel.setVisibility(View.GONE);
+					holder.tvFuelUnit.setVisibility(View.GONE);
+					holder.imageFuelArrow.setVisibility(View.VISIBLE);
+				}
+				else{
+					holder.lFuel.setVisibility(View.GONE);
+				}
 			}
 			
 			if(t.viewed){
