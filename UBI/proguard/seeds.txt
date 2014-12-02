@@ -2880,6 +2880,7 @@ com.modusgo.ubi.R$drawable: int ic_diagnostics_red_medium
 com.modusgo.ubi.R$drawable: int ic_drawer
 com.modusgo.ubi.R$drawable: int ic_event
 com.modusgo.ubi.R$drawable: int ic_external_link
+com.modusgo.ubi.R$drawable: int ic_fuel_arrow_down
 com.modusgo.ubi.R$drawable: int ic_fuel_black
 com.modusgo.ubi.R$drawable: int ic_fuel_green
 com.modusgo.ubi.R$drawable: int ic_launcher
@@ -3079,6 +3080,7 @@ com.modusgo.ubi.R$id: int imageBg
 com.modusgo.ubi.R$id: int imageDiagnostics
 com.modusgo.ubi.R$id: int imageExpandIndicator
 com.modusgo.ubi.R$id: int imageFuel
+com.modusgo.ubi.R$id: int imageFuelArrow
 com.modusgo.ubi.R$id: int imageIcon
 com.modusgo.ubi.R$id: int imageLastMonthArrow
 com.modusgo.ubi.R$id: int imageLogo
@@ -3088,6 +3090,8 @@ com.modusgo.ubi.R$id: int imageStartTrip
 com.modusgo.ubi.R$id: int imageStopTrip
 com.modusgo.ubi.R$id: int imageView1
 com.modusgo.ubi.R$id: int indicator
+com.modusgo.ubi.R$id: int lContent
+com.modusgo.ubi.R$id: int lFuel
 com.modusgo.ubi.R$id: int lRefresh
 com.modusgo.ubi.R$id: int lSwipe
 com.modusgo.ubi.R$id: int left
