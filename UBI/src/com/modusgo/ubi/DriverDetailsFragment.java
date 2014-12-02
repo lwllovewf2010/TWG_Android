@@ -226,14 +226,17 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 		    cs.setSpan(new RelativeSizeSpan(0.5f), fuelLeftString.length()-fuelUnitLength, fuelLeftString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		    tvFuel.setText(cs);
 		    tvFuel.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_fuel_green, 0, 0, 0);
-		    fuelBlock.setOnClickListener(null);
-		    fuelBlock.setClickable(false);
+		    fuelBlock.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Toast.makeText(getActivity(), "This percentage shown is your last known fuel level reported.", Toast.LENGTH_SHORT).show();
+				}
+			});
 		}
 		else{
 			if(!TextUtils.isEmpty(vehicle.carFuelStatus)){
 				tvFuel.setText("");
 				tvFuel.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_fuel_green, 0, R.drawable.ic_fuel_arrow_down, 0);
-				fuelBlock.setClickable(true);
 				fuelBlock.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {

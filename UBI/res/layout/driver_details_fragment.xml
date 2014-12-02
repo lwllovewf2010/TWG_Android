@@ -87,6 +87,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="@color/btn_border_rounded_orange_light"
+                        android:clickable="true"
                         android:paddingBottom="10dp"
                         android:paddingTop="10dp" >
 
@@ -98,7 +99,7 @@
                             android:drawableLeft="@drawable/ic_fuel_green"
                             android:drawablePadding="3dp"
                             android:text="N/A"
-                            android:textColor="#A5CF42"
+                            android:textColor="#24a406"
                             android:textSize="24sp"
                             ubi:typeface="arialbd.ttf" />
 
