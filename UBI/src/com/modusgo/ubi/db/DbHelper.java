@@ -237,7 +237,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	"DROP TABLE IF EXISTS " + DDEventEntry.TABLE_NAME};
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 37;
+	public static final int DATABASE_VERSION = 38;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;
@@ -950,6 +950,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		    removeStatement.close();
 			
 			String sql = "INSERT INTO "+ RecallEntry.TABLE_NAME +" ("
+					+ RecallEntry._ID +","
 					+ RecallEntry.COLUMN_NAME_VEHICLE_ID +","
 					+ RecallEntry.COLUMN_NAME_CONSEQUENCE +","
 					+ RecallEntry.COLUMN_NAME_CORRECTIVE_ACTION +","
@@ -957,26 +958,45 @@ public class DbHelper extends SQLiteOpenHelper {
 					+ RecallEntry.COLUMN_NAME_DEFECT_DESCRIPTION +","
 					+ RecallEntry.COLUMN_NAME_DESCRIPTION +","
 					+ RecallEntry.COLUMN_NAME_RECALL_ID
-					+ ") VALUES (?,?,?,?,?,?,?);";
+					+ ") VALUES (?,?,?,?,?,?,?,?);";
 			
 			SQLiteStatement statement = database.compileStatement(sql);
 		    database.beginTransaction();
 		    
 		    for (Recall recall : recalls) {
+		    	System.out.println("recall "+recall.id);
 		    	statement.clearBindings();
-			    statement.bindLong(1, vehicleId);
-			    statement.bindString(2, recall.consequence);
-			    statement.bindString(3, recall.corrective_action);
-			    statement.bindString(4, recall.created_at);
-			    statement.bindString(5, recall.defect_description);
-			    statement.bindString(6, recall.description);
-			    statement.bindString(7, recall.recall_id);
+			    statement.bindLong(1, recall.id);
+			    statement.bindLong(2, vehicleId);
+			    statement.bindString(3, recall.consequence);
+			    statement.bindString(4, recall.corrective_action);
+			    statement.bindString(5, recall.created_at);
+			    statement.bindString(6, recall.defect_description);
+			    statement.bindString(7, recall.description);
+			    statement.bindString(8, recall.recall_id);
 			    statement.execute();
 			}
 		    
 		    database.setTransactionSuccessful();	
 		    database.endTransaction();
 		    statement.close();
+		}
+		
+		database.close();
+	}
+	
+	public void deleteRecall(long vehicleId, long recallId){
+		SQLiteDatabase database = sInstance.getWritableDatabase();
+		
+		if(database!=null){
+			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+RecallEntry.TABLE_NAME+" WHERE "+RecallEntry.COLUMN_NAME_VEHICLE_ID+" = "+vehicleId +
+					" AND " + RecallEntry._ID+" = " + recallId);
+		    database.beginTransaction();
+		    removeStatement.clearBindings();
+	        removeStatement.execute();
+	        database.setTransactionSuccessful();
+		    database.endTransaction();
+		    removeStatement.close();
 		}
 		
 		database.close();

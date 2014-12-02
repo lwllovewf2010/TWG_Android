@@ -71,6 +71,7 @@ public class DiagnosticsFragment extends Fragment{
 	SharedPreferences prefs;
 	
 	int maintenancesCount = 0;
+	int recallCount = 0;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -322,6 +323,7 @@ public class DiagnosticsFragment extends Fragment{
 		//--------------------------------------------- Recalls ------------------------------------
 		c = db.query(RecallEntry.TABLE_NAME, 
 				new String[]{
+				RecallEntry._ID,
 				RecallEntry.COLUMN_NAME_CONSEQUENCE,
 				RecallEntry.COLUMN_NAME_CORRECTIVE_ACTION,
 				RecallEntry.COLUMN_NAME_CREATED_AT,
@@ -332,12 +334,23 @@ public class DiagnosticsFragment extends Fragment{
 				RecallEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id, null, null, null, null);
 		
 		if(c.moveToFirst()){
-			llContent.addView(inflater.inflate(R.layout.recall_header, llContent, false));
+			final View headerView = inflater.inflate(R.layout.recall_header, llContent, false);
+			llContent.addView(headerView);
 			
 			while (!c.isAfterLast()) {
-				final Recall recall = new Recall(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5));
-				SwipeLayout rowView = (SwipeLayout )inflater.inflate(R.layout.diagnostics_item, llContent, false);
-				rowView.setSwipeEnabled(false);
+				final Recall recall = new Recall(c.getLong(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5), c.getString(6));
+				final SwipeLayout rowView = (SwipeLayout )inflater.inflate(R.layout.diagnostics_item, llContent, false);
+				rowView.setShowMode(SwipeLayout.ShowMode.PullOut);
+				rowView.findViewById(R.id.btnDelete).setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						recallCount--;
+						llContent.removeView(rowView);
+						new HideRecallTask(getActivity().getApplicationContext(), recall.id).execute("vehicles/"+vehicle.id+"/diagnostics/recall_updates/" + recall.id + "/hide.json");
+						if(recallCount==0)
+							llContent.removeView(headerView);
+					}
+				});
 				
 				TextView tvCode = (TextView) rowView.findViewById(R.id.tvCode);
 				TextView tvDescription = (TextView) rowView.findViewById(R.id.tvDescription);
@@ -345,7 +358,6 @@ public class DiagnosticsFragment extends Fragment{
 				tvCode.setText(recall.recall_id);
 				tvDescription.setText(recall.description);
 				tvImportance.setVisibility(View.GONE);
-				llContent.addView(rowView);
 				
 				rowView.setOnClickListener(new OnClickListener() {
 					@Override
@@ -355,6 +367,9 @@ public class DiagnosticsFragment extends Fragment{
 						startActivity(i);
 					}
 				});
+				
+				recallCount++;
+				llContent.addView(rowView);
 				c.moveToNext();
 			}
 		}
@@ -521,6 +536,38 @@ public class DiagnosticsFragment extends Fragment{
 		}
 	}
 	
+	class HideRecallTask extends BaseRequestAsyncTask{
+		
+		long recallUpdateId;
+		
+		public HideRecallTask(Context context, long recallUpdateId) {
+			super(context);
+			this.recallUpdateId = recallUpdateId;
+		}
+
+		@Override
+		protected JSONObject doInBackground(String... params) {
+	        requestParams.add(new BasicNameValuePair("driver_id", ""+vehicle.id));
+	        requestParams.add(new BasicNameValuePair("recall_update_id", ""+recallUpdateId));
+	        System.out.println(requestParams);
+			return super.doInBackground(params);
+		}
+		
+		@Override
+		protected void onSuccess(JSONObject responseJSON) throws JSONException {
+			DbHelper dbHelper = DbHelper.getInstance(getActivity());
+			dbHelper.deleteRecall(vehicle.id, recallUpdateId);
+			dbHelper.close();			
+			super.onSuccess(responseJSON);
+		}
+		
+		@Override
+		protected void onError(String message) {
+			System.out.println(message);
+			//Do nothing
+		}
+	}
+	
 	class GetDiagnosticsTask extends BaseRequestAsyncTask{
 		
 		public GetDiagnosticsTask(Context context) {
@@ -604,6 +651,7 @@ public class DiagnosticsFragment extends Fragment{
 							JSONObject recall = recallsJSON.getJSONObject(i);
 							
 							recalls.add(new Recall(
+									recall.optLong("id"),
 									recall.optString("consequence"), 
 									recall.optString("corrective_action"), 
 									Utils.fixTimezoneZ(recall.optString("created_at")), 
