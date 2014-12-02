@@ -4,7 +4,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
 
 import org.apache.http.message.BasicNameValuePair;
@@ -29,20 +28,20 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.farmers.ubi.R;
+import com.daimajia.swipe.adapters.BaseSwipeAdapter;
+import com.daimajia.swipe.implments.SwipeItemMangerImpl.Mode;
 import com.google.android.gms.maps.model.LatLng;
 import com.modusgo.ubi.db.AlertContract.AlertEntry;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.modusgo.ubi.requesttasks.BasePostRequestAsyncTask;
 import com.modusgo.ubi.requesttasks.BaseRequestAsyncTask;
-import com.modusgo.ubi.utils.SwipeDismissListViewTouchListener;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -136,7 +135,8 @@ public class AlertsActivity extends MainActivity {
 		
 		updateAlertsList();
 		
-		adapter = new AlertsAdapter(this, R.layout.alerts_item, alerts);
+		adapter = new AlertsAdapter();
+		adapter.setMode(Mode.Single);
 		
 		lvAlerts = (ListView)findViewById(R.id.listViewAlerts);
 		lvAlerts.setAdapter(adapter);
@@ -152,6 +152,18 @@ public class AlertsActivity extends MainActivity {
 		});
 		
 		new GetAlertsTask(this, true).execute("vehicles/"+vehicle.id+"/alerts.json");
+		
+		if(!prefs.getBoolean(Constants.PREF_ALERTS_DELETE_POPUP_SHOWED, false)){
+			AlertDialog.Builder builder = new AlertDialog.Builder(AlertsActivity.this);
+	        builder.setMessage("Swipe to delete")
+	               .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+	                   public void onClick(DialogInterface dialog, int id) {
+	                	   prefs.edit().putBoolean(Constants.PREF_ALERTS_DELETE_POPUP_SHOWED, true).commit();
+	                       dialog.dismiss();
+	                   }
+	               });
+	        builder.show();
+		}
 	}
 	
 	private ArrayList<Alert> getAlertsFromDB(String endDate, int count){
@@ -198,26 +210,6 @@ public class AlertsActivity extends MainActivity {
 	private void updateAlertsList() {
 		if(adapter!=null){
 			adapter.notifyDataSetChanged();
-			
-			SwipeDismissListViewTouchListener touchListener = new SwipeDismissListViewTouchListener(
-					lvAlerts,
-					new SwipeDismissListViewTouchListener.DismissCallbacks() {
-						public void onDismiss(ListView listView, int[] reverseSortedPositions) {
-							for (int position : reverseSortedPositions) {
-								Alert alert = adapter.getItem(position);
-								new DeleteAlertTask(AlertsActivity.this, adapter.getItem(position).id).execute("vehicles/"+vehicle.id+"/alerts/"+alert.id+"/delete.json");
-								adapter.remove(alert);
-							}
-							adapter.notifyDataSetChanged();
-						}
-
-						@Override
-						public boolean canDismiss(int position) {
-							return true;
-						}
-					});
-			lvAlerts.setOnTouchListener(touchListener);
-			lvAlerts.setOnScrollListener(touchListener.makeScrollListener());
 		}
 	}
 	
@@ -234,41 +226,50 @@ public class AlertsActivity extends MainActivity {
 		super.onSaveInstanceState(outState);
 	}
 	
-	class AlertsAdapter extends ArrayAdapter<Alert>{
-		
+	class AlertsAdapter extends BaseSwipeAdapter{
+
 		SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
 		SimpleDateFormat sdfTo = new SimpleDateFormat("MM/dd/yyyy KK:mm aa z", Locale.getDefault());
 		
 		
 		Typeface typefaceBold = Typeface.createFromAsset(getAssets(), "fonts/EncodeSansNormal-600-SemiBold.ttf");
 		Typeface typefaceLight = Typeface.createFromAsset(getAssets(), "fonts/EncodeSansNormal-300-Light.ttf");
-        
-		
-		public AlertsAdapter(Context context, int resource, List<Alert> objects) {
-			super(context, resource, objects);
+
+		@Override
+		public int getSwipeLayoutResourceId(int arg0) {
+			return R.id.lSwipe;
 		}
 
 		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
+		public int getCount() {
+			return alerts.size();
+		}
+		
+		@Override
+		public Object getItem(int position) {
+			return null;
+		}
+		
+		@Override
+		public long getItemId(int position) {
+			return alerts.get(position).id;
+		}
+
+		
+		@Override
+		public void fillValues(final int position, View convertView) {
+			
 			if(thereAreOlderTrips && position == getCount() - 1)
 				new GetAlertsTask(getApplicationContext(), false).execute("vehicles/"+vehicle.id+"/alerts.json");
 			
-			final Alert alert = getItem(position);
-			ViewHolder holder;
+			final Alert alert = alerts.get(position);
 			
-			View view = convertView;
-		    if (view == null) {
-		    	LayoutInflater lInflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				view = lInflater.inflate(R.layout.alerts_item, parent, false);
-				holder = new ViewHolder();
-				holder.tvEvent = (TextView) view.findViewById(R.id.tvEvent);
-				holder.tvDate = (TextView) view.findViewById(R.id.tvDate);
-				holder.imageArrow = (ImageView) view.findViewById(R.id.imageArrow);
-				view.setTag(holder);
-		    }
-		    else{
-		    	holder = (ViewHolder) view.getTag();
-		    }
+			ViewHolder holder = new ViewHolder();
+			holder.tvEvent = (TextView) convertView.findViewById(R.id.tvEvent);
+			holder.tvDate = (TextView) convertView.findViewById(R.id.tvDate);
+			holder.imageArrow = (ImageView) convertView.findViewById(R.id.imageArrow);
+			holder.btnDelete = (Button) convertView.findViewById(R.id.btnDelete);
+			
 
 		    holder.tvEvent.setText(alert.description);	
 		    try {
@@ -285,24 +286,40 @@ public class AlertsActivity extends MainActivity {
 		    	holder.tvEvent.setTypeface(typefaceLight);    	
 		    }
 		    
+		    holder.btnDelete.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					new DeleteAlertTask(AlertsActivity.this, alert.id).execute("vehicles/"+vehicle.id+"/alerts/"+alert.id+"/delete.json");
+					mItemManger.closeItem(position);
+					alerts.remove(alert);
+					adapter.notifyDataSetChanged();
+				}
+			});
+		    
 //		    switch (alert.type) {
-//			case 0:
-//				((ImageView)view.findViewById(R.id.imageIcon)).setImageResource(R.drawable.ic_alerts_red);
-//				break;
-//			case 1:
-//				((ImageView)view.findViewById(R.id.imageIcon)).setImageResource(R.drawable.ic_diagnostics_red);
-//				break;
-//			default:
-//				break;
-//			}
+//			    case 0:
+//			    	((ImageView)view.findViewById(R.id.imageIcon)).setImageResource(R.drawable.ic_alerts_red);
+//			    	break;
+//			    case 1:
+//			    	((ImageView)view.findViewById(R.id.imageIcon)).setImageResource(R.drawable.ic_diagnostics_red);
+//			    	break;
+//			    default:
+//			    	break;
+//		    }
 //		    if(alert.tripId!=0){
 //		    	holder.imageArrow.setVisibility(View.VISIBLE);
 //		    }
 //		    else{
 //		    	holder.imageArrow.setVisibility(View.INVISIBLE);
 //		    }
-			
-			return view;
+		    
+		}
+		
+		@Override
+		public View generateView(int position, ViewGroup parent) {
+			LayoutInflater lInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			return lInflater.inflate(R.layout.alerts_item, parent, false);
 		}
 	}
 	
@@ -310,6 +327,7 @@ public class AlertsActivity extends MainActivity {
 		public TextView tvEvent;
 		public TextView tvDate;
 		public ImageView imageArrow;
+		public Button btnDelete;
 	}
 	
 	class GetAlertsTask extends BaseRequestAsyncTask{

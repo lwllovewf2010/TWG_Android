@@ -72,9 +72,6 @@ public class InitActivity extends FragmentActivity {
 	    
 	    ImageView imageBg = (ImageView) findViewById(R.id.imageBg);
         DisplayImageOptions options = new DisplayImageOptions.Builder()
-        .showImageOnLoading(R.drawable.login_bg)
-        .showImageForEmptyUri(R.drawable.login_bg)
-        .showImageOnFail(R.drawable.login_bg)
         .cacheInMemory(true)
         .cacheOnDisk(true)
         .build();

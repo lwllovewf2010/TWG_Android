@@ -37,8 +37,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="9dp"
                     android:orientation="horizontal"
-                    android:paddingLeft="17dp"
-                    android:paddingRight="17dp" >
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp" >
 
                     <RelativeLayout
                         android:layout_width="0dp"
@@ -77,6 +77,7 @@
                     </RelativeLayout>
 
                     <Space
+                        android:id="@+id/spaceFuel"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight=".1" />
@@ -86,6 +87,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="@color/btn_border_rounded_orange_light"
+                        android:clickable="true"
                         android:paddingBottom="10dp"
                         android:paddingTop="10dp" >
 
@@ -96,8 +98,8 @@
                             android:layout_centerHorizontal="true"
                             android:drawableLeft="@drawable/ic_fuel_green"
                             android:drawablePadding="3dp"
-                            android:text="22%"
-                            android:textColor="#A5CF42"
+                            android:text="N/A"
+                            android:textColor="#24a406"
                             android:textSize="24sp"
                             ubi:typeface="arialbd.ttf" />
 
@@ -197,8 +199,8 @@
                     android:layout_height="wrap_content"
                     android:background="@color/btn_transparent_orange_light"
                     android:paddingBottom="3dp"
-                    android:paddingLeft="17dp"
-                    android:paddingRight="17dp"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
                     android:paddingTop="3dp" >
 
                     <com.modusgo.ubi.customviews.TypefacedTextView
@@ -234,8 +236,8 @@
                     android:layout_height="wrap_content"
                     android:background="@color/btn_transparent_orange_light"
                     android:paddingBottom="3dp"
-                    android:paddingLeft="17dp"
-                    android:paddingRight="17dp"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
                     android:paddingTop="3dp" >
 
                     <com.modusgo.ubi.customviews.TypefacedTextView
@@ -279,7 +281,7 @@
                 android:id="@+id/imagePhoto"
                 android:layout_width="102dp"
                 android:layout_height="102dp"
-                android:layout_marginLeft="25dp"
+                android:layout_marginLeft="20dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/person_test3" />
 

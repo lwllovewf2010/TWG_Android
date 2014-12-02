@@ -115,6 +115,7 @@
         ubi:typeface="arialbd.ttf" />
 
     <RelativeLayout
+        android:id="@+id/lFuel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -125,7 +126,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:src="@drawable/ic_fuel_black" />
+            android:layout_alignTop="@+id/imageFuelArrow"
+            android:layout_alignBottom="@+id/imageFuelArrow"
+            android:src="@drawable/ic_fuel_green" />
+        
+        <ImageView
+            android:id="@+id/imageFuelArrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/imageFuel"
+            android:layout_marginLeft="5dp"
+            android:src="@drawable/ic_fuel_arrow_down"
+            android:visibility="gone" />
 
         <com.modusgo.ubi.customviews.TypefacedTextView
             android:id="@+id/tvFuel"

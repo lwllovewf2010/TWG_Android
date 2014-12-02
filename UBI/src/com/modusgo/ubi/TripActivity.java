@@ -47,6 +47,7 @@ import com.modusgo.ubi.Trip.Point;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.PointContract.PointEntry;
 import com.modusgo.ubi.db.RouteContract.RouteEntry;
+import com.modusgo.ubi.db.SpeedingRouteContract.SpeedingRouteEntry;
 import com.modusgo.ubi.db.TripContract.TripEntry;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.modusgo.ubi.requesttasks.BaseRequestAsyncTask;
@@ -75,6 +76,13 @@ public class TripActivity extends MainActivity {
     TextView tvAvgSpeedUnits;
     TextView tvMaxSpeedUnits;
     TextView tvDistanceUnits;
+    TextView tvScore;
+    TextView tvFuelUsed;
+    TextView tvFuelCost;
+    TextView tvFuelUnits;
+    TextView tvFuelStatus;
+    LinearLayout llFuelUsed;
+    LinearLayout llFuelCost;
     LinearLayout llTime;
     LinearLayout llContent;
     LinearLayout llEventsList;
@@ -132,6 +140,13 @@ public class TripActivity extends MainActivity {
 		tvAvgSpeedUnits = (TextView) findViewById(R.id.tvAvgSpeedUnits);
 		tvMaxSpeedUnits = (TextView) findViewById(R.id.tvMaxSpeedUnits);
 		tvDistanceUnits = (TextView) findViewById(R.id.tvDistanceUnits);
+	    tvScore = (TextView) findViewById(R.id.tvScore);
+	    tvFuelUsed = (TextView) findViewById(R.id.tvFuelUsed);
+	    tvFuelCost = (TextView) findViewById(R.id.tvFuelCost);
+	    tvFuelUnits = (TextView) findViewById(R.id.tvFuelUnits);
+	    tvFuelStatus = (TextView) findViewById(R.id.tvFuelStatus);
+	    llFuelUsed = (LinearLayout)findViewById(R.id.llFuelUsed);
+	    llFuelCost = (LinearLayout)findViewById(R.id.llFuelCost);
 		llTime = (LinearLayout)findViewById(R.id.llTime);
 		llContent = (LinearLayout)findViewById(R.id.llContent);
 		llEventsList = (LinearLayout)findViewById(R.id.llEventsList);
@@ -205,6 +220,30 @@ public class TripActivity extends MainActivity {
 			if(c.moveToFirst()){
 				while (!c.isAfterLast()) {
 					t.route.add(new LatLng(c.getDouble(1), c.getDouble(2)));
+					c.moveToNext();
+				}
+			}
+			c.close();
+			
+			c = db.query(SpeedingRouteEntry.TABLE_NAME, 
+					new String[]{
+					SpeedingRouteEntry._ID,
+					SpeedingRouteEntry.COLUMN_NAME_NUM,
+					SpeedingRouteEntry.COLUMN_NAME_LATITUDE,
+					SpeedingRouteEntry.COLUMN_NAME_LONGITUDE}, 
+					SpeedingRouteEntry.COLUMN_NAME_TRIP_ID+" = ?", new String[]{Long.toString(tripId)}, null, null, SpeedingRouteEntry._ID+" ASC");
+			if(c.moveToFirst()){
+
+			    System.out.println("Loading speeding, "+c.getCount());
+				int lastNum = 0;
+				ArrayList<LatLng> speedingRoute = new ArrayList<LatLng>();
+				while (!c.isAfterLast()) {
+					if(lastNum!=c.getInt(1)){
+						t.speedingRoutes.add(speedingRoute);
+						speedingRoute = new ArrayList<LatLng>();
+					}
+					speedingRoute.add(new LatLng(c.getDouble(2), c.getDouble(3)));
+					lastNum = c.getInt(1);
 					c.moveToNext();
 				}
 			}
@@ -297,7 +336,27 @@ public class TripActivity extends MainActivity {
 			tvMaxSpeedUnits.setText("KPH");
 			tvDistanceUnits.setText("KM");
 		}
-        
+		
+		tvScore.setText(trip.grade);
+		if(trip.fuelCost==0)
+			llFuelCost.setVisibility(View.GONE);
+		else{
+			DecimalFormat moneyDf = new DecimalFormat("0.00");
+			tvFuelCost.setText(moneyDf.format(trip.fuelCost));
+		}
+		
+		if(trip.fuel >= 0 && !TextUtils.isEmpty(trip.fuelUnit)){
+			tvFuelUsed.setText(df.format(trip.fuel));
+			tvFuelUnits.setText(trip.fuelUnit);
+		}
+		else{
+			llFuelUsed.setVisibility(View.GONE);
+			if(!TextUtils.isEmpty(trip.fuelStatus)){
+				tvFuelStatus.setVisibility(View.VISIBLE);
+				tvFuelStatus.setText(trip.fuelStatus);
+			}
+		}
+		
         llEventsList.removeAllViews();
         
         
@@ -382,7 +441,7 @@ public class TripActivity extends MainActivity {
 				map.addPolyline(options.color(color).width(8).zIndex(1));
 		
 				int colorSpeeding = Color.parseColor("#ef4136");
-				for (ArrayList<LatLng> route : trip.speedingRoute) {
+				for (ArrayList<LatLng> route : trip.speedingRoutes) {
 					PolylineOptions optionsSpeeding = new PolylineOptions();
 					for (LatLng point : route) {
 						optionsSpeeding.add(point);
@@ -492,7 +551,7 @@ public class TripActivity extends MainActivity {
 			trip.viewed = true;
 			trip.updatedAt = responseJSON.optString("updated_at");
 			trip.viewedAt = sdf.format(Calendar.getInstance().getTime());
-			trip.fuelLevel = responseJSON.optInt("fuel_left");
+			trip.fuel = responseJSON.optInt("fuel_left");
 			trip.fuelUnit = responseJSON.optString("fuel_unit");
 			
 			if(responseJSON.has("route")){
@@ -513,7 +572,7 @@ public class TripActivity extends MainActivity {
 						JSONArray pointJSON = speedingRouteJSON.getJSONArray(j);
 						speedingRoute.add(new LatLng(pointJSON.optDouble(0,0), pointJSON.optDouble(1,0)));	
 					}
-					trip.speedingRoute.add(speedingRoute);				
+					trip.speedingRoutes.add(speedingRoute);				
 				}
 			}
 			
@@ -535,6 +594,7 @@ public class TripActivity extends MainActivity {
 			DbHelper dHelper = DbHelper.getInstance(TripActivity.this);
 			dHelper.saveTrip(vehicle.id, trip);
 			dHelper.saveRoute(trip.id, trip.route);
+			dHelper.saveSpeedingRoute(trip.id, trip.speedingRoutes);
 			dHelper.savePoints(trip.id, trip.points);
 			dHelper.close();
 			

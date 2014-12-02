@@ -27,6 +27,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.farmers.ubi.R;
 import com.google.android.gms.common.ConnectionResult;
@@ -68,6 +69,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	
 	View btnDistanceToCar;
 	View rlLastTrip;
+	View spaceFuel;
 
 	private GoogleMapFragment mMapFragment;
     private GoogleMap mMap;
@@ -105,6 +107,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	    tvAlerts = (TextView)rootView.findViewById(R.id.tvAlertsCount);
 	    btnDistanceToCar = (View)tvDistanceToCar.getParent();
 	    rlLastTrip = rootView.findViewById(R.id.rlDate);
+	    spaceFuel = rootView.findViewById(R.id.spaceFuel);
 	    
 	    updateFragment();
 	    
@@ -147,6 +150,13 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 				Intent intent = new Intent(getActivity(), MapActivity.class);
 				intent.putExtra(VehicleEntry._ID, vehicle.id);
 				startActivity(intent);	
+			}
+		});
+	    
+	    imagePhoto.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+	        	startActivity(new Intent(getActivity(), SettingsActivity.class));
 			}
 		});
 		
@@ -206,7 +216,9 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	    	
 	    	ImageLoader.getInstance().displayImage(vehicle.photo, imagePhoto, options);
 	    }
-	    
+		
+		View fuelBlock = (View)tvFuel.getParent();
+		
 		if(vehicle.carFuelLevel>=0 && !TextUtils.isEmpty(vehicle.carFuelUnit)){
 			String fuelLeftString = vehicle.carFuelLevel+vehicle.carFuelUnit;
 			int fuelUnitLength = vehicle.carFuelUnit.length();
@@ -214,9 +226,29 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 		    cs.setSpan(new SuperscriptSpan(), fuelLeftString.length()-fuelUnitLength, fuelLeftString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		    cs.setSpan(new RelativeSizeSpan(0.5f), fuelLeftString.length()-fuelUnitLength, fuelLeftString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		    tvFuel.setText(cs);
+		    tvFuel.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_fuel_green, 0, 0, 0);
+		    fuelBlock.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Toast.makeText(getActivity(), "This percentage shown is your last known fuel level reported.", Toast.LENGTH_SHORT).show();
+				}
+			});
 		}
 		else{
-			tvFuel.setText("N/A");
+			if(!TextUtils.isEmpty(vehicle.carFuelStatus)){
+				tvFuel.setText("");
+				tvFuel.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_fuel_green, 0, R.drawable.ic_fuel_arrow_down, 0);
+				fuelBlock.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						Toast.makeText(getActivity(), vehicle.carFuelStatus, Toast.LENGTH_SHORT).show();
+					}
+				});
+			}
+			else{
+				spaceFuel.setVisibility(View.GONE);
+				fuelBlock.setVisibility(View.GONE);
+			}
 		}
 	    
 	    if(vehicle.carDTCCount<=0){
