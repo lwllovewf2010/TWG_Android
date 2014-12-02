@@ -41,6 +41,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.daimajia.swipe.SwipeLayout;
+import com.daimajia.swipe.SwipeLayout.DoubleClickListener;
 import com.modusgo.ubi.db.DTCContract.DTCEntry;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.MaintenanceContract.MaintenanceEntry;
@@ -296,8 +297,9 @@ public class DiagnosticsFragment extends Fragment{
 						c.getString(9), 
 						c.getString(10), 
 						c.getString(11));
-				SwipeLayout rowView = (SwipeLayout) inflater.inflate(R.layout.diagnostics_item, llContent, false);
-				rowView.setSwipeEnabled(false);
+				View rowView = (LinearLayout) inflater.inflate(R.layout.diagnostics_item, llContent, false);
+				SwipeLayout swipeLayout = (SwipeLayout) rowView.findViewById(R.id.lSwipe);
+				swipeLayout.setSwipeEnabled(false);
 				
 				TextView tvCode = (TextView) rowView.findViewById(R.id.tvCode);
 				TextView tvDescription = (TextView) rowView.findViewById(R.id.tvDescription);
@@ -356,9 +358,11 @@ public class DiagnosticsFragment extends Fragment{
 			
 			while (!c.isAfterLast()) {
 				final Recall recall = new Recall(c.getLong(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5), c.getString(6));
-				final SwipeLayout rowView = (SwipeLayout )inflater.inflate(R.layout.diagnostics_item, llContent, false);
-				rowView.setShowMode(SwipeLayout.ShowMode.PullOut);
-				rowView.findViewById(R.id.btnDelete).setOnClickListener(new OnClickListener() {
+				final View rowView = (LinearLayout) inflater.inflate(R.layout.diagnostics_item, llContent, false);
+				SwipeLayout swipeLayout = (SwipeLayout) rowView.findViewById(R.id.lSwipe);
+				swipeLayout.setSwipeEnabled(true);
+				swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
+				swipeLayout.findViewById(R.id.btnDelete).setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						recallCount--;
@@ -377,14 +381,16 @@ public class DiagnosticsFragment extends Fragment{
 				tvImportance.setVisibility(View.GONE);
 				
 				rowView.setOnClickListener(new OnClickListener() {
+					
 					@Override
 					public void onClick(View v) {
+						System.out.println("click");
 						Intent i = new Intent(getActivity(), RecallActivity.class);
 						i.putExtra(RecallActivity.EXTRA_RECALL, recall);
 						startActivity(i);
+						
 					}
 				});
-				
 				recallCount++;
 				llContent.addView(rowView);
 				c.moveToNext();
@@ -503,8 +509,10 @@ public class DiagnosticsFragment extends Fragment{
 			
 			while(!c.isAfterLast()){
 				WarrantyInformation wi = new WarrantyInformation(c.getString(0), c.getString(1), c.getString(2));
-				SwipeLayout rowView = (SwipeLayout) inflater.inflate(R.layout.diagnostics_item, llContent, false);
-				rowView.setSwipeEnabled(false);
+				View rowView = (LinearLayout) inflater.inflate(R.layout.diagnostics_item, llContent, false);
+				SwipeLayout swipeLayout = (SwipeLayout) rowView.findViewById(R.id.lSwipe);
+				swipeLayout.setSwipeEnabled(false);
+				
 				
 				TextView tvCode = (TextView) rowView.findViewById(R.id.tvCode);
 				TextView tvDescription = (TextView) rowView.findViewById(R.id.tvDescription);
