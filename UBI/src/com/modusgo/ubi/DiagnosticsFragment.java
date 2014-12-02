@@ -37,6 +37,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.daimajia.swipe.SwipeLayout;
 import com.modusgo.ubi.db.DTCContract.DTCEntry;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.MaintenanceContract.MaintenanceEntry;
@@ -68,6 +69,8 @@ public class DiagnosticsFragment extends Fragment{
 	EditText editOdometer;
 	
 	SharedPreferences prefs;
+	
+	int maintenancesCount = 0;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -275,7 +278,9 @@ public class DiagnosticsFragment extends Fragment{
 						c.getString(9), 
 						c.getString(10), 
 						c.getString(11));
-				View rowView = inflater.inflate(R.layout.diagnostics_item, llContent, false);
+				SwipeLayout rowView = (SwipeLayout) inflater.inflate(R.layout.diagnostics_item, llContent, false);
+				rowView.setSwipeEnabled(false);
+				
 				TextView tvCode = (TextView) rowView.findViewById(R.id.tvCode);
 				TextView tvDescription = (TextView) rowView.findViewById(R.id.tvDescription);
 				TextView tvImportance = (TextView) rowView.findViewById(R.id.tvImportance);
@@ -331,7 +336,9 @@ public class DiagnosticsFragment extends Fragment{
 			
 			while (!c.isAfterLast()) {
 				final Recall recall = new Recall(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5));
-				View rowView = inflater.inflate(R.layout.diagnostics_item, llContent, false);
+				SwipeLayout rowView = (SwipeLayout )inflater.inflate(R.layout.diagnostics_item, llContent, false);
+				rowView.setSwipeEnabled(false);
+				
 				TextView tvCode = (TextView) rowView.findViewById(R.id.tvCode);
 				TextView tvDescription = (TextView) rowView.findViewById(R.id.tvDescription);
 				TextView tvImportance = (TextView) rowView.findViewById(R.id.tvImportance);
@@ -356,6 +363,7 @@ public class DiagnosticsFragment extends Fragment{
 		//--------------------------------------------- Maintenances ------------------------------------
 		c = db.query(MaintenanceEntry.TABLE_NAME, 
 				new String[]{
+				MaintenanceEntry._ID,
 				MaintenanceEntry.COLUMN_NAME_CREATED_AT,
 				MaintenanceEntry.COLUMN_NAME_DESCRIPTION,
 				MaintenanceEntry.COLUMN_NAME_IMPORTANCE,
@@ -365,14 +373,26 @@ public class DiagnosticsFragment extends Fragment{
 				MaintenanceEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id, null, null, null, null);
 		
 		if(c.moveToFirst()){
-			View headerView = inflater.inflate(R.layout.diagnostics_header, llContent, false);
+			final View headerView = inflater.inflate(R.layout.diagnostics_header, llContent, false);
 			headerView.findViewById(R.id.bottom_line).setBackgroundColor(Color.parseColor(prefs.getString(Constants.PREF_BR_LIST_HEADER_LINE_COLOR, Constants.LIST_HEADER_LINE_COLOR)));
 			((TextView) headerView.findViewById(R.id.tvTitle)).setText("Scheduled Maintenance");
 			llContent.addView(headerView);
 			
 			while(!c.isAfterLast()){
-				Maintenance maintenance = new Maintenance(c.getString(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4));
-				View rowView = inflater.inflate(R.layout.diagnostics_item, llContent, false);
+				final Maintenance maintenance = new Maintenance(c.getLong(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5));
+				final SwipeLayout rowView = (SwipeLayout) inflater.inflate(R.layout.diagnostics_item, llContent, false);
+				rowView.setShowMode(SwipeLayout.ShowMode.PullOut);
+				rowView.findViewById(R.id.btnDelete).setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						maintenancesCount--;
+						llContent.removeView(rowView);
+						new HideMaintenanceTask(getActivity().getApplicationContext(), maintenance.id).execute("vehicles/"+vehicle.id+"/diagnostics/vehicle_maintenances/" + maintenance.id + "/hide.json");
+						if(maintenancesCount==0)
+							llContent.removeView(headerView);
+					}
+				});
+				
 				TextView tvCode = (TextView) rowView.findViewById(R.id.tvCode);
 				TextView tvDescription = (TextView) rowView.findViewById(R.id.tvDescription);
 				TextView tvImportance = (TextView) rowView.findViewById(R.id.tvImportance);
@@ -394,6 +414,7 @@ public class DiagnosticsFragment extends Fragment{
 				default:
 					break;
 				}
+				maintenancesCount++;
 				llContent.addView(rowView);
 				c.moveToNext();
 			}
@@ -417,7 +438,9 @@ public class DiagnosticsFragment extends Fragment{
 			
 			while(!c.isAfterLast()){
 				WarrantyInformation wi = new WarrantyInformation(c.getString(0), c.getString(1), c.getString(2));
-				View rowView = inflater.inflate(R.layout.diagnostics_item, llContent, false);
+				SwipeLayout rowView = (SwipeLayout) inflater.inflate(R.layout.diagnostics_item, llContent, false);
+				rowView.setSwipeEnabled(false);
+				
 				TextView tvCode = (TextView) rowView.findViewById(R.id.tvCode);
 				TextView tvDescription = (TextView) rowView.findViewById(R.id.tvDescription);
 				TextView tvImportance = (TextView) rowView.findViewById(R.id.tvImportance);
@@ -435,15 +458,17 @@ public class DiagnosticsFragment extends Fragment{
 	}
 	
 	public class Maintenance {
+		public long id;
 		public String created_at;
 		public String description;
 		public String importance;
 		public String mileage;
 		public String price;
 		
-		public Maintenance(String created_at, String description,
+		public Maintenance(long id, String created_at, String description,
 				String importance, String mileage, String price) {
 			super();
+			this.id = id;
 			this.created_at = created_at;
 			this.description = description;
 			this.importance = importance;
@@ -463,6 +488,36 @@ public class DiagnosticsFragment extends Fragment{
 			this.created_at = created_at;
 			this.description = description;
 			this.mileage = mileage;
+		}
+	}
+	
+	class HideMaintenanceTask extends BaseRequestAsyncTask{
+		
+		long maintenanceId;
+		
+		public HideMaintenanceTask(Context context, long maintenanceId) {
+			super(context);
+			this.maintenanceId = maintenanceId;
+		}
+
+		@Override
+		protected JSONObject doInBackground(String... params) {
+	        requestParams.add(new BasicNameValuePair("driver_id", ""+vehicle.id));
+	        requestParams.add(new BasicNameValuePair("vehicle_maintenance_id", ""+maintenanceId));
+			return super.doInBackground(params);
+		}
+		
+		@Override
+		protected void onSuccess(JSONObject responseJSON) throws JSONException {
+			DbHelper dbHelper = DbHelper.getInstance(getActivity());
+			dbHelper.deleteMaintenance(vehicle.id, maintenanceId);
+			dbHelper.close();			
+			super.onSuccess(responseJSON);
+		}
+		
+		@Override
+		protected void onError(String message) {
+			//Do nothing
 		}
 	}
 	
@@ -486,7 +541,7 @@ public class DiagnosticsFragment extends Fragment{
 
 		@Override
 		protected JSONObject doInBackground(String... params) {
-	        requestParams.add(new BasicNameValuePair("driver_id", ""+vehicle.id));
+	        requestParams.add(new BasicNameValuePair("vehicle_id", ""+vehicle.id));
 	        requestParams.add(new BasicNameValuePair("mileage", ""+vehicle.odometer));
 			return super.doInBackground(params);
 		}
@@ -570,6 +625,7 @@ public class DiagnosticsFragment extends Fragment{
 							JSONObject maintenance = maintenancesJSON.getJSONObject(i);
 							
 							maintenances.add(new Maintenance(
+									maintenance.optLong("id"),
 									Utils.fixTimezoneZ(maintenance.optString("created_at")), 
 									maintenance.optString("description"), 
 									maintenance.optString("importance"), 

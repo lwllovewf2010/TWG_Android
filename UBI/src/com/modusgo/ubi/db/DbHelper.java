@@ -237,7 +237,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	"DROP TABLE IF EXISTS " + DDEventEntry.TABLE_NAME};
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 36;
+	public static final int DATABASE_VERSION = 37;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;
@@ -880,11 +880,11 @@ public class DbHelper extends SQLiteOpenHelper {
 		database.close();
 	}
 	
-	public void saveDTCs(long driverId, ArrayList<DiagnosticsTroubleCode> dtcs){
+	public void saveDTCs(long vehicleId, ArrayList<DiagnosticsTroubleCode> dtcs){
 		SQLiteDatabase database = sInstance.getWritableDatabase();
 		
 		if(database!=null && dtcs!=null){
-			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+DTCEntry.TABLE_NAME+" WHERE "+DTCEntry.COLUMN_NAME_VEHICLE_ID+" = "+driverId);
+			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+DTCEntry.TABLE_NAME+" WHERE "+DTCEntry.COLUMN_NAME_VEHICLE_ID+" = "+vehicleId);
 		    database.beginTransaction();
 		    removeStatement.clearBindings();
 	        removeStatement.execute();
@@ -913,7 +913,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		    
 		    for (DiagnosticsTroubleCode dtc : dtcs) {
 		    	statement.clearBindings();
-			    statement.bindLong(1, driverId);
+			    statement.bindLong(1, vehicleId);
 			    statement.bindString(2, dtc.code);
 			    statement.bindString(3, dtc.conditions);
 			    statement.bindString(4, dtc.created_at);
@@ -937,11 +937,11 @@ public class DbHelper extends SQLiteOpenHelper {
 		database.close();
 	}
 	
-	public void saveRecalls(long driverId, ArrayList<Recall> recalls){
+	public void saveRecalls(long vehicleId, ArrayList<Recall> recalls){
 		SQLiteDatabase database = sInstance.getWritableDatabase();
 		
 		if(database!=null && recalls!=null){
-			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+RecallEntry.TABLE_NAME+" WHERE "+RecallEntry.COLUMN_NAME_VEHICLE_ID+" = "+driverId);
+			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+RecallEntry.TABLE_NAME+" WHERE "+RecallEntry.COLUMN_NAME_VEHICLE_ID+" = "+vehicleId);
 		    database.beginTransaction();
 		    removeStatement.clearBindings();
 	        removeStatement.execute();
@@ -964,7 +964,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		    
 		    for (Recall recall : recalls) {
 		    	statement.clearBindings();
-			    statement.bindLong(1, driverId);
+			    statement.bindLong(1, vehicleId);
 			    statement.bindString(2, recall.consequence);
 			    statement.bindString(3, recall.corrective_action);
 			    statement.bindString(4, recall.created_at);
@@ -982,11 +982,11 @@ public class DbHelper extends SQLiteOpenHelper {
 		database.close();
 	}
 	
-	public void saveMaintenances(long driverId, ArrayList<Maintenance> maintenances){
+	public void saveMaintenances(long vehicleId, ArrayList<Maintenance> maintenances){
 		SQLiteDatabase database = sInstance.getWritableDatabase();
 		
 		if(database!=null && maintenances!=null){
-			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+MaintenanceEntry.TABLE_NAME+" WHERE "+MaintenanceEntry.COLUMN_NAME_VEHICLE_ID+" = "+driverId);
+			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+MaintenanceEntry.TABLE_NAME+" WHERE "+MaintenanceEntry.COLUMN_NAME_VEHICLE_ID+" = "+vehicleId);
 		    database.beginTransaction();
 		    removeStatement.clearBindings();
 	        removeStatement.execute();
@@ -995,25 +995,27 @@ public class DbHelper extends SQLiteOpenHelper {
 		    removeStatement.close();
 			
 			String sql = "INSERT INTO "+ MaintenanceEntry.TABLE_NAME +" ("
+					+ MaintenanceEntry._ID +","
 					+ MaintenanceEntry.COLUMN_NAME_VEHICLE_ID +","
 					+ MaintenanceEntry.COLUMN_NAME_CREATED_AT +","
 					+ MaintenanceEntry.COLUMN_NAME_DESCRIPTION +","
 					+ MaintenanceEntry.COLUMN_NAME_IMPORTANCE +","
 					+ MaintenanceEntry.COLUMN_NAME_MILEAGE +","
 					+ MaintenanceEntry.COLUMN_NAME_PRICE
-					+ ") VALUES (?,?,?,?,?,?);";
+					+ ") VALUES (?,?,?,?,?,?,?);";
 			
 			SQLiteStatement statement = database.compileStatement(sql);
 		    database.beginTransaction();
 		    
 		    for (Maintenance m : maintenances) {
 		    	statement.clearBindings();
-			    statement.bindLong(1, driverId);
-			    statement.bindString(2, m.created_at);
-			    statement.bindString(3, m.description);
-			    statement.bindString(4, m.importance);
-			    statement.bindString(5, m.mileage);
-			    statement.bindString(6, m.price);
+			    statement.bindLong(1, m.id);
+			    statement.bindLong(2, vehicleId);
+			    statement.bindString(3, m.created_at);
+			    statement.bindString(4, m.description);
+			    statement.bindString(5, m.importance);
+			    statement.bindString(6, m.mileage);
+			    statement.bindString(7, m.price);
 			    statement.execute();
 			}
 		    
@@ -1025,11 +1027,28 @@ public class DbHelper extends SQLiteOpenHelper {
 		database.close();
 	}
 	
-	public void saveWarrantyInformation(long driverId, ArrayList<WarrantyInformation> warrantyInfo){
+	public void deleteMaintenance(long vehicleId, long maintenanceId){
+		SQLiteDatabase database = sInstance.getWritableDatabase();
+		
+		if(database!=null){
+			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+MaintenanceEntry.TABLE_NAME+" WHERE "+MaintenanceEntry.COLUMN_NAME_VEHICLE_ID+" = "+vehicleId +
+					" AND " + MaintenanceEntry._ID+" = " + maintenanceId);
+		    database.beginTransaction();
+		    removeStatement.clearBindings();
+	        removeStatement.execute();
+	        database.setTransactionSuccessful();
+		    database.endTransaction();
+		    removeStatement.close();
+		}
+		
+		database.close();
+	}
+	
+	public void saveWarrantyInformation(long vehicleId, ArrayList<WarrantyInformation> warrantyInfo){
 		SQLiteDatabase database = sInstance.getWritableDatabase();
 		
 		if(database!=null && warrantyInfo!=null){
-			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+WarrantyInfoEntry.TABLE_NAME+" WHERE "+WarrantyInfoEntry.COLUMN_NAME_VEHICLE_ID+" = "+driverId);
+			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+WarrantyInfoEntry.TABLE_NAME+" WHERE "+WarrantyInfoEntry.COLUMN_NAME_VEHICLE_ID+" = "+vehicleId);
 		    database.beginTransaction();
 		    removeStatement.clearBindings();
 	        removeStatement.execute();
@@ -1049,7 +1068,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		    
 		    for (WarrantyInformation wi : warrantyInfo) {
 		    	statement.clearBindings();
-			    statement.bindLong(1, driverId);
+			    statement.bindLong(1, vehicleId);
 			    statement.bindString(2, wi.created_at);
 			    statement.bindString(3, wi.description);
 			    statement.bindString(4, wi.mileage);
