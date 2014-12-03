@@ -17,6 +17,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -27,6 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -76,6 +78,7 @@ public class TripActivity extends MainActivity {
     TextView tvMaxSpeedUnits;
     TextView tvDistanceUnits;
     TextView tvScore;
+    ImageView imageArrow;
     TextView tvFuelUsed;
     TextView tvFuelCost;
     TextView tvFuelUnits;
@@ -141,6 +144,7 @@ public class TripActivity extends MainActivity {
 		tvMaxSpeedUnits = (TextView) findViewById(R.id.tvMaxSpeedUnits);
 		tvDistanceUnits = (TextView) findViewById(R.id.tvDistanceUnits);
 	    tvScore = (TextView) findViewById(R.id.tvScore);
+	    imageArrow = (ImageView) findViewById(R.id.imageArrow);
 	    tvFuelUsed = (TextView) findViewById(R.id.tvFuelUsed);
 	    tvFuelCost = (TextView) findViewById(R.id.tvFuelCost);
 	    tvFuelUnits = (TextView) findViewById(R.id.tvFuelUnits);
@@ -176,6 +180,14 @@ public class TripActivity extends MainActivity {
 	        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(37.8430094,-95.0098992), 1);
 	        map.animateCamera(cameraUpdate);
         }
+        
+        imageArrow.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+        imageArrow.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(TripActivity.this, "Your per trip score is being calculated.", Toast.LENGTH_SHORT).show();
+			}
+		});
         
         updateActivity();
 
@@ -344,7 +356,21 @@ public class TripActivity extends MainActivity {
 			tvDistanceUnits.setText("KM");
 		}
 		
-		tvScore.setText(trip.grade);
+		if(trip.grade.contains("A") || 
+				trip.grade.contains("B") || 
+				trip.grade.contains("C") || 
+				trip.grade.contains("D") || 
+				trip.grade.contains("E") || 
+				trip.grade.contains("F")){
+			tvScore.setText(trip.grade);
+			imageArrow.setVisibility(View.GONE);
+			tvScore.setVisibility(View.VISIBLE);
+		}
+		else{
+			imageArrow.setVisibility(View.VISIBLE);
+			tvScore.setVisibility(View.GONE);			
+		}
+		
 		if(trip.fuelCost==0)
 			llFuelCost.setVisibility(View.GONE);
 		else{

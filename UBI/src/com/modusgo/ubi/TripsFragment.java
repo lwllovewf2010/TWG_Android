@@ -532,8 +532,8 @@ public class TripsFragment extends Fragment{
 				holder.tvScore.setBackgroundResource(R.drawable.circle_score_red);
 			}
 			else{
-				holder.tvScore.setBackgroundResource(R.drawable.circle_score_gray);
-				holder.tvScore.setText("N/A");
+				holder.tvScore.setBackgroundResource(R.drawable.ic_score_arrow);
+				holder.tvScore.setText("");
 			}
 			
 			if(t.fuel>=0 && !TextUtils.isEmpty(t.fuelUnit)){
