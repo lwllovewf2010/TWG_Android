@@ -241,7 +241,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	"DROP TABLE IF EXISTS " + DDEventEntry.TABLE_NAME};
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 41;
+	public static final int DATABASE_VERSION = 42;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;

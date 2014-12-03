@@ -95,7 +95,7 @@ public class Vehicle implements Serializable{
 			d.carMake = carJSON.optString("make");
 			d.carModel = carJSON.optString("model");
 			d.carYear = carJSON.optString("year");
-			d.carFuelLevel = carJSON.optInt("fuel_left", -1);
+			d.carFuelLevel = carJSON.optInt("fuel_level", -1);
 			d.carFuelUnit = carJSON.optString("fuel_unit");
 			d.carFuelStatus = carJSON.optString("fuel_status");
 			d.carDTCCount = carJSON.optInt("dtc_count");
