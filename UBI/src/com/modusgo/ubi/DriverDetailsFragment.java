@@ -230,7 +230,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 		    fuelBlock.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					Toast.makeText(getActivity(), "This percentage shown is your last known fuel level reported.", Toast.LENGTH_SHORT).show();
+					Toast.makeText(getActivity(), "The percentage shown is the last known fuel level reported from your vehicle.", Toast.LENGTH_SHORT).show();
 				}
 			});
 		}

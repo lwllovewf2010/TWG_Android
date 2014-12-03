@@ -1,5 +1,6 @@
 package com.modusgo.ubi;
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,7 +43,6 @@ import android.widget.Toast;
 
 import com.farmers.ubi.R;
 import com.daimajia.swipe.SwipeLayout;
-import com.daimajia.swipe.SwipeLayout.DoubleClickListener;
 import com.modusgo.ubi.db.DTCContract.DTCEntry;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.MaintenanceContract.MaintenanceEntry;
@@ -222,7 +222,7 @@ public class DiagnosticsFragment extends Fragment{
 		
 		if(!prefs.getBoolean(Constants.PREF_DIAGNOSTICS_DELETE_POPUP_SHOWED, false)){
 			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-	        builder.setMessage("Swipe to delete")
+	        builder.setMessage("Swipe left on Recalls and Scheduled Maintenance to mark them Completed.")
 	               .setPositiveButton("OK", new DialogInterface.OnClickListener() {
 	                   public void onClick(DialogInterface dialog, int id) {
 	                	   prefs.edit().putBoolean(Constants.PREF_DIAGNOSTICS_DELETE_POPUP_SHOWED, true).commit();
@@ -422,7 +422,7 @@ public class DiagnosticsFragment extends Fragment{
 			maintenancesHeaders = new HashMap<String, View>();
 			
 			while(!c.isAfterLast()){
-				final Maintenance maintenance = new Maintenance(c.getLong(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5));
+				final Maintenance maintenance = new Maintenance(c.getLong(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getFloat(5));
 				
 				if(!lastMileage.equals(maintenance.mileage)){
 					lastMileage = maintenance.mileage;
@@ -471,8 +471,20 @@ public class DiagnosticsFragment extends Fragment{
 				
 				TextView tvDescription = (TextView) rowView.findViewById(R.id.tvDescription);
 				TextView tvImportance = (TextView) rowView.findViewById(R.id.tvImportance);
-				tvDescription.setText("⚫" + maintenance.description);
+				TextView tvCost = (TextView) rowView.findViewById(R.id.tvCost);
+				tvDescription.setText(maintenance.description);
 				tvImportance.setText(maintenance.importance);
+				if(prefs.getBoolean(Constants.PREF_MAINTENANCE_PRICES_ENABLED, false)){
+					if(maintenance.price>0){
+						DecimalFormat df = new DecimalFormat("0.##");
+						tvCost.setText("$"+df.format(maintenance.price));
+					}
+					else
+						tvCost.setText("");
+				}
+				else{
+					tvCost.setVisibility(View.GONE);
+				}
 				switch (maintenance.importance.toLowerCase(Locale.US)) {
 				case "high":
 					tvImportance.setTextColor(Color.parseColor("#ee4e43"));
@@ -537,10 +549,10 @@ public class DiagnosticsFragment extends Fragment{
 		public String description;
 		public String importance;
 		public String mileage;
-		public String price;
+		public float price;
 		
 		public Maintenance(long id, String created_at, String description,
-				String importance, String mileage, String price) {
+				String importance, String mileage, float price) {
 			super();
 			this.id = id;
 			this.created_at = created_at;
@@ -737,7 +749,7 @@ public class DiagnosticsFragment extends Fragment{
 									maintenance.optString("description"), 
 									maintenance.optString("importance"), 
 									Integer.toString(maintenance.optInt("mileage")), 
-									maintenance.optString("price")));
+									(float) maintenance.optDouble("price")));
 						}
 						dbHelper.saveMaintenances(vehicle.id, maintenances);
 					}

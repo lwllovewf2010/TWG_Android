@@ -292,6 +292,14 @@
                             android:textColor="#00AEEF"
                             android:textSize="31sp"
                             ubi:typeface="EncodeSansNarrow-700-Bold.ttf" />
+                        
+                        <ImageView
+                            android:id="@+id/imageArrow"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginTop="5dp"
+                            android:src="@drawable/ic_score_arrow"
+                            android:visibility="gone" />
                     </LinearLayout>
 
                     <LinearLayout

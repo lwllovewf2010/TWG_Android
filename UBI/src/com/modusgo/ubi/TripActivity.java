@@ -17,9 +17,14 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.SuperscriptSpan;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -27,6 +32,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.farmers.ubi.R;
 import com.google.android.gms.maps.CameraUpdate;
@@ -77,6 +83,7 @@ public class TripActivity extends MainActivity {
     TextView tvMaxSpeedUnits;
     TextView tvDistanceUnits;
     TextView tvScore;
+    ImageView imageArrow;
     TextView tvFuelUsed;
     TextView tvFuelCost;
     TextView tvFuelUnits;
@@ -90,6 +97,7 @@ public class TripActivity extends MainActivity {
     ScrollView scrollView;
     
     CameraUpdate tripCenterCameraUpdate;
+    boolean mapCentered = false;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -130,6 +138,8 @@ public class TripActivity extends MainActivity {
 	    
 		findViewById(R.id.btnSwitchDriverMenu).setVisibility(View.GONE);
 		findViewById(R.id.btnTimePeriod).setVisibility(View.GONE);
+		findViewById(R.id.bottom_line).setBackgroundColor(Color.parseColor(prefs.getString(Constants.PREF_BR_LIST_HEADER_LINE_COLOR, Constants.LIST_HEADER_LINE_COLOR)));
+		
 
 		tvDate = (TextView) findViewById(R.id.tvDate);
 		tvStartTime = (TextView) findViewById(R.id.tvStartTime);
@@ -141,6 +151,7 @@ public class TripActivity extends MainActivity {
 		tvMaxSpeedUnits = (TextView) findViewById(R.id.tvMaxSpeedUnits);
 		tvDistanceUnits = (TextView) findViewById(R.id.tvDistanceUnits);
 	    tvScore = (TextView) findViewById(R.id.tvScore);
+	    imageArrow = (ImageView) findViewById(R.id.imageArrow);
 	    tvFuelUsed = (TextView) findViewById(R.id.tvFuelUsed);
 	    tvFuelCost = (TextView) findViewById(R.id.tvFuelCost);
 	    tvFuelUnits = (TextView) findViewById(R.id.tvFuelUnits);
@@ -177,8 +188,17 @@ public class TripActivity extends MainActivity {
 	        map.animateCamera(cameraUpdate);
         }
         
-        updateActivity();
+        imageArrow.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+        imageArrow.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(TripActivity.this, "Your per trip score is being calculated.", Toast.LENGTH_SHORT).show();
+			}
+		});
         
+        updateActivity();
+
+		new GetTripTask(this).execute("vehicles/"+vehicle.id+"/trips/"+tripId+".json");
         
 	}
 	
@@ -199,7 +219,6 @@ public class TripActivity extends MainActivity {
 				TripEntry.COLUMN_NAME_FUEL_UNIT,
 				TripEntry.COLUMN_NAME_FUEL_STATUS,
 				TripEntry.COLUMN_NAME_FUEL_COST,
-				TripEntry.COLUMN_NAME_GRADE,
 				TripEntry.COLUMN_NAME_VIEWED_AT,
 				TripEntry.COLUMN_NAME_UPDATED_AT}, 
 				TripEntry._ID+" = ?", new String[]{Long.toString(tripId)}, null, null, null);
@@ -319,8 +338,6 @@ public class TripActivity extends MainActivity {
 			
 			updateLabels();
 		}
-		else
-			new GetTripTask(this).execute("vehicles/"+vehicle.id+"/trips/"+tripId+".json");
 	}
 	
 	private void updateLabels(){
@@ -346,7 +363,21 @@ public class TripActivity extends MainActivity {
 			tvDistanceUnits.setText("KM");
 		}
 		
-		tvScore.setText(trip.grade);
+		if(trip.grade.contains("A") || 
+				trip.grade.contains("B") || 
+				trip.grade.contains("C") || 
+				trip.grade.contains("D") || 
+				trip.grade.contains("E") || 
+				trip.grade.contains("F")){
+			tvScore.setText(trip.grade);
+			imageArrow.setVisibility(View.GONE);
+			tvScore.setVisibility(View.VISIBLE);
+		}
+		else{
+			imageArrow.setVisibility(View.VISIBLE);
+			tvScore.setVisibility(View.GONE);			
+		}
+		
 		if(trip.fuelCost==0)
 			llFuelCost.setVisibility(View.GONE);
 		else{
@@ -356,8 +387,20 @@ public class TripActivity extends MainActivity {
 		
 		System.out.println("fuel: "+trip.fuel+" unit: "+trip.fuelUnit);
 		if(trip.fuel >= 0 && !TextUtils.isEmpty(trip.fuelUnit)){
-			tvFuelUsed.setText(df.format(trip.fuel));
-			tvFuelUnits.setText(trip.fuelUnit);
+			if(trip.fuelUnit.equals("%")){
+				String fuelString = df.format(trip.fuel)+trip.fuelUnit;
+				int fuelUnitLength = trip.fuelUnit.length();
+			    SpannableStringBuilder cs = new SpannableStringBuilder(fuelString);
+			    cs.setSpan(new SuperscriptSpan(), fuelString.length()-fuelUnitLength, fuelString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+			    cs.setSpan(new RelativeSizeSpan(0.6f), fuelString.length()-fuelUnitLength, fuelString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+				
+				tvFuelUsed.setText(cs);
+				tvFuelUnits.setText("");
+			}
+			else{
+				tvFuelUsed.setText(df.format(trip.fuel));
+				tvFuelUnits.setText(trip.fuelUnit);
+			}
 		}
 		else{
 			llFuelUsed.setVisibility(View.GONE);
@@ -459,14 +502,17 @@ public class TripActivity extends MainActivity {
 					map.addPolyline(optionsSpeeding.color(colorSpeeding).width(8).zIndex(2));
 				}
 				
-				try{
-					int mapPadding = (int) Math.min(mapView.getHeight()*0.2f, mapView.getWidth()*0.2f);
-					tripCenterCameraUpdate = CameraUpdateFactory.newLatLngBounds(builder.build(), mapPadding);
-			        map.animateCamera(tripCenterCameraUpdate);
-				}
-				catch(IllegalStateException e){
-					tripCenterCameraUpdate = CameraUpdateFactory.newCameraPosition(new CameraPosition(trip.route.get(trip.route.size()/2), 10, 0, 0));
-			        map.animateCamera(tripCenterCameraUpdate);
+				if(!mapCentered){
+					try{
+						int mapPadding = (int) Math.min(mapView.getHeight()*0.2f, mapView.getWidth()*0.2f);
+						tripCenterCameraUpdate = CameraUpdateFactory.newLatLngBounds(builder.build(), mapPadding);
+				        map.animateCamera(tripCenterCameraUpdate);
+					}
+					catch(IllegalStateException e){
+						tripCenterCameraUpdate = CameraUpdateFactory.newCameraPosition(new CameraPosition(trip.route.get(trip.route.size()/2), 10, 0, 0));
+				        map.animateCamera(tripCenterCameraUpdate);
+					}
+					mapCentered = true;
 				}
 			}
 	        

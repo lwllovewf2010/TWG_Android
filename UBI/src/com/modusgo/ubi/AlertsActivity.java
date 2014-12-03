@@ -155,7 +155,7 @@ public class AlertsActivity extends MainActivity {
 		
 		if(!prefs.getBoolean(Constants.PREF_ALERTS_DELETE_POPUP_SHOWED, false)){
 			AlertDialog.Builder builder = new AlertDialog.Builder(AlertsActivity.this);
-	        builder.setMessage("Swipe to delete")
+	        builder.setMessage("Swipe left to delete alerts from your list.")
 	               .setPositiveButton("OK", new DialogInterface.OnClickListener() {
 	                   public void onClick(DialogInterface dialog, int id) {
 	                	   prefs.edit().putBoolean(Constants.PREF_ALERTS_DELETE_POPUP_SHOWED, true).commit();
