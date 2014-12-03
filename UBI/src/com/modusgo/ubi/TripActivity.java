@@ -20,7 +20,11 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.SuperscriptSpan;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -383,7 +387,13 @@ public class TripActivity extends MainActivity {
 		System.out.println("fuel: "+trip.fuel+" unit: "+trip.fuelUnit);
 		if(trip.fuel >= 0 && !TextUtils.isEmpty(trip.fuelUnit)){
 			if(trip.fuelUnit.equals("%")){
-				tvFuelUsed.setText(df.format(trip.fuel)+trip.fuelUnit);
+				String fuelString = df.format(trip.fuel)+trip.fuelUnit;
+				int fuelUnitLength = trip.fuelUnit.length();
+			    SpannableStringBuilder cs = new SpannableStringBuilder(fuelString);
+			    cs.setSpan(new SuperscriptSpan(), fuelString.length()-fuelUnitLength, fuelString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+			    cs.setSpan(new RelativeSizeSpan(0.6f), fuelString.length()-fuelUnitLength, fuelString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+				
+				tvFuelUsed.setText(cs);
 				tvFuelUnits.setText("");
 			}
 			else{
