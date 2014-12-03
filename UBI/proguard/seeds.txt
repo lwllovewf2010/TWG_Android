@@ -2872,6 +2872,7 @@ com.modusgo.ubi.R$drawable: int ic_alerts_red_big
 com.modusgo.ubi.R$drawable: int ic_alerts_red_medium
 com.modusgo.ubi.R$drawable: int ic_arrow_left
 com.modusgo.ubi.R$drawable: int ic_avg_speed
+com.modusgo.ubi.R$drawable: int ic_bullet
 com.modusgo.ubi.R$drawable: int ic_clock
 com.modusgo.ubi.R$drawable: int ic_diagnostics_green
 com.modusgo.ubi.R$drawable: int ic_diagnostics_green_medium
@@ -2896,6 +2897,7 @@ com.modusgo.ubi.R$drawable: int ic_plusone_medium_off_client
 com.modusgo.ubi.R$drawable: int ic_plusone_small_off_client
 com.modusgo.ubi.R$drawable: int ic_plusone_standard_off_client
 com.modusgo.ubi.R$drawable: int ic_plusone_tall_off_client
+com.modusgo.ubi.R$drawable: int ic_score_arrow
 com.modusgo.ubi.R$drawable: int ic_score_circles
 com.modusgo.ubi.R$drawable: int ic_score_info
 com.modusgo.ubi.R$drawable: int ic_score_piechart
@@ -3205,6 +3207,7 @@ com.modusgo.ubi.R$id: int tvAvgSpeedUnits
 com.modusgo.ubi.R$id: int tvCar
 com.modusgo.ubi.R$id: int tvCode
 com.modusgo.ubi.R$id: int tvContent
+com.modusgo.ubi.R$id: int tvCost
 com.modusgo.ubi.R$id: int tvCounter
 com.modusgo.ubi.R$id: int tvDate
 com.modusgo.ubi.R$id: int tvDateLabel

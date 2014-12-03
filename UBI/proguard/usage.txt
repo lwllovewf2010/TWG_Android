@@ -6898,7 +6898,7 @@ com.modusgo.ubi.R$layout
 com.modusgo.ubi.R$string
 com.modusgo.ubi.R$style
 com.modusgo.ubi.R$styleable:
-    3152:3152:public R$styleable()
+    3155:3155:public R$styleable()
 com.modusgo.ubi.R$xml
 com.modusgo.ubi.Recall:
     private static final long serialVersionUID
