@@ -194,6 +194,11 @@ public class TripActivity extends MainActivity {
 				TripEntry.COLUMN_NAME_AVG_SPEED,
 				TripEntry.COLUMN_NAME_MAX_SPEED,
 				TripEntry.COLUMN_NAME_GRADE,
+				TripEntry.COLUMN_NAME_FUEL,
+				TripEntry.COLUMN_NAME_FUEL_UNIT,
+				TripEntry.COLUMN_NAME_FUEL_STATUS,
+				TripEntry.COLUMN_NAME_FUEL_COST,
+				TripEntry.COLUMN_NAME_GRADE,
 				TripEntry.COLUMN_NAME_VIEWED_AT,
 				TripEntry.COLUMN_NAME_UPDATED_AT}, 
 				TripEntry._ID+" = ?", new String[]{Long.toString(tripId)}, null, null, null);
@@ -204,8 +209,12 @@ public class TripActivity extends MainActivity {
 			t = new Trip(c.getLong(0), c.getInt(1), c.getString(2), c.getString(3), c.getFloat(4), c.getString(7));
 			t.averageSpeed = c.getFloat(5);
 			t.maxSpeed = c.getFloat(6);
-			t.viewedAt = c.getString(8);
-			t.updatedAt = c.getString(9);
+			t.fuel = c.getFloat(8);
+			t.fuelUnit = c.getString(9);
+			t.fuelStatus = c.getString(10);
+			t.fuelCost = c.getFloat(11);
+			t.viewedAt = c.getString(12);
+			t.updatedAt = c.getString(13);
 		}
 		c.close();
 		
@@ -344,6 +353,7 @@ public class TripActivity extends MainActivity {
 			tvFuelCost.setText(moneyDf.format(trip.fuelCost));
 		}
 		
+		System.out.println("fuel: "+trip.fuel+" unit: "+trip.fuelUnit);
 		if(trip.fuel >= 0 && !TextUtils.isEmpty(trip.fuelUnit)){
 			tvFuelUsed.setText(df.format(trip.fuel));
 			tvFuelUnits.setText(trip.fuelUnit);
@@ -550,8 +560,10 @@ public class TripActivity extends MainActivity {
 			trip.viewed = true;
 			trip.updatedAt = responseJSON.optString("updated_at");
 			trip.viewedAt = sdf.format(Calendar.getInstance().getTime());
-			trip.fuel = responseJSON.optInt("fuel_left");
+			trip.fuel = (float) responseJSON.optDouble("fuel_used");
 			trip.fuelUnit = responseJSON.optString("fuel_unit");
+			trip.fuelCost = (float) responseJSON.optDouble("fuel_cost");
+			trip.fuelStatus = responseJSON.optString("fuel_status");
 			
 			if(responseJSON.has("route")){
 				JSONArray routeJSON = responseJSON.getJSONArray("route");
@@ -569,7 +581,7 @@ public class TripActivity extends MainActivity {
 					
 					for (int j = 0; j < speedingRouteJSON.length(); j++) {
 						JSONArray pointJSON = speedingRouteJSON.getJSONArray(j);
-						speedingRoute.add(new LatLng(pointJSON.optDouble(0,0), pointJSON.optDouble(1,0)));	
+						speedingRoute.add(new LatLng(pointJSON.optDouble(0,0), pointJSON.optDouble(1,0)));
 					}
 					trip.speedingRoutes.add(speedingRoute);				
 				}

@@ -149,6 +149,8 @@ public class TripsFragment extends Fragment{
 				TripEntry.COLUMN_NAME_GRADE,
 				TripEntry.COLUMN_NAME_FUEL,
 				TripEntry.COLUMN_NAME_FUEL_UNIT,
+				TripEntry.COLUMN_NAME_FUEL_STATUS,
+				TripEntry.COLUMN_NAME_FUEL_COST,
 				TripEntry.COLUMN_NAME_VIEWED_AT,
 				TripEntry.COLUMN_NAME_UPDATED_AT},
 				TripEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id + " AND " + TripEntry.COLUMN_NAME_HIDDEN + " = 0 AND " +
@@ -166,10 +168,12 @@ public class TripsFragment extends Fragment{
 						c.getString(3), 
 						c.getDouble(4),
 						c.getString(5));
-				t.fuel = c.getInt(6);
+				t.fuel = c.getFloat(6);
 				t.fuelUnit = c.getString(7);
-				t.viewedAt = c.getString(8);
-				t.updatedAt = c.getString(9);
+				t.fuelStatus = c.getString(8);
+				t.fuelCost = c.getFloat(9);
+				t.viewedAt = c.getString(10);
+				t.updatedAt = c.getString(11);
 				
 				try {
 					if(!TextUtils.isEmpty(t.viewedAt) && !TextUtils.isEmpty(t.updatedAt)){
@@ -321,8 +325,10 @@ public class TripsFragment extends Fragment{
 						Utils.fixTimezoneZ(tripJSON.optString("end_time")), 
 						tripJSON.optDouble("mileage"));
 				t.grade = tripJSON.optString("grade");
-				t.fuel = tripJSON.optInt("fuel_left",-1);
+				t.fuel = (float) tripJSON.optDouble("fuel_used",-1);
 				t.fuelUnit = tripJSON.optString("fuel_unit");
+				t.fuelCost = (float) tripJSON.optDouble("fuel_cost");
+				t.fuelStatus = tripJSON.optString("fuel_status");
 				t.updatedAt = tripJSON.optString("updated_at");
 				t.hidden = tripJSON.optBoolean("hidden");
 				
@@ -530,9 +536,13 @@ public class TripsFragment extends Fragment{
 				holder.tvScore.setText("N/A");
 			}
 			
+			System.out.println("fuel: "+t.fuel+" unit: "+t.fuelUnit + " cost: "+t.fuelCost+" status: "+t.fuelStatus);
+			
 			if(t.fuel>=0 && !TextUtils.isEmpty(t.fuelUnit)){
+
+				DecimalFormat df = new DecimalFormat("0.0");
 				holder.lFuel.setVisibility(View.VISIBLE);
-				holder.tvFuel.setText(""+t.fuel);
+				holder.tvFuel.setText(""+df.format(t.fuel));
 				holder.tvFuel.setVisibility(View.VISIBLE);
 				holder.tvFuelUnit.setText(t.fuelUnit);
 				holder.tvFuelUnit.setVisibility(View.VISIBLE);
@@ -541,7 +551,8 @@ public class TripsFragment extends Fragment{
 			else{
 				if(!TextUtils.isEmpty(t.fuelStatus)){
 					holder.lFuel.setVisibility(View.VISIBLE);
-					holder.tvFuel.setVisibility(View.GONE);
+					holder.tvFuel.setVisibility(View.INVISIBLE);
+					holder.tvFuel.setText("0.0");
 					holder.tvFuelUnit.setVisibility(View.GONE);
 					holder.imageFuelArrow.setVisibility(View.VISIBLE);
 				}
