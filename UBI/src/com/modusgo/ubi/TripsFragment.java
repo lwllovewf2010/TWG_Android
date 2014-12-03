@@ -540,10 +540,16 @@ public class TripsFragment extends Fragment{
 
 				DecimalFormat df = new DecimalFormat("0.0");
 				holder.lFuel.setVisibility(View.VISIBLE);
-				holder.tvFuel.setText(""+df.format(t.fuel));
 				holder.tvFuel.setVisibility(View.VISIBLE);
-				holder.tvFuelUnit.setText(t.fuelUnit);
-				holder.tvFuelUnit.setVisibility(View.VISIBLE);
+				if(t.fuelUnit.equals("%")){
+					holder.tvFuel.setText(""+df.format(t.fuel)+t.fuelUnit);
+					holder.tvFuelUnit.setVisibility(View.GONE);
+				}
+				else{
+					holder.tvFuel.setText(""+df.format(t.fuel));
+					holder.tvFuelUnit.setText(t.fuelUnit);
+					holder.tvFuelUnit.setVisibility(View.VISIBLE);
+				}
 				holder.imageFuelArrow.setVisibility(View.GONE);
 			}
 			else{

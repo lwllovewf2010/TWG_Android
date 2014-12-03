@@ -133,6 +133,8 @@ public class TripActivity extends MainActivity {
 	    
 		findViewById(R.id.btnSwitchDriverMenu).setVisibility(View.GONE);
 		findViewById(R.id.btnTimePeriod).setVisibility(View.GONE);
+		findViewById(R.id.bottom_line).setBackgroundColor(Color.parseColor(prefs.getString(Constants.PREF_BR_LIST_HEADER_LINE_COLOR, Constants.LIST_HEADER_LINE_COLOR)));
+		
 
 		tvDate = (TextView) findViewById(R.id.tvDate);
 		tvStartTime = (TextView) findViewById(R.id.tvStartTime);
@@ -380,8 +382,14 @@ public class TripActivity extends MainActivity {
 		
 		System.out.println("fuel: "+trip.fuel+" unit: "+trip.fuelUnit);
 		if(trip.fuel >= 0 && !TextUtils.isEmpty(trip.fuelUnit)){
-			tvFuelUsed.setText(df.format(trip.fuel));
-			tvFuelUnits.setText(trip.fuelUnit);
+			if(trip.fuelUnit.equals("%")){
+				tvFuelUsed.setText(df.format(trip.fuel)+trip.fuelUnit);
+				tvFuelUnits.setText("");
+			}
+			else{
+				tvFuelUsed.setText(df.format(trip.fuel));
+				tvFuelUnits.setText(trip.fuelUnit);
+			}
 		}
 		else{
 			llFuelUsed.setVisibility(View.GONE);
