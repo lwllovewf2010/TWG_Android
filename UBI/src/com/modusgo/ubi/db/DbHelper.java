@@ -182,7 +182,7 @@ public class DbHelper extends SQLiteOpenHelper {
 			MaintenanceEntry.COLUMN_NAME_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
 			MaintenanceEntry.COLUMN_NAME_IMPORTANCE + TEXT_TYPE + COMMA_SEP +
 			MaintenanceEntry.COLUMN_NAME_MILEAGE + TEXT_TYPE + COMMA_SEP +
-			MaintenanceEntry.COLUMN_NAME_PRICE + TEXT_TYPE + " ); ",
+			MaintenanceEntry.COLUMN_NAME_PRICE + FLOAT_TYPE + " ); ",
 		    
 		    "CREATE TABLE " + WarrantyInfoEntry.TABLE_NAME + " (" +
 		    WarrantyInfoEntry._ID + " INTEGER PRIMARY KEY," +
@@ -241,7 +241,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	"DROP TABLE IF EXISTS " + DDEventEntry.TABLE_NAME};
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 42;
+	public static final int DATABASE_VERSION = 43;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;
@@ -1054,7 +1054,7 @@ public class DbHelper extends SQLiteOpenHelper {
 			    statement.bindString(4, m.description);
 			    statement.bindString(5, m.importance);
 			    statement.bindString(6, m.mileage);
-			    statement.bindString(7, m.price);
+			    statement.bindDouble(7, m.price);
 			    statement.execute();
 			}
 		    
