@@ -470,7 +470,7 @@ public class DiagnosticsFragment extends Fragment{
 				
 				TextView tvDescription = (TextView) rowView.findViewById(R.id.tvDescription);
 				TextView tvImportance = (TextView) rowView.findViewById(R.id.tvImportance);
-				tvDescription.setText("⚫" + maintenance.description);
+				tvDescription.setText(maintenance.description);
 				tvImportance.setText(maintenance.importance);
 				switch (maintenance.importance.toLowerCase(Locale.US)) {
 				case "high":
