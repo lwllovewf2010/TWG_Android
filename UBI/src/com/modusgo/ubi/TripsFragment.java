@@ -379,6 +379,7 @@ public class TripsFragment extends Fragment{
 	class ViewHolderHeader{
 		TextView tvDate;
 		TextView tvTotals;
+		View bottomLine;
 	}
 	
 	class ViewHolderTrip{
@@ -392,6 +393,7 @@ public class TripsFragment extends Fragment{
 		TextView tvFuel;
 		TextView tvFuelUnit;
 		ImageView imageFuelArrow;
+		View distanceBlock;
 	}
 	
 	class TripsAdapter extends BaseAdapter{
@@ -470,7 +472,8 @@ public class TripsFragment extends Fragment{
 				holder = new ViewHolderHeader();
 				holder.tvDate = (TextView) view.findViewById(R.id.tvDate);
 				holder.tvTotals = (TextView) view.findViewById(R.id.tvTotals);
-				view.findViewById(R.id.bottom_line).setBackgroundColor(Color.parseColor(prefs.getString(Constants.PREF_BR_LIST_HEADER_LINE_COLOR, Constants.LIST_HEADER_LINE_COLOR)));
+				holder.bottomLine = view.findViewById(R.id.bottom_line);
+				
 				view.setTag(holder);
 			}
 			else{
@@ -479,6 +482,7 @@ public class TripsFragment extends Fragment{
 			
 			holder.tvDate.setText(h.date);
 			holder.tvTotals.setText(h.total);
+			holder.bottomLine.setBackgroundColor(Color.parseColor(prefs.getString(Constants.PREF_BR_LIST_HEADER_LINE_COLOR, Constants.LIST_HEADER_LINE_COLOR)));
 			
 			return view;
 		}
@@ -501,11 +505,14 @@ public class TripsFragment extends Fragment{
 				holder.tvFuel = (TextView) view.findViewById(R.id.tvFuel);
 				holder.tvFuelUnit = (TextView) view.findViewById(R.id.tvFuelUnit);
 				holder.imageFuelArrow = (ImageView) view.findViewById(R.id.imageFuelArrow);
+				holder.distanceBlock = (View) holder.tvDistance.getParent();
 				view.setTag(holder);
 			}
 			else{
 				holder = (ViewHolderTrip) view.getTag();				
 			}
+			
+			holder.distanceBlock.setBackgroundColor(Color.parseColor("#00aeef"));
 				
 			if(t.eventsCount>0){
 				holder.tvEventsCount.setTextColor(Color.parseColor("#FFFFFF"));
