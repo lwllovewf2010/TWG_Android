@@ -536,8 +536,6 @@ public class TripsFragment extends Fragment{
 				holder.tvScore.setText("N/A");
 			}
 			
-			System.out.println("fuel: "+t.fuel+" unit: "+t.fuelUnit + " cost: "+t.fuelCost+" status: "+t.fuelStatus);
-			
 			if(t.fuel>=0 && !TextUtils.isEmpty(t.fuelUnit)){
 
 				DecimalFormat df = new DecimalFormat("0.0");

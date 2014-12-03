@@ -89,6 +89,7 @@ public class TripActivity extends MainActivity {
     ScrollView scrollView;
     
     CameraUpdate tripCenterCameraUpdate;
+    boolean mapCentered = false;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -177,7 +178,8 @@ public class TripActivity extends MainActivity {
         }
         
         updateActivity();
-        
+
+		new GetTripTask(this).execute("vehicles/"+vehicle.id+"/trips/"+tripId+".json");
         
 	}
 	
@@ -198,7 +200,6 @@ public class TripActivity extends MainActivity {
 				TripEntry.COLUMN_NAME_FUEL_UNIT,
 				TripEntry.COLUMN_NAME_FUEL_STATUS,
 				TripEntry.COLUMN_NAME_FUEL_COST,
-				TripEntry.COLUMN_NAME_GRADE,
 				TripEntry.COLUMN_NAME_VIEWED_AT,
 				TripEntry.COLUMN_NAME_UPDATED_AT}, 
 				TripEntry._ID+" = ?", new String[]{Long.toString(tripId)}, null, null, null);
@@ -318,8 +319,6 @@ public class TripActivity extends MainActivity {
 			
 			updateLabels();
 		}
-		else
-			new GetTripTask(this).execute("vehicles/"+vehicle.id+"/trips/"+tripId+".json");
 	}
 	
 	private void updateLabels(){
@@ -458,14 +457,17 @@ public class TripActivity extends MainActivity {
 					map.addPolyline(optionsSpeeding.color(colorSpeeding).width(8).zIndex(2));
 				}
 				
-				try{
-					int mapPadding = (int) Math.min(mapView.getHeight()*0.2f, mapView.getWidth()*0.2f);
-					tripCenterCameraUpdate = CameraUpdateFactory.newLatLngBounds(builder.build(), mapPadding);
-			        map.animateCamera(tripCenterCameraUpdate);
-				}
-				catch(IllegalStateException e){
-					tripCenterCameraUpdate = CameraUpdateFactory.newCameraPosition(new CameraPosition(trip.route.get(trip.route.size()/2), 10, 0, 0));
-			        map.animateCamera(tripCenterCameraUpdate);
+				if(!mapCentered){
+					try{
+						int mapPadding = (int) Math.min(mapView.getHeight()*0.2f, mapView.getWidth()*0.2f);
+						tripCenterCameraUpdate = CameraUpdateFactory.newLatLngBounds(builder.build(), mapPadding);
+				        map.animateCamera(tripCenterCameraUpdate);
+					}
+					catch(IllegalStateException e){
+						tripCenterCameraUpdate = CameraUpdateFactory.newCameraPosition(new CameraPosition(trip.route.get(trip.route.size()/2), 10, 0, 0));
+				        map.animateCamera(tripCenterCameraUpdate);
+					}
+					mapCentered = true;
 				}
 			}
 	        
