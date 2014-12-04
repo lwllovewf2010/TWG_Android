@@ -130,7 +130,7 @@ public class LimitsFragment extends Fragment {
 			else if(limit.type.equals("number_picker") || limit.type.equals("number_input")){
 				int value = 0;
 				try{
-					value = Integer.parseInt(limit.value);
+					value = (int) Float.parseFloat(limit.value);
 				}
 				catch(NumberFormatException e){
 					e.printStackTrace();
@@ -191,7 +191,7 @@ public class LimitsFragment extends Fragment {
 
 										int newValue;
 										try{
-											newValue = Integer.parseInt(limit.value);
+											newValue = (int) Float.parseFloat(limit.value);
 										}
 										catch(NumberFormatException e){
 											newValue = 0;
@@ -212,7 +212,7 @@ public class LimitsFragment extends Fragment {
 										
 										
 										try{
-											newValue = Integer.parseInt(limit.value);
+											newValue = (int) Float.parseFloat(limit.value);
 										}
 										catch(NumberFormatException e){ 
 											e.printStackTrace();
@@ -508,6 +508,13 @@ public class LimitsFragment extends Fragment {
 			content.invalidate();
 			
 		}
+		
+		if(vehicle.limitsBlocked){
+			Utils.enableDisableViewGroup(content, false);
+			View blockView = inflater.inflate(R.layout.limits_blocked_item, content, false);
+			((TextView)blockView.findViewById(R.id.tvTitle)).setText("Blocked by "+vehicle.limitsBlockedBy);
+			content.addView(blockView, 0);
+		}
 	}
 	
 	private ArrayList<Limit> getLimitsFromDB(){
@@ -581,9 +588,8 @@ public class LimitsFragment extends Fragment {
 			updateLimits();
 			content.invalidate();
 		}
-		else{
-			new GetLimitsTask(getActivity()).execute("vehicles/"+vehicle.id+"/limits.json");
-		}
+		
+		new GetLimitsTask(getActivity()).execute("vehicles/"+vehicle.id+"/limits.json");
 		
 		Utils.gaTrackScreen(getActivity(), "Limits Screen");
 		super.onResume();
@@ -653,16 +659,21 @@ public class LimitsFragment extends Fragment {
 		
 		@Override
 		protected void onPreExecute() {
-			llProgress.setVisibility(View.VISIBLE);
-			content.setVisibility(View.GONE);
+			if(content.getChildCount()<=0){
+				llProgress.setVisibility(View.VISIBLE);
+				content.setVisibility(View.GONE);
+			}
+			else
+				Utils.enableDisableViewGroup(content, false);
 			super.onPreExecute();
 		}
 		
 		@Override
 		protected void onPostExecute(JSONObject result) {
-			super.onPostExecute(result);
 			llProgress.setVisibility(View.GONE);
 			content.setVisibility(View.VISIBLE);
+			Utils.enableDisableViewGroup(content, true);
+			super.onPostExecute(result);
 		}
 
 		@Override

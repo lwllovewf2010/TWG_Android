@@ -19,7 +19,10 @@ public class VehicleContract {
         public static final String COLUMN_NAME_CAR_YEAR = "year";
         public static final String COLUMN_NAME_CAR_FUEL = "fuel_level";
         public static final String COLUMN_NAME_CAR_FUEL_UNIT = "fuel_unit";
-        public static final String COLUMN_NAME_CAR_CHECKUP = "checkup";
+        public static final String COLUMN_NAME_CAR_FUEL_STATUS = "fuel_status";
+        public static final String COLUMN_NAME_CAR_DTC_COUNT = "dtc_count";
+        public static final String COLUMN_NAME_CAR_LAST_CHECKUP = "last_checkup";
+        public static final String COLUMN_NAME_CAR_CHECKUP_STATUS = "checkup_status";
         public static final String COLUMN_NAME_LATITUDE = "latitude";
         public static final String COLUMN_NAME_LONGITUDE = "longitude";
         public static final String COLUMN_NAME_ADDRESS = "address";
@@ -37,5 +40,7 @@ public class VehicleContract {
         public static final String COLUMN_NAME_TOTAL_SPEEDING_DISTANCE = "total_speeding_distance";
         public static final String COLUMN_NAME_ALERTS = "new_alerts";
         public static final String COLUMN_NAME_ODOMETER = "odometer";
+        public static final String COLUMN_NAME_LIMITS_BLOCKED = "limits_blocked";
+        public static final String COLUMN_NAME_LIMITS_BLOCKED_BY = "limits_blocked_by";
     }
 }

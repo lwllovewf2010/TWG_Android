@@ -29,7 +29,10 @@ public class Vehicle implements Serializable{
 	public String carYear = "";
 	public int carFuelLevel;
 	public String carFuelUnit="";
-	public boolean carCheckup;
+	public String carFuelStatus="";
+	public int carDTCCount;
+	public String carLastCheckup;
+	public String carCheckupStatus;
 
 	public int alerts;
 	
@@ -52,6 +55,8 @@ public class Vehicle implements Serializable{
 	
 	public String profileDate = "";
 	public int harshEvents;
+	public boolean limitsBlocked;
+	public String limitsBlockedBy = "";
 	
 	public Vehicle(){
 	}
@@ -77,6 +82,7 @@ public class Vehicle implements Serializable{
 	public static Vehicle fromJSON(Context context, JSONObject vehicleJSON) throws JSONException{
 		Vehicle d = new Vehicle();
 		d.id = vehicleJSON.getLong("id");
+		d.alerts = vehicleJSON.optInt("count_new_alerts");
 		
 		if(!vehicleJSON.isNull("driver")){
 			JSONObject driverJSON = vehicleJSON.getJSONObject("driver");
@@ -91,9 +97,12 @@ public class Vehicle implements Serializable{
 			d.carMake = carJSON.optString("make");
 			d.carModel = carJSON.optString("model");
 			d.carYear = carJSON.optString("year");
-			d.carFuelLevel = carJSON.optInt("fuel_left", -1);
+			d.carFuelLevel = carJSON.optInt("fuel_level", -1);
 			d.carFuelUnit = carJSON.optString("fuel_unit");
-			d.carCheckup = carJSON.optBoolean("checkup", true);
+			d.carFuelStatus = carJSON.optString("fuel_status");
+			d.carDTCCount = carJSON.optInt("dtc_count");
+			d.carLastCheckup = carJSON.optString("last_checkup");
+			d.carCheckupStatus = carJSON.optString("checkup_status");
 			d.odometer = carJSON.optInt("odometer");
 		}
 		
@@ -129,7 +138,6 @@ public class Vehicle implements Serializable{
 			d.totalAcceleration = statsJSON.optInt("acceleration");
 			d.totalSpeeding = statsJSON.optInt("speeding");
 			d.totalSpeedingDistance = statsJSON.optDouble("speeding_distance");
-			d.alerts = statsJSON.optInt("new_alerts");
 		}
 		
 		return d;

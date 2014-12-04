@@ -62,7 +62,7 @@ public class PieChartFragment extends TitledFragment{
     		Arrays.fill(isVisible, Boolean.TRUE);
 	    }
 	    
-	    backgroundResources = new int[]{R.color.pie_black,R.color.pie_green,R.color.pie_red,R.color.pie_gray,R.color.pie_orange,R.color.pie_blue};
+	    backgroundResources = new int[]{R.color.pie_black,R.color.pie_red,R.color.pie_green,R.color.pie_gray,R.color.pie_orange,R.color.pie_blue};
 	    
 	    LinearLayout rootView = (LinearLayout)inflater.inflate(R.layout.pie_chart_fragment, container, false);
     	final PieChartView pieChart = (PieChartView) rootView.findViewById(R.id.chart);

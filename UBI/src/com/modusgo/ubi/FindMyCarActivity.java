@@ -357,6 +357,7 @@ OnConnectionFailedListener, LocationListener {
 		protected JSONObject doInBackground(String... params) {
 			
 			baseUrl = "http://maps.googleapis.com/maps/api/directions/json";
+			checkSuccess = false;
 			requestParams.clear();
 			requestParams.add(new BasicNameValuePair("origin", myLocation.getLatitude()+","+myLocation.getLongitude()));
 			requestParams.add(new BasicNameValuePair("destination", vehicle.latitude+","+vehicle.longitude));

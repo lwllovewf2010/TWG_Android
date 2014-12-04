@@ -145,6 +145,7 @@ public class ScoreCirclesActivity extends MainActivity{
             final Fragment fragment = new CirclesFragment();
             Bundle b = new Bundle();
             b.putSerializable(CirclesFragment.SAVED_SECTIONS, sections);
+            b.putString(TitledFragment.SAVED_TITLE, circlesTabs[i]);
             fragment.setArguments(b);
             circleFragments.add(fragment);
 

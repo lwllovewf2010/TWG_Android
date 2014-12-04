@@ -27,6 +27,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
@@ -67,6 +68,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	
 	View btnDistanceToCar;
 	View rlLastTrip;
+	View spaceFuel;
 
 	private GoogleMapFragment mMapFragment;
     private GoogleMap mMap;
@@ -104,6 +106,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	    tvAlerts = (TextView)rootView.findViewById(R.id.tvAlertsCount);
 	    btnDistanceToCar = (View)tvDistanceToCar.getParent();
 	    rlLastTrip = rootView.findViewById(R.id.rlDate);
+	    spaceFuel = rootView.findViewById(R.id.spaceFuel);
 	    
 	    updateFragment();
 	    
@@ -149,7 +152,12 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 			}
 		});
 	    
-	    new GetVehiclesTask(getActivity()).execute("vehicles/"+vehicle.id+".json");
+	    imagePhoto.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+	        	startActivity(new Intent(getActivity(), SettingsActivity.class));
+			}
+		});
 		
 		return rootView;
 	}
@@ -207,7 +215,9 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	    	
 	    	ImageLoader.getInstance().displayImage(vehicle.photo, imagePhoto, options);
 	    }
-	    
+		
+		View fuelBlock = (View)tvFuel.getParent();
+		
 		if(vehicle.carFuelLevel>=0 && !TextUtils.isEmpty(vehicle.carFuelUnit)){
 			String fuelLeftString = vehicle.carFuelLevel+vehicle.carFuelUnit;
 			int fuelUnitLength = vehicle.carFuelUnit.length();
@@ -215,16 +225,36 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 		    cs.setSpan(new SuperscriptSpan(), fuelLeftString.length()-fuelUnitLength, fuelLeftString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		    cs.setSpan(new RelativeSizeSpan(0.5f), fuelLeftString.length()-fuelUnitLength, fuelLeftString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		    tvFuel.setText(cs);
+		    tvFuel.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_fuel_green, 0, 0, 0);
+		    fuelBlock.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Toast.makeText(getActivity(), "The percentage shown is the last known fuel level reported from your vehicle.", Toast.LENGTH_SHORT).show();
+				}
+			});
 		}
 		else{
-			tvFuel.setText("N/A");
+			if(!TextUtils.isEmpty(vehicle.carFuelStatus)){
+				tvFuel.setText("");
+				tvFuel.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_fuel_green, 0, R.drawable.ic_fuel_arrow_down, 0);
+				fuelBlock.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						Toast.makeText(getActivity(), vehicle.carFuelStatus, Toast.LENGTH_SHORT).show();
+					}
+				});
+			}
+			else{
+				spaceFuel.setVisibility(View.GONE);
+				fuelBlock.setVisibility(View.GONE);
+			}
 		}
 	    
-	    if(vehicle.carCheckup){
+	    if(vehicle.carDTCCount<=0){
 	    	tvDiagnostics.setText("");
 	    	tvDiagnostics.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_diagnostics_green_medium, 0, 0, 0);
 	    }else{
-	    	tvDiagnostics.setText(""/*+driver.diags*/);
+	    	tvDiagnostics.setText(""+vehicle.carDTCCount);
 	    	tvDiagnostics.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_diagnostics_red_medium, 0, 0, 0);		    	
 	    }
 	    
@@ -232,10 +262,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	    	tvAlerts.setText("");
 	    	tvAlerts.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_alerts_green_medium, 0, 0, 0);
 	    }else{
-	    	if(vehicle.alerts==0)
-	    		tvAlerts.setText("…");
-	    	else
-	    		tvAlerts.setText(""+vehicle.alerts);
+	    	tvAlerts.setText(""+vehicle.alerts);
 	    	tvAlerts.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_alerts_red_medium, 0, 0, 0);		    	
 	    }
 	    
@@ -363,6 +390,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
     
     @Override
 	public void onResume() {
+    	new GetVehiclesTask(getActivity()).execute("vehicles/"+vehicle.id+".json");
 		Utils.gaTrackScreen(getActivity(), "Driver Details Screen");
 	    super.onResume();
     }

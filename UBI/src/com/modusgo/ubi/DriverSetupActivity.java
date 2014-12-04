@@ -41,7 +41,7 @@ public class DriverSetupActivity extends MainActivity{
 		vehiclesAdapter = new VehiclesAdapter(this, vehicles);
 		lvVehicles.setAdapter(vehiclesAdapter);
 		
-		setButtonUpVisibility(true);
+		setButtonUpVisibility(false);
 		
 		updateVehicles();
 	}
@@ -138,8 +138,8 @@ public class DriverSetupActivity extends MainActivity{
 	
 	@Override
 	public void onResume() {
+		super.onResume();
 		setNavigationDrawerItemSelected(MenuItems.DRIVERSETUP);
 		vehiclesAdapter.notifyDataSetChanged();
-		super.onResume();
 	}
 }

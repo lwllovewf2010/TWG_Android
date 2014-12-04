@@ -136,8 +136,8 @@ public class SettingsEditFragment extends Fragment implements ImageChooserListen
 			@Override
 			public void onClick(View v) {
 				AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-			    builder.setTitle("Pick photo")
-			           .setItems(new String[]{"From galery","Make a photo"}, new DialogInterface.OnClickListener() {
+			    builder.setTitle("Choose Photo")
+			           .setItems(new String[]{"From Gallery","Take a Picture"}, new DialogInterface.OnClickListener() {
 			               public void onClick(DialogInterface dialog, int which) {
 			            	   switch (which) {
 			            	   case 0:
@@ -428,7 +428,6 @@ public class SettingsEditFragment extends Fragment implements ImageChooserListen
 	        	
 		        if(spinnerTimezoneChanged){
 		        	String tz = ((TextView)spinnerTimezone.getSelectedView()).getText().toString();
-		        	tz = tz.substring(0,10).replace(" ", "");
 		        	requestParams.add(new BasicNameValuePair(Constants.PREF_TIMEZONE, tz));
 		        }
 		        if(spinnerCarChanged){

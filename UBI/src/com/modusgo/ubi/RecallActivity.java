@@ -6,8 +6,10 @@ import java.util.Locale;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.PorterDuff.Mode;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -33,7 +35,6 @@ public class RecallActivity extends MainActivity {
     LinearLayout llInfoList;
     LinearLayout llList;
     ScrollView scrollView;
-    Button btnContactService;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -60,26 +61,21 @@ public class RecallActivity extends MainActivity {
 		llInfoList = (LinearLayout)findViewById(R.id.llInfoList);
 		llList = (LinearLayout)findViewById(R.id.llList);
 		scrollView = (ScrollView)findViewById(R.id.svContent);
-		btnContactService = (Button)findViewById(R.id.btnContactService);
-		
-		btnContactService.setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, Constants.BUTTON_BG_COLOR)));
-		try{
-			btnContactService.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, Constants.BUTTON_TEXT_COLOR)));
-		}
-	    catch(Exception e){
-	    	e.printStackTrace();
-	    }
 		
 		tvCode.setText("Recall id - "+recall.recall_id);
 		
-		SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
-		SimpleDateFormat sdfTo = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
-		try {
-			tvDate.setText("Recall Date: "+sdfTo.format(sdfFrom.parse(recall.created_at)));
-		} catch (ParseException e) {
-			tvDate.setText("Recall Date: "+recall.created_at);
-			e.printStackTrace();
+		if(!TextUtils.isEmpty(recall.created_at)){
+			SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
+			SimpleDateFormat sdfTo = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
+			try {
+				tvDate.setText("Recall Date: "+sdfTo.format(sdfFrom.parse(recall.created_at)));
+			} catch (ParseException e) {
+				tvDate.setText("Recall Date: "+recall.created_at);
+				e.printStackTrace();
+			}
 		}
+		else
+			tvDate.setVisibility(View.GONE);
 		
 		LayoutInflater inflater = getLayoutInflater();
 		
@@ -112,15 +108,6 @@ public class RecallActivity extends MainActivity {
 			tvText.setText(recall.defect_description);
 			llList.addView(rowView);
 		}
-		
-		btnContactService.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent callIntent = new Intent(Intent.ACTION_VIEW);          
-	            callIntent.setData(Uri.parse("tel:1-800-392-3673"));          
-	            startActivity(callIntent);  
-			}
-		});
 	}
 	
 	@Override
@@ -133,6 +120,11 @@ public class RecallActivity extends MainActivity {
 	protected void setActionBarAppearance() {
 		getActionBar().getCustomView().setBackgroundColor(Color.parseColor("#ef4136"));
 		tvActionBarTitle.setTextColor(Color.parseColor("#FFFFFF"));
+		Mode mMode = Mode.SRC_ATOP;
+	    getResources().getDrawable(R.drawable.ic_arrow_left).setColorFilter(Color.parseColor("#FFFFFF"),mMode);
+	    getResources().getDrawable(R.drawable.ic_menu).setColorFilter(Color.parseColor("#FFFFFF"),mMode);
+	    getResources().getDrawable(R.drawable.ic_menu_close).setColorFilter(Color.parseColor("#FFFFFF"),mMode);
+	    getResources().getDrawable(R.drawable.ic_map).setColorFilter(Color.parseColor("#FFFFFF"),mMode);
 	}
 
 	@Override

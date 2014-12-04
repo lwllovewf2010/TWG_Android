@@ -63,6 +63,7 @@
                     </LinearLayout>
 
                     <com.modusgo.ubi.customviews.TypefacedTextView
+                        android:id="@+id/tvDescriptionLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="24dp"
@@ -87,6 +88,7 @@
                         ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
                     <LinearLayout
+                        android:id="@+id/lLaborHours"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="24dp"
@@ -116,6 +118,7 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/llEstLaborCost"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="24dp"
@@ -145,6 +148,7 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/llEstPartsCost"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="24dp"
@@ -174,9 +178,9 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/llEstTotalCost"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="15dp"
                         android:layout_marginLeft="24dp"
                         android:layout_marginRight="24dp"
                         android:layout_marginTop="6dp"
@@ -208,6 +212,7 @@
                         android:layout_width="152dp"
                         android:layout_height="33dp"
                         android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="15dp"
                         android:background="@color/btn_orange"
                         android:text="Find a mechanic"
                         android:textAllCaps="true"

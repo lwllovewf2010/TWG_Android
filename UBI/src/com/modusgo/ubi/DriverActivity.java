@@ -73,6 +73,8 @@ public class DriverActivity extends MainActivity{
 		if(prefs.getBoolean(Constants.PREF_DIAGNOSTIC, false))
 			setupTab(DiagnosticsFragment.class, b, "Diagnostics", R.drawable.ic_tab_diagnostics, 0);
 		setupTab(LimitsFragment.class, b, "Limits", R.drawable.ic_tab_limits, 0);
+
+		setButtonUpVisibility(false);
 		
 		menu = new SlidingMenu(this);
         menu.setMode(SlidingMenu.LEFT);
@@ -84,7 +86,6 @@ public class DriverActivity extends MainActivity{
         menu.setOnOpenListener(new OnOpenListener() {
 			@Override
 			public void onOpen() {
-				setButtonUpVisibility(false);
 				setButtonNavigationDrawerVisibility(false);
 				Utils.gaTrackScreen(DriverActivity.this, "Switch Driver Menu");
 			}
@@ -92,7 +93,6 @@ public class DriverActivity extends MainActivity{
         menu.setOnCloseListener(new OnCloseListener() {
 			@Override
 			public void onClose() {
-				setButtonUpVisibility(true);
 				setButtonNavigationDrawerVisibility(true);			
 			}
 		});
@@ -108,8 +108,8 @@ public class DriverActivity extends MainActivity{
 	
 	@Override
 	protected void onResume() {
-		setNavigationDrawerItemsUnselected();
 		super.onResume();
+		setNavigationDrawerItemsUnselected();
 	}
 	
 	public void switchTab(int index){
@@ -158,7 +158,7 @@ public class DriverActivity extends MainActivity{
 		    if(prefs.getInt(Constants.PREF_CURRENT_DRIVER, -1)>=0 && prefs.getInt(Constants.PREF_CURRENT_DRIVER, -1)==position){
 		    	
 		    	Spannable span = new SpannableString(Html.fromHtml("<font size=\"10px\" color=\"#3c454f\" face=\"fonts/EncodeSansNormal-600-SemiBold.ttf\">CURRENT</font><br>"+v.name));
-		    	span.setSpan(new RelativeSizeSpan(0.8f), 0, 7, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		    	span.setSpan(new RelativeSizeSpan(0.95f), 0, 7, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		    	
 		    	((TextView) view.findViewById(R.id.tvName)).setText(span);
 		    }else

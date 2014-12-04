@@ -1,55 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.daimajia.swipe.SwipeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ubi="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/lSwipe"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingRight="20dp"
-    android:paddingLeft="14dp"
-    android:background="@color/btn_transparent_orange_light" >
+    android:layout_height="wrap_content" >
 
-    <ImageView
-        android:id="@+id/imageIcon"
+    <LinearLayout
+        android:id="@+id/bottom_wrapper"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_alignParentLeft="true"
-        android:src="@drawable/ic_alerts_red" />
+        android:layout_height="match_parent"
+        android:background="#ef463b"
+        android:tag="Bottom1" >
 
-    <com.modusgo.ubi.customviews.TypefacedTextView
-        android:id="@+id/tvEvent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="7dp"
-        android:layout_marginLeft="15dp"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/imageIcon"
-        android:text="HARD BRAKING"
-        android:textColor="#3c454f"
-        android:textAllCaps="true"
-        android:textSize="10sp"
-        ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
-    
-    
-    <com.modusgo.ubi.customviews.TypefacedTextView
-        android:id="@+id/tvDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="2dp"
-        android:paddingBottom="7dp"
-        android:layout_marginRight="12dp"
-        android:layout_below="@+id/tvEvent"
-        android:layout_alignLeft="@+id/tvEvent"
-        android:text="07/01/2014 05:00 PM PST"
-        android:textColor="#a1a6ad"
-        android:textSize="10sp"
-        ubi:typeface="EncodeSansNormal-300-Light.ttf" />
-    
-    <ImageView 
-        android:id="@+id/imageArrow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:src="@drawable/arrow_small_right"/>
+        <Button
+            android:id="@+id/btnDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@color/btn_transparent_orange_light"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="Delete"
+            android:textColor="#FFF" />
+    </LinearLayout>
 
-</RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/btn_transparent_orange_light"
+        android:paddingLeft="14dp"
+        android:paddingRight="20dp" >
+
+        <ImageView
+            android:id="@+id/imageIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_alerts_red" />
+
+        <com.modusgo.ubi.customviews.TypefacedTextView
+            android:id="@+id/tvEvent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@+id/imageArrow"
+            android:layout_toRightOf="@+id/imageIcon"
+            android:paddingTop="7dp"
+            android:text="HARD BRAKING"
+            android:textAllCaps="true"
+            android:textColor="#3c454f"
+            android:textSize="10sp"
+            ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
+
+        <com.modusgo.ubi.customviews.TypefacedTextView
+            android:id="@+id/tvDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/tvEvent"
+            android:layout_below="@+id/tvEvent"
+            android:layout_marginRight="12dp"
+            android:paddingBottom="7dp"
+            android:paddingTop="2dp"
+            android:text="07/01/2014 05:00 PM PST"
+            android:textColor="#a1a6ad"
+            android:textSize="10sp"
+            ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+
+        <ImageView
+            android:id="@+id/imageArrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/arrow_small_right" />
+    </RelativeLayout>
+
+</com.daimajia.swipe.SwipeLayout>

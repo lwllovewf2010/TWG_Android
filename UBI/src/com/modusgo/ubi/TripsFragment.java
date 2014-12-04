@@ -149,6 +149,8 @@ public class TripsFragment extends Fragment{
 				TripEntry.COLUMN_NAME_GRADE,
 				TripEntry.COLUMN_NAME_FUEL,
 				TripEntry.COLUMN_NAME_FUEL_UNIT,
+				TripEntry.COLUMN_NAME_FUEL_STATUS,
+				TripEntry.COLUMN_NAME_FUEL_COST,
 				TripEntry.COLUMN_NAME_VIEWED_AT,
 				TripEntry.COLUMN_NAME_UPDATED_AT},
 				TripEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id + " AND " + TripEntry.COLUMN_NAME_HIDDEN + " = 0 AND " +
@@ -166,10 +168,12 @@ public class TripsFragment extends Fragment{
 						c.getString(3), 
 						c.getDouble(4),
 						c.getString(5));
-				t.fuelLevel = c.getInt(6);
+				t.fuel = c.getFloat(6);
 				t.fuelUnit = c.getString(7);
-				t.viewedAt = c.getString(8);
-				t.updatedAt = c.getString(9);
+				t.fuelStatus = c.getString(8);
+				t.fuelCost = c.getFloat(9);
+				t.viewedAt = c.getString(10);
+				t.updatedAt = c.getString(11);
 				
 				try {
 					if(!TextUtils.isEmpty(t.viewedAt) && !TextUtils.isEmpty(t.updatedAt)){
@@ -279,6 +283,7 @@ public class TripsFragment extends Fragment{
 		@Override
 		protected JSONObject doInBackground(String... params) {
 			SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);
+			requestParams.add(new BasicNameValuePair("vehicle_id", ""+vehicle.id));
 			requestParams.add(new BasicNameValuePair("page", "1"));
 	        requestParams.add(new BasicNameValuePair("per_page", ""+TRIPS_PER_REQUEST));
 	        requestParams.add(new BasicNameValuePair("end_time", sdf.format(cEndTime.getTime())));
@@ -320,8 +325,10 @@ public class TripsFragment extends Fragment{
 						Utils.fixTimezoneZ(tripJSON.optString("end_time")), 
 						tripJSON.optDouble("mileage"));
 				t.grade = tripJSON.optString("grade");
-				t.fuelLevel = tripJSON.optInt("fuel_left",-1);
+				t.fuel = (float) tripJSON.optDouble("fuel_used",-1);
 				t.fuelUnit = tripJSON.optString("fuel_unit");
+				t.fuelCost = (float) tripJSON.optDouble("fuel_cost");
+				t.fuelStatus = tripJSON.optString("fuel_status");
 				t.updatedAt = tripJSON.optString("updated_at");
 				t.hidden = tripJSON.optBoolean("hidden");
 				
@@ -372,6 +379,7 @@ public class TripsFragment extends Fragment{
 	class ViewHolderHeader{
 		TextView tvDate;
 		TextView tvTotals;
+		View bottomLine;
 	}
 	
 	class ViewHolderTrip{
@@ -381,8 +389,11 @@ public class TripsFragment extends Fragment{
 		TextView tvEndTime;
 		TextView tvDistance;
 		TextView tvDistanceUnits;
+		View lFuel;
 		TextView tvFuel;
 		TextView tvFuelUnit;
+		ImageView imageFuelArrow;
+		View distanceBlock;
 	}
 	
 	class TripsAdapter extends BaseAdapter{
@@ -461,7 +472,8 @@ public class TripsFragment extends Fragment{
 				holder = new ViewHolderHeader();
 				holder.tvDate = (TextView) view.findViewById(R.id.tvDate);
 				holder.tvTotals = (TextView) view.findViewById(R.id.tvTotals);
-				view.findViewById(R.id.bottom_line).setBackgroundColor(Color.parseColor(prefs.getString(Constants.PREF_BR_LIST_HEADER_LINE_COLOR, Constants.LIST_HEADER_LINE_COLOR)));
+				holder.bottomLine = view.findViewById(R.id.bottom_line);
+				
 				view.setTag(holder);
 			}
 			else{
@@ -470,6 +482,7 @@ public class TripsFragment extends Fragment{
 			
 			holder.tvDate.setText(h.date);
 			holder.tvTotals.setText(h.total);
+			holder.bottomLine.setBackgroundColor(Color.parseColor(prefs.getString(Constants.PREF_BR_LIST_HEADER_LINE_COLOR, Constants.LIST_HEADER_LINE_COLOR)));
 			
 			return view;
 		}
@@ -488,13 +501,18 @@ public class TripsFragment extends Fragment{
 				holder.tvStartTime = (TextView) view.findViewById(R.id.tvStartTime);
 				holder.tvEndTime = (TextView) view.findViewById(R.id.tvEndTime);
 				holder.tvScore = (TextView) view.findViewById(R.id.tvScore);
+				holder.lFuel = view.findViewById(R.id.lFuel);
 				holder.tvFuel = (TextView) view.findViewById(R.id.tvFuel);
 				holder.tvFuelUnit = (TextView) view.findViewById(R.id.tvFuelUnit);
+				holder.imageFuelArrow = (ImageView) view.findViewById(R.id.imageFuelArrow);
+				holder.distanceBlock = (View) holder.tvDistance.getParent();
 				view.setTag(holder);
 			}
 			else{
 				holder = (ViewHolderTrip) view.getTag();				
 			}
+			
+			holder.distanceBlock.setBackgroundColor(Color.parseColor("#00aeef"));
 				
 			if(t.eventsCount>0){
 				holder.tvEventsCount.setTextColor(Color.parseColor("#FFFFFF"));
@@ -509,10 +527,10 @@ public class TripsFragment extends Fragment{
 			String grade = t.grade;
 			holder.tvScore.setText(grade);
 			if(grade.contains("A")){
-				holder.tvScore.setBackgroundResource(R.drawable.circle_score_green);
+				holder.tvScore.setBackgroundResource(R.drawable.circle_score_green_light);
 			}
 			else if(grade.contains("B")){
-				holder.tvScore.setBackgroundResource(R.drawable.circle_score_yellow);
+				holder.tvScore.setBackgroundResource(R.drawable.circle_score_green_dark);
 			}
 			else if(grade.contains("C")){
 				holder.tvScore.setBackgroundResource(R.drawable.circle_score_orange);
@@ -521,18 +539,37 @@ public class TripsFragment extends Fragment{
 				holder.tvScore.setBackgroundResource(R.drawable.circle_score_red);
 			}
 			else{
-				holder.tvScore.setBackgroundResource(R.drawable.circle_score_gray);
-				holder.tvScore.setText("N/A");
+				holder.tvScore.setBackgroundResource(R.drawable.ic_score_arrow);
+				holder.tvScore.setText("");
 			}
 			
-			if(t.fuelLevel>=0 && !TextUtils.isEmpty(t.fuelUnit)){
-				holder.tvFuel.setText(""+t.fuelLevel);
-				holder.tvFuelUnit.setText(t.fuelUnit);
-				holder.tvFuelUnit.setVisibility(View.VISIBLE);
+			if(t.fuel>=0 && !TextUtils.isEmpty(t.fuelUnit)){
+
+				DecimalFormat df = new DecimalFormat("0.#");
+				holder.lFuel.setVisibility(View.VISIBLE);
+				holder.tvFuel.setVisibility(View.VISIBLE);
+				if(t.fuelUnit.equals("%")){
+					holder.tvFuel.setText(""+df.format(t.fuel)+t.fuelUnit);
+					holder.tvFuelUnit.setVisibility(View.GONE);
+				}
+				else{
+					holder.tvFuel.setText(""+df.format(t.fuel));
+					holder.tvFuelUnit.setText(t.fuelUnit);
+					holder.tvFuelUnit.setVisibility(View.VISIBLE);
+				}
+				holder.imageFuelArrow.setVisibility(View.GONE);
 			}
 			else{
-				holder.tvFuel.setText("N/A");
-				holder.tvFuelUnit.setVisibility(View.GONE);		
+				if(!TextUtils.isEmpty(t.fuelStatus)){
+					holder.lFuel.setVisibility(View.VISIBLE);
+					holder.tvFuel.setVisibility(View.INVISIBLE);
+					holder.tvFuel.setText("0.0");
+					holder.tvFuelUnit.setVisibility(View.GONE);
+					holder.imageFuelArrow.setVisibility(View.VISIBLE);
+				}
+				else{
+					holder.lFuel.setVisibility(View.GONE);
+				}
 			}
 			
 			if(t.viewed){
@@ -560,7 +597,6 @@ public class TripsFragment extends Fragment{
 						SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);
 						t.viewed = true;
 						t.viewedAt = sdf.format(Calendar.getInstance().getTime());
-						System.out.println("trip viedwd = "+t.viewedAt);
 						DbHelper dHelper = DbHelper.getInstance(getActivity());
 						dHelper.saveTrip(vehicle.id, t);
 						dHelper.close();

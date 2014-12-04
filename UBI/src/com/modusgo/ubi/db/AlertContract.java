@@ -15,9 +15,12 @@ public class AlertContract {
 		public static final String COLUMN_NAME_TRIP_ID = "trip_id";
 		public static final String COLUMN_NAME_TYPE = "type";
 		public static final String COLUMN_NAME_TIMESTAMP = "timestamp";
+		public static final String COLUMN_NAME_TITLE = "title";
 		public static final String COLUMN_NAME_DESCRIPTION = "description";
 		public static final String COLUMN_NAME_LATITUDE = "latitude";
 		public static final String COLUMN_NAME_LONGITUDE = "longitude";
 		public static final String COLUMN_NAME_SEEN_AT = "seen_at";
+		public static final String COLUMN_NAME_GEOFENCE = "geofence";
+		public static final String COLUMN_NAME_ADDRESS = "address";
 	}
 }

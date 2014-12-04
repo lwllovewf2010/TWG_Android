@@ -71,9 +71,6 @@ public class InitActivity extends FragmentActivity {
 	    
 	    ImageView imageBg = (ImageView) findViewById(R.id.imageBg);
         DisplayImageOptions options = new DisplayImageOptions.Builder()
-        .showImageOnLoading(R.drawable.login_bg)
-        .showImageForEmptyUri(R.drawable.login_bg)
-        .showImageOnFail(R.drawable.login_bg)
         .cacheInMemory(true)
         .cacheOnDisk(true)
         .build();
@@ -227,6 +224,11 @@ public class InitActivity extends FragmentActivity {
 							JSONObject infoJSON = responseJSON.getJSONObject("info");
 							e.putBoolean(Constants.PREF_DIAGNOSTIC, infoJSON.optBoolean("diagnostic"));
 							e.putString(Constants.PREF_UNITS_OF_MEASURE, infoJSON.optString("unit_of_measure","mile"));
+							e.putString(Constants.PREF_CONTACT_PHONE, infoJSON.optString("contact_phone"));
+							e.putString(Constants.PREF_AGENT_PHONE, infoJSON.optString("agent_phone"));
+							e.putBoolean(Constants.PREF_FIND_MECHANIC_ENABLED, infoJSON.optBoolean("find_mechanic_enabled"));
+							e.putBoolean(Constants.PREF_DTC_PRICES_ENABLED, infoJSON.optBoolean("dtc_prices_enabled"));
+							e.putBoolean(Constants.PREF_MAINTENANCE_PRICES_ENABLED, infoJSON.optBoolean("maintenance_prices"));
 							
 							String trackingId = infoJSON.optString("");
 							if(trackingId.equals("") || trackingId.equals("false")){

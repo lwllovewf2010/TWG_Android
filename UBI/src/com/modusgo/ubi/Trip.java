@@ -27,10 +27,12 @@ public class Trip extends ListItem implements Serializable{
 	public double maxSpeed;
 	ArrayList<LatLng> route;
 	ArrayList<Point> points;
-	ArrayList<ArrayList<LatLng>> speedingRoute;
+	ArrayList<ArrayList<LatLng>> speedingRoutes;
 	public String grade;
-	public int fuelLevel;
+	public float fuel = 0;
 	public String fuelUnit="";
+	public float fuelCost = 0;
+	public String fuelStatus = "";
 	public boolean viewed = false;
 	public String viewedAt = "";
 	public String updatedAt = "";
@@ -50,7 +52,7 @@ public class Trip extends ListItem implements Serializable{
 		this.endDate = endDate;
 		route = new ArrayList<LatLng>();
 		points = new ArrayList<Point>();
-		speedingRoute = new ArrayList<ArrayList<LatLng>>();
+		speedingRoutes = new ArrayList<ArrayList<LatLng>>();
 		
 		this.distance = distance;
 	}

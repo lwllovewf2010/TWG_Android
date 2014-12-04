@@ -3,6 +3,7 @@ package com.modusgo.ubi;
 public class Constants {
 	
 	public static final String HOCKEY_APP_ID = "caca040742c8345b8594ac0bd7a71418";
+	public static final String GCM_SENDER_ID = "322787790569";
 	
 	public static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZZZZZ";
 	public static final String DATE_TIME_FORMAT_ZULU = "yyyy-MM-dd'T'HH:mm:ss'Z'";
@@ -31,9 +32,16 @@ public class Constants {
 	public static final String PREF_DEVICE_DATA_URL = "deviceDataUrl";
 	public static final String PREF_DEVICE_AUTH_KEY = "deviceAuthKey";
 	public static final String PREF_EVENTS_LAST_CHECK = "eventsLastCheck";
-	public static final String PREF_DIAGNOSTICS_CHECKUP_DATE = "diagnisticsCheckupDate";
-	public static final String PREF_DIAGNOSTICS_STATUS = "diagnisticsStatus";
 	public static final String PREF_GA_TRACKING_ID = "ga_trackingId";
+	public static final String PREF_GCM_REG_ID = "gmcRegId";
+	public static final String PREF_APP_VERSION = "appVersion";
+	public static final String PREF_CONTACT_PHONE = "contactPhone";
+	public static final String PREF_AGENT_PHONE = "agentPhone";
+	public static final String PREF_FIND_MECHANIC_ENABLED = "findMechanicEnabled";
+	public static final String PREF_DTC_PRICES_ENABLED = "dtcPricesEnabled";
+	public static final String PREF_MAINTENANCE_PRICES_ENABLED = "maintenancePricesEnabled";
+	public static final String PREF_DIAGNOSTICS_DELETE_POPUP_SHOWED = "diagsDeletePopup";
+	public static final String PREF_ALERTS_DELETE_POPUP_SHOWED = "alertsDeletePopup";
 	
 	public static final String ROLE_CUSTOMER = "customer";
 
@@ -67,6 +75,7 @@ public class Constants {
 	public static final String PREF_BR_TITLE_BAR_BG = "title_bar_bg_image";
 	public static final String PREF_BR_TITLE_BAR_BG_COLOR = "title_bar_bg_color";
 	public static final String PREF_BR_TITLE_BAR_TEXT_COLOR = "title_bar_text_color";
+	public static final String PREF_BR_TITLE_BAR_BUTTONS_COLOR = "title_bar_buttons_color";
 	public static final String PREF_BR_MENU_LOGO = "menu_logo";
 	public static final String PREF_BR_SWITCH_DRIVER_MENU_BUTTON_COLOR = "switch_driver_color";
 	public static final String PREF_BR_LIST_HEADER_LINE_COLOR = "list_header_line_color";
@@ -77,4 +86,5 @@ public class Constants {
 	public static final String TITLE_BAR_BG_COLOR = "#000000";
 	public static final String TITLE_BAR_TEXT_COLOR = "#f15b2a";
 	public static final String LIST_HEADER_LINE_COLOR = "#00aeef";
+	public static final String TITLE_BAR_BUTTONS_COLOR = "#697078";
 }

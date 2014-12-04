@@ -16,6 +16,7 @@
         android:background="@color/btn_transparent_orange"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
+        android:visibility="gone"
         android:src="@drawable/ic_arrow_left" />
 
     <com.modusgo.ubi.customviews.TypefacedTextView
