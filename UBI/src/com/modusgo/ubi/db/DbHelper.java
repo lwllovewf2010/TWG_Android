@@ -78,7 +78,9 @@ public class DbHelper extends SQLiteOpenHelper {
 	    VehicleEntry.COLUMN_NAME_ALERTS + INT_TYPE + COMMA_SEP +
 	    VehicleEntry.COLUMN_NAME_ODOMETER + INT_TYPE + COMMA_SEP +
 	    VehicleEntry.COLUMN_NAME_CAR_LAST_CHECKUP + TEXT_TYPE + COMMA_SEP +
-	    VehicleEntry.COLUMN_NAME_CAR_CHECKUP_STATUS + TEXT_TYPE + " ); ",
+	    VehicleEntry.COLUMN_NAME_CAR_CHECKUP_STATUS + TEXT_TYPE + COMMA_SEP +
+	    VehicleEntry.COLUMN_NAME_LIMITS_BLOCKED + INT_TYPE + COMMA_SEP +
+	    VehicleEntry.COLUMN_NAME_LIMITS_BLOCKED_BY + TEXT_TYPE + " ); ",
 	    
 		    "CREATE TABLE " + TripEntry.TABLE_NAME + " (" +
 		    TripEntry._ID + " INTEGER PRIMARY KEY," +
@@ -241,7 +243,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	"DROP TABLE IF EXISTS " + DDEventEntry.TABLE_NAME};
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 43;
+	public static final int DATABASE_VERSION = 44;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;
@@ -373,7 +375,9 @@ public class DbHelper extends SQLiteOpenHelper {
 			    VehicleEntry.COLUMN_NAME_TOTAL_SPEEDING_DISTANCE,
 			    VehicleEntry.COLUMN_NAME_ODOMETER,
 			    VehicleEntry.COLUMN_NAME_CAR_LAST_CHECKUP,
-			    VehicleEntry.COLUMN_NAME_CAR_CHECKUP_STATUS}, 
+			    VehicleEntry.COLUMN_NAME_CAR_CHECKUP_STATUS,
+			    VehicleEntry.COLUMN_NAME_LIMITS_BLOCKED,
+			    VehicleEntry.COLUMN_NAME_LIMITS_BLOCKED_BY}, 
 				VehicleEntry._ID+" = ?", new String[]{Long.toString(id)}, null, null, null);
 		
 		Vehicle v = new Vehicle();
@@ -409,6 +413,8 @@ public class DbHelper extends SQLiteOpenHelper {
 			v.odometer = c.getInt(27);
 			v.carLastCheckup = c.getString(28);
 			v.carCheckupStatus = c.getString(29);
+			v.limitsBlocked = c.getInt(30) == 1;
+			v.limitsBlockedBy = c.getString(31);
 				
 		}
 		c.close();
@@ -426,38 +432,42 @@ public class DbHelper extends SQLiteOpenHelper {
 		SQLiteDatabase database = sInstance.getWritableDatabase();
 		
 		if(database!=null && drivers!=null){
-			String sql = "INSERT OR REPLACE INTO "+ VehicleEntry.TABLE_NAME +" ("
-					+ VehicleEntry._ID +","
-					+ VehicleEntry.COLUMN_NAME_DRIVER_NAME +","
-					+ VehicleEntry.COLUMN_NAME_DRIVER_MARKER_ICON +","
-					+ VehicleEntry.COLUMN_NAME_DRIVER_PHOTO +","
-					+ VehicleEntry.COLUMN_NAME_CAR_VIN +","
-					+ VehicleEntry.COLUMN_NAME_CAR_MAKE +","
-					+ VehicleEntry.COLUMN_NAME_CAR_MODEL +","
-					+ VehicleEntry.COLUMN_NAME_CAR_YEAR +","
-					+ VehicleEntry.COLUMN_NAME_CAR_FUEL +","
-					+ VehicleEntry.COLUMN_NAME_CAR_FUEL_UNIT +","
-					+ VehicleEntry.COLUMN_NAME_CAR_FUEL_STATUS +","
-					+ VehicleEntry.COLUMN_NAME_CAR_DTC_COUNT +","
-					+ VehicleEntry.COLUMN_NAME_LATITUDE +","
-					+ VehicleEntry.COLUMN_NAME_LONGITUDE +","
-					+ VehicleEntry.COLUMN_NAME_ADDRESS +","
-					+ VehicleEntry.COLUMN_NAME_LAST_TRIP_DATE +","
-					+ VehicleEntry.COLUMN_NAME_LAST_TRIP_ID +","
-					+ VehicleEntry.COLUMN_NAME_SCORE +","
-					+ VehicleEntry.COLUMN_NAME_GRADE +","
-					+ VehicleEntry.COLUMN_NAME_TOTAL_TRIPS_COUNT +","
-					+ VehicleEntry.COLUMN_NAME_TOTAL_DRIVING_TIME +","
-					+ VehicleEntry.COLUMN_NAME_TOTAL_DISTANCE +","
-					+ VehicleEntry.COLUMN_NAME_TOTAL_BREAKING +","
-					+ VehicleEntry.COLUMN_NAME_TOTAL_ACCELERATION +","
-					+ VehicleEntry.COLUMN_NAME_TOTAL_SPEEDING +","
-					+ VehicleEntry.COLUMN_NAME_TOTAL_SPEEDING_DISTANCE +","
-					+ VehicleEntry.COLUMN_NAME_ALERTS +","
-					+ VehicleEntry.COLUMN_NAME_ODOMETER +","
-					+ VehicleEntry.COLUMN_NAME_CAR_LAST_CHECKUP +","
-					+ VehicleEntry.COLUMN_NAME_CAR_CHECKUP_STATUS +""
-					+ ") VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
+			String[] fields = new String[]{
+				VehicleEntry._ID,
+				VehicleEntry.COLUMN_NAME_DRIVER_NAME,
+				VehicleEntry.COLUMN_NAME_DRIVER_MARKER_ICON,
+				VehicleEntry.COLUMN_NAME_DRIVER_PHOTO,
+				VehicleEntry.COLUMN_NAME_CAR_VIN,
+				VehicleEntry.COLUMN_NAME_CAR_MAKE,
+				VehicleEntry.COLUMN_NAME_CAR_MODEL,
+				VehicleEntry.COLUMN_NAME_CAR_YEAR,
+				VehicleEntry.COLUMN_NAME_CAR_FUEL,
+				VehicleEntry.COLUMN_NAME_CAR_FUEL_UNIT,
+				VehicleEntry.COLUMN_NAME_CAR_FUEL_STATUS,
+				VehicleEntry.COLUMN_NAME_CAR_DTC_COUNT,
+				VehicleEntry.COLUMN_NAME_LATITUDE,
+				VehicleEntry.COLUMN_NAME_LONGITUDE,
+				VehicleEntry.COLUMN_NAME_ADDRESS,
+				VehicleEntry.COLUMN_NAME_LAST_TRIP_DATE,
+				VehicleEntry.COLUMN_NAME_LAST_TRIP_ID,
+				VehicleEntry.COLUMN_NAME_SCORE,
+				VehicleEntry.COLUMN_NAME_GRADE,
+				VehicleEntry.COLUMN_NAME_TOTAL_TRIPS_COUNT,
+				VehicleEntry.COLUMN_NAME_TOTAL_DRIVING_TIME,
+				VehicleEntry.COLUMN_NAME_TOTAL_DISTANCE,
+				VehicleEntry.COLUMN_NAME_TOTAL_BREAKING,
+				VehicleEntry.COLUMN_NAME_TOTAL_ACCELERATION,
+				VehicleEntry.COLUMN_NAME_TOTAL_SPEEDING,
+				VehicleEntry.COLUMN_NAME_TOTAL_SPEEDING_DISTANCE,
+				VehicleEntry.COLUMN_NAME_ALERTS,
+				VehicleEntry.COLUMN_NAME_ODOMETER,
+				VehicleEntry.COLUMN_NAME_CAR_LAST_CHECKUP,
+				VehicleEntry.COLUMN_NAME_CAR_CHECKUP_STATUS,
+				VehicleEntry.COLUMN_NAME_LIMITS_BLOCKED,
+				VehicleEntry.COLUMN_NAME_LIMITS_BLOCKED_BY
+			};
+			
+			String sql = buildSQLStatementString("INSERT OR REPLACE", VehicleEntry.TABLE_NAME, fields);
 			
 			SQLiteStatement statement = database.compileStatement(sql);
 		    database.beginTransaction();
@@ -498,6 +508,8 @@ public class DbHelper extends SQLiteOpenHelper {
 		    	statement.bindLong(28, vehicle.odometer);
 		    	statement.bindString(29, vehicle.carLastCheckup);
 		    	statement.bindString(30, vehicle.carCheckupStatus);
+		    	statement.bindLong(31, vehicle.limitsBlocked ? 1 : 0);
+		    	statement.bindString(32, vehicle.limitsBlockedBy);
 		    	statement.execute();
 		    	
 			}
@@ -1346,6 +1358,28 @@ public class DbHelper extends SQLiteOpenHelper {
 		    
 		}
 		database.close();
+	}
+	
+	private String buildSQLStatementString(String start, String tableName, String[] fields){
+		StringBuilder sql = new StringBuilder(start + " INTO " + tableName +" (");
+		
+		int fieldsCount = fields.length;
+		for (int i = 0; i < fieldsCount; i++) {
+			sql.append(fields[i]);
+			if(i<fieldsCount-1){
+				sql.append(",");
+			}
+		}
+		sql.append(") VALUES (");
+		for (int i = 0; i < fieldsCount; i++) {
+			sql.append("?");
+			if(i<fieldsCount-1){
+				sql.append(", ");
+			}
+		}
+		sql.append(");");
+		
+		return sql.toString();
 	}
 	
 }

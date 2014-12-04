@@ -55,6 +55,8 @@ public class Vehicle implements Serializable{
 	
 	public String profileDate = "";
 	public int harshEvents;
+	public boolean limitsBlocked;
+	public String limitsBlockedBy = "";
 	
 	public Vehicle(){
 	}
