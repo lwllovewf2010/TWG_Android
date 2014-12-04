@@ -545,7 +545,7 @@ public class TripsFragment extends Fragment{
 			
 			if(t.fuel>=0 && !TextUtils.isEmpty(t.fuelUnit)){
 
-				DecimalFormat df = new DecimalFormat("0.0");
+				DecimalFormat df = new DecimalFormat("0.#");
 				holder.lFuel.setVisibility(View.VISIBLE);
 				holder.tvFuel.setVisibility(View.VISIBLE);
 				if(t.fuelUnit.equals("%")){

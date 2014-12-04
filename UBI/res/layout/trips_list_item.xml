@@ -116,9 +116,8 @@
 
     <RelativeLayout
         android:id="@+id/lFuel"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:gravity="center_horizontal" >
 
         <ImageView
@@ -126,8 +125,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_alignTop="@+id/imageFuelArrow"
-            android:layout_alignBottom="@+id/imageFuelArrow"
+            android:layout_centerVertical="true"
             android:src="@drawable/ic_fuel_green" />
         
         <ImageView
@@ -141,14 +139,13 @@
 
         <com.modusgo.ubi.customviews.TypefacedTextView
             android:id="@+id/tvFuel"
-            android:layout_width="wrap_content"
+            android:layout_width="55dp"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/imageFuel"
-            android:layout_alignParentRight="true"
             android:layout_marginLeft="6dp"
             android:includeFontPadding="false"
             android:gravity="left"
-            android:text="2.3"
+            android:text="20.3%"
             android:textColor="#3c454f"
             android:textSize="18sp"
             ubi:typeface="arialbd.ttf" />
@@ -157,7 +154,8 @@
             android:id="@+id/tvFuelUnit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/imageFuel"
+            android:layout_below="@+id/tvFuel"
+            android:layout_alignLeft="@+id/tvFuel"
             android:text="Gallons"
             android:textColor="#3c454f"
             android:textSize="12sp"
