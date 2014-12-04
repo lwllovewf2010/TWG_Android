@@ -121,7 +121,6 @@ public class AlertMapActivity extends MainActivity {
 		if(!TextUtils.isEmpty(alert.address))
 			tvAddress.setText(alert.address);
 		else{
-			tvAddress.setText("Updating address...");
 			new FetchAddresses(this).execute();
 		}
 	}
@@ -448,6 +447,12 @@ public class AlertMapActivity extends MainActivity {
     	public FetchAddresses(Context context) {
     		this.context = context;
 		}
+    	
+    	@Override
+    	protected void onPreExecute() {
+			tvAddress.setText("Updating address...");
+			super.onPreExecute();
+    	}
 
 		@Override
 		protected Boolean doInBackground(Void... params) {
@@ -462,7 +467,6 @@ public class AlertMapActivity extends MainActivity {
 						alert.address = addresses.get(0).getAddressLine(0);
 				} catch (IOException e) {
 					e.printStackTrace();
-					tvAddress.setText("Unknown address");	
 					return false;
 				}
 				DbHelper dbHelper = DbHelper.getInstance(context);
@@ -478,8 +482,10 @@ public class AlertMapActivity extends MainActivity {
 		@Override
 		protected void onPostExecute(Boolean result) {
 			if (result) {
-				tvAddress.setText(alert.address);			
+				tvAddress.setText(alert.address);
 			}
+			else
+				tvAddress.setText("Unknown address");
 			super.onPostExecute(result);
 		}
     }
