@@ -16557,23 +16557,22 @@ com.modusgo.ubi.MainActivity -> com.modusgo.ubi.MainActivity:
     java.util.ArrayList menuItems -> D
     android.content.SharedPreferences prefs -> E
     android.app.ActionBar actionBar -> F
-    88:232:void onCreate(android.os.Bundle) -> onCreate
-    240:242:void setActionBarTitle(java.lang.String) -> b
-    245:249:void setButtonUpVisibility(boolean) -> b
-    252:253:void up() -> u_
-    256:260:void setButtonNavigationDrawerVisibility(boolean) -> c
-    263:295:void setActionBarAppearance() -> v_
-    299:304:void onResume() -> onResume
-    312:312:boolean onPrepareOptionsMenu(android.view.Menu) -> onPrepareOptionsMenu
-    317:324:boolean onOptionsItemSelected(android.view.MenuItem) -> onOptionsItemSelected
-    407:415:void setNavigationDrawerItemSelected(com.modusgo.ubi.MainActivity$MenuItems) -> a
-    418:423:void setNavigationDrawerItemsUnselected() -> h
-    438:442:void onPostCreate(android.os.Bundle) -> onPostCreate
-    446:449:void onConfigurationChanged(android.content.res.Configuration) -> onConfigurationChanged
-    453:462:boolean onKeyDown(int,android.view.KeyEvent) -> onKeyDown
-    467:473:void onBackPressed() -> onBackPressed
-    476:482:void checkForCrashes() -> i
-    486:487:void checkForUpdates() -> j
+    88:231:void onCreate(android.os.Bundle) -> onCreate
+    239:241:void setActionBarTitle(java.lang.String) -> b
+    244:248:void setButtonUpVisibility(boolean) -> b
+    251:252:void up() -> u_
+    255:259:void setButtonNavigationDrawerVisibility(boolean) -> c
+    262:294:void setActionBarAppearance() -> v_
+    298:303:void onResume() -> onResume
+    311:311:boolean onPrepareOptionsMenu(android.view.Menu) -> onPrepareOptionsMenu
+    316:323:boolean onOptionsItemSelected(android.view.MenuItem) -> onOptionsItemSelected
+    406:414:void setNavigationDrawerItemSelected(com.modusgo.ubi.MainActivity$MenuItems) -> a
+    417:422:void setNavigationDrawerItemsUnselected() -> h
+    437:441:void onPostCreate(android.os.Bundle) -> onPostCreate
+    445:448:void onConfigurationChanged(android.content.res.Configuration) -> onConfigurationChanged
+    452:461:boolean onKeyDown(int,android.view.KeyEvent) -> onKeyDown
+    466:472:void onBackPressed() -> onBackPressed
+    475:481:void checkForCrashes() -> i
     48:48:android.widget.ListView access$0(com.modusgo.ubi.MainActivity) -> a
     50:50:int access$1(com.modusgo.ubi.MainActivity) -> b
     54:54:java.lang.String access$2(com.modusgo.ubi.MainActivity) -> c
@@ -16581,30 +16580,30 @@ com.modusgo.ubi.MainActivity -> com.modusgo.ubi.MainActivity:
     53:53:android.widget.ImageButton access$4(com.modusgo.ubi.MainActivity) -> e
 com.modusgo.ubi.MainActivity$1 -> com.modusgo.ubi.dq:
     com.modusgo.ubi.MainActivity this$0 -> a
-    106:112:void onClick(android.view.View) -> onClick
+    105:111:void onClick(android.view.View) -> onClick
 com.modusgo.ubi.MainActivity$2 -> com.modusgo.ubi.dr:
     com.modusgo.ubi.MainActivity this$0 -> a
-    119:120:void onClick(android.view.View) -> onClick
+    118:119:void onClick(android.view.View) -> onClick
 com.modusgo.ubi.MainActivity$3 -> com.modusgo.ubi.ds:
     com.modusgo.ubi.MainActivity this$0 -> a
-    144:144:int getCount() -> getCount
-    151:177:android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
+    143:143:int getCount() -> getCount
+    150:176:android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
 com.modusgo.ubi.MainActivity$4 -> com.modusgo.ubi.dt:
     com.modusgo.ubi.MainActivity this$0 -> a
     android.widget.ImageView val$menuLogo -> b
-    216:221:void onDrawerClosed(android.view.View) -> b
-    224:229:void onDrawerOpened(android.view.View) -> a
+    215:220:void onDrawerClosed(android.view.View) -> b
+    223:228:void onDrawerOpened(android.view.View) -> a
 com.modusgo.ubi.MainActivity$5 -> com.modusgo.ubi.du:
     com.modusgo.ubi.MainActivity this$0 -> a
-    273:275:void onLoadingComplete(java.lang.String,android.view.View,android.graphics.Bitmap) -> a
+    272:274:void onLoadingComplete(java.lang.String,android.view.View,android.graphics.Bitmap) -> a
 com.modusgo.ubi.MainActivity$6 -> com.modusgo.ubi.dv:
     com.modusgo.ubi.MainActivity this$0 -> a
-    479:479:boolean shouldAutoUploadCrashes() -> a
+    478:478:boolean shouldAutoUploadCrashes() -> a
 com.modusgo.ubi.MainActivity$DrawerItemClickListener -> com.modusgo.ubi.dw:
     com.modusgo.ubi.MainActivity this$0 -> a
     int[] $SWITCH_TABLE$com$modusgo$ubi$MainActivity$MenuItems -> b
-    331:399:void onItemClick(android.widget.AdapterView,android.view.View,int,long) -> onItemClick
-    328:328:int[] $SWITCH_TABLE$com$modusgo$ubi$MainActivity$MenuItems() -> a
+    330:398:void onItemClick(android.widget.AdapterView,android.view.View,int,long) -> onItemClick
+    327:327:int[] $SWITCH_TABLE$com$modusgo$ubi$MainActivity$MenuItems() -> a
 com.modusgo.ubi.MainActivity$MenuItems -> com.modusgo.ubi.dx:
     com.modusgo.ubi.MainActivity$MenuItems HOME -> a
     com.modusgo.ubi.MainActivity$MenuItems COMPARE -> b
@@ -18981,19 +18980,11 @@ net.hockeyapp.android.ExceptionHandler -> net.hockeyapp.android.h:
     112:128:void uncaughtException(java.lang.Thread,java.lang.Throwable) -> uncaughtException
     132:142:void writeValueToFile(java.lang.String,java.lang.String) -> a
     145:148:java.lang.String limitedString(java.lang.String) -> a
-net.hockeyapp.android.ExpiryInfoActivity -> net.hockeyapp.android.i:
-    52:56:void onCreate(android.os.Bundle) -> onCreate
-    64:64:android.view.View getLayoutView() -> a
-    74:75:java.lang.String getStringResource(int) -> a
-net.hockeyapp.android.StringListener -> net.hockeyapp.android.j:
+net.hockeyapp.android.StringListener -> net.hockeyapp.android.i:
     46:46:java.lang.String getStringForResource(int) -> a
-net.hockeyapp.android.Strings -> net.hockeyapp.android.k:
+net.hockeyapp.android.Strings -> net.hockeyapp.android.j:
     java.lang.String[] ENGLISH -> a
     178:188:java.lang.String get(net.hockeyapp.android.StringListener,int) -> a
-net.hockeyapp.android.Tracking -> net.hockeyapp.android.l:
-    110:116:long getUsageTime(android.content.Context) -> a
-    124:132:boolean checkVersion(android.content.Context) -> b
-    139:139:android.content.SharedPreferences getPreferences(android.content.Context) -> c
 net.hockeyapp.android.UpdateActivity -> net.hockeyapp.android.UpdateActivity:
     int DIALOG_ERROR_ID -> c
     net.hockeyapp.android.objects.ErrorObject error -> d
@@ -19017,65 +19008,30 @@ net.hockeyapp.android.UpdateActivity -> net.hockeyapp.android.UpdateActivity:
     320:335:android.app.Dialog onCreateDialog(int) -> onCreateDialog
     340:354:void onPrepareDialog(int,android.app.Dialog) -> onPrepareDialog
     64:64:void access$1(net.hockeyapp.android.UpdateActivity,net.hockeyapp.android.objects.ErrorObject) -> a
-net.hockeyapp.android.UpdateActivity$1 -> net.hockeyapp.android.m:
+net.hockeyapp.android.UpdateActivity$1 -> net.hockeyapp.android.k:
     net.hockeyapp.android.UpdateActivity this$0 -> a
     163:164:void downloadSuccessful(net.hockeyapp.android.tasks.DownloadFileTask) -> a
     167:173:void downloadFailed(net.hockeyapp.android.tasks.DownloadFileTask,java.lang.Boolean) -> a
     176:181:java.lang.String getStringForResource(int) -> a
-net.hockeyapp.android.UpdateActivity$2 -> net.hockeyapp.android.n:
+net.hockeyapp.android.UpdateActivity$2 -> net.hockeyapp.android.l:
     net.hockeyapp.android.UpdateActivity this$0 -> a
     292:293:void run() -> run
-net.hockeyapp.android.UpdateActivity$3 -> net.hockeyapp.android.o:
+net.hockeyapp.android.UpdateActivity$3 -> net.hockeyapp.android.m:
     net.hockeyapp.android.UpdateActivity this$0 -> a
     307:308:void run() -> run
-net.hockeyapp.android.UpdateActivity$4 -> net.hockeyapp.android.p:
+net.hockeyapp.android.UpdateActivity$4 -> net.hockeyapp.android.n:
     net.hockeyapp.android.UpdateActivity this$0 -> a
     329:331:void onClick(android.content.DialogInterface,int) -> onClick
-net.hockeyapp.android.UpdateFragment -> net.hockeyapp.android.q:
-    net.hockeyapp.android.tasks.DownloadFileTask downloadTask -> a
-    org.json.JSONArray versionInfo -> b
-    java.lang.String urlString -> c
-    net.hockeyapp.android.utils.VersionHelper versionHelper -> d
-    107:119:void onCreate(android.os.Bundle) -> onCreate
-    129:147:android.view.View onCreateView(android.view.LayoutInflater,android.view.ViewGroup,android.os.Bundle) -> onCreateView
-    155:157:void onClick(android.view.View) -> onClick
-    164:186:void startDownloadTask(android.app.Activity) -> a
-    194:204:int getCurrentVersionCode() -> e
-    213:221:java.lang.String getAppName() -> a
-    231:231:android.view.View getLayoutView() -> b
-    163:163:void access$0(net.hockeyapp.android.UpdateFragment,android.app.Activity) -> a
-net.hockeyapp.android.UpdateFragment$1 -> net.hockeyapp.android.r:
-    net.hockeyapp.android.UpdateFragment this$0 -> a
-    android.app.Activity val$activity -> b
-    166:169:void downloadFailed(net.hockeyapp.android.tasks.DownloadFileTask,java.lang.Boolean) -> a
-    173:173:void downloadSuccessful(net.hockeyapp.android.tasks.DownloadFileTask) -> a
-    176:181:java.lang.String getStringForResource(int) -> a
-net.hockeyapp.android.UpdateInfoListener -> net.hockeyapp.android.s:
+net.hockeyapp.android.UpdateInfoListener -> net.hockeyapp.android.o:
     int getCurrentVersionCode() -> e
-net.hockeyapp.android.UpdateManager -> net.hockeyapp.android.t:
+net.hockeyapp.android.UpdateManager -> net.hockeyapp.android.p:
     net.hockeyapp.android.tasks.CheckUpdateTask updateTask -> a
     net.hockeyapp.android.UpdateManagerListener lastListener -> b
-    71:72:void register(android.app.Activity,java.lang.String) -> a
-    82:83:void register(android.app.Activity,java.lang.String,boolean) -> a
-    94:95:void register(android.app.Activity,java.lang.String,net.hockeyapp.android.UpdateManagerListener,boolean) -> a
-    106:116:void register(android.app.Activity,java.lang.String,java.lang.String,net.hockeyapp.android.UpdateManagerListener,boolean) -> a
-    165:176:boolean checkExpiryDate(java.lang.ref.WeakReference,net.hockeyapp.android.UpdateManagerListener) -> a
-    184:191:boolean checkExpiryDateForBackground(net.hockeyapp.android.UpdateManagerListener) -> a
-    198:210:boolean installedFromMarket(java.lang.ref.WeakReference) -> b
-    218:228:void startExpiryInfoIntent(java.lang.ref.WeakReference) -> c
-    235:242:void startUpdateTask(java.lang.ref.WeakReference,java.lang.String,java.lang.String,net.hockeyapp.android.UpdateManagerListener,boolean) -> a
-    263:271:boolean dialogShown(java.lang.ref.WeakReference) -> d
-    280:283:java.lang.Boolean fragmentsSupported() -> a
-    291:302:java.lang.Boolean runsOnTablet(java.lang.ref.WeakReference) -> a
-    309:309:net.hockeyapp.android.UpdateManagerListener getLastListener() -> b
-net.hockeyapp.android.UpdateManagerListener -> net.hockeyapp.android.u:
-    46:46:java.lang.Class getUpdateActivityClass() -> a
-    53:53:java.lang.Class getUpdateFragmentClass() -> b
-    61:61:void onNoUpdateAvailable() -> c
-    68:68:void onUpdateAvailable() -> d
+    309:309:net.hockeyapp.android.UpdateManagerListener getLastListener() -> a
+net.hockeyapp.android.UpdateManagerListener -> net.hockeyapp.android.q:
+    61:61:void onNoUpdateAvailable() -> a
+    68:68:void onUpdateAvailable() -> b
     76:77:void onUpdateAvailable(org.json.JSONArray,java.lang.String) -> a
-    84:84:java.util.Date getExpiryDate() -> e
-    92:92:boolean onBuildExpired() -> f
 net.hockeyapp.android.listeners.DownloadFileListener -> net.hockeyapp.android.a.a:
     42:42:void downloadFailed(net.hockeyapp.android.tasks.DownloadFileTask,java.lang.Boolean) -> a
     45:45:void downloadSuccessful(net.hockeyapp.android.tasks.DownloadFileTask) -> a
@@ -19090,39 +19046,19 @@ net.hockeyapp.android.tasks.CheckUpdateTask -> net.hockeyapp.android.c.a:
     java.lang.Boolean mandatory -> c
     net.hockeyapp.android.UpdateManagerListener listener -> d
     long usageTime -> f
-    104:111:void attach(java.lang.ref.WeakReference) -> a
     118:118:int getVersionCode() -> a
     124:149:org.json.JSONArray doInBackground(java.lang.String[]) -> a
     153:159:java.net.URLConnection createConnection(java.net.URL) -> a
     164:178:boolean findNewVersion(org.json.JSONArray,int) -> a
     183:191:org.json.JSONArray limitResponseSize(org.json.JSONArray) -> b
     196:206:void onPostExecute(org.json.JSONArray) -> a
-    209:211:void cleanUp() -> b
     214:235:java.lang.String getURLString(java.lang.String) -> a
     240:244:java.lang.String encodeParam(java.lang.String) -> b
     249:269:java.lang.String convertStreamToString(java.io.InputStream) -> a
-    273:273:boolean getCachingEnabled() -> c
+    273:273:boolean getCachingEnabled() -> b
     1:1:void onPostExecute(java.lang.Object) -> onPostExecute
     1:1:java.lang.Object doInBackground(java.lang.Object[]) -> doInBackground
-net.hockeyapp.android.tasks.CheckUpdateTaskWithUI -> net.hockeyapp.android.c.b:
-    android.app.Activity activity -> f
-    boolean isDialogRequired -> e
-    85:89:void onPostExecute(org.json.JSONArray) -> a
-    93:135:void showDialog(org.json.JSONArray) -> b
-    139:167:void showUpdateFragment(org.json.JSONArray) -> c
-    171:192:void startUpdateIntent(org.json.JSONArray,java.lang.Boolean) -> a
-    196:198:void cleanUp() -> b
-    64:64:android.app.Activity access$0(net.hockeyapp.android.tasks.CheckUpdateTaskWithUI) -> a
-    138:138:void access$1(net.hockeyapp.android.tasks.CheckUpdateTaskWithUI,org.json.JSONArray) -> a
-    170:170:void access$2(net.hockeyapp.android.tasks.CheckUpdateTaskWithUI,org.json.JSONArray,java.lang.Boolean) -> a
-net.hockeyapp.android.tasks.CheckUpdateTaskWithUI$1 -> net.hockeyapp.android.c.c:
-    net.hockeyapp.android.tasks.CheckUpdateTaskWithUI this$0 -> a
-    109:110:void onClick(android.content.DialogInterface,int) -> onClick
-net.hockeyapp.android.tasks.CheckUpdateTaskWithUI$2 -> net.hockeyapp.android.c.d:
-    net.hockeyapp.android.tasks.CheckUpdateTaskWithUI this$0 -> a
-    org.json.JSONArray val$updateInfo -> b
-    115:126:void onClick(android.content.DialogInterface,int) -> onClick
-net.hockeyapp.android.tasks.DownloadFileTask -> net.hockeyapp.android.c.e:
+net.hockeyapp.android.tasks.DownloadFileTask -> net.hockeyapp.android.c.b:
     android.content.Context context -> a
     net.hockeyapp.android.listeners.DownloadFileListener notifier -> b
     java.lang.String urlString -> c
@@ -19140,10 +19076,10 @@ net.hockeyapp.android.tasks.DownloadFileTask -> net.hockeyapp.android.c.e:
     1:1:java.lang.Object doInBackground(java.lang.Object[]) -> doInBackground
     1:1:void onProgressUpdate(java.lang.Object[]) -> onProgressUpdate
     64:64:net.hockeyapp.android.listeners.DownloadFileListener access$3(net.hockeyapp.android.tasks.DownloadFileTask) -> a
-net.hockeyapp.android.tasks.DownloadFileTask$1 -> net.hockeyapp.android.c.f:
+net.hockeyapp.android.tasks.DownloadFileTask$1 -> net.hockeyapp.android.c.c:
     net.hockeyapp.android.tasks.DownloadFileTask this$0 -> a
     182:183:void onClick(android.content.DialogInterface,int) -> onClick
-net.hockeyapp.android.tasks.DownloadFileTask$2 -> net.hockeyapp.android.c.g:
+net.hockeyapp.android.tasks.DownloadFileTask$2 -> net.hockeyapp.android.c.d:
     net.hockeyapp.android.tasks.DownloadFileTask this$0 -> a
     188:189:void onClick(android.content.DialogInterface,int) -> onClick
 net.hockeyapp.android.utils.ConnectionManager -> net.hockeyapp.android.d.a:
@@ -19157,7 +19093,6 @@ net.hockeyapp.android.utils.PrefsUtil -> net.hockeyapp.android.d.c:
     122:125:java.lang.Boolean applySupported() -> a
 net.hockeyapp.android.utils.VersionCache -> net.hockeyapp.android.d.d:
     java.lang.String VERSION_INFO_KEY -> a
-    44:50:void setVersionInfo(android.content.Context,java.lang.String) -> a
     53:58:java.lang.String getVersionInfo(android.content.Context) -> a
 net.hockeyapp.android.utils.VersionHelper -> net.hockeyapp.android.d.e:
     java.util.ArrayList sortedVersions -> a
@@ -19184,11 +19119,7 @@ net.hockeyapp.android.utils.VersionHelper$1 -> net.hockeyapp.android.d.f:
     1:1:int compare(java.lang.Object,java.lang.Object) -> compare
 net.hockeyapp.android.utils.ViewHelper -> net.hockeyapp.android.d.g:
     8:10:android.graphics.drawable.Drawable getGradient() -> a
-net.hockeyapp.android.views.ExpiryInfoView -> net.hockeyapp.android.e.a:
-    60:63:void loadLayoutParams(android.content.Context) -> a
-    67:76:void loadShadowView(android.content.Context) -> b
-    79:92:void loadTextView(android.content.Context,java.lang.String) -> a
-net.hockeyapp.android.views.UpdateView -> net.hockeyapp.android.e.b:
+net.hockeyapp.android.views.UpdateView -> net.hockeyapp.android.e.a:
     android.widget.RelativeLayout headerView -> a
     boolean layoutHorizontally -> b
     boolean limitHeight -> c
