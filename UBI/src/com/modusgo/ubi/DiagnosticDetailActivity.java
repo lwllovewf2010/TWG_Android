@@ -53,7 +53,7 @@ public class DiagnosticDetailActivity extends MainActivity {
 		tvImportance = (TextView) findViewById(R.id.tvImportance);
 		tvDescription = (TextView) findViewById(R.id.tvDescription);
 		tvDescriptionLabel = (TextView) findViewById(R.id.tvDescriptionLabel);
-		lLaborHours = (TextView) findViewById(R.id.lLaborHours);
+		lLaborHours = findViewById(R.id.lLaborHours);
 		tvLaborHours = (TextView) findViewById(R.id.tvLaborHours);
 		tvEstLaborCost = (TextView) findViewById(R.id.tvEstLaborCost);
 		tvEstPartsCost = (TextView) findViewById(R.id.tvEstPartsCost);
