@@ -92,14 +92,16 @@ public class AlertMapActivity extends MainActivity {
 
         // Gets to GoogleMap from the MapView and does initialization stuff
         map = mapView.getMap();
-        map.getUiSettings().setMyLocationButtonEnabled(false);
-        map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
-			@Override
-			public void onMapLoaded() {
-				cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(37.8430094,-95.0098992), 1);
-		        updateMap(true);
-			}
-		});
+        if(map!=null){//no google play services installed -> map == null
+	        map.getUiSettings().setMyLocationButtonEnabled(false);
+	        map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
+				@Override
+				public void onMapLoaded() {
+					cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(37.8430094,-95.0098992), 1);
+			        updateMap(true);
+				}
+			});
+        }
         
         MapsInitializer.initialize(this);     
 
