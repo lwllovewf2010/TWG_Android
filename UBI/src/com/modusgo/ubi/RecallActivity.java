@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff.Mode;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -64,14 +65,18 @@ public class RecallActivity extends MainActivity {
 		
 		tvCode.setText("Recall id - "+recall.recall_id);
 		
-		SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
-		SimpleDateFormat sdfTo = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
-		try {
-			tvDate.setText("Recall Date: "+sdfTo.format(sdfFrom.parse(recall.created_at)));
-		} catch (ParseException e) {
-			tvDate.setText("Recall Date: "+recall.created_at);
-			e.printStackTrace();
+		if(!TextUtils.isEmpty(recall.created_at)){
+			SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
+			SimpleDateFormat sdfTo = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
+			try {
+				tvDate.setText("Recall Date: "+sdfTo.format(sdfFrom.parse(recall.created_at)));
+			} catch (ParseException e) {
+				tvDate.setText("Recall Date: "+recall.created_at);
+				e.printStackTrace();
+			}
 		}
+		else
+			tvDate.setVisibility(View.GONE);
 		
 		LayoutInflater inflater = getLayoutInflater();
 		

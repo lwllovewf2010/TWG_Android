@@ -5,6 +5,13 @@ import java.util.ArrayList;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.View;
@@ -148,7 +155,7 @@ public class DriversLocationsActivity extends MainActivity {
 				@Override
 				public void onLoadingComplete(String arg0, View arg1, Bitmap bitmap) {
 					if(bitmap!=null)
-						map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromBitmap(bitmap)).title(address));
+						new CropBitmapTask(location, address).execute(bitmap);
 					else
 						map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_car)).title(address));
 				}
@@ -180,5 +187,49 @@ public class DriversLocationsActivity extends MainActivity {
     public void onLowMemory() {
         super.onLowMemory();
         mapView.onLowMemory();
+    }
+    
+    class CropBitmapTask extends AsyncTask<Bitmap, Void, Bitmap>{
+    	
+    	LatLng location;
+    	String address;
+    	
+    	public CropBitmapTask(LatLng location, String address) {
+			this.location = location;
+			this.address = address;
+		}
+
+		@Override
+		protected Bitmap doInBackground(Bitmap... params) {
+			
+			Bitmap mask = BitmapFactory.decodeResource(getResources(), R.drawable.marker_car_mask);
+			Bitmap original = Bitmap.createScaledBitmap(params[0], mask.getWidth(), mask.getHeight(), false);
+			Bitmap background = BitmapFactory.decodeResource(getResources(), R.drawable.marker_car);
+
+			Bitmap croppedBitmap = Bitmap.createBitmap(mask.getWidth(), mask.getHeight(), Config.ARGB_8888);
+			Canvas cropCanvas = new Canvas(croppedBitmap);
+			Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+			paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
+			cropCanvas.drawBitmap(original, 0, 0, null);
+			cropCanvas.drawBitmap(mask, 0, 0, paint);
+			paint.setXfermode(null);
+			
+			Bitmap result = Bitmap.createBitmap(background.getWidth(), background.getHeight(), Config.ARGB_8888);
+			Canvas canvas = new Canvas(result);
+			canvas.drawBitmap(background, 0, 0, null);
+			float offset = croppedBitmap.getWidth()*0.12f;
+			canvas.drawBitmap(croppedBitmap, offset, offset, null);
+			
+			return result;
+		}
+		
+		@Override
+		protected void onPostExecute(Bitmap bitmap) {
+			if(bitmap!=null){
+				map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromBitmap(bitmap)).title(address));
+			}
+			super.onPostExecute(bitmap);
+		}
+    	
     }
 }

@@ -5,6 +5,7 @@ import java.util.Locale;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -25,6 +26,8 @@ public class DiagnosticDetailActivity extends MainActivity {
     TextView tvCode;
     TextView tvImportance;
     TextView tvDescription;
+    TextView tvDescriptionLabel;
+    View lLaborHours;
     TextView tvLaborHours;
     TextView tvEstLaborCost;
     TextView tvEstPartsCost;
@@ -50,6 +53,8 @@ public class DiagnosticDetailActivity extends MainActivity {
 		tvCode = (TextView) findViewById(R.id.tvCode);
 		tvImportance = (TextView) findViewById(R.id.tvImportance);
 		tvDescription = (TextView) findViewById(R.id.tvDescription);
+		tvDescriptionLabel = (TextView) findViewById(R.id.tvDescriptionLabel);
+		lLaborHours = findViewById(R.id.lLaborHours);
 		tvLaborHours = (TextView) findViewById(R.id.tvLaborHours);
 		tvEstLaborCost = (TextView) findViewById(R.id.tvEstLaborCost);
 		tvEstPartsCost = (TextView) findViewById(R.id.tvEstPartsCost);
@@ -60,7 +65,15 @@ public class DiagnosticDetailActivity extends MainActivity {
 		
 		tvCode.setText(dtc.code);
 		tvDescription.setText(dtc.description);
+		if(TextUtils.isEmpty(dtc.description)){
+			tvDescriptionLabel.setVisibility(View.GONE);
+			tvDescription.setVisibility(View.GONE);
+		}
+
 		tvLaborHours.setText(dtc.labor_hours);
+		if(TextUtils.isEmpty(dtc.labor_hours))
+			lLaborHours.setVisibility(View.GONE);
+		
 		if(prefs.getBoolean(Constants.PREF_DTC_PRICES_ENABLED, false)){
 			tvEstLaborCost.setText("$"+dtc.labor_cost);
 			tvEstPartsCost.setText("$"+dtc.parts_cost);

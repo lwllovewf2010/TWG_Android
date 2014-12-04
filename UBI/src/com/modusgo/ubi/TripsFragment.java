@@ -528,10 +528,10 @@ public class TripsFragment extends Fragment{
 			String grade = t.grade;
 			holder.tvScore.setText(grade);
 			if(grade.contains("A")){
-				holder.tvScore.setBackgroundResource(R.drawable.circle_score_green);
+				holder.tvScore.setBackgroundResource(R.drawable.circle_score_green_light);
 			}
 			else if(grade.contains("B")){
-				holder.tvScore.setBackgroundResource(R.drawable.circle_score_yellow);
+				holder.tvScore.setBackgroundResource(R.drawable.circle_score_green_dark);
 			}
 			else if(grade.contains("C")){
 				holder.tvScore.setBackgroundResource(R.drawable.circle_score_orange);
@@ -546,7 +546,7 @@ public class TripsFragment extends Fragment{
 			
 			if(t.fuel>=0 && !TextUtils.isEmpty(t.fuelUnit)){
 
-				DecimalFormat df = new DecimalFormat("0.0");
+				DecimalFormat df = new DecimalFormat("0.#");
 				holder.lFuel.setVisibility(View.VISIBLE);
 				holder.tvFuel.setVisibility(View.VISIBLE);
 				if(t.fuelUnit.equals("%")){

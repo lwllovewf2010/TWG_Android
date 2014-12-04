@@ -63,6 +63,7 @@
                     </LinearLayout>
 
                     <com.modusgo.ubi.customviews.TypefacedTextView
+                        android:id="@+id/tvDescriptionLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="24dp"
@@ -87,6 +88,7 @@
                         ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
                     <LinearLayout
+                        android:id="@+id/lLaborHours"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="24dp"

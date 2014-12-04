@@ -509,6 +509,13 @@ public class LimitsFragment extends Fragment {
 			content.invalidate();
 			
 		}
+		
+		if(vehicle.limitsBlocked){
+			Utils.enableDisableViewGroup(content, false);
+			View blockView = inflater.inflate(R.layout.limits_blocked_item, content, false);
+			((TextView)blockView.findViewById(R.id.tvTitle)).setText("Blocked by "+vehicle.limitsBlockedBy);
+			content.addView(blockView, 0);
+		}
 	}
 	
 	private ArrayList<Limit> getLimitsFromDB(){
@@ -664,10 +671,10 @@ public class LimitsFragment extends Fragment {
 		
 		@Override
 		protected void onPostExecute(JSONObject result) {
-			super.onPostExecute(result);
 			llProgress.setVisibility(View.GONE);
 			content.setVisibility(View.VISIBLE);
 			Utils.enableDisableViewGroup(content, true);
+			super.onPostExecute(result);
 		}
 
 		@Override

@@ -203,27 +203,27 @@ public class ScoreFragment extends Fragment{
 			tvScore.setText(grade);
 			if(grade.contains("A")){
 				thisMonthMessage+="Great Driving!\nKeep it up";
-				tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_green));
-				tvScore.setBackgroundResource(R.drawable.circle_score_green);
+				tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.score_green_light));
+				tvScore.setBackgroundResource(R.drawable.circle_score_green_light);
 			}
 			else if(grade.contains("B")){
 				thisMonthMessage+="Really Good Driving!\nKeep Going!";
-				tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_yellow));
-				tvScore.setBackgroundResource(R.drawable.circle_score_yellow);
+				tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.score_green_dark));
+				tvScore.setBackgroundResource(R.drawable.circle_score_green_dark);
 			}
 			else if(grade.contains("C")){
 				thisMonthMessage+="Average Driving\nYou can do better!";
-				tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_orange));
+				tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.score_orange));
 				tvScore.setBackgroundResource(R.drawable.circle_score_orange);
 			}
 			else if(grade.contains("D")){
 				thisMonthMessage+="Off to a rough start.\nYou can do better!";
-				tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_red));
+				tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.score_red));
 				tvScore.setBackgroundResource(R.drawable.circle_score_red);
 			}
 			else if(grade.contains("F")){
 				thisMonthMessage+="Off to a rough start.\nNo where to go but up!";
-				tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_red));
+				tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.score_red));
 				tvScore.setBackgroundResource(R.drawable.circle_score_red);
 				
 			}
@@ -317,20 +317,20 @@ public class ScoreFragment extends Fragment{
 				b.setValueString(grade);
 				
 				if(grade.contains("A")){
-					b.setColor(getActivity().getResources().getColor(R.color.ubi_green));
-					b.setValueColor(getActivity().getResources().getColor(R.color.ubi_green));						
+					b.setColor(getActivity().getResources().getColor(R.color.score_green_light));
+					b.setValueColor(getActivity().getResources().getColor(R.color.score_green_light));						
 				}
 				else if(grade.contains("B")){
-					b.setColor(getActivity().getResources().getColor(R.color.ubi_yellow));
-					b.setValueColor(getActivity().getResources().getColor(R.color.ubi_yellow));
+					b.setColor(getActivity().getResources().getColor(R.color.score_green_dark));
+					b.setValueColor(getActivity().getResources().getColor(R.color.score_green_dark));
 				}
 				else if(grade.contains("C")){
-					b.setColor(getActivity().getResources().getColor(R.color.ubi_orange));
-					b.setValueColor(getActivity().getResources().getColor(R.color.ubi_orange));
+					b.setColor(getActivity().getResources().getColor(R.color.score_orange));
+					b.setValueColor(getActivity().getResources().getColor(R.color.score_orange));
 				}
 				else if(grade.contains("D") || grade.contains("E") || grade.contains("F")){
-					b.setColor(getActivity().getResources().getColor(R.color.ubi_red));
-					b.setValueColor(getActivity().getResources().getColor(R.color.ubi_red));
+					b.setColor(getActivity().getResources().getColor(R.color.score_red));
+					b.setValueColor(getActivity().getResources().getColor(R.color.score_red));
 				}
 				else{
 					b.setColor(getActivity().getResources().getColor(R.color.ubi_gray));
@@ -500,10 +500,10 @@ public class ScoreFragment extends Fragment{
 							(float)json.optDouble("roadsettings_suburban"),
 							(float)json.optDouble("roadsettings_urban")
 					},new float[]{
-							(float)json.optDouble("roadtype_major"),
 							(float)json.optDouble("roadtype_local"),
-							(float)json.optDouble("roadtype_trunk"),
-							(float)json.optDouble("roadtype_minor")
+							(float)json.optDouble("roadtype_major"),
+							(float)json.optDouble("roadtype_minor"),
+							(float)json.optDouble("roadtype_trunk")
 					},};
 			
 			pcTabs.add(new PieChartTab("TIME OF DAY", 
@@ -530,10 +530,10 @@ public class ScoreFragment extends Fragment{
 			pcTabs.add(new PieChartTab("ROAD TYPE", 
 					pieChartsData[2],
 					new String[]{
+	        			Math.round(pieChartsData[2][1])+"%\nLOCAL ROAD",
 						Math.round(pieChartsData[2][0])+"%\nMAJOR ROAD",
-		        		Math.round(pieChartsData[2][1])+"%\nLOCAL ROAD",
-		        		Math.round(pieChartsData[2][2])+"%\nHIGHWAY",
-		        		Math.round(pieChartsData[2][3])+"%\nMINOR ROAD"
+		        		Math.round(pieChartsData[2][3])+"%\nMINOR ROAD",
+		        		Math.round(pieChartsData[2][2])+"%\nHIGHWAY"
 					},
 					null
 			));

@@ -93,14 +93,16 @@ public class AlertMapActivity extends MainActivity {
 
         // Gets to GoogleMap from the MapView and does initialization stuff
         map = mapView.getMap();
-        map.getUiSettings().setMyLocationButtonEnabled(false);
-        map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
-			@Override
-			public void onMapLoaded() {
-				cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(37.8430094,-95.0098992), 1);
-		        updateMap(true);
-			}
-		});
+        if(map!=null){//no google play services installed -> map == null
+	        map.getUiSettings().setMyLocationButtonEnabled(false);
+	        map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
+				@Override
+				public void onMapLoaded() {
+					cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(37.8430094,-95.0098992), 1);
+			        updateMap(true);
+				}
+			});
+        }
         
         MapsInitializer.initialize(this);     
 
@@ -120,7 +122,6 @@ public class AlertMapActivity extends MainActivity {
 		if(!TextUtils.isEmpty(alert.address))
 			tvAddress.setText(alert.address);
 		else{
-			tvAddress.setText("Updating address...");
 			new FetchAddresses(this).execute();
 		}
 	}
@@ -447,6 +448,12 @@ public class AlertMapActivity extends MainActivity {
     	public FetchAddresses(Context context) {
     		this.context = context;
 		}
+    	
+    	@Override
+    	protected void onPreExecute() {
+			tvAddress.setText("Updating address...");
+			super.onPreExecute();
+    	}
 
 		@Override
 		protected Boolean doInBackground(Void... params) {
@@ -461,7 +468,6 @@ public class AlertMapActivity extends MainActivity {
 						alert.address = addresses.get(0).getAddressLine(0);
 				} catch (IOException e) {
 					e.printStackTrace();
-					tvAddress.setText("Unknown address");	
 					return false;
 				}
 				DbHelper dbHelper = DbHelper.getInstance(context);
@@ -477,8 +483,10 @@ public class AlertMapActivity extends MainActivity {
 		@Override
 		protected void onPostExecute(Boolean result) {
 			if (result) {
-				tvAddress.setText(alert.address);			
+				tvAddress.setText(alert.address);
 			}
+			else
+				tvAddress.setText("Unknown address");
 			super.onPostExecute(result);
 		}
     }
