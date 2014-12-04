@@ -41,7 +41,7 @@
                 android:layout_marginLeft="24dp"
                 android:layout_marginRight="24dp"
                 android:layout_marginTop="2dp"
-                android:text="Low importance"
+                android:text="Recall Date:"
                 android:textColor="#00AEEF"
                 android:textSize="12.5sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />

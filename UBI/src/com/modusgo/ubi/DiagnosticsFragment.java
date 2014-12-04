@@ -724,7 +724,7 @@ public class DiagnosticsFragment extends Fragment{
 									recall.optLong("id"),
 									recall.optString("consequence"), 
 									recall.optString("corrective_action"), 
-									Utils.fixTimezoneZ(recall.optString("created_at")), 
+									Utils.fixTimezoneZ(recall.optString("recall_date")), 
 									recall.optString("defect_description"), 
 									recall.optString("description"), 
 									recall.optString("recall_id")));
