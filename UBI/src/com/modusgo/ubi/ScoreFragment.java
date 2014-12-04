@@ -499,10 +499,10 @@ public class ScoreFragment extends Fragment{
 							(float)json.optDouble("roadsettings_suburban"),
 							(float)json.optDouble("roadsettings_urban")
 					},new float[]{
-							(float)json.optDouble("roadtype_major"),
 							(float)json.optDouble("roadtype_local"),
-							(float)json.optDouble("roadtype_trunk"),
-							(float)json.optDouble("roadtype_minor")
+							(float)json.optDouble("roadtype_major"),
+							(float)json.optDouble("roadtype_minor"),
+							(float)json.optDouble("roadtype_trunk")
 					},};
 			
 			pcTabs.add(new PieChartTab("TIME OF DAY", 
@@ -529,10 +529,10 @@ public class ScoreFragment extends Fragment{
 			pcTabs.add(new PieChartTab("ROAD TYPE", 
 					pieChartsData[2],
 					new String[]{
+	        			Math.round(pieChartsData[2][1])+"%\nLOCAL ROAD",
 						Math.round(pieChartsData[2][0])+"%\nMAJOR ROAD",
-		        		Math.round(pieChartsData[2][1])+"%\nLOCAL ROAD",
-		        		Math.round(pieChartsData[2][2])+"%\nHIGHWAY",
-		        		Math.round(pieChartsData[2][3])+"%\nMINOR ROAD"
+		        		Math.round(pieChartsData[2][3])+"%\nMINOR ROAD",
+		        		Math.round(pieChartsData[2][2])+"%\nHIGHWAY"
 					},
 					null
 			));
