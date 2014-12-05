@@ -1,7 +1,5 @@
 package com.modusgo.dd;
 
-import java.util.ArrayList;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -20,12 +18,10 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
-import com.modusgo.dd.requests.CheckIgnitionRequest;
-import com.modusgo.dd.requests.SendStatsRequest;
 import com.modusgo.ubi.Constants;
 import com.modusgo.ubi.InitActivity;
 import com.modusgo.ubi.R;
-import com.modusgo.ubi.utils.Utils;
+import com.modusgo.ubi.requesttasks.GetDeviceInfoRequest;
 
 public class TrackingStatusService extends Service implements GooglePlayServicesClient.ConnectionCallbacks,
 GooglePlayServicesClient.OnConnectionFailedListener{
@@ -34,12 +30,8 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 		super();
 	}
 	
-	private Handler handler;
-	Runnable runnable;
 	private Handler checkIgnitionHandler;
 	private Runnable checkIgnitionRunnable;
-	ArrayList<String> whitelist;
-	ArrayList<String> blacklist;
 	
 	//private boolean smsReceiverRegistered = false;
 	//private boolean callReceiverRegistered = false;
@@ -54,7 +46,6 @@ GooglePlayServicesClient.OnConnectionFailedListener{
     private boolean mInProgress;
 	LocationClient mLocationClient;
 	Location mLastLocation;
-	private long lastIgnitionReceivedTime = 0;
     
 	
 	@Override
@@ -79,24 +70,20 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 		        new NotificationCompat.Builder(this)
 		        .setSmallIcon(R.drawable.ic_launcher)
 		        .setContentTitle("ModusGO")
-		        .setContentText("ModusGO tracking is "+(prefs.getBoolean(Constants.PREF_DD_ENABLED, false) ? "enabled." : "disabled."));
+		        .setContentText("ModusGO tracking is "+(prefs.getBoolean(Constants.PREF_DEVICE_IN_TRIP, false) ? "enabled." : "disabled."));
 
 		Intent resultIntent = new Intent(this, InitActivity.class);
 
 		PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_CANCEL_CURRENT);//stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 		mBuilder.setContentIntent(resultPendingIntent);
-		notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		// mId allows you to update the notification later on.
 		
 		Notification n = mBuilder.build();
 		n.flags |= Notification.FLAG_ONGOING_EVENT;
-		notificationManager.notify(notificationId, n);
 		
-		if(handler!=null) 
-			handler.removeCallbacks(runnable);
+		startForeground(notificationId, n);
+		
 		if(checkIgnitionHandler!=null) 
 			checkIgnitionHandler.removeCallbacks(checkIgnitionRunnable);
-		lastIgnitionReceivedTime = 0;
 				
 		setUpLocationClientIfNeeded();
         if(!mLocationClient.isConnected() || !mLocationClient.isConnecting() && !mInProgress)
@@ -112,37 +99,15 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 	        	
 	        	if(!prefs.getString(Constants.PREF_AUTH_KEY, "").equals("")){
 		        	
-		        	if(lastIgnitionReceivedTime==0)
-		        		lastIgnitionReceivedTime = System.currentTimeMillis();
-		        	
-		        	if(prefs.getBoolean(Constants.PREF_DD_ENABLED, true) && lastIgnitionReceivedTime!= 0 && System.currentTimeMillis()-lastIgnitionReceivedTime>Constants.CHECK_IGNITION_NOT_AVAILABLE_TIME_LIMIT){
-		        		setBlockEnabled(false);
-		        	}
-		        	
 		        	if(mLocationClient!=null && mLocationClient.isConnected()){
 			        	mLastLocation = mLocationClient.getLastLocation();
 			        	if(mLastLocation!=null){
-			        		new CheckIgnitionRequest(TrackingStatusService.this, mLastLocation.getLatitude(), mLastLocation.getLongitude()){
-				            	@Override
-				            	protected void onPostExecuteSuccess(String ignition, String awayStr, String meters) {
-				            		
-				            		lastIgnitionReceivedTime = System.currentTimeMillis();
-				            		
-				            		boolean blockEnabled = Integer.parseInt(ignition)==0 ? false : true; 
-				            		boolean away = Integer.parseInt(awayStr)==0 ? false : true;
-				            		//long distance =  Integer.parseInt(meters);
-		
-				            		if((!blockEnabled || away) && prefs.getBoolean(Constants.PREF_DD_ENABLED, false)){
-				            			setBlockEnabled(false);
-				            		}
-				            		else if(blockEnabled && !away && !prefs.getBoolean(Constants.PREF_DD_ENABLED, false)){
-				            			setBlockEnabled(true);   			
-				            		}
-				            		super.onPostExecuteSuccess(ignition, awayStr, meters);
-				            	}
-				            }.execute();
+			        		
 			        	}
 		        	}
+		        	
+		        	new GetDeviceInfoRequest(TrackingStatusService.this).execute();
+		        	
 		            checkIgnitionHandler.postDelayed(this, Constants.CHECK_IGNITION_FREQUENCY);
 	        	}
 	        }
@@ -155,18 +120,6 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 		return START_STICKY;//super.onStartCommand(intent, flags, startId);
 	}
 	
-	private void setBlockEnabled(boolean enabled){
-		prefs.edit().putBoolean(Constants.PREF_DD_ENABLED, enabled).commit();
-		Intent i = new Intent(getApplicationContext(), TrackingStatusService.class);
-		startService(i);
-		
-		if(!enabled)
-			new SendStatsRequest(this).execute(Constants.getSendStatisticsURL(Utils.getUUID(this)));
-		
-		Intent i2 = new Intent(Constants.INTENT_ACTION_UPDATE_MAIN);
-	    sendBroadcast(i2);    	
-    }
-	
 	@Override
 	public void onDestroy() {
 		/*if(smsReceiverRegistered){
@@ -178,7 +131,6 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 			callReceiverRegistered = false;
 		}*/
 		
-		if(handler!=null) handler.removeCallbacks(runnable);
 		notificationManager.cancel(notificationId);
 		
 		mInProgress = false;
