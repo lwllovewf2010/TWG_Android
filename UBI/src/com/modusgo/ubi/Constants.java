@@ -22,6 +22,7 @@ public class Constants {
 	public static final String PREF_ROLE = "role";
 	public static final String PREF_PHONE = "phone_number";
 	public static final String PREF_TIMEZONE = "time_zone";
+	public static final String PREF_TIMEZONE_OFFSET = "time_zone_offset";
 	public static final String PREF_PHOTO = "photo";
 	public static final String PREF_DIAGNOSTIC = "diagnostic";
 	public static final String PREF_DEVICE_MEID = "deviceMEID";

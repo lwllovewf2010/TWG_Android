@@ -2,17 +2,11 @@ package com.modusgo.ubi;
 
 import java.util.Locale;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,7 +20,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.modusgo.ubi.db.DbHelper;
-import com.modusgo.ubi.requesttasks.BaseRequestAsyncTask;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -86,9 +79,13 @@ public class SettingsViewFragment extends Fragment{
 			
 			@Override
 			public void onClick(View arg0) {
-				new GetDriverTask(getActivity()).execute("driver.json");
+				getActivity().getSupportFragmentManager().beginTransaction()
+				.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)
+				.replace(R.id.content_frame, new SettingsEditFragment())
+				.addToBackStack(null)
+				.commit();
 			}
-		});		
+		});
 		
 		return rootView;
 	}
@@ -144,63 +141,4 @@ public class SettingsViewFragment extends Fragment{
 	    	ImageLoader.getInstance().displayImage(photoURL, imagePhoto, options);
 	    }
 	}
-	
-	class GetDriverTask extends BaseRequestAsyncTask{
-
-		public GetDriverTask(Context context) {
-			super(context);
-		}
-		
-		@Override
-		protected void onPreExecute() {
-			progress.setVisibility(View.VISIBLE);
-			llMainInfo.setVisibility(View.GONE);
-			svAdditionalInfo.setVisibility(View.GONE);
-			super.onPreExecute();
-		}
-		
-		@Override
-		protected void onPostExecute(JSONObject result) {
-			super.onPostExecute(result);
-		}
-		
-		@Override
-		protected void onError(String message) {
-			progress.setVisibility(View.GONE);
-			llMainInfo.setVisibility(View.VISIBLE);
-			svAdditionalInfo.setVisibility(View.VISIBLE);
-			super.onError(message);
-		}
-		
-		@Override
-		protected void onSuccess(JSONObject responseJSON) throws JSONException {
-			
-			Editor e = prefs.edit();
-			e.putLong(Constants.PREF_DRIVER_ID, responseJSON.optLong(Constants.PREF_DRIVER_ID));
-			e.putLong(Constants.PREF_VEHICLE_ID, responseJSON.optLong(Constants.PREF_VEHICLE_ID));
-			e.putString(Constants.PREF_FIRST_NAME, responseJSON.optString(Constants.PREF_FIRST_NAME));
-			e.putString(Constants.PREF_LAST_NAME, responseJSON.optString(Constants.PREF_LAST_NAME));
-			e.putString(Constants.PREF_EMAIL, responseJSON.optString(Constants.PREF_EMAIL));
-			e.putString(Constants.PREF_ROLE, responseJSON.optString(Constants.PREF_ROLE));
-			e.putString(Constants.PREF_PHONE, responseJSON.optString(Constants.PREF_PHONE));
-			e.putString(Constants.PREF_TIMEZONE, responseJSON.optString(Constants.PREF_TIMEZONE));
-			e.putString(Constants.PREF_PHOTO, responseJSON.optString(Constants.PREF_PHOTO));
-			e.commit();
-				  
-			updateFields();
-			
-			FragmentActivity activity = getActivity();
-			
-			if(activity!=null){
-				activity.getSupportFragmentManager().beginTransaction()
-				.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out)
-				.replace(R.id.content_frame, new SettingsEditFragment())
-				.addToBackStack(null)
-				.commit();
-			}
-			
-			super.onSuccess(responseJSON);
-		}
-	}
-
 }

@@ -27,6 +27,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
@@ -43,6 +44,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,6 +58,7 @@ import com.kbeanie.imagechooser.api.ImageChooserListener;
 import com.kbeanie.imagechooser.api.ImageChooserManager;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.requesttasks.BasePostRequestAsyncTask;
+import com.modusgo.ubi.requesttasks.BaseRequestAsyncTask;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -63,6 +68,10 @@ public class SettingsEditFragment extends Fragment implements ImageChooserListen
 	private static final String TAG_CHANGED = "changed";
 	private static final String PHOTOS_FOLDER = "ubi_avatars";
 
+	ProgressBar progress;
+	LinearLayout llMainInfo;
+	ScrollView svAdditionalInfo;
+	
 	ImageView imagePhoto;
 	ImageView imagePickPhoto;
 	EditText editFirstName;
@@ -86,6 +95,9 @@ public class SettingsEditFragment extends Fragment implements ImageChooserListen
 	private boolean spinnerTimezoneChanged = false;
 	private boolean spinnerCarChanged = false;
 	
+	TypefacedArrayAdapter<String> adapterTimezones;
+	
+	ArrayList<String> timezones;
 	ArrayList<Vehicle> vehicles;
 	
 	@Override
@@ -97,6 +109,10 @@ public class SettingsEditFragment extends Fragment implements ImageChooserListen
 		
 		final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
+		progress = (ProgressBar) rootView.findViewById(R.id.progressBar);
+		llMainInfo = (LinearLayout) rootView.findViewById(R.id.llMainInfo);
+		svAdditionalInfo = (ScrollView) rootView.findViewById(R.id.svAdditionalInfo);
+		
 		imagePhoto = (ImageView)rootView.findViewById(R.id.imagePhoto);
 		imagePickPhoto = (ImageView)rootView.findViewById(R.id.imagePickPhoto);
 		editFirstName = (EditText)rootView.findViewById(R.id.editFirstName);
@@ -168,15 +184,13 @@ public class SettingsEditFragment extends Fragment implements ImageChooserListen
 			}
 		});	
 		
-		ArrayList<String> timezones = getTimezoneList();
+		timezones = new ArrayList<String>();
 		
-		TypefacedArrayAdapter<String> adapterTimezones = new TypefacedArrayAdapter<String>(getActivity(),
+		adapterTimezones = new TypefacedArrayAdapter<String>(getActivity(),
 				R.layout.simple_spinner_item, timezones);
         adapterTimezones.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		
 		spinnerTimezone.setAdapter(adapterTimezones);
-		spinnerTimezoneDefault = adapterTimezones.getPosition(prefs.getString(Constants.PREF_TIMEZONE, ""));
-		spinnerTimezone.setSelection(spinnerTimezoneDefault);
 		spinnerTimezone.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view,
@@ -289,24 +303,9 @@ public class SettingsEditFragment extends Fragment implements ImageChooserListen
 	
 	@Override
 	public void onResume() {
+		new GetDriverTask(getActivity()).execute("driver.json");
 		Utils.gaTrackScreen(getActivity(), "Settings Edit Screen");
 		super.onResume();
-	}
-	
-	private ArrayList<String> getTimezoneList(){
-		ArrayList<String> timezones = new ArrayList<String>();
-		JSONObject tzJSON = Utils.getJSONObjectFromAssets(getActivity(), "timezones.json");
-		try{
-			JSONArray tzJSONArray = tzJSON.getJSONArray("timezones");
-			int tzCount = tzJSONArray.length();
-			for (int i = 0; i < tzCount; i++) {
-				timezones.add(tzJSONArray.getString(i));
-			}
-		}
-		catch(JSONException e){
-			e.printStackTrace();
-		}
-		return timezones;
 	}
 	
 	private class CustomTextWatcher implements TextWatcher {
@@ -391,6 +390,77 @@ public class SettingsEditFragment extends Fragment implements ImageChooserListen
 		}
 	}
 	
+	class GetDriverTask extends BaseRequestAsyncTask{
+
+		public GetDriverTask(Context context) {
+			super(context);
+		}
+		
+		@Override
+		protected void onPreExecute() {
+			progress.setVisibility(View.VISIBLE);
+			llMainInfo.setVisibility(View.GONE);
+			svAdditionalInfo.setVisibility(View.GONE);
+			super.onPreExecute();
+		}
+		
+		@Override
+		protected void onPostExecute(JSONObject result) {
+			super.onPostExecute(result);
+		}
+		
+		@Override
+		protected void onError(String message) {
+			
+			FragmentActivity activity = getActivity();
+			
+			if(activity!=null){
+				activity.getSupportFragmentManager().popBackStack();
+			}
+			
+			super.onError(message);
+		}
+		
+		@Override
+		protected void onSuccess(JSONObject responseJSON) throws JSONException {
+			progress.setVisibility(View.GONE);
+			llMainInfo.setVisibility(View.VISIBLE);
+			svAdditionalInfo.setVisibility(View.VISIBLE);
+			
+			Editor e = prefs.edit();
+			e.putLong(Constants.PREF_DRIVER_ID, responseJSON.optLong(Constants.PREF_DRIVER_ID));
+			e.putLong(Constants.PREF_VEHICLE_ID, responseJSON.optLong(Constants.PREF_VEHICLE_ID));
+			e.putString(Constants.PREF_FIRST_NAME, responseJSON.optString(Constants.PREF_FIRST_NAME));
+			e.putString(Constants.PREF_LAST_NAME, responseJSON.optString(Constants.PREF_LAST_NAME));
+			e.putString(Constants.PREF_EMAIL, responseJSON.optString(Constants.PREF_EMAIL));
+			e.putString(Constants.PREF_ROLE, responseJSON.optString(Constants.PREF_ROLE));
+			e.putString(Constants.PREF_PHONE, responseJSON.optString(Constants.PREF_PHONE));
+			e.putString(Constants.PREF_TIMEZONE, responseJSON.optString(Constants.PREF_TIMEZONE));
+			e.putString(Constants.PREF_TIMEZONE_OFFSET, responseJSON.optString(Constants.PREF_TIMEZONE_OFFSET));
+			e.putString(Constants.PREF_PHOTO, responseJSON.optString(Constants.PREF_PHOTO));
+			
+			timezones.clear();
+			if(responseJSON.has("time_zones")){
+				JSONArray timezonesJSON = responseJSON.getJSONArray("time_zones");
+				int timezonesCount = timezonesJSON.length();
+				for (int i = 0; i < timezonesCount; i++) {
+					timezones.add(timezonesJSON.getString(i));
+				}
+			}
+			else{
+				timezones.add(responseJSON.optString(Constants.PREF_TIMEZONE));
+			}
+			
+			adapterTimezones.notifyDataSetChanged();
+			spinnerTimezoneDefault = adapterTimezones.getPosition(prefs.getString(Constants.PREF_TIMEZONE, ""));
+			spinnerTimezone.setSelection(spinnerTimezoneDefault);
+			
+			e.commit();
+			
+			super.onSuccess(responseJSON);
+		}
+	}
+	
 	class SetDriverTask extends BasePostRequestAsyncTask{
 		
 		public SetDriverTask(Context context) {
@@ -470,6 +540,7 @@ public class SettingsEditFragment extends Fragment implements ImageChooserListen
 			e.putString(Constants.PREF_ROLE, responseJSON.optString(Constants.PREF_ROLE));
 			e.putString(Constants.PREF_PHONE, photo);
 			e.putString(Constants.PREF_TIMEZONE, responseJSON.optString(Constants.PREF_TIMEZONE));
+			e.putString(Constants.PREF_TIMEZONE_OFFSET, responseJSON.optString(Constants.PREF_TIMEZONE_OFFSET));
 			e.putString(Constants.PREF_PHOTO, responseJSON.optString(Constants.PREF_PHOTO));
 			e.commit();
 			
