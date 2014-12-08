@@ -1,11 +1,13 @@
 package com.modusgo.ubi;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
@@ -117,7 +119,22 @@ public class AlertMapActivity extends MainActivity {
 
 		setActionBarTitle(alert.title.toUpperCase(Locale.US));
 		tvDescription.setText(alert.description);
-		tvDate.setText(alert.timestamp);
+		
+		SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
+		SimpleDateFormat sdfTo = new SimpleDateFormat("MM/dd/yyyy KK:mm aa z", Locale.getDefault());
+		
+		TimeZone tzFrom = TimeZone.getTimeZone(Constants.DEFAULT_TIMEZONE);
+		sdfFrom.setTimeZone(tzFrom);
+		TimeZone tzTo = TimeZone.getTimeZone(prefs.getString(Constants.PREF_TIMEZONE_OFFSET, Constants.DEFAULT_TIMEZONE));
+		sdfTo.setTimeZone(tzTo);
+		
+		try {
+			tvDate.setText(sdfTo.format(sdfFrom.parse(alert.timestamp)));
+		} catch (ParseException e) {
+			tvDate.setText(alert.timestamp);
+			e.printStackTrace();
+		}
+		
 		if(!TextUtils.isEmpty(alert.address))
 			tvAddress.setText(alert.address);
 		else{
@@ -355,6 +372,7 @@ public class AlertMapActivity extends MainActivity {
 			trip.averageSpeed = responseJSON.optDouble("avg_speed");
 			trip.maxSpeed = responseJSON.optDouble("max_speed");
 			SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);
+			sdf.setTimeZone(TimeZone.getTimeZone(Constants.DEFAULT_TIMEZONE));
 			trip.viewed = true;
 			trip.updatedAt = responseJSON.optString("updated_at");
 			trip.viewedAt = sdf.format(Calendar.getInstance().getTime());
