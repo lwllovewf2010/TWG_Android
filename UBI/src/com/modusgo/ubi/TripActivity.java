@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
@@ -322,9 +323,11 @@ public class TripActivity extends MainActivity {
 			}
 			
 			SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);
+			sdf.setTimeZone(TimeZone.getTimeZone(Constants.DEFAULT_TIMEZONE));
 	        
 	        try{
 		        Calendar cViewedAt = Calendar.getInstance();
+		        cViewedAt.setTimeZone(TimeZone.getTimeZone(Constants.DEFAULT_TIMEZONE));
 		        cViewedAt.setTime(sdf.parse(trip.viewedAt));
 		        
 		        long timeDifference = System.currentTimeMillis() - cViewedAt.getTimeInMillis();
@@ -341,6 +344,8 @@ public class TripActivity extends MainActivity {
 	
 	private void updateLabels(){
 		SimpleDateFormat sdfDate = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
+		TimeZone tzTo = TimeZone.getTimeZone(prefs.getString(Constants.PREF_TIMEZONE_OFFSET, Constants.DEFAULT_TIMEZONE));
+		sdfDate.setTimeZone(tzTo);
 		
 		tvDate.setText(sdfDate.format(trip.getStartDate()));
 		tvStartTime.setText(trip.getStartDateString());
@@ -603,6 +608,7 @@ public class TripActivity extends MainActivity {
 			trip.averageSpeed = responseJSON.optDouble("avg_speed");
 			trip.maxSpeed = responseJSON.optDouble("max_speed");
 			SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);
+			sdf.setTimeZone(TimeZone.getTimeZone(Constants.DEFAULT_TIMEZONE));
 			trip.viewed = true;
 			trip.updatedAt = responseJSON.optString("updated_at");
 			trip.viewedAt = sdf.format(Calendar.getInstance().getTime());
