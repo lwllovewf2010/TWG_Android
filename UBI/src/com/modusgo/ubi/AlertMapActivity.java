@@ -251,7 +251,7 @@ public class AlertMapActivity extends MainActivity {
 		Trip t = null;
 		
 		if(c.moveToFirst()){
-			t = new Trip(c.getLong(0), c.getInt(1), c.getString(2), c.getString(3), c.getFloat(4), c.getString(7));
+			t = new Trip(prefs, c.getLong(0), c.getInt(1), c.getString(2), c.getString(3), c.getFloat(4), c.getString(7));
 			t.averageSpeed = c.getFloat(5);
 			t.maxSpeed = c.getFloat(6);
 			t.viewedAt = c.getString(8);
@@ -350,7 +350,7 @@ public class AlertMapActivity extends MainActivity {
 		
 		@Override
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
-			trip = new Trip(alert.tripId, responseJSON.optInt("harsh_events_count"), Utils.fixTimezoneZ(responseJSON.optString("start_time")), Utils.fixTimezoneZ(responseJSON.optString("end_time")), responseJSON.optDouble("mileage"), responseJSON.optString("grade"));
+			trip = new Trip(prefs, alert.tripId, responseJSON.optInt("harsh_events_count"), Utils.fixTimezoneZ(responseJSON.optString("start_time")), Utils.fixTimezoneZ(responseJSON.optString("end_time")), responseJSON.optDouble("mileage"), responseJSON.optString("grade"));
 			
 			trip.averageSpeed = responseJSON.optDouble("avg_speed");
 			trip.maxSpeed = responseJSON.optDouble("max_speed");
