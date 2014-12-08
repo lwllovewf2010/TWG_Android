@@ -7,6 +7,7 @@ public class Constants {
 	
 	public static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZZZZZ";
 	public static final String DATE_TIME_FORMAT_ZULU = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+	public static final String DEFAULT_TIMEZONE = "GMT+00:00";
 	
 	public static final String PREF_CURRENT_DRIVER = "currentDriver";
 	public static final String PREF_AUTH_KEY = "auth_key";

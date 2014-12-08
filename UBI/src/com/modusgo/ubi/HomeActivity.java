@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
@@ -105,10 +106,19 @@ public class HomeActivity extends MainActivity{
 		SimpleDateFormat sdfTo = new SimpleDateFormat("MM/dd/yyyy KK:mm aa z", Locale.getDefault());
 		
 		VehiclesAdapter(Context context, ArrayList<Vehicle> drivers) {
-		    ctx = context;
-		    lInflater = (LayoutInflater) ctx
-		        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		  }
+			ctx = context;
+			lInflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			
+			TimeZone tzFrom = TimeZone.getTimeZone(Constants.DEFAULT_TIMEZONE);
+			sdfFrom.setTimeZone(tzFrom);
+		}
+		
+		@Override
+		public void notifyDataSetChanged() {
+			TimeZone tzTo = TimeZone.getTimeZone(prefs.getString(Constants.PREF_TIMEZONE_OFFSET, Constants.DEFAULT_TIMEZONE));
+			sdfTo.setTimeZone(tzTo);
+			super.notifyDataSetChanged();
+		}
 		
 		@Override
 		public int getCount() {
