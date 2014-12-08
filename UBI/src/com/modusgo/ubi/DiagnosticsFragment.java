@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
@@ -243,6 +244,11 @@ public class DiagnosticsFragment extends Fragment{
 	private void updateInfo(){
 		SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
 		SimpleDateFormat sdfTo = new SimpleDateFormat("MM/dd/yyyy KK:mm aa z", Locale.getDefault());
+		
+		TimeZone tzFrom = TimeZone.getTimeZone(Constants.DEFAULT_TIMEZONE);
+		sdfFrom.setTimeZone(tzFrom);
+		TimeZone tzTo = TimeZone.getTimeZone(prefs.getString(Constants.PREF_TIMEZONE_OFFSET, Constants.DEFAULT_TIMEZONE));
+		sdfTo.setTimeZone(tzTo);
 
 		try {
 			tvLastCheckup.setText(sdfTo.format(sdfFrom.parse(vehicle.carLastCheckup)));
