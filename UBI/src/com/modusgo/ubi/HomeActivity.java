@@ -74,7 +74,7 @@ public class HomeActivity extends MainActivity{
 			}
 		});
 		
-		updateDrivers();
+		updateDrivers();		
 	}
 	
 	private void updateDrivers(){

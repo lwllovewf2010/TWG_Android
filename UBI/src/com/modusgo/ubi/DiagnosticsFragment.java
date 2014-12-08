@@ -265,7 +265,7 @@ public class DiagnosticsFragment extends Fragment{
 		
 		//--------------------------------------------- DTC ------------------------------------
 		DbHelper dbHelper = DbHelper.getInstance(getActivity());
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		SQLiteDatabase db = dbHelper.openDatabase();
 		
 		Cursor c = db.query(DTCEntry.TABLE_NAME, 
 				new String[]{
@@ -545,6 +545,8 @@ public class DiagnosticsFragment extends Fragment{
 			}
 		}
 		c.close();
+		dbHelper.closeDatabase();
+		dbHelper.close();
 		
 	}
 	

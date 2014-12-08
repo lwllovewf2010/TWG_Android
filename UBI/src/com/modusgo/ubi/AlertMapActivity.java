@@ -212,7 +212,7 @@ public class AlertMapActivity extends MainActivity {
 		Alert alert = new Alert(alertId);
 		
 		DbHelper dbHelper = DbHelper.getInstance(this);
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		SQLiteDatabase db = dbHelper.openDatabase();
 		Cursor c = db.query(AlertEntry.TABLE_NAME, 
 				new String[]{
 				AlertEntry._ID,
@@ -242,7 +242,7 @@ public class AlertMapActivity extends MainActivity {
 			alert.address = c.getString(11);
 		}
 		c.close();		
-		db.close();
+		dbHelper.closeDatabase();
 		dbHelper.close();
 		
 		return alert;
@@ -250,7 +250,7 @@ public class AlertMapActivity extends MainActivity {
 	
 	private Trip getTripFromDB(){
 		DbHelper dbHelper = DbHelper.getInstance(this);
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		SQLiteDatabase db = dbHelper.openDatabase();
 		Cursor c = db.query(TripEntry.TABLE_NAME, 
 				new String[]{
 				TripEntry._ID,
@@ -292,7 +292,7 @@ public class AlertMapActivity extends MainActivity {
 			c.close();
 		}
 		
-		db.close();
+		dbHelper.closeDatabase();
 		dbHelper.close();
 		
 		return t;

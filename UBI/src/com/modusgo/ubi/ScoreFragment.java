@@ -163,7 +163,7 @@ public class ScoreFragment extends Fragment{
 	private void loadScoreGraphFromDb(){
 		
 		DbHelper dbHelper = DbHelper.getInstance(getActivity());
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		SQLiteDatabase db = dbHelper.openDatabase();
 		
 		Cursor c = db.query(ScoreGraphEntry.TABLE_NAME, 
 				new String[]{
@@ -185,7 +185,7 @@ public class ScoreFragment extends Fragment{
 			}
 		}
 		c.close();
-		db.close();
+		dbHelper.closeDatabase();
 		dbHelper.close();
 
 		updateGraph();

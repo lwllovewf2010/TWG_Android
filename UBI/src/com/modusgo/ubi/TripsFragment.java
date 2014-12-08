@@ -136,7 +136,7 @@ public class TripsFragment extends Fragment{
 	
 	private ArrayList<Trip> getTripsFromDb(Date endDate, int count){
 		DbHelper dbHelper = DbHelper.getInstance(getActivity());
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		SQLiteDatabase db = dbHelper.openDatabase();
 		
 		SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);
 		
@@ -197,7 +197,7 @@ public class TripsFragment extends Fragment{
 			}
 		}
 		c.close();
-		db.close();
+		dbHelper.closeDatabase();
 		dbHelper.close();
 		
 		System.out.println("trips array "+trips.size());

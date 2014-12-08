@@ -66,9 +66,9 @@ public class ScoreInfoActivity extends MainActivity{
 		percentInfoData = new ArrayList<Map<String, Object>>();
 		
 		DbHelper dbHelper = DbHelper.getInstance(this);
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		SQLiteDatabase db = dbHelper.openDatabase();
 		boolean updateSuccessful = updatePercentInfoAdapter(db);
-		db.close();
+		dbHelper.closeDatabase();
 		dbHelper.close();
 		if(!updateSuccessful){
 			finish();
@@ -124,7 +124,7 @@ public class ScoreInfoActivity extends MainActivity{
 	
 	private Vehicle getVehicleFromDb(long id){
 		DbHelper dHelper = DbHelper.getInstance(this);
-		SQLiteDatabase db = dHelper.getReadableDatabase();
+		SQLiteDatabase db = dHelper.openDatabase();
 		Cursor c = db.query(VehicleEntry.TABLE_NAME, 
 				new String[]{
 				VehicleEntry._ID,
@@ -144,7 +144,7 @@ public class ScoreInfoActivity extends MainActivity{
 			v.lastTripDate = c.getString(4);
 		}
 		c.close();
-		db.close();
+		dHelper.closeDatabase();
 		dHelper.close();
 		return v;
 	}

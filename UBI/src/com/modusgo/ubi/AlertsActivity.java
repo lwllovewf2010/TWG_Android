@@ -170,7 +170,7 @@ public class AlertsActivity extends MainActivity {
 		ArrayList<Alert> alerts = new ArrayList<Alert>();
 		
 		DbHelper dbHelper = DbHelper.getInstance(this);
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		SQLiteDatabase db = dbHelper.openDatabase();
 		
 		Cursor c = db.query(AlertEntry.TABLE_NAME, 
 				new String[]{
@@ -201,7 +201,7 @@ public class AlertsActivity extends MainActivity {
 			}
 		}
 		c.close();		
-		db.close();
+		dbHelper.closeDatabase();
 		dbHelper.close();
 		
 		return alerts;
