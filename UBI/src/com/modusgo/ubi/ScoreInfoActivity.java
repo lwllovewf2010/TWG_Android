@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -188,6 +189,8 @@ public class ScoreInfoActivity extends MainActivity{
 	
 	private void fillAdditionalInfo(){
 		SimpleDateFormat sdf = new SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault());
+		TimeZone tzTo = TimeZone.getTimeZone(prefs.getString(Constants.PREF_TIMEZONE_OFFSET, Constants.DEFAULT_TIMEZONE));
+		sdf.setTimeZone(tzTo);
 		DecimalFormat df = new DecimalFormat("0.000");
 		
 		LinkedHashMap<String, String> infoFields = new LinkedHashMap<String, String>();
