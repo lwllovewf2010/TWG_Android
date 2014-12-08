@@ -3090,6 +3090,7 @@ com.modusgo.ubi.R$drawable: int ic_trip
 com.modusgo.ubi.R$drawable: int ic_trip_start_small
 com.modusgo.ubi.R$drawable: int ic_trip_stop_small
 com.modusgo.ubi.R$drawable: int ic_username
+com.modusgo.ubi.R$drawable: int init_logo
 com.modusgo.ubi.R$drawable: int limits_subitem_bg
 com.modusgo.ubi.R$drawable: int list_marker
 com.modusgo.ubi.R$drawable: int listview_home_divider

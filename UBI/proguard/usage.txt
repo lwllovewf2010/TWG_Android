@@ -7470,9 +7470,9 @@ com.modusgo.dd.RegisterByCodeActivity:
     android.view.View layoutProgress
 com.modusgo.dd.RegisterByCodeActivity$UserRegistrationServerError:
     private static final long serialVersionUID
-com.modusgo.dd.TrackingStatusService:
-    java.util.ArrayList whitelist
-    java.util.ArrayList blacklist
+com.modusgo.dd.requests.BasicAsyncTask
+com.modusgo.dd.requests.CheckIgnitionRequest
+com.modusgo.dd.requests.SendStatsRequest
 com.modusgo.ubi.AlertMapActivity:
     public static final java.lang.String EXTRA_ALERT_ID
 com.modusgo.ubi.AlertsActivity:
@@ -7480,77 +7480,7 @@ com.modusgo.ubi.AlertsActivity:
 com.modusgo.ubi.BuildConfig
 com.modusgo.ubi.CirclesFragment:
     public static final java.lang.String SAVED_SECTIONS
-com.modusgo.ubi.Constants:
-    public static final java.lang.String HOCKEY_APP_ID
-    public static final java.lang.String GCM_SENDER_ID
-    public static final java.lang.String DATE_TIME_FORMAT
-    public static final java.lang.String DATE_TIME_FORMAT_ZULU
-    public static final java.lang.String PREF_CURRENT_DRIVER
-    public static final java.lang.String PREF_AUTH_KEY
-    public static final java.lang.String PREF_CLIENT_ID
-    public static final java.lang.String PREF_SHOW_TIP_POPUP
-    public static final java.lang.String PREF_WELCOME_PAGES
-    public static final java.lang.String PREF_UNITS_OF_MEASURE
-    public static final java.lang.String PREF_DRIVER_ID
-    public static final java.lang.String PREF_VEHICLE_ID
-    public static final java.lang.String PREF_FIRST_NAME
-    public static final java.lang.String PREF_LAST_NAME
-    public static final java.lang.String PREF_EMAIL
-    public static final java.lang.String PREF_ROLE
-    public static final java.lang.String PREF_PHONE
-    public static final java.lang.String PREF_TIMEZONE
-    public static final java.lang.String PREF_PHOTO
-    public static final java.lang.String PREF_DIAGNOSTIC
-    public static final java.lang.String PREF_DEVICE_MEID
-    public static final java.lang.String PREF_DEVICE_TYPE
-    public static final java.lang.String PREF_DEVICE_EVENTS
-    public static final java.lang.String PREF_DEVICE_TRIPS
-    public static final java.lang.String PREF_DEVICE_IN_TRIP
-    public static final java.lang.String PREF_DEVICE_DATA_URL
-    public static final java.lang.String PREF_DEVICE_AUTH_KEY
-    public static final java.lang.String PREF_EVENTS_LAST_CHECK
-    public static final java.lang.String PREF_GA_TRACKING_ID
-    public static final java.lang.String PREF_GCM_REG_ID
-    public static final java.lang.String PREF_APP_VERSION
-    public static final java.lang.String PREF_CONTACT_PHONE
-    public static final java.lang.String PREF_AGENT_PHONE
-    public static final java.lang.String PREF_FIND_MECHANIC_ENABLED
-    public static final java.lang.String PREF_DTC_PRICES_ENABLED
-    public static final java.lang.String PREF_MAINTENANCE_PRICES_ENABLED
-    public static final java.lang.String PREF_DIAGNOSTICS_DELETE_POPUP_SHOWED
-    public static final java.lang.String PREF_ALERTS_DELETE_POPUP_SHOWED
-    public static final java.lang.String ROLE_CUSTOMER
-    public static final java.lang.String API_BASE_URL_PREFIX
-    public static final java.lang.String API_BASE_URL_POSTFIX
-    public static final java.lang.String API_PLATFORM
-    public static final java.lang.String PREF_DD_ENABLED
-    public static final java.lang.String API_AUTH_LOGIN
-    public static final java.lang.String API_AUTH_PASS
-    public static final java.lang.String DD_API_BASE_URL
-    public static final int CHECK_IGNITION_FREQUENCY
-    public static final int CHECK_IGNITION_NOT_AVAILABLE_TIME_LIMIT
-    public static final java.lang.String INTENT_ACTION_UPDATE_MAIN
-    public static final java.lang.String REGISTRATION_BY_CODE_URL
-    public static final java.lang.String PREF_REG_CODE
-    public static final java.lang.String PREF_BR_LOGIN_SCREEN_BG_IMAGE
-    public static final java.lang.String PREF_BR_LOGIN_SCREEN_LOGO
-    public static final java.lang.String PREF_BR_BUTTONS_BG_COLOR
-    public static final java.lang.String PREF_BR_BUTTONS_TEXT_COLOR
-    public static final java.lang.String PREF_BR_TITLE_BAR_BG
-    public static final java.lang.String PREF_BR_TITLE_BAR_BG_COLOR
-    public static final java.lang.String PREF_BR_TITLE_BAR_TEXT_COLOR
-    public static final java.lang.String PREF_BR_TITLE_BAR_BUTTONS_COLOR
-    public static final java.lang.String PREF_BR_MENU_LOGO
-    public static final java.lang.String PREF_BR_SWITCH_DRIVER_MENU_BUTTON_COLOR
-    public static final java.lang.String PREF_BR_LIST_HEADER_LINE_COLOR
-    public static final java.lang.String BUTTON_BG_COLOR
-    public static final java.lang.String BUTTON_TEXT_COLOR
-    public static final java.lang.String SWITCH_DRIVER_BUTTON_BG_COLOR
-    public static final java.lang.String TITLE_BAR_BG_COLOR
-    public static final java.lang.String TITLE_BAR_TEXT_COLOR
-    public static final java.lang.String LIST_HEADER_LINE_COLOR
-    public static final java.lang.String TITLE_BAR_BUTTONS_COLOR
-    3:3:public Constants()
+com.modusgo.ubi.Constants
 com.modusgo.ubi.DiagnosticDetailActivity:
     public static final java.lang.String EXTRA_DTC
 com.modusgo.ubi.DiagnosticsFragment:
@@ -7600,7 +7530,7 @@ com.modusgo.ubi.R$layout
 com.modusgo.ubi.R$string
 com.modusgo.ubi.R$style
 com.modusgo.ubi.R$styleable:
-    3182:3182:public R$styleable()
+    3183:3183:public R$styleable()
 com.modusgo.ubi.R$xml
 com.modusgo.ubi.Recall:
     private static final long serialVersionUID
@@ -7608,6 +7538,8 @@ com.modusgo.ubi.RecallActivity:
     public static final java.lang.String EXTRA_RECALL
 com.modusgo.ubi.ScoreCirclesActivity:
     public static final java.lang.String SAVED_CIRCLES_BUNDLE
+com.modusgo.ubi.ScoreCirclesActivity$CirclesSection:
+    private static final long serialVersionUID
 com.modusgo.ubi.ScoreInfoActivity:
     private static final java.lang.String ATTRIBUTE_NAME_VALUE
     private static final java.lang.String ATTRIBUTE_NAME_TITLE
@@ -7690,6 +7622,8 @@ com.modusgo.ubi.db.WarrantyInfoContract
 com.modusgo.ubi.db.WarrantyInfoContract$WarrantyInfoEntry
 com.modusgo.ubi.requesttasks.BaseRequestAsyncTask:
     35:36:public BaseRequestAsyncTask()
+com.modusgo.ubi.requesttasks.GetDeviceInfoRequest:
+    java.util.ArrayList eventIds
 com.modusgo.ubi.utils.AnimationUtils:
     10:10:public AnimationUtils()
 com.modusgo.ubi.utils.RequestGet:
@@ -7702,8 +7636,9 @@ com.modusgo.ubi.utils.SwipeDismissListViewTouchListener$4
 com.modusgo.ubi.utils.SwipeDismissListViewTouchListener$DismissCallbacks
 com.modusgo.ubi.utils.SwipeDismissListViewTouchListener$PendingDismissData
 com.modusgo.ubi.utils.Utils:
-    41:41:public Utils()
-    276:277:public static android.graphics.Bitmap decodeBase64(java.lang.String)
+    42:42:public Utils()
+    89:106:public static org.json.JSONObject getJSONObjectFromAssets(android.content.Context,java.lang.String)
+    278:279:public static android.graphics.Bitmap decodeBase64(java.lang.String)
 com.nostra13.universalimageloader.cache.disc.DiscCacheAware:
     public abstract java.io.File getDirectory()
     public abstract boolean remove(java.lang.String)
