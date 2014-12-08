@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -66,9 +67,9 @@ public class ScoreInfoActivity extends MainActivity{
 		percentInfoData = new ArrayList<Map<String, Object>>();
 		
 		DbHelper dbHelper = DbHelper.getInstance(this);
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		SQLiteDatabase db = dbHelper.openDatabase();
 		boolean updateSuccessful = updatePercentInfoAdapter(db);
-		db.close();
+		dbHelper.closeDatabase();
 		dbHelper.close();
 		if(!updateSuccessful){
 			finish();
@@ -124,7 +125,7 @@ public class ScoreInfoActivity extends MainActivity{
 	
 	private Vehicle getVehicleFromDb(long id){
 		DbHelper dHelper = DbHelper.getInstance(this);
-		SQLiteDatabase db = dHelper.getReadableDatabase();
+		SQLiteDatabase db = dHelper.openDatabase();
 		Cursor c = db.query(VehicleEntry.TABLE_NAME, 
 				new String[]{
 				VehicleEntry._ID,
@@ -144,7 +145,7 @@ public class ScoreInfoActivity extends MainActivity{
 			v.lastTripDate = c.getString(4);
 		}
 		c.close();
-		db.close();
+		dHelper.closeDatabase();
 		dHelper.close();
 		return v;
 	}
@@ -189,6 +190,8 @@ public class ScoreInfoActivity extends MainActivity{
 	
 	private void fillAdditionalInfo(){
 		SimpleDateFormat sdf = new SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault());
+		TimeZone tzTo = TimeZone.getTimeZone(prefs.getString(Constants.PREF_TIMEZONE_OFFSET, Constants.DEFAULT_TIMEZONE));
+		sdf.setTimeZone(tzTo);
 		DecimalFormat df = new DecimalFormat("0.000");
 		
 		LinkedHashMap<String, String> infoFields = new LinkedHashMap<String, String>();

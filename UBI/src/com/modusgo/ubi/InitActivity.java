@@ -218,6 +218,7 @@ public class InitActivity extends FragmentActivity {
 							e.putString(Constants.PREF_ROLE, driverJSON.optString(Constants.PREF_ROLE));
 							e.putString(Constants.PREF_PHONE, driverJSON.optString(Constants.PREF_PHONE));
 							e.putString(Constants.PREF_TIMEZONE, driverJSON.optString(Constants.PREF_TIMEZONE));
+							e.putString(Constants.PREF_TIMEZONE_OFFSET, driverJSON.optString(Constants.PREF_TIMEZONE_OFFSET));
 							e.putString(Constants.PREF_PHOTO, driverJSON.optString(Constants.PREF_PHOTO));
 						}
 						

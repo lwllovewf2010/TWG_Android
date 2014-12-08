@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
@@ -58,6 +59,8 @@ public class ScoreFragment extends Fragment{
 	
 	MonthStats[] yearStats;
 	
+	SharedPreferences prefs;
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -69,7 +72,7 @@ public class ScoreFragment extends Fragment{
 		
 		((TextView)rootView.findViewById(R.id.tvName)).setText(vehicle.name);
 		
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+		prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		rootView.findViewById(R.id.btnSwitchDriverMenu).setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_SWITCH_DRIVER_MENU_BUTTON_COLOR, Constants.SWITCH_DRIVER_BUTTON_BG_COLOR)));
 		rootView.findViewById(R.id.bottom_line).setBackgroundColor(Color.parseColor(prefs.getString(Constants.PREF_BR_LIST_HEADER_LINE_COLOR, Constants.LIST_HEADER_LINE_COLOR)));
 		
@@ -161,7 +164,7 @@ public class ScoreFragment extends Fragment{
 	private void loadScoreGraphFromDb(){
 		
 		DbHelper dbHelper = DbHelper.getInstance(getActivity());
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		SQLiteDatabase db = dbHelper.openDatabase();
 		
 		Cursor c = db.query(ScoreGraphEntry.TABLE_NAME, 
 				new String[]{
@@ -183,7 +186,7 @@ public class ScoreFragment extends Fragment{
 			}
 		}
 		c.close();
-		db.close();
+		dbHelper.closeDatabase();
 		dbHelper.close();
 
 		updateGraph();
@@ -236,6 +239,8 @@ public class ScoreFragment extends Fragment{
 			tvThisMonthMessage.setText(thisMonthMessage);
 			
 			Calendar c = Calendar.getInstance();
+			TimeZone tzTo = TimeZone.getTimeZone(prefs.getString(Constants.PREF_TIMEZONE_OFFSET, Constants.DEFAULT_TIMEZONE));
+			c.setTimeZone(tzTo);
 			int currentMonth = c.get(Calendar.MONTH);
 			String lastMonthGrade = yearStats[currentMonth-1].grade;
 			

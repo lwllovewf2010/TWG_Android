@@ -1,16 +1,9 @@
 package com.modusgo.dd;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONObject;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -21,8 +14,6 @@ import android.telephony.TelephonyManager;
 
 import com.modusgo.ubi.Constants;
 import com.modusgo.ubi.db.DbHelper;
-import com.modusgo.ubi.utils.RequestGet;
-import com.modusgo.ubi.utils.Utils;
 
 public class CallSaverService extends IntentService {
 
@@ -37,47 +28,7 @@ public class CallSaverService extends IntentService {
 	@Override
     protected void onHandleIntent(Intent workIntent) {
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		
-		String baseUrl = Constants.API_BASE_URL_PREFIX+prefs.getString(Constants.PREF_CLIENT_ID, "")+Constants.API_BASE_URL_POSTFIX;
-		List<NameValuePair> requestParams = new ArrayList<NameValuePair>();
-		requestParams.add(new BasicNameValuePair("auth_key", prefs.getString(Constants.PREF_AUTH_KEY, "")));
-		HttpResponse result = new RequestGet(baseUrl+"device.json", requestParams).execute();
-		
-		int status = 0;
-		
-		try{
-			status = result.getStatusLine().getStatusCode();
-			//message = "Error "+result.getStatusLine().getStatusCode()+": "+result.getStatusLine().getReasonPhrase();
-		}
-		catch(NullPointerException e){
-			e.printStackTrace();
-			status = 0;
-		}
-		
-		if(status>=200 && status<300){
-			JSONObject responseJSON = Utils.getJSONObjectFromHttpResponse(result);
-			if(responseJSON!=null && responseJSON.optString("status").equals("success")){
-				Editor e = prefs.edit();
-				e.putBoolean(Constants.PREF_DEVICE_EVENTS, responseJSON.optBoolean("events"));
-				e.putBoolean(Constants.PREF_DEVICE_TRIPS, responseJSON.optBoolean("trips"));
-				e.putBoolean(Constants.PREF_DEVICE_IN_TRIP, responseJSON.optBoolean("in_trip"));
-				e.putString(Constants.PREF_DEVICE_TYPE, responseJSON.optString("type"));
-				e.putLong(Constants.PREF_EVENTS_LAST_CHECK, System.currentTimeMillis());			
-				e.commit();
-				
-		        update(workIntent.getExtras().getString("action"));
-			}
-		}
-		else{
-			if(System.currentTimeMillis() - prefs.getLong(Constants.PREF_EVENTS_LAST_CHECK, 0) > (1000 * 60 * 5)){
-				Editor e = prefs.edit();
-				e.putBoolean(Constants.PREF_DEVICE_IN_TRIP, false);
-				e.putLong(Constants.PREF_EVENTS_LAST_CHECK, System.currentTimeMillis());			
-				e.commit();
-				
-				savePhoneCallStop();
-			}
-		}
+		update(workIntent.getExtras().getString("action"));
     }
 	
 	private void update(String phoneState){

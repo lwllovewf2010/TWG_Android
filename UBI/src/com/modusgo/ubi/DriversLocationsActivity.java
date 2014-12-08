@@ -90,7 +90,7 @@ public class DriversLocationsActivity extends MainActivity {
 	
 	private ArrayList<Vehicle> getVehicles(){
 		DbHelper dHelper = DbHelper.getInstance(this);
-		SQLiteDatabase db = dHelper.getReadableDatabase();
+		SQLiteDatabase db = dHelper.openDatabase();
 		Cursor c = db.query(VehicleEntry.TABLE_NAME, 
 				new String[]{
 				VehicleEntry._ID,
@@ -121,7 +121,7 @@ public class DriversLocationsActivity extends MainActivity {
 			}
 		}
 		c.close();
-		db.close();
+		dHelper.closeDatabase();
 		dHelper.close();
 		return vehicles;
 	}

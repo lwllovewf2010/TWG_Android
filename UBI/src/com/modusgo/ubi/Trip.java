@@ -8,8 +8,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 
@@ -42,9 +44,10 @@ public class Trip extends ListItem implements Serializable{
 	
 	private static SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
 	private static SimpleDateFormat sdfTo = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+	private static TimeZone tzFrom;
+	private static TimeZone tzTo;
 	
-	
-	public Trip(long id, int eventsCount, String startDate, String endDate, double distance) {
+	public Trip(SharedPreferences prefs, long id, int eventsCount, String startDate, String endDate, double distance) {
 		super();
 		this.id = id;
 		this.eventsCount = eventsCount;
@@ -55,10 +58,19 @@ public class Trip extends ListItem implements Serializable{
 		speedingRoutes = new ArrayList<ArrayList<LatLng>>();
 		
 		this.distance = distance;
+		
+		updateTimezones(prefs);
 	}
 	
-	public Trip(long id, int eventsCount, String startDate, String endDate, double distance, String grade) {
-		this(id, eventsCount, startDate, endDate, distance);
+	public static void updateTimezones(SharedPreferences prefs){
+		tzFrom = TimeZone.getTimeZone(Constants.DEFAULT_TIMEZONE);
+		sdfFrom.setTimeZone(tzFrom);
+		tzTo = TimeZone.getTimeZone(prefs.getString(Constants.PREF_TIMEZONE_OFFSET, Constants.DEFAULT_TIMEZONE));
+		sdfTo.setTimeZone(tzTo);
+	}
+	
+	public Trip(SharedPreferences prefs, long id, int eventsCount, String startDate, String endDate, double distance, String grade) {
+		this(prefs, id, eventsCount, startDate, endDate, distance);
 		this.grade = grade;
 	}
 	

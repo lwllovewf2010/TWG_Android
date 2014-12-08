@@ -3,6 +3,7 @@ package com.modusgo.ubi;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -68,6 +69,12 @@ public class RecallActivity extends MainActivity {
 		if(!TextUtils.isEmpty(recall.created_at)){
 			SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
 			SimpleDateFormat sdfTo = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
+			
+			TimeZone tzFrom = TimeZone.getTimeZone(Constants.DEFAULT_TIMEZONE);
+			sdfFrom.setTimeZone(tzFrom);
+			TimeZone tzTo = TimeZone.getTimeZone(prefs.getString(Constants.PREF_TIMEZONE_OFFSET, Constants.DEFAULT_TIMEZONE));
+			sdfTo.setTimeZone(tzTo);
+			
 			try {
 				tvDate.setText("Recall Date: "+sdfTo.format(sdfFrom.parse(recall.created_at)));
 			} catch (ParseException e) {

@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,6 +13,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -159,8 +161,46 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	        	startActivity(new Intent(getActivity(), SettingsActivity.class));
 			}
 		});
+	    
+	    
+	    System.out.println("start threads");
+		new Test().execute();
+		new Test().execute();
+		new Test().execute();
+		new Test().execute();
+		new Test().execute();
+		new Test().execute();
+		new Test().execute();
+		new Test().execute();
+		new Test().execute();
+		new Test().execute();
+		new Test().execute();
+		new Test().execute();
+		new Test().execute();
+		new Test().execute();
+		System.out.println("end threads");
 		
 		return rootView;
+	}
+	
+
+	class Test extends AsyncTask<Void, Void, Void>{
+
+		@Override
+		protected Void doInBackground(Void... params) {
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			DbHelper dbHelper = DbHelper.getInstance(getActivity());
+			dbHelper.saveVehicle(vehicle);
+			dbHelper.close();
+			
+			return null;
+		}
+		
 	}
 	
 	@Override
@@ -196,6 +236,12 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	    
 	    SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
 		SimpleDateFormat sdfTo = new SimpleDateFormat("MM/dd/yyyy KK:mm aa z", Locale.getDefault());
+		
+		TimeZone tzFrom = TimeZone.getTimeZone(Constants.DEFAULT_TIMEZONE);
+		sdfFrom.setTimeZone(tzFrom);
+		TimeZone tzTo = TimeZone.getTimeZone(prefs.getString(Constants.PREF_TIMEZONE_OFFSET, Constants.DEFAULT_TIMEZONE));
+		sdfTo.setTimeZone(tzTo);
+		
 		try {
 			tvDate.setText(sdfTo.format(sdfFrom.parse(vehicle.lastTripDate)));
 		} catch (ParseException e) {

@@ -56,14 +56,18 @@ public class GcmIntentService extends IntentService {
             // If it's a regular GCM message, do some work.
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
             	
-            	if(extras.getString("in_trip").equals("1"))
-            		setInTrip(true);
-            	else
-            		setInTrip(false);
-
-                String message = extras.getString("message");
-            	if(!TextUtils.isEmpty(message))
-            		sendNotification(getResources().getString(R.string.app_name), message);  
+            	if(extras.containsKey("in_trip")){
+	            	if(extras.getString("in_trip").equals("1"))
+	            		setInTrip(true);
+	            	else
+	            		setInTrip(false);
+            	}
+            	
+            	if(extras.containsKey("message")){
+	                String message = extras.getString("message");
+	            	if(!TextUtils.isEmpty(message))
+	            		sendNotification(getResources().getString(R.string.app_name), message);
+            	}
             }
         }
         

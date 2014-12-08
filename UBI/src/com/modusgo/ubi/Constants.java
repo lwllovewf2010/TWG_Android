@@ -7,6 +7,7 @@ public class Constants {
 	
 	public static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZZZZZ";
 	public static final String DATE_TIME_FORMAT_ZULU = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+	public static final String DEFAULT_TIMEZONE = "GMT+00:00";
 	
 	public static final String PREF_CURRENT_DRIVER = "currentDriver";
 	public static final String PREF_AUTH_KEY = "auth_key";
@@ -22,6 +23,7 @@ public class Constants {
 	public static final String PREF_ROLE = "role";
 	public static final String PREF_PHONE = "phone_number";
 	public static final String PREF_TIMEZONE = "time_zone";
+	public static final String PREF_TIMEZONE_OFFSET = "time_zone_offset";
 	public static final String PREF_PHOTO = "photo";
 	public static final String PREF_DIAGNOSTIC = "diagnostic";
 	public static final String PREF_DEVICE_MEID = "deviceMEID";
@@ -46,7 +48,7 @@ public class Constants {
 	public static final String ROLE_CUSTOMER = "customer";
 
 	public static final String API_BASE_URL_PREFIX = "http://api.";
-	public static final String API_BASE_URL_POSTFIX = ".test.modusgo.com/";
+	public static final String API_BASE_URL_POSTFIX = ".modusgo.com/";
 	public static final String API_PLATFORM = "android";
 	
 	//---------------------- DD -----------------------

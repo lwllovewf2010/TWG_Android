@@ -26,7 +26,7 @@ public class SendEventsRequest extends BasePostRequestAsyncTask {
 	@Override
 	protected JSONObject doInBackground(String... params) {
 		DbHelper dbHelper = DbHelper.getInstance(context);
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		SQLiteDatabase db = dbHelper.openDatabase();
 		Cursor c = db.query(DDEventEntry.TABLE_NAME, 
 				new String[]{
 				DDEventEntry._ID,
@@ -69,8 +69,11 @@ public class SendEventsRequest extends BasePostRequestAsyncTask {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		c.close();
-		db.close();
+		finally{
+			c.close();
+			dbHelper.closeDatabase();
+			dbHelper.close();			
+		}
 		
 		requestParams.add(new BasicNameValuePair("data",rootJSON.toString()));
 		
