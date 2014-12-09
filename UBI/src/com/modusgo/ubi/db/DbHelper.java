@@ -23,6 +23,7 @@ import com.modusgo.ubi.Trip;
 import com.modusgo.ubi.Trip.Point;
 import com.modusgo.ubi.Vehicle;
 import com.modusgo.ubi.db.AlertContract.AlertEntry;
+import com.modusgo.ubi.db.ScoreInfoContract.ScoreInfoEntry;
 import com.modusgo.ubi.db.TrackingContract.TrackingEntry;
 import com.modusgo.ubi.db.DTCContract.DTCEntry;
 import com.modusgo.ubi.db.LimitsContract.LimitsEntry;
@@ -135,6 +136,14 @@ public class DbHelper extends SQLiteOpenHelper {
 		    ScorePercentageEntry.COLUMN_NAME_STAT_NAME + TEXT_TYPE + COMMA_SEP +
 		    ScorePercentageEntry.COLUMN_NAME_STAT_VALUE + INT_TYPE +  " ); ",
 	
+		    "CREATE TABLE " + ScoreInfoEntry.TABLE_NAME + " (" +
+		    ScoreInfoEntry._ID + " INTEGER PRIMARY KEY," +
+		    ScoreInfoEntry.COLUMN_NAME_VEHICLE_ID + INT_TYPE + COMMA_SEP +
+		    ScoreInfoEntry.COLUMN_NAME_PROFILE_DATE + TEXT_TYPE + COMMA_SEP +
+		    ScoreInfoEntry.COLUMN_NAME_START_DATE + TEXT_TYPE + COMMA_SEP +
+		    ScoreInfoEntry.COLUMN_NAME_PROFILE_DRIVING_MILES + FLOAT_TYPE + COMMA_SEP +
+		    ScoreInfoEntry.COLUMN_NAME_ESTIMATED_ANNUAL_DRIVING + FLOAT_TYPE +  " ); ",
+	
 		    "CREATE TABLE " + ScorePieChartEntry.TABLE_NAME + " (" +
 		    ScorePieChartEntry._ID + " INTEGER PRIMARY KEY," +
 		    ScorePieChartEntry.COLUMN_NAME_VEHICLE_ID + INT_TYPE + COMMA_SEP +
@@ -244,6 +253,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	"DROP TABLE IF EXISTS " + PointEntry.TABLE_NAME,
 	"DROP TABLE IF EXISTS " + ScoreGraphEntry.TABLE_NAME,
 	"DROP TABLE IF EXISTS " + ScorePercentageEntry.TABLE_NAME,
+	"DROP TABLE IF EXISTS " + ScoreInfoEntry.TABLE_NAME,
 	"DROP TABLE IF EXISTS " + ScorePieChartEntry.TABLE_NAME,
 	"DROP TABLE IF EXISTS " + ScoreCirclesEntry.TABLE_NAME,
 	"DROP TABLE IF EXISTS " + DTCEntry.TABLE_NAME,
@@ -255,7 +265,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	"DROP TABLE IF EXISTS " + TrackingEntry.TABLE_NAME};
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 47;
+	public static final int DATABASE_VERSION = 48;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;
@@ -846,6 +856,45 @@ public class DbHelper extends SQLiteOpenHelper {
 		    	statement.bindLong(3, value);
 		    	statement.execute();
 		    }
+		    
+		    database.setTransactionSuccessful();	
+		    database.endTransaction();
+		    statement.close();
+		}
+		
+		closeDatabase();
+	}
+	
+	public void saveScoreInfo(long vehicleId, String profileDate, String startDate, float profileDrivingMiles, float estimatedAnnualDriving){
+		SQLiteDatabase database = openDatabase();
+		
+		if(database!=null){
+			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+ScoreInfoEntry.TABLE_NAME+" WHERE "+ScoreInfoEntry.COLUMN_NAME_VEHICLE_ID+" = "+vehicleId);
+		    database.beginTransaction();
+		    removeStatement.clearBindings();
+	        removeStatement.execute();
+	        database.setTransactionSuccessful();	
+		    database.endTransaction();
+		    removeStatement.close();
+			
+			String sql = "INSERT INTO "+ ScoreInfoEntry.TABLE_NAME +" ("
+					+ ScoreInfoEntry.COLUMN_NAME_VEHICLE_ID +","
+					+ ScoreInfoEntry.COLUMN_NAME_PROFILE_DATE +","
+					+ ScoreInfoEntry.COLUMN_NAME_START_DATE +","
+					+ ScoreInfoEntry.COLUMN_NAME_PROFILE_DRIVING_MILES +","
+					+ ScoreInfoEntry.COLUMN_NAME_ESTIMATED_ANNUAL_DRIVING
+					+ ") VALUES (?,?,?,?,?);";
+			
+			SQLiteStatement statement = database.compileStatement(sql);
+		    database.beginTransaction();
+		    
+		    statement.clearBindings();
+		    statement.bindLong(1, vehicleId);
+		    statement.bindString(2, profileDate);
+		    statement.bindString(3, startDate);
+		    statement.bindDouble(4, profileDrivingMiles);
+		    statement.bindDouble(5, estimatedAnnualDriving);
+		    statement.execute();
 		    
 		    database.setTransactionSuccessful();	
 		    database.endTransaction();

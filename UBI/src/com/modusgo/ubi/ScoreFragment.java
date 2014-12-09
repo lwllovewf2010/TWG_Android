@@ -479,6 +479,8 @@ public class ScoreFragment extends Fragment{
 					loadScoreGraphFromDb();
 			}
 			
+			dHelper.saveScoreInfo(vehicle.id, "", json.optString("startdate"), (float)json.optDouble("summary_distance"), (float)json.optDouble("summary_ead"));
+			
 			LinkedHashMap<String, Integer> percentageData = new LinkedHashMap<String, Integer>();
 			percentageData.put("Use of speed", json.optInt("score_pace"));
 			percentageData.put("Anticipation", json.optInt("score_anticipation"));
