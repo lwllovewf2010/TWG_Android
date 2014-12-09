@@ -141,7 +141,8 @@ public class DbHelper extends SQLiteOpenHelper {
 		    ScorePieChartEntry.COLUMN_NAME_TAB + TEXT_TYPE + COMMA_SEP +
 		    ScorePieChartEntry.COLUMN_NAME_VALUE + FLOAT_TYPE + COMMA_SEP +
 		    ScorePieChartEntry.COLUMN_NAME_TITLE + TEXT_TYPE + COMMA_SEP +
-		    ScorePieChartEntry.COLUMN_NAME_SUBTITLE + TEXT_TYPE + " ); ",
+		    ScorePieChartEntry.COLUMN_NAME_SUBTITLE + TEXT_TYPE + COMMA_SEP +
+		    ScorePieChartEntry.COLUMN_NAME_COLOR + INT_TYPE + " ); ",
 	
 		    "CREATE TABLE " + ScoreCirclesEntry.TABLE_NAME + " (" +
 		    ScoreCirclesEntry._ID + " INTEGER PRIMARY KEY," +
@@ -254,7 +255,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	"DROP TABLE IF EXISTS " + TrackingEntry.TABLE_NAME};
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 45;
+	public static final int DATABASE_VERSION = 47;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;
@@ -551,7 +552,6 @@ public class DbHelper extends SQLiteOpenHelper {
 		    	statement.execute();
 		    	
 			}
-		    System.out.println("inside");
 		    database.setTransactionSuccessful();	
 		    database.endTransaction();
 		    statement.close();
@@ -872,8 +872,9 @@ public class DbHelper extends SQLiteOpenHelper {
 					+ ScorePieChartEntry.COLUMN_NAME_TAB +","
 					+ ScorePieChartEntry.COLUMN_NAME_VALUE +","
 					+ ScorePieChartEntry.COLUMN_NAME_TITLE +","
-					+ ScorePieChartEntry.COLUMN_NAME_SUBTITLE
-					+ ") VALUES (?,?,?,?,?);";
+					+ ScorePieChartEntry.COLUMN_NAME_SUBTITLE +","
+					+ ScorePieChartEntry.COLUMN_NAME_COLOR
+					+ ") VALUES (?,?,?,?,?,?);";
 			
 			SQLiteStatement statement = database.compileStatement(sql);
 		    database.beginTransaction();
@@ -890,6 +891,7 @@ public class DbHelper extends SQLiteOpenHelper {
 			    		statement.bindString(5, tab.subtitles[i]);
 			    	else
 			    		statement.bindString(5, "");
+		    		statement.bindLong(6, tab.colorIds[i]);
 			    	statement.execute();
 				}
 			}
