@@ -250,12 +250,18 @@ public class DiagnosticsFragment extends Fragment{
 		TimeZone tzTo = TimeZone.getTimeZone(prefs.getString(Constants.PREF_TIMEZONE_OFFSET, Constants.DEFAULT_TIMEZONE));
 		sdfTo.setTimeZone(tzTo);
 
-		try {
-			tvLastCheckup.setText(sdfTo.format(sdfFrom.parse(vehicle.carLastCheckup)));
-		} catch (ParseException e) {
-			tvLastCheckup.setText("N/A");
-			e.printStackTrace();
+		if(TextUtils.isEmpty(vehicle.carLastCheckup)){
+			tvLastCheckup.setText("N/A");			
 		}
+		else{
+			try {
+				tvLastCheckup.setText(sdfTo.format(sdfFrom.parse(vehicle.carLastCheckup)));
+			} catch (ParseException e) {
+				tvLastCheckup.setText(vehicle.carLastCheckup);
+				e.printStackTrace();
+			}
+		}
+		
 		if(!TextUtils.isEmpty(vehicle.carCheckupStatus))
 			tvStatus.setText(vehicle.carCheckupStatus);
 		else
