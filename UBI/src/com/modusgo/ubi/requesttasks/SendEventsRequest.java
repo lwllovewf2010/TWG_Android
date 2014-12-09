@@ -12,7 +12,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.modusgo.ubi.db.DDEventContract.DDEventEntry;
+import com.modusgo.ubi.db.TrackingContract.TrackingEntry;
 import com.modusgo.ubi.db.DbHelper;
 
 public class SendEventsRequest extends BasePostRequestAsyncTask {
@@ -27,11 +27,11 @@ public class SendEventsRequest extends BasePostRequestAsyncTask {
 	protected JSONObject doInBackground(String... params) {
 		DbHelper dbHelper = DbHelper.getInstance(context);
 		SQLiteDatabase db = dbHelper.openDatabase();
-		Cursor c = db.query(DDEventEntry.TABLE_NAME, 
+		Cursor c = db.query(TrackingEntry.TABLE_NAME, 
 				new String[]{
-				DDEventEntry._ID,
-				DDEventEntry.COLUMN_NAME_EVENT,
-				DDEventEntry.COLUMN_NAME_TIMESTAMP}, 
+				TrackingEntry._ID,
+				TrackingEntry.COLUMN_NAME_EVENT,
+				TrackingEntry.COLUMN_NAME_TIMESTAMP}, 
 				null, null, null, null, null);
 		
 		JSONObject rootJSON = new JSONObject();

@@ -23,7 +23,7 @@ import com.modusgo.ubi.Trip;
 import com.modusgo.ubi.Trip.Point;
 import com.modusgo.ubi.Vehicle;
 import com.modusgo.ubi.db.AlertContract.AlertEntry;
-import com.modusgo.ubi.db.DDEventContract.DDEventEntry;
+import com.modusgo.ubi.db.TrackingContract.TrackingEntry;
 import com.modusgo.ubi.db.DTCContract.DTCEntry;
 import com.modusgo.ubi.db.LimitsContract.LimitsEntry;
 import com.modusgo.ubi.db.MaintenanceContract.MaintenanceEntry;
@@ -219,10 +219,21 @@ public class DbHelper extends SQLiteOpenHelper {
 			AlertEntry.COLUMN_NAME_GEOFENCE + TEXT_TYPE + COMMA_SEP +
 			AlertEntry.COLUMN_NAME_ADDRESS + TEXT_TYPE + " ); ",
 		    
-		    "CREATE TABLE " + DDEventEntry.TABLE_NAME + " (" +
-		    DDEventEntry._ID + " INTEGER PRIMARY KEY," +
-		    DDEventEntry.COLUMN_NAME_EVENT + TEXT_TYPE + COMMA_SEP +
-			DDEventEntry.COLUMN_NAME_TIMESTAMP + TEXT_TYPE + " )"};
+		    "CREATE TABLE " + TrackingEntry.TABLE_NAME + " (" +
+		    TrackingEntry._ID + " INTEGER PRIMARY KEY," +
+		    TrackingEntry.COLUMN_NAME_TIMESTAMP + TEXT_TYPE + COMMA_SEP +
+		    TrackingEntry.COLUMN_NAME_LATITUDE + FLOAT_TYPE + COMMA_SEP +
+		    TrackingEntry.COLUMN_NAME_LONGITUDE + FLOAT_TYPE + COMMA_SEP +
+		    TrackingEntry.COLUMN_NAME_ALTITUDE + FLOAT_TYPE + COMMA_SEP +
+		    TrackingEntry.COLUMN_NAME_HEADING + FLOAT_TYPE + COMMA_SEP +
+		    TrackingEntry.COLUMN_NAME_HORIZONTAL_ACCURACY + FLOAT_TYPE + COMMA_SEP +
+		    TrackingEntry.COLUMN_NAME_VERTICAL_ACCURACY + FLOAT_TYPE + COMMA_SEP +
+		    TrackingEntry.COLUMN_NAME_SATELITES + INT_TYPE + COMMA_SEP +
+		    TrackingEntry.COLUMN_NAME_FIX_STATUS + INT_TYPE + COMMA_SEP +
+		    TrackingEntry.COLUMN_NAME_SPEED + FLOAT_TYPE + COMMA_SEP +
+		    TrackingEntry.COLUMN_NAME_EVENT + TEXT_TYPE + COMMA_SEP +
+		    TrackingEntry.COLUMN_NAME_RAW_DATA + TEXT_TYPE + COMMA_SEP +
+			TrackingEntry.COLUMN_NAME_BLOCKED + INT_TYPE + " )"};
 
 	private static final String[] SQL_DELETE_ENTRIES = new String[]{
 	"DROP TABLE IF EXISTS " + VehicleEntry.TABLE_NAME,
@@ -240,10 +251,10 @@ public class DbHelper extends SQLiteOpenHelper {
 	"DROP TABLE IF EXISTS " + WarrantyInfoEntry.TABLE_NAME,
 	"DROP TABLE IF EXISTS " + LimitsEntry.TABLE_NAME,
 	"DROP TABLE IF EXISTS " + AlertEntry.TABLE_NAME,
-	"DROP TABLE IF EXISTS " + DDEventEntry.TABLE_NAME};
+	"DROP TABLE IF EXISTS " + TrackingEntry.TABLE_NAME};
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 44;
+	public static final int DATABASE_VERSION = 45;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;
@@ -1345,9 +1356,9 @@ public class DbHelper extends SQLiteOpenHelper {
 		
 		if(database!=null){
 			
-			String sql = "INSERT INTO "+ DDEventEntry.TABLE_NAME +" ("
-					+ DDEventEntry.COLUMN_NAME_EVENT +","
-					+ DDEventEntry.COLUMN_NAME_TIMESTAMP
+			String sql = "INSERT INTO "+ TrackingEntry.TABLE_NAME +" ("
+					+ TrackingEntry.COLUMN_NAME_EVENT +","
+					+ TrackingEntry.COLUMN_NAME_TIMESTAMP
 					+ ") VALUES (?,?);";
 			
 			SQLiteStatement statement = database.compileStatement(sql);
@@ -1376,7 +1387,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		    	sIds+= i!=idsSize-1 ? ids.get(i)+"," : ids.get(i);
 		    }
 			
-		    SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+DDEventEntry.TABLE_NAME+" WHERE "+DDEventEntry._ID+" IN (" + sIds + ")");
+		    SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+TrackingEntry.TABLE_NAME+" WHERE "+TrackingEntry._ID+" IN (" + sIds + ")");
 		    database.beginTransaction();
 		    removeStatement.clearBindings();
 	        removeStatement.execute();
