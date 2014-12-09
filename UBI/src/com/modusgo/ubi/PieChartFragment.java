@@ -54,8 +54,6 @@ public class PieChartFragment extends TitledFragment{
     		colors = getArguments().getIntArray(SAVED_COLORS);
 	    }
 	    
-//	    backgroundResources = new int[]{R.color.pie_black,R.color.pie_red,R.color.pie_green,R.color.pie_gray,R.color.pie_orange,R.color.pie_blue};
-	    
 	    LinearLayout rootView = (LinearLayout)inflater.inflate(R.layout.pie_chart_fragment, container, false);
     	final PieChartView pieChart = (PieChartView) rootView.findViewById(R.id.chart);
 	    LinearLayout markersLayout = (LinearLayout)rootView.findViewById(R.id.markers);
@@ -87,7 +85,6 @@ public class PieChartFragment extends TitledFragment{
 		for (int i = 0; i < chartValues.length; i++) {
 			if(chartValues[i]>=0.5){
 			    	pieSectors.add(pieChart.new PieSector(chartValues[i],colors[i]));
-			    	System.out.println(titles[i]+" "+chartValues[i]+" "+String.format("#%06X", 0xFFFFFF & colors[i]));
 			}
 		}
 		PieSector pieSectorsArr[] = new PieSector[pieSectors.size()];

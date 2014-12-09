@@ -251,7 +251,7 @@ public class DiagnosticsFragment extends Fragment{
 		sdfTo.setTimeZone(tzTo);
 
 		if(TextUtils.isEmpty(vehicle.carLastCheckup)){
-			tvLastCheckup.setText("N/A");			
+			tvLastCheckup.setText("N/A");
 		}
 		else{
 			try {

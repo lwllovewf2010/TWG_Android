@@ -160,7 +160,6 @@ public class PieChartView extends View{
     		colorPaint.setColor(color);
     		colorPaint.setAntiAlias(true);
     		colorPaint.setStyle(Paint.Style.FILL);
-	    	System.out.println("Color sector: "+String.format("#%06X", 0xFFFFFF & color));
     	}
     }
 
