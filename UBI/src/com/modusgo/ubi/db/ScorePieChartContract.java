@@ -16,5 +16,6 @@ public class ScorePieChartContract {
 		public static final String COLUMN_NAME_VALUE = "value";
 		public static final String COLUMN_NAME_TITLE = "title";
 		public static final String COLUMN_NAME_SUBTITLE = "subtitle";
+		public static final String COLUMN_NAME_COLOR = "color";
 	}
 }

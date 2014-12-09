@@ -23,7 +23,8 @@ import com.modusgo.ubi.Trip;
 import com.modusgo.ubi.Trip.Point;
 import com.modusgo.ubi.Vehicle;
 import com.modusgo.ubi.db.AlertContract.AlertEntry;
-import com.modusgo.ubi.db.DDEventContract.DDEventEntry;
+import com.modusgo.ubi.db.ScoreInfoContract.ScoreInfoEntry;
+import com.modusgo.ubi.db.TrackingContract.TrackingEntry;
 import com.modusgo.ubi.db.DTCContract.DTCEntry;
 import com.modusgo.ubi.db.LimitsContract.LimitsEntry;
 import com.modusgo.ubi.db.MaintenanceContract.MaintenanceEntry;
@@ -135,13 +136,22 @@ public class DbHelper extends SQLiteOpenHelper {
 		    ScorePercentageEntry.COLUMN_NAME_STAT_NAME + TEXT_TYPE + COMMA_SEP +
 		    ScorePercentageEntry.COLUMN_NAME_STAT_VALUE + INT_TYPE +  " ); ",
 	
+		    "CREATE TABLE " + ScoreInfoEntry.TABLE_NAME + " (" +
+		    ScoreInfoEntry._ID + " INTEGER PRIMARY KEY," +
+		    ScoreInfoEntry.COLUMN_NAME_VEHICLE_ID + INT_TYPE + COMMA_SEP +
+		    ScoreInfoEntry.COLUMN_NAME_PROFILE_DATE + TEXT_TYPE + COMMA_SEP +
+		    ScoreInfoEntry.COLUMN_NAME_START_DATE + TEXT_TYPE + COMMA_SEP +
+		    ScoreInfoEntry.COLUMN_NAME_PROFILE_DRIVING_MILES + FLOAT_TYPE + COMMA_SEP +
+		    ScoreInfoEntry.COLUMN_NAME_ESTIMATED_ANNUAL_DRIVING + FLOAT_TYPE +  " ); ",
+	
 		    "CREATE TABLE " + ScorePieChartEntry.TABLE_NAME + " (" +
 		    ScorePieChartEntry._ID + " INTEGER PRIMARY KEY," +
 		    ScorePieChartEntry.COLUMN_NAME_VEHICLE_ID + INT_TYPE + COMMA_SEP +
 		    ScorePieChartEntry.COLUMN_NAME_TAB + TEXT_TYPE + COMMA_SEP +
 		    ScorePieChartEntry.COLUMN_NAME_VALUE + FLOAT_TYPE + COMMA_SEP +
 		    ScorePieChartEntry.COLUMN_NAME_TITLE + TEXT_TYPE + COMMA_SEP +
-		    ScorePieChartEntry.COLUMN_NAME_SUBTITLE + TEXT_TYPE + " ); ",
+		    ScorePieChartEntry.COLUMN_NAME_SUBTITLE + TEXT_TYPE + COMMA_SEP +
+		    ScorePieChartEntry.COLUMN_NAME_COLOR + INT_TYPE + " ); ",
 	
 		    "CREATE TABLE " + ScoreCirclesEntry.TABLE_NAME + " (" +
 		    ScoreCirclesEntry._ID + " INTEGER PRIMARY KEY," +
@@ -219,10 +229,21 @@ public class DbHelper extends SQLiteOpenHelper {
 			AlertEntry.COLUMN_NAME_GEOFENCE + TEXT_TYPE + COMMA_SEP +
 			AlertEntry.COLUMN_NAME_ADDRESS + TEXT_TYPE + " ); ",
 		    
-		    "CREATE TABLE " + DDEventEntry.TABLE_NAME + " (" +
-		    DDEventEntry._ID + " INTEGER PRIMARY KEY," +
-		    DDEventEntry.COLUMN_NAME_EVENT + TEXT_TYPE + COMMA_SEP +
-			DDEventEntry.COLUMN_NAME_TIMESTAMP + TEXT_TYPE + " )"};
+		    "CREATE TABLE " + TrackingEntry.TABLE_NAME + " (" +
+		    TrackingEntry._ID + " INTEGER PRIMARY KEY," +
+		    TrackingEntry.COLUMN_NAME_TIMESTAMP + TEXT_TYPE + COMMA_SEP +
+		    TrackingEntry.COLUMN_NAME_LATITUDE + FLOAT_TYPE + COMMA_SEP +
+		    TrackingEntry.COLUMN_NAME_LONGITUDE + FLOAT_TYPE + COMMA_SEP +
+		    TrackingEntry.COLUMN_NAME_ALTITUDE + FLOAT_TYPE + COMMA_SEP +
+		    TrackingEntry.COLUMN_NAME_HEADING + FLOAT_TYPE + COMMA_SEP +
+		    TrackingEntry.COLUMN_NAME_HORIZONTAL_ACCURACY + FLOAT_TYPE + COMMA_SEP +
+		    TrackingEntry.COLUMN_NAME_VERTICAL_ACCURACY + FLOAT_TYPE + COMMA_SEP +
+		    TrackingEntry.COLUMN_NAME_SATELITES + INT_TYPE + COMMA_SEP +
+		    TrackingEntry.COLUMN_NAME_FIX_STATUS + INT_TYPE + COMMA_SEP +
+		    TrackingEntry.COLUMN_NAME_SPEED + FLOAT_TYPE + COMMA_SEP +
+		    TrackingEntry.COLUMN_NAME_EVENT + TEXT_TYPE + COMMA_SEP +
+		    TrackingEntry.COLUMN_NAME_RAW_DATA + TEXT_TYPE + COMMA_SEP +
+			TrackingEntry.COLUMN_NAME_BLOCKED + INT_TYPE + " )"};
 
 	private static final String[] SQL_DELETE_ENTRIES = new String[]{
 	"DROP TABLE IF EXISTS " + VehicleEntry.TABLE_NAME,
@@ -232,6 +253,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	"DROP TABLE IF EXISTS " + PointEntry.TABLE_NAME,
 	"DROP TABLE IF EXISTS " + ScoreGraphEntry.TABLE_NAME,
 	"DROP TABLE IF EXISTS " + ScorePercentageEntry.TABLE_NAME,
+	"DROP TABLE IF EXISTS " + ScoreInfoEntry.TABLE_NAME,
 	"DROP TABLE IF EXISTS " + ScorePieChartEntry.TABLE_NAME,
 	"DROP TABLE IF EXISTS " + ScoreCirclesEntry.TABLE_NAME,
 	"DROP TABLE IF EXISTS " + DTCEntry.TABLE_NAME,
@@ -240,10 +262,10 @@ public class DbHelper extends SQLiteOpenHelper {
 	"DROP TABLE IF EXISTS " + WarrantyInfoEntry.TABLE_NAME,
 	"DROP TABLE IF EXISTS " + LimitsEntry.TABLE_NAME,
 	"DROP TABLE IF EXISTS " + AlertEntry.TABLE_NAME,
-	"DROP TABLE IF EXISTS " + DDEventEntry.TABLE_NAME};
+	"DROP TABLE IF EXISTS " + TrackingEntry.TABLE_NAME};
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 44;
+	public static final int DATABASE_VERSION = 48;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;
@@ -540,7 +562,6 @@ public class DbHelper extends SQLiteOpenHelper {
 		    	statement.execute();
 		    	
 			}
-		    System.out.println("inside");
 		    database.setTransactionSuccessful();	
 		    database.endTransaction();
 		    statement.close();
@@ -844,6 +865,45 @@ public class DbHelper extends SQLiteOpenHelper {
 		closeDatabase();
 	}
 	
+	public void saveScoreInfo(long vehicleId, String profileDate, String startDate, float profileDrivingMiles, float estimatedAnnualDriving){
+		SQLiteDatabase database = openDatabase();
+		
+		if(database!=null){
+			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+ScoreInfoEntry.TABLE_NAME+" WHERE "+ScoreInfoEntry.COLUMN_NAME_VEHICLE_ID+" = "+vehicleId);
+		    database.beginTransaction();
+		    removeStatement.clearBindings();
+	        removeStatement.execute();
+	        database.setTransactionSuccessful();	
+		    database.endTransaction();
+		    removeStatement.close();
+			
+			String sql = "INSERT INTO "+ ScoreInfoEntry.TABLE_NAME +" ("
+					+ ScoreInfoEntry.COLUMN_NAME_VEHICLE_ID +","
+					+ ScoreInfoEntry.COLUMN_NAME_PROFILE_DATE +","
+					+ ScoreInfoEntry.COLUMN_NAME_START_DATE +","
+					+ ScoreInfoEntry.COLUMN_NAME_PROFILE_DRIVING_MILES +","
+					+ ScoreInfoEntry.COLUMN_NAME_ESTIMATED_ANNUAL_DRIVING
+					+ ") VALUES (?,?,?,?,?);";
+			
+			SQLiteStatement statement = database.compileStatement(sql);
+		    database.beginTransaction();
+		    
+		    statement.clearBindings();
+		    statement.bindLong(1, vehicleId);
+		    statement.bindString(2, profileDate);
+		    statement.bindString(3, startDate);
+		    statement.bindDouble(4, profileDrivingMiles);
+		    statement.bindDouble(5, estimatedAnnualDriving);
+		    statement.execute();
+		    
+		    database.setTransactionSuccessful();	
+		    database.endTransaction();
+		    statement.close();
+		}
+		
+		closeDatabase();
+	}
+	
 	public void saveScorePieCharts(long driverId, ArrayList<PieChartTab> tabs){
 		SQLiteDatabase database = openDatabase();
 		
@@ -861,8 +921,9 @@ public class DbHelper extends SQLiteOpenHelper {
 					+ ScorePieChartEntry.COLUMN_NAME_TAB +","
 					+ ScorePieChartEntry.COLUMN_NAME_VALUE +","
 					+ ScorePieChartEntry.COLUMN_NAME_TITLE +","
-					+ ScorePieChartEntry.COLUMN_NAME_SUBTITLE
-					+ ") VALUES (?,?,?,?,?);";
+					+ ScorePieChartEntry.COLUMN_NAME_SUBTITLE +","
+					+ ScorePieChartEntry.COLUMN_NAME_COLOR
+					+ ") VALUES (?,?,?,?,?,?);";
 			
 			SQLiteStatement statement = database.compileStatement(sql);
 		    database.beginTransaction();
@@ -879,6 +940,7 @@ public class DbHelper extends SQLiteOpenHelper {
 			    		statement.bindString(5, tab.subtitles[i]);
 			    	else
 			    		statement.bindString(5, "");
+		    		statement.bindLong(6, tab.colorIds[i]);
 			    	statement.execute();
 				}
 			}
@@ -1345,9 +1407,9 @@ public class DbHelper extends SQLiteOpenHelper {
 		
 		if(database!=null){
 			
-			String sql = "INSERT INTO "+ DDEventEntry.TABLE_NAME +" ("
-					+ DDEventEntry.COLUMN_NAME_EVENT +","
-					+ DDEventEntry.COLUMN_NAME_TIMESTAMP
+			String sql = "INSERT INTO "+ TrackingEntry.TABLE_NAME +" ("
+					+ TrackingEntry.COLUMN_NAME_EVENT +","
+					+ TrackingEntry.COLUMN_NAME_TIMESTAMP
 					+ ") VALUES (?,?);";
 			
 			SQLiteStatement statement = database.compileStatement(sql);
@@ -1376,7 +1438,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		    	sIds+= i!=idsSize-1 ? ids.get(i)+"," : ids.get(i);
 		    }
 			
-		    SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+DDEventEntry.TABLE_NAME+" WHERE "+DDEventEntry._ID+" IN (" + sIds + ")");
+		    SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+TrackingEntry.TABLE_NAME+" WHERE "+TrackingEntry._ID+" IN (" + sIds + ")");
 		    database.beginTransaction();
 		    removeStatement.clearBindings();
 	        removeStatement.execute();
