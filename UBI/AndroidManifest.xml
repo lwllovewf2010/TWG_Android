@@ -239,8 +239,6 @@
         <receiver android:name="com.modusgo.dd.PhoneScreenOnOffReceiver" >
             <intent-filter android:priority="1000" >
                 <action android:name="android.intent.action.USER_PRESENT" />
-                <action android:name="android.intent.action.SCREEN_ON" />
-                <action android:name="android.intent.action.SCREEN_OFF" />
             </intent-filter>
         </receiver>
         

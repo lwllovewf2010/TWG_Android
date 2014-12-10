@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 	private Handler checkIgnitionHandler;
 	private Runnable checkIgnitionRunnable;
 	
+	PhoneScreenOnOffReceiver receiver;
 	//private boolean smsReceiverRegistered = false;
 	//private boolean callReceiverRegistered = false;
 	
@@ -113,6 +115,12 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 	        }
 	    };
 	    checkIgnitionHandler.postDelayed(checkIgnitionRunnable, Constants.CHECK_IGNITION_FREQUENCY);
+	    
+	    receiver = new PhoneScreenOnOffReceiver();
+	    IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+	    filter.addAction(Intent.ACTION_SCREEN_OFF);
+	    filter.addAction(Intent.ACTION_SCREEN_OFF);
+	    registerReceiver(receiver, filter);
 		
 		if(!servicesAvailable || mLocationClient.isConnected() || mInProgress)
         	return START_STICKY;
@@ -130,6 +138,8 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 			unregisterReceiver(incomingCallReceiver);
 			callReceiverRegistered = false;
 		}*/
+		
+		unregisterReceiver(receiver);
 		
 		notificationManager.cancel(notificationId);
 		

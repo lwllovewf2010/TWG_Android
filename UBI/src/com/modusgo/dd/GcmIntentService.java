@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
@@ -56,11 +57,14 @@ public class GcmIntentService extends IntentService {
             // If it's a regular GCM message, do some work.
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
             	
+            	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            	Editor e  = prefs.edit();
+            	
             	if(extras.containsKey("in_trip")){
-	            	if(extras.getString("in_trip").equals("1"))
-	            		setInTrip(true);
-	            	else
-	            		setInTrip(false);
+					e.putString(Constants.PREF_DEVICE_IN_TRIP, extras.getString("in_trip"));
+            	}
+            	else{
+					e.putString(Constants.PREF_DEVICE_IN_TRIP, "");            		
             	}
             	
             	if(extras.containsKey("message")){
@@ -68,16 +72,30 @@ public class GcmIntentService extends IntentService {
 	            	if(!TextUtils.isEmpty(message))
 	            		sendNotification(getResources().getString(R.string.app_name), message);
             	}
+            	
+            	if(extras.containsKey("type")){
+					e.putString(Constants.PREF_DEVICE_TYPE, extras.getString("type"));
+            	}
+            	
+            	if(extras.containsKey("events")){
+					e.putBoolean(Constants.PREF_DEVICE_EVENTS, extras.getBoolean("events"));
+            	}
+            	if(extras.containsKey("latitude")){
+					e.putString(Constants.PREF_DEVICE_LATITUDE, extras.getString("latitude"));
+            	}
+            	if(extras.containsKey("longitude")){
+					e.putString(Constants.PREF_DEVICE_LONGITUDE, extras.getString("longitude"));
+            	}
+            	if(extras.containsKey("location_date")){
+					e.putString(Constants.PREF_DEVICE_LOCATION_DATE, extras.getString("location_date"));
+            	}
+            	
+            	e.commit();
             }
         }
         
         // Release the wake lock provided by the WakefulBroadcastReceiver.
         GcmBroadcastReceiver.completeWakefulIntent(intent);
-    }
-    
-    private void setInTrip(boolean inTrip){
-    	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        prefs.edit().putBoolean(Constants.PREF_DEVICE_IN_TRIP, inTrip).commit();
     }
 
     // Put the message into a notification and post it.

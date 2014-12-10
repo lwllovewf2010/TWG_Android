@@ -6,7 +6,7 @@ public class Constants {
 	public static final String GCM_SENDER_ID = "322787790569";
 	
 	public static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZZZZZ";
-	public static final String DATE_TIME_FORMAT_ZULU = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+	public static final String DATE_TIME_FORMAT_ZULU = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	public static final String DEFAULT_TIMEZONE = "GMT+00:00";
 	
 	public static final String PREF_CURRENT_DRIVER = "currentDriver";
@@ -31,8 +31,9 @@ public class Constants {
 	public static final String PREF_DEVICE_EVENTS = "deviceEvents";
 	public static final String PREF_DEVICE_TRIPS = "deviceTrips";
 	public static final String PREF_DEVICE_IN_TRIP = "deviceInTrip";
-	public static final String PREF_DEVICE_DATA_URL = "deviceDataUrl";
-	public static final String PREF_DEVICE_AUTH_KEY = "deviceAuthKey";
+	public static final String PREF_DEVICE_LATITUDE = "deviceLatitude";
+	public static final String PREF_DEVICE_LONGITUDE = "deviceLongitude";
+	public static final String PREF_DEVICE_LOCATION_DATE = "locationDate";
 	public static final String PREF_EVENTS_LAST_CHECK = "eventsLastCheck";
 	public static final String PREF_GA_TRACKING_ID = "ga_trackingId";
 	public static final String PREF_GCM_REG_ID = "gmcRegId";

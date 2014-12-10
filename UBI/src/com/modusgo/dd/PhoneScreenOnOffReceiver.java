@@ -8,7 +8,7 @@ public class PhoneScreenOnOffReceiver extends BroadcastReceiver {
 	
     @Override
     public void onReceive(Context context, Intent intent) {
-    	Intent i = new Intent(context, CallSaverService.class);
+    	Intent i = new Intent(context, PhoneUsageSaverService.class);
     	i.putExtra("action", intent.getAction());
     	context.startService(i);
     }
