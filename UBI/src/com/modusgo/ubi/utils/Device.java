@@ -16,8 +16,15 @@ public class Device {
 		
 		if(prefs.getBoolean(Constants.PREF_DEVICE_EVENTS, false)){
 			switch (deviceType) {
-			case "":
-				
+			case "smartphone":
+				//locationBackground
+				break;
+			case "obdble":
+			case "ibeacon":
+				//significationBackground
+				break;
+			case "obd":
+				//lightBackground
 				break;
 	
 			default:
@@ -25,7 +32,7 @@ public class Device {
 			}
 		}
 		else{
-			
+			//Turn all services off
 		}
 		
 	}
