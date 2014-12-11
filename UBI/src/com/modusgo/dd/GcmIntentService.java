@@ -1,5 +1,8 @@
 package com.modusgo.dd;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -60,17 +63,26 @@ public class GcmIntentService extends IntentService {
             	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
             	Editor e  = prefs.edit();
             	
+            	
+            	if(extras.containsKey("aps")){
+					String apsJSON = extras.getString("aps");
+					try {
+						JSONObject jsonObj = new JSONObject(apsJSON);
+						if(jsonObj.optInt("content-available")==0){
+							String message = jsonObj.optString("alert");
+			            	if(!TextUtils.isEmpty(message))
+			            		sendNotification(getResources().getString(R.string.app_name), message);
+						}
+					} catch (JSONException e1) {
+						e1.printStackTrace();
+					}
+            	}
+            	
             	if(extras.containsKey("in_trip")){
 					e.putString(Constants.PREF_DEVICE_IN_TRIP, extras.getString("in_trip"));
             	}
             	else{
 					e.putString(Constants.PREF_DEVICE_IN_TRIP, "");            		
-            	}
-            	
-            	if(extras.containsKey("message")){
-	                String message = extras.getString("message");
-	            	if(!TextUtils.isEmpty(message))
-	            		sendNotification(getResources().getString(R.string.app_name), message);
             	}
             	
             	if(extras.containsKey("type")){
