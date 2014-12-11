@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.modusgo.ubi.Constants;
+import com.modusgo.ubi.Tracking;
 import com.modusgo.ubi.db.DbHelper;
 
 public class PhoneUsageSaverService extends IntentService {
@@ -55,7 +56,7 @@ public class PhoneUsageSaverService extends IntentService {
     	prefs.edit().putBoolean(PREF_PHONE_ON, true);
     	
     	DbHelper dbHelper = DbHelper.getInstance(this);
-    	dbHelper.saveDDEvent("phone_usage_start", timestamp);
+    	dbHelper.saveTrackingEvent(new Tracking(timestamp, "phone_usage_start"));
     	dbHelper.close();
 	}
 	
@@ -68,7 +69,7 @@ public class PhoneUsageSaverService extends IntentService {
     	prefs.edit().putBoolean(PREF_PHONE_ON, false);
     	
     	DbHelper dbHelper = DbHelper.getInstance(this);
-    	dbHelper.saveDDEvent("phone_usage_end", timestamp);
+    	dbHelper.saveTrackingEvent(new Tracking(timestamp, "phone_usage_end"));
     	dbHelper.close();
 	}
 

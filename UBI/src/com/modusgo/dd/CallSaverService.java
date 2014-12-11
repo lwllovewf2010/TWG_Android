@@ -13,6 +13,7 @@ import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 
 import com.modusgo.ubi.Constants;
+import com.modusgo.ubi.Tracking;
 import com.modusgo.ubi.db.DbHelper;
 
 public class CallSaverService extends IntentService {
@@ -53,7 +54,7 @@ public class CallSaverService extends IntentService {
     	String callStartTimestamp = sdf.format(c.getTime());
     	
     	DbHelper dbHelper = DbHelper.getInstance(this);
-    	dbHelper.saveDDEvent("call_usage_start", callStartTimestamp);
+    	dbHelper.saveTrackingEvent(new Tracking(callStartTimestamp, "call_usage_start"));
     	dbHelper.close();
 	}
 	
@@ -69,7 +70,7 @@ public class CallSaverService extends IntentService {
 	    	String callEndTimestamp = sdf.format(c.getTime());
 	    	
 	    	DbHelper dbHelper = DbHelper.getInstance(this);
-	    	dbHelper.saveDDEvent("call_usage_end", callEndTimestamp);
+	    	dbHelper.saveTrackingEvent(new Tracking(callEndTimestamp, "call_usage_end"));
 	    	dbHelper.close();
 		}
 	}

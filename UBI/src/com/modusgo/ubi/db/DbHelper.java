@@ -19,6 +19,7 @@ import com.modusgo.ubi.Recall;
 import com.modusgo.ubi.ScoreCirclesActivity.CirclesSection;
 import com.modusgo.ubi.ScoreFragment.MonthStats;
 import com.modusgo.ubi.ScorePieChartActivity.PieChartTab;
+import com.modusgo.ubi.Tracking;
 import com.modusgo.ubi.Trip;
 import com.modusgo.ubi.Trip.Point;
 import com.modusgo.ubi.Vehicle;
@@ -265,7 +266,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	"DROP TABLE IF EXISTS " + TrackingEntry.TABLE_NAME};
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 48;
+	public static final int DATABASE_VERSION = 49;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;
@@ -477,7 +478,6 @@ public class DbHelper extends SQLiteOpenHelper {
 	}
 	
 	public void saveVehicles(ArrayList<Vehicle> drivers, boolean removeVehicles){
-		System.out.println("Save vehicles");
 		SQLiteDatabase database = openDatabase();
 		
 		if(database!=null && drivers!=null){
@@ -581,7 +581,6 @@ public class DbHelper extends SQLiteOpenHelper {
 	}
 	
 	public void saveVehicles(ArrayList<Vehicle> drivers){
-		System.out.println("save vehicles");
 		saveVehicles(drivers, true);		
 	}
 	
@@ -1402,22 +1401,44 @@ public class DbHelper extends SQLiteOpenHelper {
 		closeDatabase();
 	}
 	
-	public void saveDDEvent(String event, String timestamp){
+	public void saveTrackingEvent(Tracking timepoint){
 		SQLiteDatabase database = openDatabase();
 		
 		if(database!=null){
 			
 			String sql = "INSERT INTO "+ TrackingEntry.TABLE_NAME +" ("
-					+ TrackingEntry.COLUMN_NAME_EVENT +","
-					+ TrackingEntry.COLUMN_NAME_TIMESTAMP
-					+ ") VALUES (?,?);";
+					+ TrackingEntry.COLUMN_NAME_TIMESTAMP + ","
+					+ TrackingEntry.COLUMN_NAME_EVENT + ","
+					+ TrackingEntry.COLUMN_NAME_LATITUDE + ","
+					+ TrackingEntry.COLUMN_NAME_LONGITUDE + ","
+					+ TrackingEntry.COLUMN_NAME_ALTITUDE + ","
+					+ TrackingEntry.COLUMN_NAME_SATELITES + ","
+					+ TrackingEntry.COLUMN_NAME_HEADING + ","
+					+ TrackingEntry.COLUMN_NAME_SPEED + ","
+					+ TrackingEntry.COLUMN_NAME_FIX_STATUS + ","
+					+ TrackingEntry.COLUMN_NAME_RAW_DATA + ","
+					+ TrackingEntry.COLUMN_NAME_HORIZONTAL_ACCURACY + ","
+					+ TrackingEntry.COLUMN_NAME_VERTICAL_ACCURACY + ","
+					+ TrackingEntry.COLUMN_NAME_BLOCKED
+					+ ") VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?);";
 			
 			SQLiteStatement statement = database.compileStatement(sql);
 		    database.beginTransaction();
 		    
 		    statement.clearBindings();
-		    statement.bindString(1, event);
-		    statement.bindString(2, timestamp);
+		    statement.bindString(1, timepoint.timestamp);
+		    statement.bindString(2, timepoint.event);
+		    statement.bindDouble(3, timepoint.latitude);
+		    statement.bindDouble(4, timepoint.longitude);
+		    statement.bindDouble(5, timepoint.altitude);
+		    statement.bindLong(6, timepoint.satelites);
+		    statement.bindDouble(7, timepoint.heading);
+		    statement.bindDouble(8, timepoint.speed);
+		    statement.bindLong(9, timepoint.fixStatus ? 1 : 0);
+		    statement.bindString(10, timepoint.rawData);
+		    statement.bindDouble(11, timepoint.horizontalAccuracy);
+		    statement.bindDouble(12, timepoint.verticalAccuracy);
+		    statement.bindLong(13, timepoint.blocked ? 1 : 0);
 		    statement.execute();
 		    
 		    database.setTransactionSuccessful();	
@@ -1427,7 +1448,32 @@ public class DbHelper extends SQLiteOpenHelper {
 		closeDatabase();
 	}
 	
-	public void deleteDDEvents(ArrayList<Long> ids){
+	public void setTrackingEventsBlock(ArrayList<Long> ids, boolean blocked){
+		SQLiteDatabase database = openDatabase();
+		
+		if(database!=null && ids!=null && ids.size()>0){
+			
+			String sIds = "";
+			int idsSize = ids.size();
+		    for (int i = 0; i < idsSize; i++) {
+		    	sIds+= i!=idsSize-1 ? ids.get(i)+"," : ids.get(i);
+		    }
+			
+		    String blockStr = blocked ? "1" : "0";
+		    
+		    SQLiteStatement removeStatement = database.compileStatement("UPDATE "+TrackingEntry.TABLE_NAME+"SET " + TrackingEntry.COLUMN_NAME_BLOCKED + "= '"+blockStr+"' WHERE "+TrackingEntry._ID+" IN (" + sIds + ")");
+		    database.beginTransaction();
+		    removeStatement.clearBindings();
+	        removeStatement.execute();
+	        database.setTransactionSuccessful();
+		    database.endTransaction();
+		    removeStatement.close();
+		    
+		}
+		closeDatabase();
+	}
+	
+	public void deleteTrackingEvents(ArrayList<Long> ids){
 		SQLiteDatabase database = openDatabase();
 		
 		if(database!=null && ids!=null && ids.size()>0){

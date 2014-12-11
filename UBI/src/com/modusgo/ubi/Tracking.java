@@ -12,19 +12,17 @@ public class Tracking{
 	public float horizontalAccuracy;
 	public float verticalAccuracy;
 	public int satelites;
-	public boolean fix_status;
+	public boolean fixStatus;
 	public float speed;
 	public String event = "";
 	public String rawData = "";
     public boolean blocked;
     
-	public Tracking(long id, String timestamp, double latitude,
+	public Tracking(String timestamp, double latitude,
 			double longitude, double altitude, float heading,
 			float horizontalAccuracy, float verticalAccuracy, int satelites,
-			boolean fix_status, float speed, String event, String rawData,
-			boolean blocked) {
+			boolean fix_status, float speed, String event, String rawData) {
 		super();
-		this.id = id;
 		this.timestamp = timestamp;
 		this.latitude = latitude;
 		this.longitude = longitude;
@@ -33,10 +31,15 @@ public class Tracking{
 		this.horizontalAccuracy = horizontalAccuracy;
 		this.verticalAccuracy = verticalAccuracy;
 		this.satelites = satelites;
-		this.fix_status = fix_status;
+		this.fixStatus = fix_status;
 		this.speed = speed;
 		this.event = event;
 		this.rawData = rawData;
-		this.blocked = blocked;
+		this.blocked = false;
+	}
+	
+	public Tracking(String timestamp, String event){
+		this.timestamp = timestamp;
+		this.event = event;		
 	}
 }
