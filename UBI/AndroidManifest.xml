@@ -227,6 +227,10 @@
             android:exported="false"/>
         
         <service
+            android:name="com.modusgo.dd.LocationService"
+            android:exported="false"/>
+        
+        <service
             android:name="com.modusgo.dd.CallSaverService"
             android:exported="false"/>
         
@@ -254,6 +258,12 @@
                 <category android:name="com.modusgo.ubi" />
             </intent-filter>
         </receiver>
+            <receiver android:name="com.modusgo.dd.ChargerConnectionReceiver" >
+        <intent-filter>
+            <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
+            <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
+        </intent-filter>
+    </receiver>
         
     </application>
 

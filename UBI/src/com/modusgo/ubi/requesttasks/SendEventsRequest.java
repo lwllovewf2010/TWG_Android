@@ -71,6 +71,8 @@ public class SendEventsRequest extends BasePostRequestAsyncTask {
 					tpJSON.put("location", tpLocationJSON);
 					JSONObject tpDataJSON = new JSONObject();
 					tpDataJSON.put("raw_data", c.getString(10));
+					tpDataJSON.put("horizontal_accuracy", c.getFloat(11));
+					tpDataJSON.put("vertical_accuracy", c.getFloat(12));
 					tpJSON.put("data", tpDataJSON);
 					
 					timepointsJSON.put(tpJSON);
@@ -97,6 +99,7 @@ public class SendEventsRequest extends BasePostRequestAsyncTask {
 		}
 		
 		requestParams.add(new BasicNameValuePair("data",rootJSON.toString()));
+		System.out.println(requestParams);
 		
 		return super.doInBackground("device.json");
 	}

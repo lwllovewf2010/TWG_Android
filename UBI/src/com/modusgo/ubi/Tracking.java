@@ -1,5 +1,10 @@
 package com.modusgo.ubi;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.TimeZone;
+
 
 public class Tracking{
 	
@@ -18,12 +23,17 @@ public class Tracking{
 	public String rawData = "";
     public boolean blocked;
     
-	public Tracking(String timestamp, double latitude,
+	public Tracking(long timeMillis, double latitude,
 			double longitude, double altitude, float heading,
 			float horizontalAccuracy, float verticalAccuracy, int satelites,
 			boolean fix_status, float speed, String event, String rawData) {
 		super();
-		this.timestamp = timestamp;
+		Calendar c = Calendar.getInstance();
+		c.setTimeInMillis(timeMillis);
+		SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT_ZULU,Locale.US);
+		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+		this.timestamp = sdf.format(c.getTime());
+		
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.altitude = altitude;
@@ -38,8 +48,11 @@ public class Tracking{
 		this.blocked = false;
 	}
 	
-	public Tracking(String timestamp, String event){
-		this.timestamp = timestamp;
-		this.event = event;		
+	public Tracking(String event){
+		Calendar c = Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT_ZULU,Locale.US);
+		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+		this.timestamp = sdf.format(c.getTime());
+		this.event = event;
 	}
 }

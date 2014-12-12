@@ -36,6 +36,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.modusgo.dd.LocationService;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -387,6 +388,7 @@ public class MainActivity extends FragmentActivity {
 		        	//Logout
 		        	Utils.gaTrackScreen(MainActivity.this, "Logout");
 		        	prefs.edit().putString(Constants.PREF_AUTH_KEY, "").commit();
+		        	stopService(new Intent(MainActivity.this, LocationService.class));
 		    		Intent intent = new Intent(MainActivity.this, InitActivity.class);
 		    		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
 		    		startActivity(intent);

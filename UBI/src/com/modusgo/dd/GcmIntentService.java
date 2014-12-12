@@ -17,9 +17,10 @@ import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.modusgo.ubi.Constants;
 import com.modusgo.ubi.InitActivity;
 import com.modusgo.ubi.R;
+import com.modusgo.ubi.requesttasks.GetDeviceInfoRequest;
+import com.modusgo.ubi.utils.Device;
 
 /**
  * This {@code IntentService} does the actual handling of the GCM message.
@@ -79,30 +80,32 @@ public class GcmIntentService extends IntentService {
             	}
             	
             	if(extras.containsKey("in_trip")){
-					e.putString(Constants.PREF_DEVICE_IN_TRIP, extras.getString("in_trip"));
+					e.putString(Device.PREF_DEVICE_IN_TRIP, extras.getString("in_trip"));
             	}
             	else{
-					e.putString(Constants.PREF_DEVICE_IN_TRIP, "");            		
+					e.putString(Device.PREF_DEVICE_IN_TRIP, "");            		
             	}
             	
             	if(extras.containsKey("type")){
-					e.putString(Constants.PREF_DEVICE_TYPE, extras.getString("type"));
+					e.putString(Device.PREF_DEVICE_TYPE, extras.getString("type"));
             	}
             	
             	if(extras.containsKey("events")){
-					e.putBoolean(Constants.PREF_DEVICE_EVENTS, extras.getBoolean("events"));
+					e.putBoolean(Device.PREF_DEVICE_EVENTS, extras.getBoolean("events"));
             	}
             	if(extras.containsKey("latitude")){
-					e.putString(Constants.PREF_DEVICE_LATITUDE, extras.getString("latitude"));
+					e.putString(Device.PREF_DEVICE_LATITUDE, extras.getString("latitude"));
             	}
             	if(extras.containsKey("longitude")){
-					e.putString(Constants.PREF_DEVICE_LONGITUDE, extras.getString("longitude"));
+					e.putString(Device.PREF_DEVICE_LONGITUDE, extras.getString("longitude"));
             	}
             	if(extras.containsKey("location_date")){
-					e.putString(Constants.PREF_DEVICE_LOCATION_DATE, extras.getString("location_date"));
+					e.putString(Device.PREF_DEVICE_LOCATION_DATE, extras.getString("location_date"));
             	}
             	
             	e.commit();
+            	
+            	new GetDeviceInfoRequest(this).execute();
             }
         }
         

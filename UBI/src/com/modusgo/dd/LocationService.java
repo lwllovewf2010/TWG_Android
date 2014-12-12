@@ -1,36 +1,45 @@
 package com.modusgo.dd;
 
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
+import android.text.TextUtils;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.modusgo.ubi.Constants;
 import com.modusgo.ubi.InitActivity;
 import com.modusgo.ubi.R;
+import com.modusgo.ubi.Tracking;
+import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.requesttasks.GetDeviceInfoRequest;
 import com.modusgo.ubi.utils.Device;
 
-public class TrackingStatusService extends Service implements GooglePlayServicesClient.ConnectionCallbacks,
-GooglePlayServicesClient.OnConnectionFailedListener{
+public class LocationService extends Service implements GooglePlayServicesClient.ConnectionCallbacks,
+GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 
+	private static final float TRIP_START_SPEED = 7f/3.6f;
+	private static final float TRIP_STAY_SPEED = 3f/3.6f;
+	private static final int MAX_STAY_TIME = 2*60*1000;
 	public static final int GET_DEVICE_FREQUENCY = 60*60*1000;
 	
-	public TrackingStatusService() {
+	private long stayFromMillis = 0;
+	
+	public LocationService() {
 		super();
 	}
 	
@@ -42,15 +51,14 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 	//private boolean callReceiverRegistered = false;
 	
 	private int notificationId = 7;
-	private NotificationManager notificationManager;
 	
 	private SharedPreferences prefs;
 	
 	//Location stuff
 	private Boolean servicesAvailable = false;
     private boolean mInProgress;
-	LocationClient mLocationClient;
-	Location mLastLocation;
+	private LocationClient mLocationClient;
+    private LocationRequest mLocationRequest;
     
 	
 	@Override
@@ -58,8 +66,17 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 		super.onCreate();		
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		
-        servicesAvailable = servicesConnected();
 		mInProgress = false;
+        // Create the LocationRequest object
+        mLocationRequest = LocationRequest.create();
+        // Use high accuracy
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        // Set the update interval to 5 seconds
+        mLocationRequest.setInterval(5000);
+        // Set the fastest update interval to 1 second
+        mLocationRequest.setFastestInterval(1000);
+        
+        servicesAvailable = servicesConnected();
         
         /*
          * Create a new location client, using the enclosing class to
@@ -71,17 +88,63 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		
+		String mode = prefs.getString(Device.PREF_CURRENT_TRACKING_MODE, "");
+		
+		switch (mode) {
+		case Device.MODE_LIGHT_TRACKING:
+			mLocationRequest = LocationRequest.create();
+	        mLocationRequest.setPriority(LocationRequest.PRIORITY_NO_POWER);
+	        mLocationRequest.setSmallestDisplacement(50);
+	        mLocationRequest.setInterval(30*60*1000);
+	        mLocationRequest.setFastestInterval(30*60*1000);
+
+			break;
+		case Device.MODE_SIGNIFICATION_TRACKING:
+
+			break;
+		case Device.MODE_MEDIUM_TRACKING:
+			mLocationRequest = LocationRequest.create();
+	        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+	        mLocationRequest.setSmallestDisplacement(50);
+	        mLocationRequest.setInterval(5*60*1000);
+	        mLocationRequest.setFastestInterval(1*60*1000);
+			break;
+		case Device.MODE_NAVIGATION_TRACKING:
+			mLocationRequest = LocationRequest.create();
+	        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+	        mLocationRequest.setSmallestDisplacement(10);
+	        mLocationRequest.setInterval(10*1000);
+	        mLocationRequest.setFastestInterval(10*1000);
+			break;
+		case Device.MODE_SUPER_TRACKING:
+			mLocationRequest = LocationRequest.create();
+	        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+	        mLocationRequest.setSmallestDisplacement(5);
+	        mLocationRequest.setInterval(1*1000);
+	        mLocationRequest.setFastestInterval(1*1000);
+			break;
+
+		default:
+			break;
+		}
+		
+		if(mLocationClient!=null && mLocationClient.isConnected()){
+			mLocationClient.removeLocationUpdates(this);
+			if(!mode.equals(Device.MODE_SIGNIFICATION_TRACKING))
+				mLocationClient.requestLocationUpdates(mLocationRequest, this);
+		}
+		
+		
 		NotificationCompat.Builder mBuilder =
 		        new NotificationCompat.Builder(this)
 		        .setSmallIcon(R.drawable.ic_launcher)
-		        .setContentTitle("ModusGO")
-		        .setContentText("ModusGO tracking is "+(prefs.getBoolean(Device.PREF_DEVICE_IN_TRIP, false) ? "enabled." : "disabled."));
+		        .setContentTitle(getResources().getString(R.string.app_name))
+		        .setContentText("Your trip is "+(TextUtils.isEmpty(prefs.getString(Device.PREF_DEVICE_IN_TRIP, "")) ? "stopped." : "in progress."));
 
 		Intent resultIntent = new Intent(this, InitActivity.class);
 
 		PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_CANCEL_CURRENT);//stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 		mBuilder.setContentIntent(resultPendingIntent);
-		
 		Notification n = mBuilder.build();
 		n.flags |= Notification.FLAG_ONGOING_EVENT;
 		
@@ -103,16 +166,7 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 	        public void run() {
 	        	
 	        	if(!prefs.getString(Constants.PREF_AUTH_KEY, "").equals("")){
-		        	
-		        	if(mLocationClient!=null && mLocationClient.isConnected()){
-			        	mLastLocation = mLocationClient.getLastLocation();
-			        	if(mLastLocation!=null){
-			        		
-			        	}
-		        	}
-		        	
-		        	new GetDeviceInfoRequest(TrackingStatusService.this).execute();
-		        	
+		        	new GetDeviceInfoRequest(LocationService.this).execute();
 		            checkIgnitionHandler.postDelayed(this, GET_DEVICE_FREQUENCY);
 	        	}
 	        }
@@ -125,11 +179,62 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 	    filter.addAction(Intent.ACTION_SCREEN_OFF);
 	    registerReceiver(receiver, filter);
 		
-		if(!servicesAvailable || mLocationClient.isConnected() || mInProgress)
-        	return START_STICKY;
-		
 		return START_STICKY;//super.onStartCommand(intent, flags, startId);
 	}
+	
+	@Override
+    public void onLocationChanged(Location location) {
+        // Report to the UI that the location was updated
+        String msg = Double.toString(location.getLatitude()) + "," +
+                Double.toString(location.getLongitude());
+        System.out.println(msg);
+        
+        Editor e = prefs.edit();
+        e.putString(Constants.PREF_MOBILE_LATITUDE, ""+location.getLatitude());
+        e.putString(Constants.PREF_MOBILE_LONGITUDE, ""+location.getLongitude());
+        
+        String deviceType = prefs.getString(Device.PREF_DEVICE_TYPE, "");
+		
+        boolean inTrip = prefs.getBoolean(Device.PREF_DEVICE_IN_TRIP, false);
+        String event = "";
+    	if(!inTrip){
+    		if(deviceType.equals(Device.DEVICE_TYPE_SMARTPHONE) && location.getSpeed()>TRIP_START_SPEED){
+            	e.putBoolean(Device.PREF_DEVICE_IN_TRIP, true);
+    			event = "start";
+            }
+    	}
+    	else{
+    		if((deviceType.equals(Device.DEVICE_TYPE_SMARTPHONE) || deviceType.equals(Device.DEVICE_TYPE_IBEACON)) && location.getSpeed() < TRIP_STAY_SPEED){
+	    		if(stayFromMillis==0)
+	    			stayFromMillis = System.currentTimeMillis();
+	    		else if(System.currentTimeMillis() - stayFromMillis > MAX_STAY_TIME){
+	    			stayFromMillis = 0;
+	    			e.putBoolean(Device.PREF_DEVICE_IN_TRIP, false);
+	    			event = "stop";
+	    		}
+    		}
+    	}
+    	
+
+    	DbHelper dbhelper = DbHelper.getInstance(this);
+    	dbhelper.saveTrackingEvent(new Tracking(
+    			location.getTime(), 
+    			location.getLatitude(), 
+    			location.getLongitude(), 
+    			location.getAltitude(), 
+    			location.getBearing(), 
+    			location.getAccuracy(), 
+    			0, 
+    			0, 
+    			true, 
+    			location.getSpeed(), 
+    			event, 
+    			""));
+    	dbhelper.close();
+    	
+    	e.commit();
+        Device.checkDevice(this);
+    }
 	
 	@Override
 	public void onDestroy() {
@@ -144,11 +249,10 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 		
 		unregisterReceiver(receiver);
 		
-		notificationManager.cancel(notificationId);
-		
 		mInProgress = false;
         if(servicesAvailable && mLocationClient != null) {
-	        //mLocationClient.removeLocationUpdates(this);
+        	if(mLocationClient.isConnected())
+        		mLocationClient.removeLocationUpdates(this);
 	        // Destroy the current location client
 	        mLocationClient = null;
         }
@@ -191,8 +295,15 @@ GooglePlayServicesClient.OnConnectionFailedListener{
     public void onConnected(Bundle bundle) {
     	
         // Request location updates using static settings
-        //mLocationClient.requestLocationUpdates(mLocationRequest, this);
+    	mLocationClient.requestLocationUpdates(mLocationRequest, this);
+    	
+    	Location lastLocation = mLocationClient.getLastLocation();
+    	Editor e = prefs.edit();
+        e.putString(Constants.PREF_MOBILE_LATITUDE, ""+lastLocation.getLatitude());
+        e.putString(Constants.PREF_MOBILE_LONGITUDE, ""+lastLocation.getLongitude());
+        e.commit();
         
+        System.out.println("Location service Connected");
     }
  
     /*
@@ -216,6 +327,7 @@ GooglePlayServicesClient.OnConnectionFailedListener{
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
     	mInProgress = false;
+    	System.out.println(connectionResult.toString());
     	
         if (connectionResult.hasResolution()) {
 
