@@ -11238,6 +11238,7 @@ com.google.android.gms.internal.ly -> com.google.android.gms.internal.cv:
     android.location.Location getLastLocation() -> a
     void a(com.google.android.gms.internal.ma,com.google.android.gms.location.LocationListener,android.os.Looper) -> a
     com.google.android.gms.internal.ly$b a(com.google.android.gms.location.LocationListener,android.os.Looper) -> a
+    void removeLocationUpdates(com.google.android.gms.location.LocationListener) -> a
     void setMockMode(boolean) -> a
     void removeAllListeners() -> b
     void lY() -> c
@@ -11247,6 +11248,7 @@ com.google.android.gms.internal.ly$a -> com.google.android.gms.internal.cw:
 com.google.android.gms.internal.ly$b -> com.google.android.gms.internal.cx:
     android.os.Handler aeV -> a
     void onLocationChanged(android.location.Location) -> a
+    void release() -> a
 com.google.android.gms.internal.lz -> com.google.android.gms.internal.cy:
     com.google.android.gms.internal.me Dh -> d
     com.google.android.gms.internal.ly aeW -> e
@@ -11260,6 +11262,7 @@ com.google.android.gms.internal.lz -> com.google.android.gms.internal.cy:
     android.location.Location getLastLocation() -> n
     void a(com.google.android.gms.internal.ma,com.google.android.gms.location.LocationListener) -> a
     void a(com.google.android.gms.internal.ma,com.google.android.gms.location.LocationListener,android.os.Looper) -> a
+    void removeLocationUpdates(com.google.android.gms.location.LocationListener) -> a
     com.google.android.gms.internal.lx aL(android.os.IBinder) -> c
     void a(com.google.android.gms.common.internal.l,com.google.android.gms.common.internal.e$e) -> a
     android.os.IInterface j(android.os.IBinder) -> a
@@ -12260,6 +12263,7 @@ com.google.android.gms.location.LocationClient -> com.google.android.gms.locatio
     com.google.android.gms.internal.lz aea -> a
     android.location.Location getLastLocation() -> a
     void requestLocationUpdates(com.google.android.gms.location.LocationRequest,com.google.android.gms.location.LocationListener) -> a
+    void removeLocationUpdates(com.google.android.gms.location.LocationListener) -> a
     void connect() -> b
     void disconnect() -> c
     boolean isConnected() -> d
@@ -12281,8 +12285,10 @@ com.google.android.gms.location.LocationRequest -> com.google.android.gms.locati
     com.google.android.gms.location.LocationRequest setPriority(int) -> a
     com.google.android.gms.location.LocationRequest setInterval(long) -> a
     com.google.android.gms.location.LocationRequest setFastestInterval(long) -> b
+    com.google.android.gms.location.LocationRequest setSmallestDisplacement(float) -> a
     void v(long) -> c
     void eb(int) -> c
+    void a(float) -> b
     int describeContents() -> describeContents
     void writeToParcel(android.os.Parcel,int) -> writeToParcel
     java.lang.String ec(int) -> b
@@ -15223,28 +15229,55 @@ com.kbeanie.imagechooser.threads.VideoProcessorThread -> com.kbeanie.imagechoose
     142:153:java.lang.String createThumbnailOfVideo() -> createThumbnailOfVideo
     159:167:void processingDone(java.lang.String,java.lang.String,java.lang.String) -> processingDone
 com.modusgo.dd.CallReceiver -> com.modusgo.dd.CallReceiver:
-    12:15:void onReceive(android.content.Context,android.content.Intent) -> onReceive
+    16:23:void onReceive(android.content.Context,android.content.Intent) -> onReceive
 com.modusgo.dd.CallSaverService -> com.modusgo.dd.CallSaverService:
     android.content.SharedPreferences prefs -> a
-    30:32:void onHandleIntent(android.content.Intent) -> onHandleIntent
-    35:43:void update(java.lang.String) -> a
-    46:58:void savePhoneCallStart() -> a
-    61:75:void savePhoneCallStop() -> b
+    25:27:void onHandleIntent(android.content.Intent) -> onHandleIntent
+    30:36:void update(java.lang.String) -> a
+    39:48:void savePhoneCallStart() -> a
+    51:60:void savePhoneCallStop() -> b
+com.modusgo.dd.ChargerConnectionReceiver -> com.modusgo.dd.ChargerConnectionReceiver:
+    16:29:void onReceive(android.content.Context,android.content.Intent) -> onReceive
 com.modusgo.dd.GcmBroadcastReceiver -> com.modusgo.dd.GcmBroadcastReceiver:
     14:18:void onReceive(android.content.Context,android.content.Intent) -> onReceive
 com.modusgo.dd.GcmIntentService -> com.modusgo.dd.GcmIntentService:
     android.app.NotificationManager mNotificationManager -> a
-    40:76:void onHandleIntent(android.content.Intent) -> onHandleIntent
-    79:81:void setInTrip(boolean) -> a
-    87:105:void sendNotification(java.lang.String,java.lang.String) -> a
+    45:114:void onHandleIntent(android.content.Intent) -> onHandleIntent
+    120:138:void sendNotification(java.lang.String,java.lang.String) -> a
+com.modusgo.dd.LocationService -> com.modusgo.dd.LocationService:
+    long stayFromMillis -> b
+    android.os.Handler checkIgnitionHandler -> c
+    java.lang.Runnable checkIgnitionRunnable -> d
+    com.modusgo.dd.PhoneScreenOnOffReceiver receiver -> a
+    int notificationId -> e
+    android.content.SharedPreferences prefs -> f
+    java.lang.Boolean servicesAvailable -> g
+    boolean mInProgress -> h
+    com.google.android.gms.location.LocationClient mLocationClient -> i
+    com.google.android.gms.location.LocationRequest mLocationRequest -> j
+    66:86:void onCreate() -> onCreate
+    91:182:int onStartCommand(android.content.Intent,int,int) -> onStartCommand
+    188:237:void onLocationChanged(android.location.Location) -> a
+    250:261:void onDestroy() -> onDestroy
+    267:267:android.os.IBinder onBind(android.content.Intent) -> onBind
+    272:279:boolean servicesConnected() -> b
+    285:287:void setUpLocationClientIfNeeded() -> c
+    298:307:void onConnected(android.os.Bundle) -> a
+    316:321:void onDisconnected() -> a
+    329:337:void onConnectionFailed(com.google.android.gms.common.ConnectionResult) -> a
+    55:55:android.content.SharedPreferences access$0(com.modusgo.dd.LocationService) -> a
+    46:46:android.os.Handler access$1(com.modusgo.dd.LocationService) -> b
+com.modusgo.dd.LocationService$1 -> com.modusgo.dd.a:
+    com.modusgo.dd.LocationService this$0 -> a
+    168:172:void run() -> run
 com.modusgo.dd.PhoneScreenOnOffReceiver -> com.modusgo.dd.PhoneScreenOnOffReceiver:
-    11:14:void onReceive(android.content.Context,android.content.Intent) -> onReceive
+    15:21:void onReceive(android.content.Context,android.content.Intent) -> onReceive
 com.modusgo.dd.PhoneUsageSaverService -> com.modusgo.dd.PhoneUsageSaverService:
     android.content.SharedPreferences prefs -> a
-    29:31:void onHandleIntent(android.content.Intent) -> onHandleIntent
-    34:47:void update(java.lang.String) -> a
-    50:60:void savePhoneUsageStart() -> a
-    63:73:void savePhoneUsageStop() -> b
+    24:26:void onHandleIntent(android.content.Intent) -> onHandleIntent
+    29:42:void update(java.lang.String) -> a
+    45:52:void savePhoneUsageStart() -> a
+    55:62:void savePhoneUsageStop() -> b
 com.modusgo.dd.RegisterByCodeActivity -> com.modusgo.dd.RegisterByCodeActivity:
     android.content.SharedPreferences prefs -> n
     com.google.android.gms.gcm.GoogleCloudMessaging gcm -> o
@@ -15267,39 +15300,40 @@ com.modusgo.dd.RegisterByCodeActivity -> com.modusgo.dd.RegisterByCodeActivity:
     325:352:java.util.Set getQueryParameterNames(android.net.Uri) -> a
     188:188:void access$0(com.modusgo.dd.RegisterByCodeActivity,java.lang.String) -> a
     315:315:void access$1(com.modusgo.dd.RegisterByCodeActivity,android.content.Context,java.lang.String) -> a
-com.modusgo.dd.RegisterByCodeActivity$1 -> com.modusgo.dd.a:
+com.modusgo.dd.RegisterByCodeActivity$1 -> com.modusgo.dd.b:
     com.modusgo.dd.RegisterByCodeActivity this$0 -> a
     java.lang.String val$regCode -> b
     148:172:java.lang.String doInBackground(java.lang.Void[]) -> a
     177:184:void onPostExecute(java.lang.String) -> a
     1:1:void onPostExecute(java.lang.Object) -> onPostExecute
     1:1:java.lang.Object doInBackground(java.lang.Object[]) -> doInBackground
-com.modusgo.dd.RegisterByCodeActivity$UserRegistrationServerError -> com.modusgo.dd.b:
+com.modusgo.dd.RegisterByCodeActivity$UserRegistrationServerError -> com.modusgo.dd.c:
     com.modusgo.dd.RegisterByCodeActivity this$0 -> a
 com.modusgo.dd.TrackingStatusService -> com.modusgo.dd.TrackingStatusService:
-    android.os.Handler checkIgnitionHandler -> c
-    java.lang.Runnable checkIgnitionRunnable -> d
-    int notificationId -> e
-    android.app.NotificationManager notificationManager -> f
-    android.content.SharedPreferences prefs -> g
-    java.lang.Boolean servicesAvailable -> h
-    boolean mInProgress -> i
-    com.google.android.gms.location.LocationClient mLocationClient -> a
-    android.location.Location mLastLocation -> b
-    53:64:void onCreate() -> onCreate
-    70:120:int onStartCommand(android.content.Intent,int,int) -> onStartCommand
-    134:144:void onDestroy() -> onDestroy
-    150:150:android.os.IBinder onBind(android.content.Intent) -> onBind
-    155:162:boolean servicesConnected() -> b
-    168:170:void setUpLocationClientIfNeeded() -> c
-    183:183:void onConnected(android.os.Bundle) -> a
-    192:197:void onDisconnected() -> a
-    205:212:void onConnectionFailed(com.google.android.gms.common.ConnectionResult) -> a
-    42:42:android.content.SharedPreferences access$0(com.modusgo.dd.TrackingStatusService) -> a
-    33:33:android.os.Handler access$1(com.modusgo.dd.TrackingStatusService) -> b
-com.modusgo.dd.TrackingStatusService$1 -> com.modusgo.dd.c:
+    android.os.Handler checkIgnitionHandler -> d
+    java.lang.Runnable checkIgnitionRunnable -> e
+    com.modusgo.dd.PhoneScreenOnOffReceiver receiver -> a
+    int notificationId -> f
+    android.app.NotificationManager notificationManager -> g
+    android.content.SharedPreferences prefs -> h
+    java.lang.Boolean servicesAvailable -> i
+    boolean mInProgress -> j
+    com.google.android.gms.location.LocationClient mLocationClient -> b
+    android.location.Location mLastLocation -> c
+    58:69:void onCreate() -> onCreate
+    75:131:int onStartCommand(android.content.Intent,int,int) -> onStartCommand
+    145:157:void onDestroy() -> onDestroy
+    163:163:android.os.IBinder onBind(android.content.Intent) -> onBind
+    168:175:boolean servicesConnected() -> b
+    181:183:void setUpLocationClientIfNeeded() -> c
+    196:196:void onConnected(android.os.Bundle) -> a
+    205:210:void onDisconnected() -> a
+    218:225:void onConnectionFailed(com.google.android.gms.common.ConnectionResult) -> a
+    47:47:android.content.SharedPreferences access$0(com.modusgo.dd.TrackingStatusService) -> a
+    37:37:android.os.Handler access$1(com.modusgo.dd.TrackingStatusService) -> b
+com.modusgo.dd.TrackingStatusService$1 -> com.modusgo.dd.d:
     com.modusgo.dd.TrackingStatusService this$0 -> a
-    100:113:void run() -> run
+    105:118:void run() -> run
 com.modusgo.ubi.Alert -> com.modusgo.ubi.a:
     long id -> a
     long vehicleId -> b
@@ -15999,43 +16033,43 @@ com.modusgo.ubi.HomeActivity -> com.modusgo.ubi.HomeActivity:
     android.support.v4.widget.SwipeRefreshLayout lRefresh -> p
     android.widget.ListView lvVehicles -> q
     android.widget.TextView tvError -> r
-    51:78:void onCreate(android.os.Bundle) -> onCreate
-    81:93:void updateDrivers() -> i
-    97:98:void up() -> u_
-    237:241:void onResume() -> onResume
-    80:80:void access$0(com.modusgo.ubi.HomeActivity) -> a
+    52:82:void onCreate(android.os.Bundle) -> onCreate
+    85:97:void updateDrivers() -> i
+    101:102:void up() -> u_
+    241:245:void onResume() -> onResume
+    84:84:void access$0(com.modusgo.ubi.HomeActivity) -> a
 com.modusgo.ubi.HomeActivity$1 -> com.modusgo.ubi.cg:
     com.modusgo.ubi.HomeActivity this$0 -> a
-    71:74:void onRefresh() -> a
+    72:75:void onRefresh() -> a
 com.modusgo.ubi.HomeActivity$GetVehiclesTask -> com.modusgo.ubi.ch:
     com.modusgo.ubi.HomeActivity this$0 -> a
-    251:252:void onPreExecute() -> onPreExecute
-    256:258:void onPostExecute(org.json.JSONObject) -> b
-    262:264:org.json.JSONObject doInBackground(java.lang.String[]) -> a
-    269:270:void onError(java.lang.String) -> a
-    275:290:void onSuccess(org.json.JSONObject) -> a
+    255:256:void onPreExecute() -> onPreExecute
+    260:262:void onPostExecute(org.json.JSONObject) -> b
+    266:268:org.json.JSONObject doInBackground(java.lang.String[]) -> a
+    273:274:void onError(java.lang.String) -> a
+    279:294:void onSuccess(org.json.JSONObject) -> a
 com.modusgo.ubi.HomeActivity$VehiclesAdapter -> com.modusgo.ubi.ci:
     android.content.Context ctx -> a
     android.view.LayoutInflater lInflater -> b
     java.text.SimpleDateFormat sdfFrom -> c
     java.text.SimpleDateFormat sdfTo -> d
     com.modusgo.ubi.HomeActivity this$0 -> e
-    118:121:void notifyDataSetChanged() -> notifyDataSetChanged
-    125:125:int getCount() -> getCount
-    130:130:java.lang.Object getItem(int) -> getItem
-    135:135:long getItemId(int) -> getItemId
-    141:226:android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
-    230:230:com.modusgo.ubi.Vehicle getVehicle(int) -> a
-    100:100:com.modusgo.ubi.HomeActivity access$0(com.modusgo.ubi.HomeActivity$VehiclesAdapter) -> a
+    122:125:void notifyDataSetChanged() -> notifyDataSetChanged
+    129:129:int getCount() -> getCount
+    134:134:java.lang.Object getItem(int) -> getItem
+    139:139:long getItemId(int) -> getItemId
+    145:230:android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
+    234:234:com.modusgo.ubi.Vehicle getVehicle(int) -> a
+    104:104:com.modusgo.ubi.HomeActivity access$0(com.modusgo.ubi.HomeActivity$VehiclesAdapter) -> a
 com.modusgo.ubi.HomeActivity$VehiclesAdapter$1 -> com.modusgo.ubi.cj:
     com.modusgo.ubi.HomeActivity$VehiclesAdapter this$1 -> a
     com.modusgo.ubi.Vehicle val$vehicle -> b
-    206:209:void onClick(android.view.View) -> onClick
+    210:213:void onClick(android.view.View) -> onClick
 com.modusgo.ubi.HomeActivity$VehiclesAdapter$2 -> com.modusgo.ubi.ck:
     com.modusgo.ubi.HomeActivity$VehiclesAdapter this$1 -> a
     int val$position -> b
     com.modusgo.ubi.Vehicle val$vehicle -> c
-    216:223:void onClick(android.view.View) -> onClick
+    220:227:void onClick(android.view.View) -> onClick
 com.modusgo.ubi.InitActivity -> com.modusgo.ubi.InitActivity:
     android.view.View layoutProgress -> n
     android.view.View layoutFields -> o
@@ -16048,28 +16082,28 @@ com.modusgo.ubi.InitActivity -> com.modusgo.ubi.InitActivity:
     android.view.animation.Animation fadeOutFields -> v
     android.content.SharedPreferences prefs -> w
     java.lang.String clientId -> x
-    60:117:void onCreate(android.os.Bundle) -> onCreate
-    143:145:android.view.animation.Animation getFadeInAnmation(android.view.View) -> a
-    149:151:android.view.animation.Animation getFadeOutAnmation(android.view.View) -> b
+    61:118:void onCreate(android.os.Bundle) -> onCreate
+    144:146:android.view.animation.Animation getFadeInAnmation(android.view.View) -> a
+    150:152:android.view.animation.Animation getFadeOutAnmation(android.view.View) -> b
 com.modusgo.ubi.InitActivity$1 -> com.modusgo.ubi.cl:
     com.modusgo.ubi.InitActivity this$0 -> a
-    114:115:void onClick(android.view.View) -> onClick
+    115:116:void onClick(android.view.View) -> onClick
 com.modusgo.ubi.InitActivity$MyAnimationListener -> com.modusgo.ubi.cm:
     android.view.View view -> a
     boolean hideView -> b
     com.modusgo.ubi.InitActivity this$0 -> c
-    130:134:void onAnimationEnd(android.view.animation.Animation) -> onAnimationEnd
-    137:137:void onAnimationRepeat(android.view.animation.Animation) -> onAnimationRepeat
-    139:139:void onAnimationStart(android.view.animation.Animation) -> onAnimationStart
+    131:135:void onAnimationEnd(android.view.animation.Animation) -> onAnimationEnd
+    138:138:void onAnimationRepeat(android.view.animation.Animation) -> onAnimationRepeat
+    140:140:void onAnimationStart(android.view.animation.Animation) -> onAnimationStart
 com.modusgo.ubi.InitActivity$ServerCheckTask -> com.modusgo.ubi.cn:
     org.json.JSONArray welcomeScreens -> a
     int status -> b
     java.lang.String message -> c
     java.util.List requestParams -> d
     com.modusgo.ubi.InitActivity this$0 -> e
-    164:170:void onPreExecute() -> onPreExecute
-    175:298:java.lang.Boolean doInBackground(java.lang.Void[]) -> a
-    303:330:void onPostExecute(java.lang.Boolean) -> a
+    165:171:void onPreExecute() -> onPreExecute
+    176:302:java.lang.Boolean doInBackground(java.lang.Void[]) -> a
+    307:334:void onPostExecute(java.lang.Boolean) -> a
     1:1:void onPostExecute(java.lang.Object) -> onPostExecute
     1:1:java.lang.Object doInBackground(java.lang.Object[]) -> doInBackground
 com.modusgo.ubi.LimitsFragment -> com.modusgo.ubi.co:
@@ -16273,52 +16307,55 @@ com.modusgo.ubi.MainActivity -> com.modusgo.ubi.MainActivity:
     java.util.ArrayList menuItems -> D
     android.content.SharedPreferences prefs -> E
     android.app.ActionBar actionBar -> F
-    87:231:void onCreate(android.os.Bundle) -> onCreate
-    239:241:void setActionBarTitle(java.lang.String) -> b
-    244:248:void setButtonUpVisibility(boolean) -> b
-    251:252:void up() -> u_
-    255:259:void setButtonNavigationDrawerVisibility(boolean) -> c
-    262:294:void setActionBarAppearance() -> v_
-    298:303:void onResume() -> onResume
-    311:311:boolean onPrepareOptionsMenu(android.view.Menu) -> onPrepareOptionsMenu
-    316:323:boolean onOptionsItemSelected(android.view.MenuItem) -> onOptionsItemSelected
-    406:414:void setNavigationDrawerItemSelected(com.modusgo.ubi.MainActivity$MenuItems) -> a
-    417:422:void setNavigationDrawerItemsUnselected() -> h
-    437:441:void onPostCreate(android.os.Bundle) -> onPostCreate
-    445:448:void onConfigurationChanged(android.content.res.Configuration) -> onConfigurationChanged
-    452:461:boolean onKeyDown(int,android.view.KeyEvent) -> onKeyDown
-    466:472:void onBackPressed() -> onBackPressed
-    481:481:void checkForCrashes() -> i
-    485:486:void checkForUpdates() -> j
-    47:47:android.widget.ListView access$0(com.modusgo.ubi.MainActivity) -> a
-    49:49:int access$1(com.modusgo.ubi.MainActivity) -> b
-    53:53:java.lang.String access$2(com.modusgo.ubi.MainActivity) -> c
-    46:46:android.support.v4.widget.DrawerLayout access$3(com.modusgo.ubi.MainActivity) -> d
-    52:52:android.widget.ImageButton access$4(com.modusgo.ubi.MainActivity) -> e
+    88:232:void onCreate(android.os.Bundle) -> onCreate
+    240:242:void setActionBarTitle(java.lang.String) -> b
+    245:249:void setButtonUpVisibility(boolean) -> b
+    252:253:void up() -> u_
+    256:260:void setButtonNavigationDrawerVisibility(boolean) -> c
+    263:295:void setActionBarAppearance() -> v_
+    299:304:void onResume() -> onResume
+    312:312:boolean onPrepareOptionsMenu(android.view.Menu) -> onPrepareOptionsMenu
+    317:324:boolean onOptionsItemSelected(android.view.MenuItem) -> onOptionsItemSelected
+    408:416:void setNavigationDrawerItemSelected(com.modusgo.ubi.MainActivity$MenuItems) -> a
+    419:424:void setNavigationDrawerItemsUnselected() -> h
+    439:443:void onPostCreate(android.os.Bundle) -> onPostCreate
+    447:450:void onConfigurationChanged(android.content.res.Configuration) -> onConfigurationChanged
+    454:463:boolean onKeyDown(int,android.view.KeyEvent) -> onKeyDown
+    468:474:void onBackPressed() -> onBackPressed
+    477:483:void checkForCrashes() -> i
+    487:488:void checkForUpdates() -> j
+    48:48:android.widget.ListView access$0(com.modusgo.ubi.MainActivity) -> a
+    50:50:int access$1(com.modusgo.ubi.MainActivity) -> b
+    54:54:java.lang.String access$2(com.modusgo.ubi.MainActivity) -> c
+    47:47:android.support.v4.widget.DrawerLayout access$3(com.modusgo.ubi.MainActivity) -> d
+    53:53:android.widget.ImageButton access$4(com.modusgo.ubi.MainActivity) -> e
 com.modusgo.ubi.MainActivity$1 -> com.modusgo.ubi.dp:
     com.modusgo.ubi.MainActivity this$0 -> a
-    105:111:void onClick(android.view.View) -> onClick
+    106:112:void onClick(android.view.View) -> onClick
 com.modusgo.ubi.MainActivity$2 -> com.modusgo.ubi.dq:
     com.modusgo.ubi.MainActivity this$0 -> a
-    118:119:void onClick(android.view.View) -> onClick
+    119:120:void onClick(android.view.View) -> onClick
 com.modusgo.ubi.MainActivity$3 -> com.modusgo.ubi.dr:
     com.modusgo.ubi.MainActivity this$0 -> a
-    143:143:int getCount() -> getCount
-    150:176:android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
+    144:144:int getCount() -> getCount
+    151:177:android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
 com.modusgo.ubi.MainActivity$4 -> com.modusgo.ubi.ds:
     com.modusgo.ubi.MainActivity this$0 -> a
     android.widget.ImageView val$menuLogo -> b
-    215:220:void onDrawerClosed(android.view.View) -> b
-    223:228:void onDrawerOpened(android.view.View) -> a
+    216:221:void onDrawerClosed(android.view.View) -> b
+    224:229:void onDrawerOpened(android.view.View) -> a
 com.modusgo.ubi.MainActivity$5 -> com.modusgo.ubi.dt:
     com.modusgo.ubi.MainActivity this$0 -> a
-    272:274:void onLoadingComplete(java.lang.String,android.view.View,android.graphics.Bitmap) -> a
-com.modusgo.ubi.MainActivity$DrawerItemClickListener -> com.modusgo.ubi.du:
+    273:275:void onLoadingComplete(java.lang.String,android.view.View,android.graphics.Bitmap) -> a
+com.modusgo.ubi.MainActivity$6 -> com.modusgo.ubi.du:
+    com.modusgo.ubi.MainActivity this$0 -> a
+    480:480:boolean shouldAutoUploadCrashes() -> a
+com.modusgo.ubi.MainActivity$DrawerItemClickListener -> com.modusgo.ubi.dv:
     com.modusgo.ubi.MainActivity this$0 -> a
     int[] $SWITCH_TABLE$com$modusgo$ubi$MainActivity$MenuItems -> b
-    330:398:void onItemClick(android.widget.AdapterView,android.view.View,int,long) -> onItemClick
-    327:327:int[] $SWITCH_TABLE$com$modusgo$ubi$MainActivity$MenuItems() -> a
-com.modusgo.ubi.MainActivity$MenuItems -> com.modusgo.ubi.dv:
+    331:400:void onItemClick(android.widget.AdapterView,android.view.View,int,long) -> onItemClick
+    328:328:int[] $SWITCH_TABLE$com$modusgo$ubi$MainActivity$MenuItems() -> a
+com.modusgo.ubi.MainActivity$MenuItems -> com.modusgo.ubi.dw:
     com.modusgo.ubi.MainActivity$MenuItems HOME -> a
     com.modusgo.ubi.MainActivity$MenuItems COMPARE -> b
     com.modusgo.ubi.MainActivity$MenuItems CALLSUPPORT -> c
@@ -16331,11 +16368,11 @@ com.modusgo.ubi.MainActivity$MenuItems -> com.modusgo.ubi.dv:
     java.lang.String text -> j
     int num -> k
     com.modusgo.ubi.MainActivity$MenuItems[] ENUM$VALUES -> l
-    68:68:java.lang.String toString() -> toString
+    69:69:java.lang.String toString() -> toString
     1:1:com.modusgo.ubi.MainActivity$MenuItems[] values() -> values
     1:1:com.modusgo.ubi.MainActivity$MenuItems valueOf(java.lang.String) -> valueOf
-    63:63:java.lang.String access$2(com.modusgo.ubi.MainActivity$MenuItems) -> a
-com.modusgo.ubi.MainActivity$ViewHolder -> com.modusgo.ubi.dw:
+    64:64:java.lang.String access$2(com.modusgo.ubi.MainActivity$MenuItems) -> a
+com.modusgo.ubi.MainActivity$ViewHolder -> com.modusgo.ubi.dx:
     android.widget.TextView tvTitle -> a
     android.widget.ImageView imageIcon -> b
     com.modusgo.ubi.MainActivity this$0 -> c
@@ -16349,10 +16386,10 @@ com.modusgo.ubi.MapActivity -> com.modusgo.ubi.MapActivity:
     79:81:void onDestroy() -> onDestroy
     85:87:void onLowMemory() -> onLowMemory
     63:63:void access$0(com.modusgo.ubi.MapActivity) -> a
-com.modusgo.ubi.MapActivity$1 -> com.modusgo.ubi.dx:
+com.modusgo.ubi.MapActivity$1 -> com.modusgo.ubi.dy:
     com.modusgo.ubi.MapActivity this$0 -> a
     53:56:void onMapLoaded() -> a
-com.modusgo.ubi.PieChartFragment -> com.modusgo.ubi.dy:
+com.modusgo.ubi.PieChartFragment -> com.modusgo.ubi.dz:
     java.lang.String LOG_TAG -> a
     float[] chartValues -> b
     java.lang.String[] titles -> c
@@ -16365,8 +16402,8 @@ com.modusgo.ubi.PieChartFragment -> com.modusgo.ubi.dy:
     84:96:void updateChart(com.modusgo.ubi.customviews.PieChartView,boolean) -> a
     100:101:void onViewCreated(android.view.View,android.os.Bundle) -> a
     105:109:void onSaveInstanceState(android.os.Bundle) -> e
-com.modusgo.ubi.R -> com.modusgo.ubi.dz:
-com.modusgo.ubi.R$styleable -> com.modusgo.ubi.ea:
+com.modusgo.ubi.R -> com.modusgo.ubi.ea:
+com.modusgo.ubi.R$styleable -> com.modusgo.ubi.eb:
     int[] ActionBar -> ActionBar
     int ActionBar_background -> ActionBar_background
     int ActionBar_backgroundSplit -> ActionBar_backgroundSplit
@@ -16615,7 +16652,7 @@ com.modusgo.ubi.R$styleable -> com.modusgo.ubi.ea:
     int WalletFragmentStyle_maskedWalletDetailsLogoImageType -> WalletFragmentStyle_maskedWalletDetailsLogoImageType
     int WalletFragmentStyle_maskedWalletDetailsLogoTextColor -> WalletFragmentStyle_maskedWalletDetailsLogoTextColor
     int WalletFragmentStyle_maskedWalletDetailsTextAppearance -> WalletFragmentStyle_maskedWalletDetailsTextAppearance
-com.modusgo.ubi.Recall -> com.modusgo.ubi.eb:
+com.modusgo.ubi.Recall -> com.modusgo.ubi.ec:
     long id -> a
     java.lang.String consequence -> b
     java.lang.String corrective_action -> c
@@ -16644,16 +16681,16 @@ com.modusgo.ubi.ScoreCirclesActivity -> com.modusgo.ubi.ScoreCirclesActivity:
     185:188:void onSaveInstanceState(android.os.Bundle) -> onSaveInstanceState
     192:194:void up() -> u_
     198:200:void onBackPressed() -> onBackPressed
-com.modusgo.ubi.ScoreCirclesActivity$1 -> com.modusgo.ubi.ec:
+com.modusgo.ubi.ScoreCirclesActivity$1 -> com.modusgo.ubi.ed:
     com.modusgo.ubi.ScoreCirclesActivity this$0 -> a
     android.support.v4.app.Fragment val$fragment -> b
     java.lang.String val$tabName -> c
     158:166:void onCheckedChanged(android.widget.CompoundButton,boolean) -> onCheckedChanged
-com.modusgo.ubi.ScoreCirclesActivity$CirclesSection -> com.modusgo.ubi.ed:
+com.modusgo.ubi.ScoreCirclesActivity$CirclesSection -> com.modusgo.ubi.ee:
     java.lang.String sectionName -> a
     int[] marks -> b
     double[] distances -> c
-com.modusgo.ubi.ScoreFragment -> com.modusgo.ubi.ee:
+com.modusgo.ubi.ScoreFragment -> com.modusgo.ubi.ef:
     java.lang.String[] months -> Z
     com.modusgo.ubi.Vehicle vehicle -> a
     android.view.View llProgress -> b
@@ -16672,22 +16709,22 @@ com.modusgo.ubi.ScoreFragment -> com.modusgo.ubi.ee:
     274:361:void updateGraph() -> F
     364:412:int gradeToNumber(java.lang.String) -> a
     163:163:void access$0(com.modusgo.ubi.ScoreFragment) -> a
-com.modusgo.ubi.ScoreFragment$1 -> com.modusgo.ubi.ef:
+com.modusgo.ubi.ScoreFragment$1 -> com.modusgo.ubi.eg:
     com.modusgo.ubi.ScoreFragment this$0 -> a
     96:97:void onClick(android.view.View) -> onClick
-com.modusgo.ubi.ScoreFragment$2 -> com.modusgo.ubi.eg:
+com.modusgo.ubi.ScoreFragment$2 -> com.modusgo.ubi.eh:
     com.modusgo.ubi.ScoreFragment this$0 -> a
     113:116:void onClick(android.view.View) -> onClick
-com.modusgo.ubi.ScoreFragment$3 -> com.modusgo.ubi.eh:
+com.modusgo.ubi.ScoreFragment$3 -> com.modusgo.ubi.ei:
     com.modusgo.ubi.ScoreFragment this$0 -> a
     122:126:void onClick(android.view.View) -> onClick
-com.modusgo.ubi.ScoreFragment$4 -> com.modusgo.ubi.ei:
+com.modusgo.ubi.ScoreFragment$4 -> com.modusgo.ubi.ej:
     com.modusgo.ubi.ScoreFragment this$0 -> a
     132:136:void onClick(android.view.View) -> onClick
-com.modusgo.ubi.ScoreFragment$5 -> com.modusgo.ubi.ej:
+com.modusgo.ubi.ScoreFragment$5 -> com.modusgo.ubi.ek:
     com.modusgo.ubi.ScoreFragment this$0 -> a
     142:146:void onClick(android.view.View) -> onClick
-com.modusgo.ubi.ScoreFragment$GetScoreTask -> com.modusgo.ubi.ek:
+com.modusgo.ubi.ScoreFragment$GetScoreTask -> com.modusgo.ubi.el:
     com.modusgo.ubi.ScoreFragment this$0 -> a
     438:439:void onPreExecute() -> onPreExecute
     443:445:org.json.JSONObject doInBackground(java.lang.String[]) -> a
@@ -16698,7 +16735,7 @@ com.modusgo.ubi.ScoreFragment$GetScoreTask -> com.modusgo.ubi.ek:
     601:606:int[] getMarksFromJson(java.lang.String,org.json.JSONObject) -> a
     616:621:double[] getDistancesFromJson(java.lang.String,org.json.JSONObject) -> b
     630:640:int getIntOnStringScore(java.lang.String) -> b
-com.modusgo.ubi.ScoreFragment$MonthStats -> com.modusgo.ubi.el:
+com.modusgo.ubi.ScoreFragment$MonthStats -> com.modusgo.ubi.em:
     int month -> a
     int score -> b
     java.lang.String grade -> c
@@ -16716,7 +16753,7 @@ com.modusgo.ubi.ScoreInfoActivity -> com.modusgo.ubi.ScoreInfoActivity:
     252:254:void onSaveInstanceState(android.os.Bundle) -> onSaveInstanceState
     258:260:void up() -> u_
     264:266:void onBackPressed() -> onBackPressed
-com.modusgo.ubi.ScoreInfoActivity$1 -> com.modusgo.ubi.em:
+com.modusgo.ubi.ScoreInfoActivity$1 -> com.modusgo.ubi.en:
     com.modusgo.ubi.ScoreInfoActivity this$0 -> a
     89:115:void onItemClick(android.widget.AdapterView,android.view.View,int,long) -> onItemClick
 com.modusgo.ubi.ScorePieChartActivity -> com.modusgo.ubi.ScorePieChartActivity:
@@ -16727,12 +16764,12 @@ com.modusgo.ubi.ScorePieChartActivity -> com.modusgo.ubi.ScorePieChartActivity:
     163:165:void onSaveInstanceState(android.os.Bundle) -> onSaveInstanceState
     169:171:void up() -> u_
     175:177:void onBackPressed() -> onBackPressed
-com.modusgo.ubi.ScorePieChartActivity$1 -> com.modusgo.ubi.en:
+com.modusgo.ubi.ScorePieChartActivity$1 -> com.modusgo.ubi.eo:
     com.modusgo.ubi.ScorePieChartActivity this$0 -> a
     android.support.v4.app.Fragment val$fragment -> b
     java.lang.String val$tabName -> c
     136:144:void onCheckedChanged(android.widget.CompoundButton,boolean) -> onCheckedChanged
-com.modusgo.ubi.ScorePieChartActivity$PieChartTab -> com.modusgo.ubi.eo:
+com.modusgo.ubi.ScorePieChartActivity$PieChartTab -> com.modusgo.ubi.ep:
     java.lang.String tabName -> a
     float[] values -> b
     java.lang.String[] titles -> c
@@ -16741,7 +16778,7 @@ com.modusgo.ubi.ScorePieChartActivity$PieChartTab -> com.modusgo.ubi.eo:
 com.modusgo.ubi.SettingsActivity -> com.modusgo.ubi.SettingsActivity:
     9:17:void onCreate(android.os.Bundle) -> onCreate
     21:23:void onResume() -> onResume
-com.modusgo.ubi.SettingsEditFragment -> com.modusgo.ubi.ep:
+com.modusgo.ubi.SettingsEditFragment -> com.modusgo.ubi.eq:
     android.widget.ProgressBar progress -> a
     android.widget.LinearLayout llMainInfo -> b
     android.widget.ScrollView svAdditionalInfo -> c
@@ -16789,73 +16826,73 @@ com.modusgo.ubi.SettingsEditFragment -> com.modusgo.ubi.ep:
     95:95:void access$7(com.modusgo.ubi.SettingsEditFragment,boolean) -> a
     94:94:int access$8(com.modusgo.ubi.SettingsEditFragment) -> g
     96:96:void access$9(com.modusgo.ubi.SettingsEditFragment,boolean) -> b
-com.modusgo.ubi.SettingsEditFragment$1 -> com.modusgo.ubi.eq:
+com.modusgo.ubi.SettingsEditFragment$1 -> com.modusgo.ubi.er:
     com.modusgo.ubi.SettingsEditFragment this$0 -> a
     154:172:void onClick(android.view.View) -> onClick
     151:151:com.modusgo.ubi.SettingsEditFragment access$0(com.modusgo.ubi.SettingsEditFragment$1) -> a
-com.modusgo.ubi.SettingsEditFragment$1$1 -> com.modusgo.ubi.er:
+com.modusgo.ubi.SettingsEditFragment$1$1 -> com.modusgo.ubi.es:
     com.modusgo.ubi.SettingsEditFragment$1 this$1 -> a
     158:169:void onClick(android.content.DialogInterface,int) -> onClick
-com.modusgo.ubi.SettingsEditFragment$2 -> com.modusgo.ubi.es:
+com.modusgo.ubi.SettingsEditFragment$2 -> com.modusgo.ubi.et:
     com.modusgo.ubi.SettingsEditFragment this$0 -> a
     177:183:boolean onTouch(android.view.View,android.view.MotionEvent) -> onTouch
-com.modusgo.ubi.SettingsEditFragment$3 -> com.modusgo.ubi.et:
+com.modusgo.ubi.SettingsEditFragment$3 -> com.modusgo.ubi.eu:
     com.modusgo.ubi.SettingsEditFragment this$0 -> a
     198:206:void onItemSelected(android.widget.AdapterView,android.view.View,int,long) -> onItemSelected
     210:210:void onNothingSelected(android.widget.AdapterView) -> onNothingSelected
-com.modusgo.ubi.SettingsEditFragment$4 -> com.modusgo.ubi.eu:
+com.modusgo.ubi.SettingsEditFragment$4 -> com.modusgo.ubi.ev:
     com.modusgo.ubi.SettingsEditFragment this$0 -> a
     242:250:void onItemSelected(android.widget.AdapterView,android.view.View,int,long) -> onItemSelected
     254:254:void onNothingSelected(android.widget.AdapterView) -> onNothingSelected
-com.modusgo.ubi.SettingsEditFragment$5 -> com.modusgo.ubi.ev:
+com.modusgo.ubi.SettingsEditFragment$5 -> com.modusgo.ubi.ew:
     com.modusgo.ubi.SettingsEditFragment this$0 -> a
     android.widget.EditText val$editConfirmPassword -> b
     android.widget.TextView val$tvPasswordError -> c
     278:285:void onClick(android.view.View) -> onClick
-com.modusgo.ubi.SettingsEditFragment$6 -> com.modusgo.ubi.ew:
+com.modusgo.ubi.SettingsEditFragment$6 -> com.modusgo.ubi.ex:
     com.modusgo.ubi.SettingsEditFragment this$0 -> a
     297:298:void onClick(android.view.View) -> onClick
-com.modusgo.ubi.SettingsEditFragment$7 -> com.modusgo.ubi.ex:
+com.modusgo.ubi.SettingsEditFragment$7 -> com.modusgo.ubi.ey:
     com.modusgo.ubi.SettingsEditFragment this$0 -> a
     android.graphics.Bitmap val$bitmap -> b
     665:672:void run() -> run
-com.modusgo.ubi.SettingsEditFragment$8 -> com.modusgo.ubi.ey:
+com.modusgo.ubi.SettingsEditFragment$8 -> com.modusgo.ubi.ez:
     com.modusgo.ubi.SettingsEditFragment this$0 -> a
     java.lang.String val$reason -> b
     683:684:void run() -> run
-com.modusgo.ubi.SettingsEditFragment$AsteriskPasswordTransformationMethod -> com.modusgo.ubi.ez:
+com.modusgo.ubi.SettingsEditFragment$AsteriskPasswordTransformationMethod -> com.modusgo.ubi.fa:
     com.modusgo.ubi.SettingsEditFragment this$0 -> a
     341:341:java.lang.CharSequence getTransformation(java.lang.CharSequence,android.view.View) -> getTransformation
-com.modusgo.ubi.SettingsEditFragment$AsteriskPasswordTransformationMethod$PasswordCharSequence -> com.modusgo.ubi.fa:
+com.modusgo.ubi.SettingsEditFragment$AsteriskPasswordTransformationMethod$PasswordCharSequence -> com.modusgo.ubi.fb:
     java.lang.CharSequence mSource -> b
     com.modusgo.ubi.SettingsEditFragment$AsteriskPasswordTransformationMethod this$1 -> a
     350:350:char charAt(int) -> charAt
     353:353:int length() -> length
     356:356:java.lang.CharSequence subSequence(int,int) -> subSequence
-com.modusgo.ubi.SettingsEditFragment$CustomTextWatcher -> com.modusgo.ubi.fb:
+com.modusgo.ubi.SettingsEditFragment$CustomTextWatcher -> com.modusgo.ubi.fc:
     android.widget.EditText mEditText -> b
     java.lang.String defaultValue -> c
     com.modusgo.ubi.SettingsEditFragment this$0 -> a
     321:321:void beforeTextChanged(java.lang.CharSequence,int,int,int) -> beforeTextChanged
     324:324:void onTextChanged(java.lang.CharSequence,int,int,int) -> onTextChanged
     327:335:void afterTextChanged(android.text.Editable) -> afterTextChanged
-com.modusgo.ubi.SettingsEditFragment$GetDriverTask -> com.modusgo.ubi.fc:
+com.modusgo.ubi.SettingsEditFragment$GetDriverTask -> com.modusgo.ubi.fd:
     com.modusgo.ubi.SettingsEditFragment this$0 -> a
     401:405:void onPreExecute() -> onPreExecute
     409:410:void onPostExecute(org.json.JSONObject) -> b
     415:422:void onError(java.lang.String) -> a
     426:461:void onSuccess(org.json.JSONObject) -> a
-com.modusgo.ubi.SettingsEditFragment$SetDriverTask -> com.modusgo.ubi.fd:
+com.modusgo.ubi.SettingsEditFragment$SetDriverTask -> com.modusgo.ubi.fe:
     com.modusgo.ubi.SettingsEditFragment this$0 -> a
     472:476:void onPreExecute() -> onPreExecute
     480:484:void onPostExecute(org.json.JSONObject) -> b
     490:524:org.json.JSONObject doInBackground(java.lang.String[]) -> a
     530:569:void onSuccess(org.json.JSONObject) -> a
-com.modusgo.ubi.SettingsEditFragment$TypefacedArrayAdapter -> com.modusgo.ubi.fe:
+com.modusgo.ubi.SettingsEditFragment$TypefacedArrayAdapter -> com.modusgo.ubi.ff:
     com.modusgo.ubi.SettingsEditFragment this$0 -> a
     368:376:android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
     381:389:android.view.View getDropDownView(int,android.view.View,android.view.ViewGroup) -> getDropDownView
-com.modusgo.ubi.SettingsViewFragment -> com.modusgo.ubi.ff:
+com.modusgo.ubi.SettingsViewFragment -> com.modusgo.ubi.fg:
     android.widget.ProgressBar progress -> a
     android.widget.LinearLayout llMainInfo -> b
     android.widget.ScrollView svAdditionalInfo -> c
@@ -16871,7 +16908,7 @@ com.modusgo.ubi.SettingsViewFragment -> com.modusgo.ubi.ff:
     48:90:android.view.View onCreateView(android.view.LayoutInflater,android.view.ViewGroup,android.os.Bundle) -> a
     95:98:void onResume() -> q
     101:143:void updateFields() -> a
-com.modusgo.ubi.SettingsViewFragment$1 -> com.modusgo.ubi.fg:
+com.modusgo.ubi.SettingsViewFragment$1 -> com.modusgo.ubi.fh:
     com.modusgo.ubi.SettingsViewFragment this$0 -> a
     82:87:void onClick(android.view.View) -> onClick
 com.modusgo.ubi.SignInActivity -> com.modusgo.ubi.SignInActivity:
@@ -16886,57 +16923,71 @@ com.modusgo.ubi.SignInActivity -> com.modusgo.ubi.SignInActivity:
     com.google.android.gms.gcm.GoogleCloudMessaging gcm -> t
     java.util.concurrent.atomic.AtomicInteger msgId -> u
     java.lang.String regid -> v
-    72:161:void onCreate(android.os.Bundle) -> onCreate
-    165:167:void onResume() -> onResume
-    198:212:void startSignIn() -> f
-    220:230:boolean checkPlayServices() -> g
-    242:254:java.lang.String getRegistrationId(android.content.Context) -> a
-    262:269:int getAppVersion(android.content.Context) -> b
-    274:304:void registerInBackground() -> h
-    313:318:void storeRegistrationId(java.lang.String) -> b
-    321:322:void afterGCMRegistration() -> i
-    312:312:void access$0(com.modusgo.ubi.SignInActivity,java.lang.String) -> a
-    320:320:void access$1(com.modusgo.ubi.SignInActivity) -> a
-com.modusgo.ubi.SignInActivity$1 -> com.modusgo.ubi.fh:
+    73:162:void onCreate(android.os.Bundle) -> onCreate
+    166:168:void onResume() -> onResume
+    199:213:void startSignIn() -> f
+    221:231:boolean checkPlayServices() -> g
+    243:255:java.lang.String getRegistrationId(android.content.Context) -> a
+    263:270:int getAppVersion(android.content.Context) -> b
+    275:305:void registerInBackground() -> h
+    314:319:void storeRegistrationId(java.lang.String) -> b
+    322:323:void afterGCMRegistration() -> i
+    313:313:void access$0(com.modusgo.ubi.SignInActivity,java.lang.String) -> a
+    321:321:void access$1(com.modusgo.ubi.SignInActivity) -> a
+com.modusgo.ubi.SignInActivity$1 -> com.modusgo.ubi.fi:
     com.modusgo.ubi.SignInActivity this$0 -> a
     java.lang.String val$clientId -> b
-    120:124:void onClick(android.view.View) -> onClick
-com.modusgo.ubi.SignInActivity$2 -> com.modusgo.ubi.fi:
+    121:125:void onClick(android.view.View) -> onClick
+com.modusgo.ubi.SignInActivity$2 -> com.modusgo.ubi.fj:
     com.modusgo.ubi.SignInActivity this$0 -> a
-    141:142:void onClick(android.view.View) -> onClick
-com.modusgo.ubi.SignInActivity$3 -> com.modusgo.ubi.fj:
+    142:143:void onClick(android.view.View) -> onClick
+com.modusgo.ubi.SignInActivity$3 -> com.modusgo.ubi.fk:
     com.modusgo.ubi.SignInActivity this$0 -> a
-    278:295:java.lang.String doInBackground(java.lang.Void[]) -> a
-    300:302:void onPostExecute(java.lang.String) -> a
+    279:296:java.lang.String doInBackground(java.lang.Void[]) -> a
+    301:303:void onPostExecute(java.lang.String) -> a
     1:1:void onPostExecute(java.lang.Object) -> onPostExecute
     1:1:java.lang.Object doInBackground(java.lang.Object[]) -> doInBackground
-com.modusgo.ubi.SignInActivity$LoginTask -> com.modusgo.ubi.fk:
+com.modusgo.ubi.SignInActivity$LoginTask -> com.modusgo.ubi.fl:
     android.view.animation.Animation fadeInProgress -> a
     android.view.animation.Animation fadeOutProgress -> b
     android.view.animation.Animation fadeInFields -> c
     android.view.animation.Animation fadeOutFields -> d
     java.lang.String message -> e
     com.modusgo.ubi.SignInActivity this$0 -> f
-    398:402:void onPreExecute() -> onPreExecute
-    406:407:void onPostExecute(org.json.JSONObject) -> b
-    411:418:org.json.JSONObject doInBackground(java.lang.String[]) -> a
-    423:464:void onSuccess(org.json.JSONObject) -> a
-    468:471:void onError(java.lang.String) -> a
-    475:478:void onError401() -> a
-com.modusgo.ubi.SignInActivity$ScreenSlidePageFragment -> com.modusgo.ubi.fl:
+    399:403:void onPreExecute() -> onPreExecute
+    407:408:void onPostExecute(org.json.JSONObject) -> b
+    412:419:org.json.JSONObject doInBackground(java.lang.String[]) -> a
+    424:466:void onSuccess(org.json.JSONObject) -> a
+    470:473:void onError(java.lang.String) -> a
+    477:480:void onError401() -> a
+com.modusgo.ubi.SignInActivity$ScreenSlidePageFragment -> com.modusgo.ubi.fm:
     int imageResource -> a
     java.lang.String title -> b
     java.lang.String description -> c
-    335:343:com.modusgo.ubi.SignInActivity$ScreenSlidePageFragment newInstance(int,java.lang.String,java.lang.String) -> a
-    351:355:void onCreate(android.os.Bundle) -> a_
-    364:374:android.view.View onCreateView(android.view.LayoutInflater,android.view.ViewGroup,android.os.Bundle) -> a
-com.modusgo.ubi.SignInActivity$ScreenSlidePagerAdapter -> com.modusgo.ubi.fm:
+    336:344:com.modusgo.ubi.SignInActivity$ScreenSlidePageFragment newInstance(int,java.lang.String,java.lang.String) -> a
+    352:356:void onCreate(android.os.Bundle) -> a_
+    365:375:android.view.View onCreateView(android.view.LayoutInflater,android.view.ViewGroup,android.os.Bundle) -> a
+com.modusgo.ubi.SignInActivity$ScreenSlidePagerAdapter -> com.modusgo.ubi.fn:
     com.modusgo.ubi.SignInActivity this$0 -> a
-    176:186:android.support.v4.app.Fragment getItem(int) -> a
-    192:192:int getCount() -> b
-com.modusgo.ubi.TitledFragment -> com.modusgo.ubi.fn:
+    177:187:android.support.v4.app.Fragment getItem(int) -> a
+    193:193:int getCount() -> b
+com.modusgo.ubi.TitledFragment -> com.modusgo.ubi.fo:
     java.lang.String title -> i
-com.modusgo.ubi.Trip -> com.modusgo.ubi.fo:
+com.modusgo.ubi.Tracking -> com.modusgo.ubi.fp:
+    java.lang.String timestamp -> a
+    double latitude -> b
+    double longitude -> c
+    double altitude -> d
+    float heading -> e
+    float horizontalAccuracy -> f
+    float verticalAccuracy -> g
+    int satelites -> h
+    boolean fixStatus -> i
+    float speed -> j
+    java.lang.String event -> k
+    java.lang.String rawData -> l
+    boolean blocked -> m
+com.modusgo.ubi.Trip -> com.modusgo.ubi.fq:
     long id -> a
     int eventsCount -> b
     java.lang.String startDate -> c
@@ -16965,7 +17016,7 @@ com.modusgo.ubi.Trip -> com.modusgo.ubi.fo:
     82:88:java.util.Date getStartDate() -> b
     92:92:java.lang.String getEndDateString() -> c
     96:102:java.util.Date getEndDate() -> d
-com.modusgo.ubi.Trip$EventType -> com.modusgo.ubi.fp:
+com.modusgo.ubi.Trip$EventType -> com.modusgo.ubi.fr:
     com.modusgo.ubi.Trip$EventType START -> a
     com.modusgo.ubi.Trip$EventType STOP -> b
     com.modusgo.ubi.Trip$EventType HARSH_BRAKING -> c
@@ -16977,7 +17028,7 @@ com.modusgo.ubi.Trip$EventType -> com.modusgo.ubi.fp:
     com.modusgo.ubi.Trip$EventType[] ENUM$VALUES -> i
     1:1:com.modusgo.ubi.Trip$EventType[] values() -> values
     1:1:com.modusgo.ubi.Trip$EventType valueOf(java.lang.String) -> valueOf
-com.modusgo.ubi.Trip$Point -> com.modusgo.ubi.fq:
+com.modusgo.ubi.Trip$Point -> com.modusgo.ubi.fs:
     com.google.android.gms.maps.model.LatLng location -> a
     com.modusgo.ubi.Trip$EventType event -> b
     java.lang.String title -> c
@@ -17033,35 +17084,35 @@ com.modusgo.ubi.TripActivity -> com.modusgo.ubi.TripActivity:
     345:345:void access$1(com.modusgo.ubi.TripActivity) -> b
     484:484:void access$2(com.modusgo.ubi.TripActivity) -> c
     64:64:int[] $SWITCH_TABLE$com$modusgo$ubi$Trip$EventType() -> i
-com.modusgo.ubi.TripActivity$1 -> com.modusgo.ubi.fr:
+com.modusgo.ubi.TripActivity$1 -> com.modusgo.ubi.ft:
     com.modusgo.ubi.TripActivity this$0 -> a
     170:172:void onClick(android.view.View) -> onClick
-com.modusgo.ubi.TripActivity$2 -> com.modusgo.ubi.fs:
+com.modusgo.ubi.TripActivity$2 -> com.modusgo.ubi.fu:
     com.modusgo.ubi.TripActivity this$0 -> a
     195:196:void onClick(android.view.View) -> onClick
-com.modusgo.ubi.TripActivity$3 -> com.modusgo.ubi.ft:
+com.modusgo.ubi.TripActivity$3 -> com.modusgo.ubi.fv:
     com.modusgo.ubi.TripActivity this$0 -> a
     320:321:void onMapLoaded() -> a
-com.modusgo.ubi.TripActivity$4 -> com.modusgo.ubi.fu:
+com.modusgo.ubi.TripActivity$4 -> com.modusgo.ubi.fw:
     com.modusgo.ubi.TripActivity this$0 -> a
     int val$isr -> b
     469:472:void onClick(android.view.View) -> onClick
-com.modusgo.ubi.TripActivity$FetchAddresses -> com.modusgo.ubi.fv:
+com.modusgo.ubi.TripActivity$FetchAddresses -> com.modusgo.ubi.fx:
     android.content.Context context -> a
     com.modusgo.ubi.TripActivity this$0 -> b
     703:717:java.lang.Void doInBackground(java.lang.Void[]) -> a
     722:724:void onPostExecute(java.lang.Void) -> a
     1:1:void onPostExecute(java.lang.Object) -> onPostExecute
     1:1:java.lang.Object doInBackground(java.lang.Object[]) -> doInBackground
-com.modusgo.ubi.TripActivity$GetTripTask -> com.modusgo.ubi.fw:
+com.modusgo.ubi.TripActivity$GetTripTask -> com.modusgo.ubi.fy:
     com.modusgo.ubi.TripActivity this$0 -> a
     598:601:org.json.JSONObject doInBackground(java.lang.String[]) -> a
     606:669:void onSuccess(org.json.JSONObject) -> a
     672:688:com.modusgo.ubi.Trip$EventType getEventType(java.lang.String) -> b
-com.modusgo.ubi.TripListHeader -> com.modusgo.ubi.fx:
+com.modusgo.ubi.TripListHeader -> com.modusgo.ubi.fz:
     java.lang.String date -> a
     java.lang.String total -> b
-com.modusgo.ubi.TripsFragment -> com.modusgo.ubi.fy:
+com.modusgo.ubi.TripsFragment -> com.modusgo.ubi.ga:
     com.modusgo.ubi.Vehicle vehicle -> a
     android.content.SharedPreferences prefs -> b
     java.util.ArrayList trips -> c
@@ -17082,13 +17133,13 @@ com.modusgo.ubi.TripsFragment -> com.modusgo.ubi.fy:
     137:137:java.util.ArrayList access$3(com.modusgo.ubi.TripsFragment,java.util.Date,int) -> a
     208:208:void access$4(com.modusgo.ubi.TripsFragment) -> b
     64:64:boolean access$5(com.modusgo.ubi.TripsFragment) -> c
-com.modusgo.ubi.TripsFragment$1 -> com.modusgo.ubi.fz:
+com.modusgo.ubi.TripsFragment$1 -> com.modusgo.ubi.gb:
     com.modusgo.ubi.TripsFragment this$0 -> a
     101:102:void onClick(android.view.View) -> onClick
-com.modusgo.ubi.TripsFragment$2 -> com.modusgo.ubi.ga:
+com.modusgo.ubi.TripsFragment$2 -> com.modusgo.ubi.gc:
     com.modusgo.ubi.TripsFragment this$0 -> a
     115:116:void onRefresh() -> a
-com.modusgo.ubi.TripsFragment$GetTripsTask -> com.modusgo.ubi.gb:
+com.modusgo.ubi.TripsFragment$GetTripsTask -> com.modusgo.ubi.gd:
     boolean getNewTrips -> a
     java.util.Calendar cEndTime -> c
     com.modusgo.ubi.TripsFragment this$0 -> b
@@ -17097,7 +17148,7 @@ com.modusgo.ubi.TripsFragment$GetTripsTask -> com.modusgo.ubi.gb:
     302:304:void onPostExecute(org.json.JSONObject) -> b
     308:371:void onSuccess(org.json.JSONObject) -> a
     375:384:void onError(java.lang.String) -> a
-com.modusgo.ubi.TripsFragment$TripsAdapter -> com.modusgo.ubi.gc:
+com.modusgo.ubi.TripsFragment$TripsAdapter -> com.modusgo.ubi.ge:
     int TRIP_ITEM -> a
     int HEADER_ITEM -> b
     java.lang.String units -> c
@@ -17112,16 +17163,16 @@ com.modusgo.ubi.TripsFragment$TripsAdapter -> com.modusgo.ubi.gc:
     476:495:android.view.View getHeaderView(int,android.view.View,android.view.ViewGroup) -> a
     500:619:android.view.View getTripView(int,android.view.View,android.view.ViewGroup) -> b
     407:407:com.modusgo.ubi.TripsFragment access$0(com.modusgo.ubi.TripsFragment$TripsAdapter) -> a
-com.modusgo.ubi.TripsFragment$TripsAdapter$1 -> com.modusgo.ubi.gd:
+com.modusgo.ubi.TripsFragment$TripsAdapter$1 -> com.modusgo.ubi.gf:
     com.modusgo.ubi.TripsFragment$TripsAdapter this$1 -> a
     com.modusgo.ubi.Trip val$t -> b
     604:616:void onClick(android.view.View) -> onClick
-com.modusgo.ubi.TripsFragment$ViewHolderHeader -> com.modusgo.ubi.ge:
+com.modusgo.ubi.TripsFragment$ViewHolderHeader -> com.modusgo.ubi.gg:
     android.widget.TextView tvDate -> a
     android.widget.TextView tvTotals -> b
     android.view.View bottomLine -> c
     com.modusgo.ubi.TripsFragment this$0 -> d
-com.modusgo.ubi.TripsFragment$ViewHolderTrip -> com.modusgo.ubi.gf:
+com.modusgo.ubi.TripsFragment$ViewHolderTrip -> com.modusgo.ubi.gh:
     android.widget.TextView tvEventsCount -> a
     android.widget.TextView tvScore -> b
     android.widget.TextView tvStartTime -> c
@@ -17134,7 +17185,7 @@ com.modusgo.ubi.TripsFragment$ViewHolderTrip -> com.modusgo.ubi.gf:
     android.widget.ImageView imageFuelArrow -> j
     android.view.View distanceBlock -> k
     com.modusgo.ubi.TripsFragment this$0 -> l
-com.modusgo.ubi.Vehicle -> com.modusgo.ubi.gg:
+com.modusgo.ubi.Vehicle -> com.modusgo.ubi.gi:
     long id -> a
     java.lang.String name -> b
     java.lang.String photo -> c
@@ -17184,22 +17235,22 @@ com.modusgo.ubi.WelcomeActivity -> com.modusgo.ubi.WelcomeActivity:
     46:85:void onCreate(android.os.Bundle) -> onCreate
     88:173:void showNextScreen() -> f
     87:87:void access$0(com.modusgo.ubi.WelcomeActivity) -> a
-com.modusgo.ubi.WelcomeActivity$1 -> com.modusgo.ubi.gh:
+com.modusgo.ubi.WelcomeActivity$1 -> com.modusgo.ubi.gj:
     com.modusgo.ubi.WelcomeActivity this$0 -> a
     org.json.JSONObject val$screenJSON -> b
     java.lang.String val$welcomePagesIds -> c
     java.lang.String val$pageId -> d
     129:147:void onClick(android.view.View) -> onClick
     126:126:com.modusgo.ubi.WelcomeActivity access$0(com.modusgo.ubi.WelcomeActivity$1) -> a
-com.modusgo.ubi.WelcomeActivity$1$1 -> com.modusgo.ubi.gi:
+com.modusgo.ubi.WelcomeActivity$1$1 -> com.modusgo.ubi.gk:
     com.modusgo.ubi.WelcomeActivity$1 this$1 -> a
     java.lang.String val$welcomePagesIds -> b
     java.lang.String val$pageId -> c
     134:139:void onClick(android.content.DialogInterface,int) -> onClick
-com.modusgo.ubi.WelcomeActivity$1$2 -> com.modusgo.ubi.gj:
+com.modusgo.ubi.WelcomeActivity$1$2 -> com.modusgo.ubi.gl:
     com.modusgo.ubi.WelcomeActivity$1 this$1 -> a
     143:144:void onClick(android.content.DialogInterface,int) -> onClick
-com.modusgo.ubi.WelcomeActivity$2 -> com.modusgo.ubi.gk:
+com.modusgo.ubi.WelcomeActivity$2 -> com.modusgo.ubi.gm:
     com.modusgo.ubi.WelcomeActivity this$0 -> a
     java.lang.String val$welcomePagesIds -> b
     java.lang.String val$pageId -> c
@@ -17319,43 +17370,44 @@ com.modusgo.ubi.db.DbHelper -> com.modusgo.ubi.a.a:
     com.modusgo.ubi.db.DbHelper sInstance -> c
     android.database.sqlite.SQLiteDatabase database -> d
     int databaseOpenCounter -> e
-    279:282:com.modusgo.ubi.db.DbHelper getInstance(android.content.Context) -> a
-    286:290:android.database.sqlite.SQLiteDatabase openDatabase() -> a
-    294:298:void closeDatabase() -> b
-    301:303:void close() -> close
-    310:313:void onCreate(android.database.sqlite.SQLiteDatabase) -> onCreate
-    317:321:void onUpgrade(android.database.sqlite.SQLiteDatabase,int,int) -> onUpgrade
-    323:324:void onDowngrade(android.database.sqlite.SQLiteDatabase,int,int) -> onDowngrade
-    327:363:java.util.ArrayList getVehiclesShort() -> c
-    367:389:com.modusgo.ubi.Vehicle getVehicleShort(long) -> a
-    393:470:com.modusgo.ubi.Vehicle getVehicle(long) -> b
-    474:477:void saveVehicle(com.modusgo.ubi.Vehicle) -> a
-    480:581:void saveVehicles(java.util.ArrayList,boolean) -> a
-    584:586:void saveVehicles(java.util.ArrayList) -> a
-    589:592:void saveTrip(long,com.modusgo.ubi.Trip) -> a
-    595:667:void saveTrips(long,java.util.ArrayList) -> a
-    670:703:void saveRoute(long,java.util.ArrayList) -> b
-    706:746:void saveSpeedingRoute(long,java.util.ArrayList) -> c
-    749:788:void savePoints(long,java.util.ArrayList) -> d
-    791:826:void saveScoreGraph(long,com.modusgo.ubi.ScoreFragment$MonthStats[]) -> a
-    829:866:void saveScorePercentage(long,java.util.LinkedHashMap) -> a
-    869:905:void saveScoreInfo(long,java.lang.String,java.lang.String,float,float) -> a
-    908:954:void saveScorePieCharts(long,java.util.ArrayList) -> e
-    957:1002:void saveScoreCircles(long,java.util.LinkedHashMap) -> b
-    1005:1059:void saveDTCs(long,java.util.ArrayList) -> f
-    1062:1107:void saveRecalls(long,java.util.ArrayList) -> g
-    1110:1124:void deleteRecall(long,long) -> a
-    1127:1169:void saveMaintenances(long,java.util.ArrayList) -> h
-    1172:1186:void deleteMaintenance(long,long) -> b
-    1189:1225:void saveWarrantyInformation(long,java.util.ArrayList) -> i
-    1228:1274:void saveLimits(long,java.util.ArrayList) -> j
-    1277:1319:void saveAlert(long,com.modusgo.ubi.Alert) -> a
-    1322:1369:void saveAlerts(long,java.util.ArrayList) -> k
-    1372:1386:void deleteAlert(long,long) -> c
-    1389:1403:void deleteAllAlerts(long) -> c
-    1406:1428:void saveDDEvent(java.lang.String,java.lang.String) -> a
-    1431:1451:void deleteDDEvents(java.util.ArrayList) -> b
-    1454:1472:java.lang.String buildSQLStatementString(java.lang.String,java.lang.String,java.lang.String[]) -> a
+    280:283:com.modusgo.ubi.db.DbHelper getInstance(android.content.Context) -> a
+    287:291:android.database.sqlite.SQLiteDatabase openDatabase() -> a
+    295:299:void closeDatabase() -> b
+    302:304:void close() -> close
+    311:314:void onCreate(android.database.sqlite.SQLiteDatabase) -> onCreate
+    318:322:void onUpgrade(android.database.sqlite.SQLiteDatabase,int,int) -> onUpgrade
+    324:325:void onDowngrade(android.database.sqlite.SQLiteDatabase,int,int) -> onDowngrade
+    328:364:java.util.ArrayList getVehiclesShort() -> c
+    368:390:com.modusgo.ubi.Vehicle getVehicleShort(long) -> a
+    394:471:com.modusgo.ubi.Vehicle getVehicle(long) -> b
+    475:478:void saveVehicle(com.modusgo.ubi.Vehicle) -> a
+    481:581:void saveVehicles(java.util.ArrayList,boolean) -> a
+    584:585:void saveVehicles(java.util.ArrayList) -> a
+    588:591:void saveTrip(long,com.modusgo.ubi.Trip) -> a
+    594:666:void saveTrips(long,java.util.ArrayList) -> a
+    669:702:void saveRoute(long,java.util.ArrayList) -> b
+    705:745:void saveSpeedingRoute(long,java.util.ArrayList) -> c
+    748:787:void savePoints(long,java.util.ArrayList) -> d
+    790:825:void saveScoreGraph(long,com.modusgo.ubi.ScoreFragment$MonthStats[]) -> a
+    828:865:void saveScorePercentage(long,java.util.LinkedHashMap) -> a
+    868:904:void saveScoreInfo(long,java.lang.String,java.lang.String,float,float) -> a
+    907:953:void saveScorePieCharts(long,java.util.ArrayList) -> e
+    956:1001:void saveScoreCircles(long,java.util.LinkedHashMap) -> b
+    1004:1058:void saveDTCs(long,java.util.ArrayList) -> f
+    1061:1106:void saveRecalls(long,java.util.ArrayList) -> g
+    1109:1123:void deleteRecall(long,long) -> a
+    1126:1168:void saveMaintenances(long,java.util.ArrayList) -> h
+    1171:1185:void deleteMaintenance(long,long) -> b
+    1188:1224:void saveWarrantyInformation(long,java.util.ArrayList) -> i
+    1227:1273:void saveLimits(long,java.util.ArrayList) -> j
+    1276:1318:void saveAlert(long,com.modusgo.ubi.Alert) -> a
+    1321:1368:void saveAlerts(long,java.util.ArrayList) -> k
+    1371:1385:void deleteAlert(long,long) -> c
+    1388:1402:void deleteAllAlerts(long) -> c
+    1405:1449:void saveTrackingEvent(com.modusgo.ubi.Tracking) -> a
+    1452:1474:void setTrackingEventsBlock(java.util.ArrayList,boolean) -> b
+    1477:1497:void deleteTrackingEvents(java.util.ArrayList) -> b
+    1500:1518:java.lang.String buildSQLStatementString(java.lang.String,java.lang.String,java.lang.String[]) -> a
 com.modusgo.ubi.requesttasks.BasePostRequestAsyncTask -> com.modusgo.ubi.b.a:
     20:37:org.json.JSONObject doInBackground(java.lang.String[]) -> a
 com.modusgo.ubi.requesttasks.BaseRequestAsyncTask -> com.modusgo.ubi.b.b:
@@ -17374,14 +17426,14 @@ com.modusgo.ubi.requesttasks.BaseRequestAsyncTask -> com.modusgo.ubi.b.b:
     1:1:void onPostExecute(java.lang.Object) -> onPostExecute
     1:1:java.lang.Object doInBackground(java.lang.Object[]) -> doInBackground
 com.modusgo.ubi.requesttasks.GetDeviceInfoRequest -> com.modusgo.ubi.b.c:
-    24:24:org.json.JSONObject doInBackground(java.lang.String[]) -> a
-    29:37:void onError(java.lang.String) -> a
-    42:57:void onSuccess(org.json.JSONObject) -> a
+    25:25:org.json.JSONObject doInBackground(java.lang.String[]) -> a
+    30:38:void onError(java.lang.String) -> a
+    43:58:void onSuccess(org.json.JSONObject) -> a
 com.modusgo.ubi.requesttasks.SendEventsRequest -> com.modusgo.ubi.b.d:
     java.util.ArrayList eventIds -> a
-    28:80:org.json.JSONObject doInBackground(java.lang.String[]) -> a
-    86:87:void onError(java.lang.String) -> a
-    91:95:void onSuccess(org.json.JSONObject) -> a
+    28:104:org.json.JSONObject doInBackground(java.lang.String[]) -> a
+    109:113:void onError(java.lang.String) -> a
+    117:121:void onSuccess(org.json.JSONObject) -> a
 com.modusgo.ubi.utils.AnimationUtils -> com.modusgo.ubi.c.a:
     37:39:android.view.animation.Animation getFadeInAnmation(android.content.Context,android.view.View) -> a
     43:45:android.view.animation.Animation getFadeOutAnmation(android.content.Context,android.view.View) -> b
@@ -17403,15 +17455,18 @@ com.modusgo.ubi.utils.AnimationUtils$MyAnimationListener -> com.modusgo.ubi.c.d:
     23:27:void onAnimationEnd(android.view.animation.Animation) -> onAnimationEnd
     30:30:void onAnimationRepeat(android.view.animation.Animation) -> onAnimationRepeat
     32:33:void onAnimationStart(android.view.animation.Animation) -> onAnimationStart
-com.modusgo.ubi.utils.RequestGet -> com.modusgo.ubi.c.e:
+com.modusgo.ubi.utils.Device -> com.modusgo.ubi.c.e:
+    44:104:void checkDevice(android.content.Context) -> a
+    107:117:boolean checkOBDInTrip(boolean,com.google.android.gms.maps.model.LatLng,com.google.android.gms.maps.model.LatLng) -> a
+com.modusgo.ubi.utils.RequestGet -> com.modusgo.ubi.c.f:
     java.lang.String url -> a
     java.util.List nameValuePairs -> b
     29:44:org.apache.http.HttpResponse execute() -> a
-com.modusgo.ubi.utils.RequestPost -> com.modusgo.ubi.c.f:
+com.modusgo.ubi.utils.RequestPost -> com.modusgo.ubi.c.g:
     java.lang.String url -> a
     java.util.List nameValuePairs -> b
     25:36:org.apache.http.HttpResponse execute() -> a
-com.modusgo.ubi.utils.Utils -> com.modusgo.ubi.c.g:
+com.modusgo.ubi.utils.Utils -> com.modusgo.ubi.c.h:
     45:72:java.lang.String md5(java.lang.String) -> a
     76:85:java.lang.String getUUID(android.content.Context) -> a
     112:125:org.json.JSONObject getJSONObjectFromHttpResponse(org.apache.http.HttpResponse) -> a
@@ -18901,16 +18956,76 @@ net.hockeyapp.android.Constants -> net.hockeyapp.android.a:
     129:144:void loadFilesPath(android.content.Context) -> b
     153:171:void loadPackageData(android.content.Context) -> c
     175:186:int loadBuildNumber(android.content.Context,android.content.pm.PackageManager) -> a
-net.hockeyapp.android.ExpiryInfoActivity -> net.hockeyapp.android.b:
+net.hockeyapp.android.CrashManager -> net.hockeyapp.android.b:
+    java.lang.String identifier -> a
+    java.lang.String urlString -> b
+    100:101:void register(android.content.Context,java.lang.String,net.hockeyapp.android.CrashManagerListener) -> a
+    112:114:void register(android.content.Context,java.lang.String,java.lang.String,net.hockeyapp.android.CrashManagerListener) -> a
+    154:184:void execute(android.content.Context,net.hockeyapp.android.CrashManagerListener) -> a
+    195:229:int hasStackTraces(java.lang.ref.WeakReference) -> a
+    239:289:void submitStackTraces(java.lang.ref.WeakReference,net.hockeyapp.android.CrashManagerListener) -> a
+    297:320:void deleteStackTraces(java.lang.ref.WeakReference) -> b
+    328:344:void initialize(android.content.Context,java.lang.String,java.lang.String,net.hockeyapp.android.CrashManagerListener,boolean) -> a
+    351:382:void showDialog(java.lang.ref.WeakReference,net.hockeyapp.android.CrashManagerListener,boolean) -> c
+    389:398:void sendCrashes(java.lang.ref.WeakReference,net.hockeyapp.android.CrashManagerListener,boolean) -> d
+    404:422:void registerHandler(java.lang.ref.WeakReference,net.hockeyapp.android.CrashManagerListener,boolean) -> e
+    428:428:java.lang.String getURLString() -> a
+    436:452:void deleteStackTrace(java.lang.ref.WeakReference,java.lang.String) -> a
+    458:491:java.lang.String contentsOfFile(java.lang.ref.WeakReference,java.lang.String) -> b
+    498:514:void saveConfirmedStackTraces(java.lang.ref.WeakReference) -> c
+    521:528:java.lang.String joinArray(java.lang.String[],java.lang.String) -> a
+    535:555:java.lang.String[] searchForStackTraces() -> b
+    403:403:void access$0(java.lang.ref.WeakReference,net.hockeyapp.android.CrashManagerListener,boolean) -> a
+    388:388:void access$1(java.lang.ref.WeakReference,net.hockeyapp.android.CrashManagerListener,boolean) -> b
+net.hockeyapp.android.CrashManager$1 -> net.hockeyapp.android.c:
+    net.hockeyapp.android.CrashManagerListener val$listener -> a
+    java.lang.ref.WeakReference val$weakContext -> b
+    boolean val$ignoreDefaultHandler -> c
+    366:372:void onClick(android.content.DialogInterface,int) -> onClick
+net.hockeyapp.android.CrashManager$2 -> net.hockeyapp.android.d:
+    java.lang.ref.WeakReference val$weakContext -> a
+    net.hockeyapp.android.CrashManagerListener val$listener -> b
+    boolean val$ignoreDefaultHandler -> c
+    377:378:void onClick(android.content.DialogInterface,int) -> onClick
+net.hockeyapp.android.CrashManager$3 -> net.hockeyapp.android.e:
+    java.lang.ref.WeakReference val$weakContext -> a
+    net.hockeyapp.android.CrashManagerListener val$listener -> b
+    boolean val$ignoreDefaultHandler -> c
+    394:396:void run() -> run
+net.hockeyapp.android.CrashManager$4 -> net.hockeyapp.android.f:
+    548:548:boolean accept(java.io.File,java.lang.String) -> accept
+net.hockeyapp.android.CrashManagerListener -> net.hockeyapp.android.g:
+    43:43:boolean ignoreDefaultHandler() -> b
+    52:52:boolean includeDeviceData() -> c
+    61:61:java.lang.String getContact() -> d
+    69:69:java.lang.String getDescription() -> e
+    78:78:java.lang.String getUserID() -> f
+    89:89:boolean onCrashesFound() -> g
+    97:97:boolean shouldAutoUploadCrashes() -> a
+    104:104:void onNewCrashesFound() -> h
+    112:112:void onConfirmedCrashesFound() -> i
+    118:118:void onCrashesSent() -> j
+    125:125:void onCrashesNotSent() -> k
+    131:131:void onUserDeniedCrashes() -> l
+net.hockeyapp.android.ExceptionHandler -> net.hockeyapp.android.h:
+    boolean ignoreDefaultHandler -> a
+    net.hockeyapp.android.CrashManagerListener listener -> b
+    java.lang.Thread$UncaughtExceptionHandler defaultExceptionHandler -> c
+    68:69:void setListener(net.hockeyapp.android.CrashManagerListener) -> a
+    72:109:void saveException(java.lang.Throwable,net.hockeyapp.android.CrashManagerListener) -> a
+    112:128:void uncaughtException(java.lang.Thread,java.lang.Throwable) -> uncaughtException
+    132:142:void writeValueToFile(java.lang.String,java.lang.String) -> a
+    145:148:java.lang.String limitedString(java.lang.String) -> a
+net.hockeyapp.android.ExpiryInfoActivity -> net.hockeyapp.android.i:
     52:56:void onCreate(android.os.Bundle) -> onCreate
     64:64:android.view.View getLayoutView() -> a
     74:75:java.lang.String getStringResource(int) -> a
-net.hockeyapp.android.StringListener -> net.hockeyapp.android.c:
+net.hockeyapp.android.StringListener -> net.hockeyapp.android.j:
     46:46:java.lang.String getStringForResource(int) -> a
-net.hockeyapp.android.Strings -> net.hockeyapp.android.d:
+net.hockeyapp.android.Strings -> net.hockeyapp.android.k:
     java.lang.String[] ENGLISH -> a
     178:188:java.lang.String get(net.hockeyapp.android.StringListener,int) -> a
-net.hockeyapp.android.Tracking -> net.hockeyapp.android.e:
+net.hockeyapp.android.Tracking -> net.hockeyapp.android.l:
     110:116:long getUsageTime(android.content.Context) -> a
     124:132:boolean checkVersion(android.content.Context) -> b
     139:139:android.content.SharedPreferences getPreferences(android.content.Context) -> c
@@ -18937,21 +19052,21 @@ net.hockeyapp.android.UpdateActivity -> net.hockeyapp.android.UpdateActivity:
     320:335:android.app.Dialog onCreateDialog(int) -> onCreateDialog
     340:354:void onPrepareDialog(int,android.app.Dialog) -> onPrepareDialog
     64:64:void access$1(net.hockeyapp.android.UpdateActivity,net.hockeyapp.android.objects.ErrorObject) -> a
-net.hockeyapp.android.UpdateActivity$1 -> net.hockeyapp.android.f:
+net.hockeyapp.android.UpdateActivity$1 -> net.hockeyapp.android.m:
     net.hockeyapp.android.UpdateActivity this$0 -> a
     163:164:void downloadSuccessful(net.hockeyapp.android.tasks.DownloadFileTask) -> a
     167:173:void downloadFailed(net.hockeyapp.android.tasks.DownloadFileTask,java.lang.Boolean) -> a
     176:181:java.lang.String getStringForResource(int) -> a
-net.hockeyapp.android.UpdateActivity$2 -> net.hockeyapp.android.g:
+net.hockeyapp.android.UpdateActivity$2 -> net.hockeyapp.android.n:
     net.hockeyapp.android.UpdateActivity this$0 -> a
     292:293:void run() -> run
-net.hockeyapp.android.UpdateActivity$3 -> net.hockeyapp.android.h:
+net.hockeyapp.android.UpdateActivity$3 -> net.hockeyapp.android.o:
     net.hockeyapp.android.UpdateActivity this$0 -> a
     307:308:void run() -> run
-net.hockeyapp.android.UpdateActivity$4 -> net.hockeyapp.android.i:
+net.hockeyapp.android.UpdateActivity$4 -> net.hockeyapp.android.p:
     net.hockeyapp.android.UpdateActivity this$0 -> a
     329:331:void onClick(android.content.DialogInterface,int) -> onClick
-net.hockeyapp.android.UpdateFragment -> net.hockeyapp.android.j:
+net.hockeyapp.android.UpdateFragment -> net.hockeyapp.android.q:
     net.hockeyapp.android.tasks.DownloadFileTask downloadTask -> a
     org.json.JSONArray versionInfo -> b
     java.lang.String urlString -> c
@@ -18964,15 +19079,15 @@ net.hockeyapp.android.UpdateFragment -> net.hockeyapp.android.j:
     213:221:java.lang.String getAppName() -> a
     231:231:android.view.View getLayoutView() -> b
     163:163:void access$0(net.hockeyapp.android.UpdateFragment,android.app.Activity) -> a
-net.hockeyapp.android.UpdateFragment$1 -> net.hockeyapp.android.k:
+net.hockeyapp.android.UpdateFragment$1 -> net.hockeyapp.android.r:
     net.hockeyapp.android.UpdateFragment this$0 -> a
     android.app.Activity val$activity -> b
     166:169:void downloadFailed(net.hockeyapp.android.tasks.DownloadFileTask,java.lang.Boolean) -> a
     173:173:void downloadSuccessful(net.hockeyapp.android.tasks.DownloadFileTask) -> a
     176:181:java.lang.String getStringForResource(int) -> a
-net.hockeyapp.android.UpdateInfoListener -> net.hockeyapp.android.l:
+net.hockeyapp.android.UpdateInfoListener -> net.hockeyapp.android.s:
     int getCurrentVersionCode() -> e
-net.hockeyapp.android.UpdateManager -> net.hockeyapp.android.m:
+net.hockeyapp.android.UpdateManager -> net.hockeyapp.android.t:
     net.hockeyapp.android.tasks.CheckUpdateTask updateTask -> a
     net.hockeyapp.android.UpdateManagerListener lastListener -> b
     71:72:void register(android.app.Activity,java.lang.String) -> a
@@ -18988,7 +19103,7 @@ net.hockeyapp.android.UpdateManager -> net.hockeyapp.android.m:
     280:283:java.lang.Boolean fragmentsSupported() -> a
     291:302:java.lang.Boolean runsOnTablet(java.lang.ref.WeakReference) -> a
     309:309:net.hockeyapp.android.UpdateManagerListener getLastListener() -> b
-net.hockeyapp.android.UpdateManagerListener -> net.hockeyapp.android.n:
+net.hockeyapp.android.UpdateManagerListener -> net.hockeyapp.android.u:
     46:46:java.lang.Class getUpdateActivityClass() -> a
     53:53:java.lang.Class getUpdateFragmentClass() -> b
     61:61:void onNoUpdateAvailable() -> c
@@ -19066,14 +19181,20 @@ net.hockeyapp.android.tasks.DownloadFileTask$1 -> net.hockeyapp.android.c.f:
 net.hockeyapp.android.tasks.DownloadFileTask$2 -> net.hockeyapp.android.c.g:
     net.hockeyapp.android.tasks.DownloadFileTask this$0 -> a
     188:189:void onClick(android.content.DialogInterface,int) -> onClick
-net.hockeyapp.android.utils.PrefsUtil -> net.hockeyapp.android.d.a:
+net.hockeyapp.android.utils.ConnectionManager -> net.hockeyapp.android.d.a:
+    org.apache.http.client.HttpClient httpClient -> a
+    53:53:net.hockeyapp.android.utils.ConnectionManager getInstance() -> a
+    57:57:org.apache.http.client.HttpClient getHttpClient() -> b
+net.hockeyapp.android.utils.ConnectionManager$ConnectionManagerHolder -> net.hockeyapp.android.d.b:
+    net.hockeyapp.android.utils.ConnectionManager INSTANCE -> a
+net.hockeyapp.android.utils.PrefsUtil -> net.hockeyapp.android.d.c:
     109:115:void applyChanges(android.content.SharedPreferences$Editor) -> a
     122:125:java.lang.Boolean applySupported() -> a
-net.hockeyapp.android.utils.VersionCache -> net.hockeyapp.android.d.b:
+net.hockeyapp.android.utils.VersionCache -> net.hockeyapp.android.d.d:
     java.lang.String VERSION_INFO_KEY -> a
     44:50:void setVersionInfo(android.content.Context,java.lang.String) -> a
     53:58:java.lang.String getVersionInfo(android.content.Context) -> a
-net.hockeyapp.android.utils.VersionHelper -> net.hockeyapp.android.d.c:
+net.hockeyapp.android.utils.VersionHelper -> net.hockeyapp.android.d.e:
     java.util.ArrayList sortedVersions -> a
     org.json.JSONObject newest -> b
     net.hockeyapp.android.UpdateInfoListener listener -> c
@@ -19092,11 +19213,11 @@ net.hockeyapp.android.utils.VersionHelper -> net.hockeyapp.android.d.c:
     213:219:java.lang.String getVersionName(org.json.JSONObject) -> c
     223:235:java.lang.String getVersionNotes(int,org.json.JSONObject) -> c
     251:289:int compareVersionStrings(java.lang.String,java.lang.String) -> a
-net.hockeyapp.android.utils.VersionHelper$1 -> net.hockeyapp.android.d.d:
+net.hockeyapp.android.utils.VersionHelper$1 -> net.hockeyapp.android.d.f:
     net.hockeyapp.android.utils.VersionHelper this$0 -> a
     90:99:int compare(org.json.JSONObject,org.json.JSONObject) -> a
     1:1:int compare(java.lang.Object,java.lang.Object) -> compare
-net.hockeyapp.android.utils.ViewHelper -> net.hockeyapp.android.d.e:
+net.hockeyapp.android.utils.ViewHelper -> net.hockeyapp.android.d.g:
     8:10:android.graphics.drawable.Drawable getGradient() -> a
 net.hockeyapp.android.views.ExpiryInfoView -> net.hockeyapp.android.e.a:
     60:63:void loadLayoutParams(android.content.Context) -> a

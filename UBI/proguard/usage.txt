@@ -5586,11 +5586,8 @@ com.google.android.gms.internal.ly:
     public void requestLocationUpdates(com.google.android.gms.location.LocationRequest,com.google.android.gms.location.LocationListener,android.os.Looper)
     public void b(com.google.android.gms.internal.ma,android.app.PendingIntent)
     public void requestLocationUpdates(com.google.android.gms.location.LocationRequest,android.app.PendingIntent)
-    public void removeLocationUpdates(com.google.android.gms.location.LocationListener)
     public void removeLocationUpdates(android.app.PendingIntent)
     public void setMockLocation(android.location.Location)
-com.google.android.gms.internal.ly$b:
-    public void release()
 com.google.android.gms.internal.lz:
     public lz(android.content.Context,android.os.Looper,java.lang.String,com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks,com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener,java.lang.String)
     public lz(android.content.Context,android.os.Looper,java.lang.String,com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks,com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener,java.lang.String,java.lang.String)
@@ -5603,7 +5600,6 @@ com.google.android.gms.internal.lz:
     public void requestLocationUpdates(com.google.android.gms.location.LocationRequest,com.google.android.gms.location.LocationListener,android.os.Looper)
     public void b(com.google.android.gms.internal.ma,android.app.PendingIntent)
     public void requestLocationUpdates(com.google.android.gms.location.LocationRequest,android.app.PendingIntent)
-    public void removeLocationUpdates(com.google.android.gms.location.LocationListener)
     public void removeLocationUpdates(android.app.PendingIntent)
     public void setMockMode(boolean)
     public void setMockLocation(android.location.Location)
@@ -6109,7 +6105,6 @@ com.google.android.gms.location.LocationClient:
     public static android.location.Location getTriggeringLocation(android.content.Intent)
     public void requestLocationUpdates(com.google.android.gms.location.LocationRequest,com.google.android.gms.location.LocationListener,android.os.Looper)
     public void requestLocationUpdates(com.google.android.gms.location.LocationRequest,android.app.PendingIntent)
-    public void removeLocationUpdates(com.google.android.gms.location.LocationListener)
     public void removeLocationUpdates(android.app.PendingIntent)
     public void setMockMode(boolean)
     public void setMockLocation(android.location.Location)
@@ -6134,9 +6129,7 @@ com.google.android.gms.location.LocationRequest:
     public long getExpirationTime()
     public com.google.android.gms.location.LocationRequest setNumUpdates(int)
     public int getNumUpdates()
-    public com.google.android.gms.location.LocationRequest setSmallestDisplacement(float)
     public float getSmallestDisplacement()
-    private static void a(float)
 com.google.android.gms.location.LocationServices
 com.google.android.gms.location.LocationServices$1
 com.google.android.gms.location.LocationServices$a
@@ -7459,6 +7452,11 @@ com.modusgo.dd.GcmIntentService:
     public static final int NOTIFICATION_ID
     android.support.v4.app.NotificationCompat$Builder builder
     public static final java.lang.String TAG
+com.modusgo.dd.LocationService:
+    private static final float TRIP_START_SPEED
+    private static final float TRIP_STAY_SPEED
+    private static final int MAX_STAY_TIME
+    public static final int GET_DEVICE_FREQUENCY
 com.modusgo.dd.PhoneUsageSaverService:
     public static final java.lang.String PREF_UNLOCK_COUNT
     private static final java.lang.String PREF_PHONE_ON
@@ -7470,6 +7468,8 @@ com.modusgo.dd.RegisterByCodeActivity:
     android.view.View layoutProgress
 com.modusgo.dd.RegisterByCodeActivity$UserRegistrationServerError:
     private static final long serialVersionUID
+com.modusgo.dd.TrackingStatusService:
+    public static final int GET_DEVICE_FREQUENCY
 com.modusgo.dd.requests.BasicAsyncTask
 com.modusgo.dd.requests.CheckIgnitionRequest
 com.modusgo.dd.requests.SendStatsRequest
@@ -7501,10 +7501,10 @@ com.modusgo.ubi.FindMyCarActivity$ErrorDialogFragment
 com.modusgo.ubi.LimitsFragment:
     578:581:private java.lang.String getTime24String(int,int)
 com.modusgo.ubi.MainActivity:
-    489:491:public void showFeedbackActivity()
+    491:493:public void showFeedbackActivity()
 com.modusgo.ubi.MainActivity$MenuItems:
-    72:72:public int toInt()
-    76:76:public java.lang.String[] valuesString()
+    73:73:public int toInt()
+    77:77:public java.lang.String[] valuesString()
 com.modusgo.ubi.Manifest
 com.modusgo.ubi.Manifest$permission
 com.modusgo.ubi.PieChartFragment:
@@ -7558,7 +7558,8 @@ com.modusgo.ubi.SignInActivity$ScreenSlidePageFragment:
     int mNum
 com.modusgo.ubi.TitledFragment:
     public static final java.lang.String SAVED_TITLE
-com.modusgo.ubi.Tracking
+com.modusgo.ubi.Tracking:
+    public long id
 com.modusgo.ubi.Trip:
     private static final long serialVersionUID
 com.modusgo.ubi.TripActivity:
@@ -7627,6 +7628,27 @@ com.modusgo.ubi.requesttasks.GetDeviceInfoRequest:
     java.util.ArrayList eventIds
 com.modusgo.ubi.utils.AnimationUtils:
     10:10:public AnimationUtils()
+com.modusgo.ubi.utils.Device:
+    public static final java.lang.String PREF_CURRENT_TRACKING_MODE
+    public static final java.lang.String PREF_DEVICE_MEID
+    public static final java.lang.String PREF_DEVICE_TYPE
+    public static final java.lang.String PREF_DEVICE_EVENTS
+    public static final java.lang.String PREF_DEVICE_TRIPS
+    public static final java.lang.String PREF_DEVICE_IN_TRIP
+    public static final java.lang.String PREF_DEVICE_LATITUDE
+    public static final java.lang.String PREF_DEVICE_LONGITUDE
+    public static final java.lang.String PREF_DEVICE_LOCATION_DATE
+    private static final java.lang.String PREF_LAST_SENDEVENT_MILLIS
+    public static final java.lang.String DEVICE_TYPE_OBD
+    public static final java.lang.String DEVICE_TYPE_OBDBLE
+    public static final java.lang.String DEVICE_TYPE_SMARTPHONE
+    public static final java.lang.String DEVICE_TYPE_IBEACON
+    public static final java.lang.String MODE_LIGHT_TRACKING
+    public static final java.lang.String MODE_MEDIUM_TRACKING
+    public static final java.lang.String MODE_SIGNIFICATION_TRACKING
+    public static final java.lang.String MODE_NAVIGATION_TRACKING
+    public static final java.lang.String MODE_SUPER_TRACKING
+    15:15:public Device()
 com.modusgo.ubi.utils.RequestGet:
     19:21:public RequestGet(java.lang.String)
 com.modusgo.ubi.utils.SwipeDismissListViewTouchListener
@@ -8066,13 +8088,11 @@ net.hockeyapp.android.Constants:
     public static final java.lang.String SDK_NAME
     public static final java.lang.String SDK_VERSION
     51:51:public Constants()
-net.hockeyapp.android.CrashManager
-net.hockeyapp.android.CrashManager$1
-net.hockeyapp.android.CrashManager$2
-net.hockeyapp.android.CrashManager$3
-net.hockeyapp.android.CrashManager$4
-net.hockeyapp.android.CrashManagerListener
-net.hockeyapp.android.ExceptionHandler
+net.hockeyapp.android.CrashManager:
+    71:71:public CrashManager()
+    89:90:public static void register(android.content.Context,java.lang.String)
+    127:128:public static void initialize(android.content.Context,java.lang.String,net.hockeyapp.android.CrashManagerListener)
+    142:143:public static void initialize(android.content.Context,java.lang.String,java.lang.String,net.hockeyapp.android.CrashManagerListener)
 net.hockeyapp.android.FeedbackActivity
 net.hockeyapp.android.FeedbackActivity$1
 net.hockeyapp.android.FeedbackActivity$2
@@ -8145,8 +8165,8 @@ net.hockeyapp.android.tasks.CheckUpdateTaskWithUI:
     79:81:public void detach()
 net.hockeyapp.android.tasks.ParseFeedbackTask
 net.hockeyapp.android.tasks.SendFeedbackTask
-net.hockeyapp.android.utils.ConnectionManager
-net.hockeyapp.android.utils.ConnectionManager$ConnectionManagerHolder
+net.hockeyapp.android.utils.ConnectionManager$ConnectionManagerHolder:
+    48:48:private ConnectionManager$ConnectionManagerHolder()
 net.hockeyapp.android.utils.DeviceUtils
 net.hockeyapp.android.utils.DeviceUtils$DeviceUtilsHolder
 net.hockeyapp.android.utils.FeedbackParser
