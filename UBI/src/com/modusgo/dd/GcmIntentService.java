@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.modusgo.ubi.InitActivity;
@@ -65,6 +66,12 @@ public class GcmIntentService extends IntentService {
             	Editor e  = prefs.edit();
             	
             	
+//            	for (String key : extras.keySet()) {
+//            	    Object value = extras.get(key);
+//            	    Log.d(TAG, String.format("%s %s (%s)", key,  
+//            	        value.toString(), value.getClass().getName()));
+//            	}
+            	
             	if(extras.containsKey("aps")){
 					String apsJSON = extras.getString("aps");
 					try {
@@ -91,7 +98,13 @@ public class GcmIntentService extends IntentService {
             	}
             	
             	if(extras.containsKey("events")){
-					e.putBoolean(Device.PREF_DEVICE_EVENTS, extras.getBoolean("events"));
+            		try{
+            			e.putBoolean(Device.PREF_DEVICE_EVENTS, Boolean.parseBoolean(extras.getString("events")));
+            		}
+            		catch(Exception ex){
+            			ex.printStackTrace();
+            			e.putBoolean(Device.PREF_DEVICE_EVENTS, false);
+            		}
             	}
             	if(extras.containsKey("latitude")){
 					e.putString(Device.PREF_DEVICE_LATITUDE, extras.getString("latitude"));
