@@ -7502,11 +7502,7 @@ com.modusgo.ubi.FindMyCarActivity$ErrorDialogFragment
 com.modusgo.ubi.LimitsFragment:
     578:581:private java.lang.String getTime24String(int,int)
 com.modusgo.ubi.MainActivity:
-<<<<<<< HEAD
-    483:485:public void showFeedbackActivity()
-=======
-    491:493:public void showFeedbackActivity()
->>>>>>> demoApp-Offline
+    485:487:public void showFeedbackActivity()
 com.modusgo.ubi.MainActivity$MenuItems:
     73:73:public int toInt()
     77:77:public java.lang.String[] valuesString()

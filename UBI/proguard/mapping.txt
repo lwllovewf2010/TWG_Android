@@ -16309,73 +16309,22 @@ com.modusgo.ubi.MainActivity -> com.modusgo.ubi.MainActivity:
     java.util.ArrayList menuItems -> D
     android.content.SharedPreferences prefs -> E
     android.app.ActionBar actionBar -> F
-<<<<<<< HEAD
-    87:230:void onCreate(android.os.Bundle) -> onCreate
-    238:240:void setActionBarTitle(java.lang.String) -> b
-    243:247:void setButtonUpVisibility(boolean) -> b
-    250:251:void up() -> u_
-    254:258:void setButtonNavigationDrawerVisibility(boolean) -> c
-    261:293:void setActionBarAppearance() -> v_
-    297:302:void onResume() -> onResume
-    310:310:boolean onPrepareOptionsMenu(android.view.Menu) -> onPrepareOptionsMenu
-    315:322:boolean onOptionsItemSelected(android.view.MenuItem) -> onOptionsItemSelected
-    405:413:void setNavigationDrawerItemSelected(com.modusgo.ubi.MainActivity$MenuItems) -> a
-    416:421:void setNavigationDrawerItemsUnselected() -> h
-    436:440:void onPostCreate(android.os.Bundle) -> onPostCreate
-    444:447:void onConfigurationChanged(android.content.res.Configuration) -> onConfigurationChanged
-    451:460:boolean onKeyDown(int,android.view.KeyEvent) -> onKeyDown
-    465:471:void onBackPressed() -> onBackPressed
-    474:480:void checkForCrashes() -> i
-    47:47:android.widget.ListView access$0(com.modusgo.ubi.MainActivity) -> a
-    49:49:int access$1(com.modusgo.ubi.MainActivity) -> b
-    53:53:java.lang.String access$2(com.modusgo.ubi.MainActivity) -> c
-    46:46:android.support.v4.widget.DrawerLayout access$3(com.modusgo.ubi.MainActivity) -> d
-    52:52:android.widget.ImageButton access$4(com.modusgo.ubi.MainActivity) -> e
-com.modusgo.ubi.MainActivity$1 -> com.modusgo.ubi.dq:
-    com.modusgo.ubi.MainActivity this$0 -> a
-    104:110:void onClick(android.view.View) -> onClick
-com.modusgo.ubi.MainActivity$2 -> com.modusgo.ubi.dr:
-    com.modusgo.ubi.MainActivity this$0 -> a
-    117:118:void onClick(android.view.View) -> onClick
-com.modusgo.ubi.MainActivity$3 -> com.modusgo.ubi.ds:
-    com.modusgo.ubi.MainActivity this$0 -> a
-    142:142:int getCount() -> getCount
-    149:175:android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
-com.modusgo.ubi.MainActivity$4 -> com.modusgo.ubi.dt:
-    com.modusgo.ubi.MainActivity this$0 -> a
-    android.widget.ImageView val$menuLogo -> b
-    214:219:void onDrawerClosed(android.view.View) -> b
-    222:227:void onDrawerOpened(android.view.View) -> a
-com.modusgo.ubi.MainActivity$5 -> com.modusgo.ubi.du:
-    com.modusgo.ubi.MainActivity this$0 -> a
-    271:273:void onLoadingComplete(java.lang.String,android.view.View,android.graphics.Bitmap) -> a
-com.modusgo.ubi.MainActivity$6 -> com.modusgo.ubi.dv:
-    com.modusgo.ubi.MainActivity this$0 -> a
-    477:477:boolean shouldAutoUploadCrashes() -> a
-com.modusgo.ubi.MainActivity$DrawerItemClickListener -> com.modusgo.ubi.dw:
-    com.modusgo.ubi.MainActivity this$0 -> a
-    int[] $SWITCH_TABLE$com$modusgo$ubi$MainActivity$MenuItems -> b
-    329:397:void onItemClick(android.widget.AdapterView,android.view.View,int,long) -> onItemClick
-    326:326:int[] $SWITCH_TABLE$com$modusgo$ubi$MainActivity$MenuItems() -> a
-com.modusgo.ubi.MainActivity$MenuItems -> com.modusgo.ubi.dx:
-=======
-    88:232:void onCreate(android.os.Bundle) -> onCreate
-    240:242:void setActionBarTitle(java.lang.String) -> b
-    245:249:void setButtonUpVisibility(boolean) -> b
-    252:253:void up() -> u_
-    256:260:void setButtonNavigationDrawerVisibility(boolean) -> c
-    263:295:void setActionBarAppearance() -> v_
-    299:304:void onResume() -> onResume
-    312:312:boolean onPrepareOptionsMenu(android.view.Menu) -> onPrepareOptionsMenu
-    317:324:boolean onOptionsItemSelected(android.view.MenuItem) -> onOptionsItemSelected
-    408:416:void setNavigationDrawerItemSelected(com.modusgo.ubi.MainActivity$MenuItems) -> a
-    419:424:void setNavigationDrawerItemsUnselected() -> h
-    439:443:void onPostCreate(android.os.Bundle) -> onPostCreate
-    447:450:void onConfigurationChanged(android.content.res.Configuration) -> onConfigurationChanged
-    454:463:boolean onKeyDown(int,android.view.KeyEvent) -> onKeyDown
-    468:474:void onBackPressed() -> onBackPressed
-    477:483:void checkForCrashes() -> i
-    487:488:void checkForUpdates() -> j
+    88:231:void onCreate(android.os.Bundle) -> onCreate
+    239:241:void setActionBarTitle(java.lang.String) -> b
+    244:248:void setButtonUpVisibility(boolean) -> b
+    251:252:void up() -> u_
+    255:259:void setButtonNavigationDrawerVisibility(boolean) -> c
+    262:294:void setActionBarAppearance() -> v_
+    298:303:void onResume() -> onResume
+    311:311:boolean onPrepareOptionsMenu(android.view.Menu) -> onPrepareOptionsMenu
+    316:323:boolean onOptionsItemSelected(android.view.MenuItem) -> onOptionsItemSelected
+    407:415:void setNavigationDrawerItemSelected(com.modusgo.ubi.MainActivity$MenuItems) -> a
+    418:423:void setNavigationDrawerItemsUnselected() -> h
+    438:442:void onPostCreate(android.os.Bundle) -> onPostCreate
+    446:449:void onConfigurationChanged(android.content.res.Configuration) -> onConfigurationChanged
+    453:462:boolean onKeyDown(int,android.view.KeyEvent) -> onKeyDown
+    467:473:void onBackPressed() -> onBackPressed
+    476:482:void checkForCrashes() -> i
     48:48:android.widget.ListView access$0(com.modusgo.ubi.MainActivity) -> a
     50:50:int access$1(com.modusgo.ubi.MainActivity) -> b
     54:54:java.lang.String access$2(com.modusgo.ubi.MainActivity) -> c
@@ -16383,32 +16332,31 @@ com.modusgo.ubi.MainActivity$MenuItems -> com.modusgo.ubi.dx:
     53:53:android.widget.ImageButton access$4(com.modusgo.ubi.MainActivity) -> e
 com.modusgo.ubi.MainActivity$1 -> com.modusgo.ubi.dp:
     com.modusgo.ubi.MainActivity this$0 -> a
-    106:112:void onClick(android.view.View) -> onClick
+    105:111:void onClick(android.view.View) -> onClick
 com.modusgo.ubi.MainActivity$2 -> com.modusgo.ubi.dq:
     com.modusgo.ubi.MainActivity this$0 -> a
-    119:120:void onClick(android.view.View) -> onClick
+    118:119:void onClick(android.view.View) -> onClick
 com.modusgo.ubi.MainActivity$3 -> com.modusgo.ubi.dr:
     com.modusgo.ubi.MainActivity this$0 -> a
-    144:144:int getCount() -> getCount
-    151:177:android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
+    143:143:int getCount() -> getCount
+    150:176:android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
 com.modusgo.ubi.MainActivity$4 -> com.modusgo.ubi.ds:
     com.modusgo.ubi.MainActivity this$0 -> a
     android.widget.ImageView val$menuLogo -> b
-    216:221:void onDrawerClosed(android.view.View) -> b
-    224:229:void onDrawerOpened(android.view.View) -> a
+    215:220:void onDrawerClosed(android.view.View) -> b
+    223:228:void onDrawerOpened(android.view.View) -> a
 com.modusgo.ubi.MainActivity$5 -> com.modusgo.ubi.dt:
     com.modusgo.ubi.MainActivity this$0 -> a
-    273:275:void onLoadingComplete(java.lang.String,android.view.View,android.graphics.Bitmap) -> a
+    272:274:void onLoadingComplete(java.lang.String,android.view.View,android.graphics.Bitmap) -> a
 com.modusgo.ubi.MainActivity$6 -> com.modusgo.ubi.du:
     com.modusgo.ubi.MainActivity this$0 -> a
-    480:480:boolean shouldAutoUploadCrashes() -> a
+    479:479:boolean shouldAutoUploadCrashes() -> a
 com.modusgo.ubi.MainActivity$DrawerItemClickListener -> com.modusgo.ubi.dv:
     com.modusgo.ubi.MainActivity this$0 -> a
     int[] $SWITCH_TABLE$com$modusgo$ubi$MainActivity$MenuItems -> b
-    331:400:void onItemClick(android.widget.AdapterView,android.view.View,int,long) -> onItemClick
-    328:328:int[] $SWITCH_TABLE$com$modusgo$ubi$MainActivity$MenuItems() -> a
+    330:399:void onItemClick(android.widget.AdapterView,android.view.View,int,long) -> onItemClick
+    327:327:int[] $SWITCH_TABLE$com$modusgo$ubi$MainActivity$MenuItems() -> a
 com.modusgo.ubi.MainActivity$MenuItems -> com.modusgo.ubi.dw:
->>>>>>> demoApp-Offline
     com.modusgo.ubi.MainActivity$MenuItems HOME -> a
     com.modusgo.ubi.MainActivity$MenuItems COMPARE -> b
     com.modusgo.ubi.MainActivity$MenuItems CALLSUPPORT -> c
