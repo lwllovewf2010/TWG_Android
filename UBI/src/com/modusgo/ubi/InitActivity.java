@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
@@ -277,7 +278,7 @@ public class InitActivity extends FragmentActivity {
 							e.putString(Device.PREF_DEVICE_TYPE, deviceJSON.optString("type"));
 							e.putString(Device.PREF_DEVICE_MEID, deviceJSON.optString("meid"));
 							e.putBoolean(Device.PREF_DEVICE_EVENTS, deviceJSON.optBoolean("events"));
-							e.putString(Device.PREF_DEVICE_IN_TRIP, deviceJSON.optString("in_trip"));
+							e.putBoolean(Device.PREF_DEVICE_IN_TRIP, !TextUtils.isEmpty(deviceJSON.optString("in_trip")));
 							e.putString(Device.PREF_DEVICE_LATITUDE, deviceJSON.optString("latitude"));
 							e.putString(Device.PREF_DEVICE_LONGITUDE, deviceJSON.optString("longitude"));
 							e.putString(Device.PREF_DEVICE_LOCATION_DATE, deviceJSON.optString("location_date"));

@@ -80,10 +80,10 @@ public class GcmIntentService extends IntentService {
             	}
             	
             	if(extras.containsKey("in_trip")){
-					e.putString(Device.PREF_DEVICE_IN_TRIP, extras.getString("in_trip"));
+					e.putBoolean(Device.PREF_DEVICE_IN_TRIP, !TextUtils.isEmpty(extras.getString("in_trip")));
             	}
             	else{
-					e.putString(Device.PREF_DEVICE_IN_TRIP, "");            		
+					e.putBoolean(Device.PREF_DEVICE_IN_TRIP, false);            		
             	}
             	
             	if(extras.containsKey("type")){

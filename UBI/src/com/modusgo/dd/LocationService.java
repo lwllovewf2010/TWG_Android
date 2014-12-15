@@ -13,7 +13,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
-import android.text.TextUtils;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
@@ -35,6 +34,9 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	private static final float TRIP_START_SPEED = 7f/3.6f;
 	private static final float TRIP_STAY_SPEED = 3f/3.6f;
 	private static final int MAX_STAY_TIME = 2*60*1000;
+	
+	private static final String PREF_IN_TRIP_NOW = "inTripNow";
+	
 	public static final int GET_DEVICE_FREQUENCY = 60*60*1000;
 	
 	private long stayFromMillis = 0;
@@ -139,7 +141,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		        new NotificationCompat.Builder(this)
 		        .setSmallIcon(R.drawable.ic_launcher)
 		        .setContentTitle(getResources().getString(R.string.app_name))
-		        .setContentText("Your trip is "+(TextUtils.isEmpty(prefs.getString(Device.PREF_DEVICE_IN_TRIP, "")) ? "stopped." : "in progress."));
+		        .setContentText("Your trip is "+(prefs.getBoolean(Device.PREF_DEVICE_IN_TRIP, false) ? "stopped." : "in progress."));
 
 		Intent resultIntent = new Intent(this, InitActivity.class);
 
@@ -195,28 +197,38 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
         
         String deviceType = prefs.getString(Device.PREF_DEVICE_TYPE, "");
 		
-        boolean inTrip = prefs.getBoolean(Device.PREF_DEVICE_IN_TRIP, false);
-        String event = "";
-    	if(!inTrip){
+        boolean deviceInTrip = prefs.getBoolean(Device.PREF_DEVICE_IN_TRIP, false);
+        boolean inTripNow = prefs.getBoolean(PREF_IN_TRIP_NOW, false);
+        
+    	if(inTripNow && deviceInTrip){
+    		savePoint(location, "");
+    	}
+    	else if(!inTripNow && deviceInTrip){
     		if(deviceType.equals(Device.DEVICE_TYPE_SMARTPHONE) && location.getSpeed()>TRIP_START_SPEED){
-            	e.putBoolean(Device.PREF_DEVICE_IN_TRIP, true);
-    			event = "start";
+            	e.putBoolean(PREF_IN_TRIP_NOW, true);
+            	inTripNow = true;
+    			savePoint(location, "start");
             }
     	}
-    	else{
+    	else if(inTripNow && !deviceInTrip){
     		if((deviceType.equals(Device.DEVICE_TYPE_SMARTPHONE) || deviceType.equals(Device.DEVICE_TYPE_IBEACON)) && location.getSpeed() < TRIP_STAY_SPEED){
 	    		if(stayFromMillis==0)
 	    			stayFromMillis = System.currentTimeMillis();
 	    		else if(System.currentTimeMillis() - stayFromMillis > MAX_STAY_TIME){
 	    			stayFromMillis = 0;
-	    			e.putBoolean(Device.PREF_DEVICE_IN_TRIP, false);
-	    			event = "stop";
+	    			e.putBoolean(PREF_IN_TRIP_NOW, false);
+	    			inTripNow = false;
+	    			savePoint(location, "stop");
 	    		}
     		}
     	}
     	
-
-    	DbHelper dbhelper = DbHelper.getInstance(this);
+    	e.commit();
+        Device.checkDevice(this);
+    }
+	
+	private void savePoint(Location location, String event){
+		DbHelper dbhelper = DbHelper.getInstance(this);
     	dbhelper.saveTrackingEvent(new Tracking(
     			location.getTime(), 
     			location.getLatitude(), 
@@ -231,10 +243,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
     			event, 
     			""));
     	dbhelper.close();
-    	
-    	e.commit();
-        Device.checkDevice(this);
-    }
+	}
 	
 	@Override
 	public void onDestroy() {

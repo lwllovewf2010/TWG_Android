@@ -440,7 +440,7 @@ public class SignInActivity extends FragmentActivity {
 				e.putString(Device.PREF_DEVICE_TYPE, deviceJSON.optString("type"));
 				e.putString(Device.PREF_DEVICE_MEID, deviceJSON.optString("meid"));
 				e.putBoolean(Device.PREF_DEVICE_EVENTS, deviceJSON.optBoolean("events"));
-				e.putString(Device.PREF_DEVICE_IN_TRIP, deviceJSON.optString("in_trip"));
+				e.putBoolean(Device.PREF_DEVICE_IN_TRIP, !TextUtils.isEmpty(deviceJSON.optString("in_trip")));
 				e.putString(Device.PREF_DEVICE_LATITUDE, deviceJSON.optString("latitude"));
 				e.putString(Device.PREF_DEVICE_LONGITUDE, deviceJSON.optString("longitude"));
 				e.putString(Device.PREF_DEVICE_LOCATION_DATE, deviceJSON.optString("location_date"));

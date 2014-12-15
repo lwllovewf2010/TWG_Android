@@ -474,12 +474,12 @@ public class MainActivity extends FragmentActivity {
 	}
     
 	private void checkForCrashes() {
-		CrashManager.register(this, Constants.HOCKEY_APP_ID, new CrashManagerListener() {
-			@Override
-			public boolean shouldAutoUploadCrashes() {
-				return true;
-			}
-		});
+//		CrashManager.register(this, Constants.HOCKEY_APP_ID, new CrashManagerListener() {
+//			@Override
+//			public boolean shouldAutoUploadCrashes() {
+//				return true;
+//			}
+//		});
 	}
 
 	private void checkForUpdates() {
