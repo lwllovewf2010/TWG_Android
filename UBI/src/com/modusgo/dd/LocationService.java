@@ -307,10 +307,12 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
     	mLocationClient.requestLocationUpdates(mLocationRequest, this);
     	
     	Location lastLocation = mLocationClient.getLastLocation();
-    	Editor e = prefs.edit();
-        e.putString(Constants.PREF_MOBILE_LATITUDE, ""+lastLocation.getLatitude());
-        e.putString(Constants.PREF_MOBILE_LONGITUDE, ""+lastLocation.getLongitude());
-        e.commit();
+    	if(lastLocation!=null){
+	    	Editor e = prefs.edit();
+	        e.putString(Constants.PREF_MOBILE_LATITUDE, ""+lastLocation.getLatitude());
+	        e.putString(Constants.PREF_MOBILE_LONGITUDE, ""+lastLocation.getLongitude());
+	        e.commit();
+    	}
         
         System.out.println("Location service Connected");
     }
