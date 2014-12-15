@@ -97,7 +97,7 @@ public class Device {
 				context.stopService(new Intent(context, LocationService.class));
 			}
 			else{
-				context.startService(new Intent(context, LocationService.class));				
+				//context.startService(new Intent(context, LocationService.class));				
 			}
 		}
 		
