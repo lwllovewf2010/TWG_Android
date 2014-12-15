@@ -2447,10 +2447,14 @@ com.modusgo.dd.CallReceiver
 com.modusgo.dd.CallReceiver: CallReceiver()
 com.modusgo.dd.CallSaverService
 com.modusgo.dd.CallSaverService: CallSaverService()
+com.modusgo.dd.ChargerConnectionReceiver
+com.modusgo.dd.ChargerConnectionReceiver: ChargerConnectionReceiver()
 com.modusgo.dd.GcmBroadcastReceiver
 com.modusgo.dd.GcmBroadcastReceiver: GcmBroadcastReceiver()
 com.modusgo.dd.GcmIntentService
 com.modusgo.dd.GcmIntentService: GcmIntentService()
+com.modusgo.dd.LocationService
+com.modusgo.dd.LocationService: LocationService()
 com.modusgo.dd.PhoneScreenOnOffReceiver
 com.modusgo.dd.PhoneScreenOnOffReceiver: PhoneScreenOnOffReceiver()
 com.modusgo.dd.PhoneUsageSaverService
@@ -3090,6 +3094,7 @@ com.modusgo.ubi.R$drawable: int ic_trip
 com.modusgo.ubi.R$drawable: int ic_trip_start_small
 com.modusgo.ubi.R$drawable: int ic_trip_stop_small
 com.modusgo.ubi.R$drawable: int ic_username
+com.modusgo.ubi.R$drawable: int init_logo
 com.modusgo.ubi.R$drawable: int limits_subitem_bg
 com.modusgo.ubi.R$drawable: int list_marker
 com.modusgo.ubi.R$drawable: int listview_home_divider

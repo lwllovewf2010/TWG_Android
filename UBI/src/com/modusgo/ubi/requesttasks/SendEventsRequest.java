@@ -12,7 +12,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.modusgo.ubi.db.DDEventContract.DDEventEntry;
+import com.modusgo.ubi.db.TrackingContract.TrackingEntry;
 import com.modusgo.ubi.db.DbHelper;
 
 public class SendEventsRequest extends BasePostRequestAsyncTask {
@@ -26,13 +26,24 @@ public class SendEventsRequest extends BasePostRequestAsyncTask {
 	@Override
 	protected JSONObject doInBackground(String... params) {
 		DbHelper dbHelper = DbHelper.getInstance(context);
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
-		Cursor c = db.query(DDEventEntry.TABLE_NAME, 
+		SQLiteDatabase db = dbHelper.openDatabase();
+		Cursor c = db.query(TrackingEntry.TABLE_NAME, 
 				new String[]{
-				DDEventEntry._ID,
-				DDEventEntry.COLUMN_NAME_EVENT,
-				DDEventEntry.COLUMN_NAME_TIMESTAMP}, 
-				null, null, null, null, null);
+				TrackingEntry._ID,
+				TrackingEntry.COLUMN_NAME_TIMESTAMP,
+				TrackingEntry.COLUMN_NAME_EVENT,
+				TrackingEntry.COLUMN_NAME_LATITUDE,
+				TrackingEntry.COLUMN_NAME_LONGITUDE,
+				TrackingEntry.COLUMN_NAME_ALTITUDE,
+				TrackingEntry.COLUMN_NAME_SATELITES,
+				TrackingEntry.COLUMN_NAME_HEADING,
+				TrackingEntry.COLUMN_NAME_SPEED,
+				TrackingEntry.COLUMN_NAME_FIX_STATUS,
+				TrackingEntry.COLUMN_NAME_RAW_DATA,
+				TrackingEntry.COLUMN_NAME_HORIZONTAL_ACCURACY,
+				TrackingEntry.COLUMN_NAME_VERTICAL_ACCURACY,
+				TrackingEntry.COLUMN_NAME_BLOCKED}, 
+				TrackingEntry.COLUMN_NAME_BLOCKED+ " = ?", new String[]{"0"}, null, null, null, "30");
 		
 		JSONObject rootJSON = new JSONObject();
 		JSONArray timepointsJSON = new JSONArray();
@@ -46,11 +57,22 @@ public class SendEventsRequest extends BasePostRequestAsyncTask {
 				while (!c.isAfterLast()) {
 					JSONObject tpJSON = new JSONObject();
 					JSONArray eventsJSON = new JSONArray();
-					eventsJSON.put(c.getString(1));
+					tpJSON.put("timestamp", c.getString(1));
+					eventsJSON.put(c.getString(2));
 					tpJSON.put("events", eventsJSON);
-					tpJSON.put("timestamp", c.getString(2));
-					
+					JSONObject tpLocationJSON = new JSONObject();
+					tpLocationJSON.put("latitude", c.getDouble(3));
+					tpLocationJSON.put("longitude", c.getDouble(4));
+					tpLocationJSON.put("altitude", c.getDouble(5));
+					tpLocationJSON.put("satellites", c.getInt(6));
+					tpLocationJSON.put("heading", c.getFloat(7));
+					tpLocationJSON.put("speed", c.getFloat(8));
+					tpLocationJSON.put("fix_status", c.getInt(9));
+					tpJSON.put("location", tpLocationJSON);
 					JSONObject tpDataJSON = new JSONObject();
+					tpDataJSON.put("raw_data", c.getString(10));
+					tpDataJSON.put("horizontal_accuracy", c.getFloat(11));
+					tpDataJSON.put("vertical_accuracy", c.getFloat(12));
 					tpJSON.put("data", tpDataJSON);
 					
 					timepointsJSON.put(tpJSON);
@@ -58,6 +80,7 @@ public class SendEventsRequest extends BasePostRequestAsyncTask {
 					eventIds.add(c.getLong(0));
 					c.moveToNext();
 				}
+				dbHelper.setTrackingEventsBlock(eventIds, true);
 			}
 			else{
 				status = 0;
@@ -69,24 +92,30 @@ public class SendEventsRequest extends BasePostRequestAsyncTask {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		c.close();
-		db.close();
+		finally{
+			c.close();
+			dbHelper.closeDatabase();
+			dbHelper.close();			
+		}
 		
 		requestParams.add(new BasicNameValuePair("data",rootJSON.toString()));
+		System.out.println(requestParams);
 		
 		return super.doInBackground("device.json");
 	}
 	
 	@Override
 	protected void onError(String message) {
-		//Do nothing
+		DbHelper dbHelper = DbHelper.getInstance(context);
+		dbHelper.setTrackingEventsBlock(eventIds, false);
+		dbHelper.close();
 		Log.w("UBI", message);
 	}
 
 	@Override
 	protected void onSuccess(JSONObject responseJSON) throws JSONException {
 		DbHelper dbHelper = DbHelper.getInstance(context);
-		dbHelper.deleteDDEvents(eventIds);
+		dbHelper.deleteTrackingEvents(eventIds);
 		dbHelper.close();
 		super.onSuccess(responseJSON);
 	}

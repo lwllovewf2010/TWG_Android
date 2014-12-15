@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
@@ -135,7 +136,7 @@ public class TripsFragment extends Fragment{
 	
 	private ArrayList<Trip> getTripsFromDb(Date endDate, int count){
 		DbHelper dbHelper = DbHelper.getInstance(getActivity());
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		SQLiteDatabase db = dbHelper.openDatabase();
 		
 		SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);
 		
@@ -162,6 +163,7 @@ public class TripsFragment extends Fragment{
 		if(c.moveToFirst()){
 			while(!c.isAfterLast()){
 				Trip t = new Trip(
+						prefs,
 						c.getLong(0), 
 						c.getInt(1), 
 						c.getString(2), 
@@ -195,7 +197,7 @@ public class TripsFragment extends Fragment{
 			}
 		}
 		c.close();
-		db.close();
+		dbHelper.closeDatabase();
 		dbHelper.close();
 		
 		System.out.println("trips array "+trips.size());
@@ -205,10 +207,15 @@ public class TripsFragment extends Fragment{
 	
 	private void updateTripsListView(){
 		
+		Trip.updateTimezones(prefs);
 		SimpleDateFormat sdfDate = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
+		TimeZone tzTo = TimeZone.getTimeZone(prefs.getString(Constants.PREF_TIMEZONE_OFFSET, Constants.DEFAULT_TIMEZONE));
+		sdfDate.setTimeZone(tzTo);
 		
 		Calendar cPrev = Calendar.getInstance();
+		cPrev.setTimeZone(tzTo);
 		Calendar cNow = Calendar.getInstance();
+		cNow.setTimeZone(tzTo);
 		tripListItems.clear();
 		
 		TripListHeader currentHeader = new TripListHeader("", "");
@@ -319,6 +326,7 @@ public class TripsFragment extends Fragment{
 				
 				System.out.println("i = "+i);
 				Trip t = new Trip(
+						prefs,
 						tripJSON.optLong("id"), 
 						tripJSON.optInt("harsh_events_count"), 
 						Utils.fixTimezoneZ(tripJSON.optString("start_time")), 

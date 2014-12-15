@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
@@ -169,7 +170,7 @@ public class AlertsActivity extends MainActivity {
 		ArrayList<Alert> alerts = new ArrayList<Alert>();
 		
 		DbHelper dbHelper = DbHelper.getInstance(this);
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		SQLiteDatabase db = dbHelper.openDatabase();
 		
 		Cursor c = db.query(AlertEntry.TABLE_NAME, 
 				new String[]{
@@ -200,7 +201,7 @@ public class AlertsActivity extends MainActivity {
 			}
 		}
 		c.close();		
-		db.close();
+		dbHelper.closeDatabase();
 		dbHelper.close();
 		
 		return alerts;
@@ -230,9 +231,20 @@ public class AlertsActivity extends MainActivity {
 		SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
 		SimpleDateFormat sdfTo = new SimpleDateFormat("MM/dd/yyyy KK:mm aa z", Locale.getDefault());
 		
-		
 		Typeface typefaceBold = Typeface.createFromAsset(getAssets(), "fonts/EncodeSansNormal-600-SemiBold.ttf");
 		Typeface typefaceLight = Typeface.createFromAsset(getAssets(), "fonts/EncodeSansNormal-300-Light.ttf");
+		
+		public AlertsAdapter() {
+			TimeZone tzFrom = TimeZone.getTimeZone(Constants.DEFAULT_TIMEZONE);
+			sdfFrom.setTimeZone(tzFrom);
+		}
+		
+		@Override
+		public void notifyDataSetChanged() {
+			TimeZone tzTo = TimeZone.getTimeZone(prefs.getString(Constants.PREF_TIMEZONE_OFFSET, Constants.DEFAULT_TIMEZONE));
+			sdfTo.setTimeZone(tzTo);
+			super.notifyDataSetChanged();
+		}
 
 		@Override
 		public int getSwipeLayoutResourceId(int arg0) {
@@ -266,7 +278,6 @@ public class AlertsActivity extends MainActivity {
 			ViewHolder holder = new ViewHolder();
 			holder.tvEvent = (TextView) convertView.findViewById(R.id.tvEvent);
 			holder.tvDate = (TextView) convertView.findViewById(R.id.tvDate);
-			holder.imageArrow = (ImageView) convertView.findViewById(R.id.imageArrow);
 			holder.btnDelete = (Button) convertView.findViewById(R.id.btnDelete);
 			
 
@@ -325,7 +336,6 @@ public class AlertsActivity extends MainActivity {
 	private class ViewHolder{
 		public TextView tvEvent;
 		public TextView tvDate;
-		public ImageView imageArrow;
 		public Button btnDelete;
 	}
 	

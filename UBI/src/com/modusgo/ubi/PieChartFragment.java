@@ -1,16 +1,12 @@
 package com.modusgo.ubi;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.AnimationSet;
-import android.view.animation.TranslateAnimation;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -20,16 +16,15 @@ import com.modusgo.ubi.customviews.PieChartView.PieSector;
 @SuppressLint("ValidFragment")
 public class PieChartFragment extends TitledFragment{
 
-	public final static String SAVED_VISIBILITIES = "visibilities";
 	public final static String SAVED_VALUES = "values";
 	public final static String SAVED_SUBTITLES = "title";
 	public final static String SAVED_TITLES = "names";
+	public final static String SAVED_COLORS = "colorIds";
 	final String LOG_TAG = "myLogs";
 	float[] chartValues;
-	int[] backgroundResources;
 	String[] titles;
 	String[] subTitles;
-	boolean[] isVisible;
+	int[] colors;
 	
 	float x = 0;
 	float offsetX = 0;
@@ -42,42 +37,37 @@ public class PieChartFragment extends TitledFragment{
 		this.titles = titles;
 		this.subTitles = subTitles;
 		this.chartValues = values;
-		isVisible = new boolean[chartValues.length];
-		Arrays.fill(isVisible, Boolean.TRUE);
 	}
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
 	    if(savedInstanceState!=null){
-            isVisible = savedInstanceState.getBooleanArray(SAVED_VISIBILITIES);
             chartValues = savedInstanceState.getFloatArray(SAVED_VALUES);
             titles = savedInstanceState.getStringArray(SAVED_TITLES);
             subTitles = savedInstanceState.getStringArray(SAVED_SUBTITLES);
+            colors = savedInstanceState.getIntArray(SAVED_COLORS);
 	    }
 	    else if(getArguments()!=null){    	
     		titles = getArguments().getStringArray(SAVED_TITLES);
     		subTitles = getArguments().getStringArray(SAVED_SUBTITLES);	
     		chartValues = getArguments().getFloatArray(SAVED_VALUES);
-            isVisible = new boolean[chartValues.length];
-    		Arrays.fill(isVisible, Boolean.TRUE);
+    		colors = getArguments().getIntArray(SAVED_COLORS);
 	    }
-	    
-	    backgroundResources = new int[]{R.color.pie_black,R.color.pie_red,R.color.pie_green,R.color.pie_gray,R.color.pie_orange,R.color.pie_blue};
 	    
 	    LinearLayout rootView = (LinearLayout)inflater.inflate(R.layout.pie_chart_fragment, container, false);
     	final PieChartView pieChart = (PieChartView) rootView.findViewById(R.id.chart);
 	    LinearLayout markersLayout = (LinearLayout)rootView.findViewById(R.id.markers);
 	    
-	    pieChart.setChartSectors(new PieSector[]{pieChart.new PieSector(10,R.color.white),pieChart.new PieSector(17,R.color.green),pieChart.new PieSector(17,R.color.blue)});
+	    pieChart.setChartSectors(new PieSector[]{pieChart.new PieSector(100,getResources().getColor(R.color.white))});
 	    
 	    for (int i = 0; i < chartValues.length; i++) {
 		    
 		    LinearLayout llMarker = (LinearLayout)inflater.inflate(R.layout.chart_marker_text, markersLayout, false);
 		    TextView tvMarkerTitle = (TextView) llMarker.findViewById(R.id.tvTitle);
-		    tvMarkerTitle.setTextColor(getResources().getColor(backgroundResources[i]));
+		    tvMarkerTitle.setTextColor(colors[i]);
 			tvMarkerTitle.setText(titles[i]);
 			TextView tvMarkerSubTitle = (TextView) llMarker.findViewById(R.id.tvSubTitle);
-			tvMarkerSubTitle.setTextColor(getResources().getColor(backgroundResources[i]));
+			tvMarkerSubTitle.setTextColor(colors[i]);
 			if(subTitles!=null && subTitles[i]!=null)
 				tvMarkerSubTitle.setText(subTitles[i]);
 			else
@@ -90,41 +80,11 @@ public class PieChartFragment extends TitledFragment{
 	    return  rootView;
 	}
 	
-	private void hideMarker(View view, long duration)
-	{
-	    TranslateAnimation anim = new TranslateAnimation( 0, -viewHideOffset , 0,0);
-	    AlphaAnimation alphaAnim = new AlphaAnimation(1, 0.3f);
-	    
-	    AnimationSet as = new AnimationSet(true);
-	    as.addAnimation(anim);
-	    as.addAnimation(alphaAnim);
-	    as.setFillAfter(true);
-	    as.setDuration(duration);
-	    
-	    view.startAnimation(as);
-	}
-	private void showMarker(View view, long duration)
-	{
-	    TranslateAnimation anim = new TranslateAnimation( -viewHideOffset, 0 , 0,0);	    
-	    AlphaAnimation alphaAnim = new AlphaAnimation(0.3f, 1);
-	    
-	    AnimationSet as = new AnimationSet(true);
-	    as.addAnimation(anim);
-	    as.addAnimation(alphaAnim);
-	    as.setFillAfter(true);
-	    as.setDuration(duration);
-	    
-	    view.startAnimation(as);
-	}
-	
 	private void updateChart(PieChartView pieChart, boolean animate){
 		ArrayList<PieSector> pieSectors = new ArrayList<PieChartView.PieSector>();
 		for (int i = 0; i < chartValues.length; i++) {
 			if(chartValues[i]>=0.5){
-				if(isVisible[i])
-			    	pieSectors.add(pieChart.new PieSector(chartValues[i],backgroundResources[i]));
-//				else
-//			    	pieSectors.add(pieChart.new PieSector(0,backgroundResources[i]));
+			    	pieSectors.add(pieChart.new PieSector(chartValues[i],colors[i]));
 			}
 		}
 		PieSector pieSectorsArr[] = new PieSector[pieSectors.size()];
@@ -142,9 +102,9 @@ public class PieChartFragment extends TitledFragment{
 	
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
-		outState.putBooleanArray(SAVED_VISIBILITIES, isVisible);
 	    outState.putFloatArray(SAVED_VALUES, chartValues);
 	    outState.putStringArray(SAVED_TITLES, titles);
 	    outState.putStringArray(SAVED_SUBTITLES, subTitles);
+	    outState.putIntArray(SAVED_COLORS, colors);
 	}
 }
