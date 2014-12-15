@@ -77,7 +77,7 @@ public class Device {
 				break;
 	
 			default:
-				newTrackingMode = "";
+				newTrackingMode = MODE_SIGNIFICATION_TRACKING;
 				e.putBoolean(PREF_DEVICE_IN_TRIP, false);
 				break;
 		}

@@ -90,6 +90,56 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		
+		updateServiceMode();
+		
+		NotificationCompat.Builder mBuilder =
+		        new NotificationCompat.Builder(this)
+		        .setSmallIcon(R.drawable.ic_launcher)
+		        .setContentTitle(getResources().getString(R.string.app_name))
+		        .setContentText("Your trip is "+(prefs.getBoolean(Device.PREF_DEVICE_IN_TRIP, false) ? "stopped." : "in progress."));
+
+		Intent resultIntent = new Intent(this, InitActivity.class);
+
+		PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_CANCEL_CURRENT);//stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+		mBuilder.setContentIntent(resultPendingIntent);
+		Notification n = mBuilder.build();
+		n.flags |= Notification.FLAG_ONGOING_EVENT;
+		
+		startForeground(notificationId, n);
+		
+		if(checkIgnitionHandler!=null) 
+			checkIgnitionHandler.removeCallbacks(checkIgnitionRunnable);
+				
+		setUpLocationClientIfNeeded();
+        if(!mLocationClient.isConnected() || !mLocationClient.isConnecting() && !mInProgress)
+        {
+        	mInProgress = true;
+        	mLocationClient.connect();
+        }
+		
+		checkIgnitionHandler = new Handler();
+	    checkIgnitionRunnable = new Runnable() {
+	        @Override
+	        public void run() {
+	        	
+	        	if(!prefs.getString(Constants.PREF_AUTH_KEY, "").equals("")){
+		        	new GetDeviceInfoRequest(LocationService.this).execute();
+		            checkIgnitionHandler.postDelayed(this, GET_DEVICE_FREQUENCY);
+	        	}
+	        }
+	    };
+	    checkIgnitionHandler.postDelayed(checkIgnitionRunnable, 0);
+	    
+	    receiver = new PhoneScreenOnOffReceiver();
+	    IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+	    filter.addAction(Intent.ACTION_SCREEN_OFF);
+	    filter.addAction(Intent.ACTION_SCREEN_OFF);
+	    registerReceiver(receiver, filter);
+		
+		return START_STICKY;//super.onStartCommand(intent, flags, startId);
+	}
+	
+	private void updateServiceMode(){
 		String mode = prefs.getString(Device.PREF_CURRENT_TRACKING_MODE, "");
 		
 		switch (mode) {
@@ -135,53 +185,6 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 			if(!mode.equals(Device.MODE_SIGNIFICATION_TRACKING))
 				mLocationClient.requestLocationUpdates(mLocationRequest, this);
 		}
-		
-		
-		NotificationCompat.Builder mBuilder =
-		        new NotificationCompat.Builder(this)
-		        .setSmallIcon(R.drawable.ic_launcher)
-		        .setContentTitle(getResources().getString(R.string.app_name))
-		        .setContentText("Your trip is "+(prefs.getBoolean(Device.PREF_DEVICE_IN_TRIP, false) ? "stopped." : "in progress."));
-
-		Intent resultIntent = new Intent(this, InitActivity.class);
-
-		PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_CANCEL_CURRENT);//stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-		mBuilder.setContentIntent(resultPendingIntent);
-		Notification n = mBuilder.build();
-		n.flags |= Notification.FLAG_ONGOING_EVENT;
-		
-		startForeground(notificationId, n);
-		
-		if(checkIgnitionHandler!=null) 
-			checkIgnitionHandler.removeCallbacks(checkIgnitionRunnable);
-				
-		setUpLocationClientIfNeeded();
-        if(!mLocationClient.isConnected() || !mLocationClient.isConnecting() && !mInProgress)
-        {
-        	mInProgress = true;
-        	mLocationClient.connect();
-        }
-		
-		checkIgnitionHandler = new Handler();
-	    checkIgnitionRunnable = new Runnable() {
-	        @Override
-	        public void run() {
-	        	
-	        	if(!prefs.getString(Constants.PREF_AUTH_KEY, "").equals("")){
-		        	new GetDeviceInfoRequest(LocationService.this).execute();
-		            checkIgnitionHandler.postDelayed(this, GET_DEVICE_FREQUENCY);
-	        	}
-	        }
-	    };
-	    checkIgnitionHandler.postDelayed(checkIgnitionRunnable, GET_DEVICE_FREQUENCY);
-	    
-	    receiver = new PhoneScreenOnOffReceiver();
-	    IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
-	    filter.addAction(Intent.ACTION_SCREEN_OFF);
-	    filter.addAction(Intent.ACTION_SCREEN_OFF);
-	    registerReceiver(receiver, filter);
-		
-		return START_STICKY;//super.onStartCommand(intent, flags, startId);
 	}
 	
 	@Override
@@ -303,8 +306,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
     @Override
     public void onConnected(Bundle bundle) {
     	
-        // Request location updates using static settings
-    	mLocationClient.requestLocationUpdates(mLocationRequest, this);
+		updateServiceMode();
     	
     	Location lastLocation = mLocationClient.getLastLocation();
     	if(lastLocation!=null){
