@@ -3993,10 +3993,14 @@ com.modusgo.dd.CallReceiver
 com.modusgo.dd.CallReceiver: CallReceiver()
 com.modusgo.dd.CallSaverService
 com.modusgo.dd.CallSaverService: CallSaverService()
+com.modusgo.dd.ChargerConnectionReceiver
+com.modusgo.dd.ChargerConnectionReceiver: ChargerConnectionReceiver()
 com.modusgo.dd.GcmBroadcastReceiver
 com.modusgo.dd.GcmBroadcastReceiver: GcmBroadcastReceiver()
 com.modusgo.dd.GcmIntentService
 com.modusgo.dd.GcmIntentService: GcmIntentService()
+com.modusgo.dd.LocationService
+com.modusgo.dd.LocationService: LocationService()
 com.modusgo.dd.PhoneScreenOnOffReceiver
 com.modusgo.dd.PhoneScreenOnOffReceiver: PhoneScreenOnOffReceiver()
 com.modusgo.dd.PhoneUsageSaverService

@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
@@ -23,10 +24,13 @@ import com.modusgo.ubi.InitActivity;
 import com.farmers.ubi.R;
 import com.modusgo.ubi.utils.Utils;
 import com.modusgo.ubi.requesttasks.GetDeviceInfoRequest;
+import com.modusgo.ubi.utils.Device;
 
 public class TrackingStatusService extends Service implements GooglePlayServicesClient.ConnectionCallbacks,
 GooglePlayServicesClient.OnConnectionFailedListener{
 
+	public static final int GET_DEVICE_FREQUENCY = 60*60*1000;
+	
 	public TrackingStatusService() {
 		super();
 	}
@@ -34,6 +38,7 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 	private Handler checkIgnitionHandler;
 	private Runnable checkIgnitionRunnable;
 	
+	PhoneScreenOnOffReceiver receiver;
 	//private boolean smsReceiverRegistered = false;
 	//private boolean callReceiverRegistered = false;
 	
@@ -71,7 +76,7 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 		        new NotificationCompat.Builder(this)
 		        .setSmallIcon(R.drawable.ic_launcher)
 		        .setContentTitle("ModusGO")
-		        .setContentText("ModusGO tracking is "+(prefs.getBoolean(Constants.PREF_DEVICE_IN_TRIP, false) ? "enabled." : "disabled."));
+		        .setContentText("ModusGO tracking is "+(prefs.getBoolean(Device.PREF_DEVICE_IN_TRIP, false) ? "enabled." : "disabled."));
 
 		Intent resultIntent = new Intent(this, InitActivity.class);
 
@@ -109,11 +114,17 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 		        	
 		        	new GetDeviceInfoRequest(TrackingStatusService.this).execute();
 		        	
-		            checkIgnitionHandler.postDelayed(this, Constants.CHECK_IGNITION_FREQUENCY);
+		            checkIgnitionHandler.postDelayed(this, GET_DEVICE_FREQUENCY);
 	        	}
 	        }
 	    };
-	    checkIgnitionHandler.postDelayed(checkIgnitionRunnable, Constants.CHECK_IGNITION_FREQUENCY);
+	    checkIgnitionHandler.postDelayed(checkIgnitionRunnable, GET_DEVICE_FREQUENCY);
+	    
+	    receiver = new PhoneScreenOnOffReceiver();
+	    IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+	    filter.addAction(Intent.ACTION_SCREEN_OFF);
+	    filter.addAction(Intent.ACTION_SCREEN_OFF);
+	    registerReceiver(receiver, filter);
 		
 		if(!servicesAvailable || mLocationClient.isConnected() || mInProgress)
         	return START_STICKY;
@@ -131,6 +142,8 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 			unregisterReceiver(incomingCallReceiver);
 			callReceiverRegistered = false;
 		}*/
+		
+		unregisterReceiver(receiver);
 		
 		notificationManager.cancel(notificationId);
 		

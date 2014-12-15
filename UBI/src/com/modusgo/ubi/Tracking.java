@@ -1,5 +1,10 @@
 package com.modusgo.ubi;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.TimeZone;
+
 
 public class Tracking{
 	
@@ -12,20 +17,23 @@ public class Tracking{
 	public float horizontalAccuracy;
 	public float verticalAccuracy;
 	public int satelites;
-	public boolean fix_status;
+	public boolean fixStatus;
 	public float speed;
 	public String event = "";
 	public String rawData = "";
     public boolean blocked;
     
-	public Tracking(long id, String timestamp, double latitude,
+	public Tracking(long timeMillis, double latitude,
 			double longitude, double altitude, float heading,
 			float horizontalAccuracy, float verticalAccuracy, int satelites,
-			boolean fix_status, float speed, String event, String rawData,
-			boolean blocked) {
+			boolean fix_status, float speed, String event, String rawData) {
 		super();
-		this.id = id;
-		this.timestamp = timestamp;
+		Calendar c = Calendar.getInstance();
+		c.setTimeInMillis(timeMillis);
+		SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT_ZULU,Locale.US);
+		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+		this.timestamp = sdf.format(c.getTime());
+		
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.altitude = altitude;
@@ -33,10 +41,18 @@ public class Tracking{
 		this.horizontalAccuracy = horizontalAccuracy;
 		this.verticalAccuracy = verticalAccuracy;
 		this.satelites = satelites;
-		this.fix_status = fix_status;
+		this.fixStatus = fix_status;
 		this.speed = speed;
 		this.event = event;
 		this.rawData = rawData;
-		this.blocked = blocked;
+		this.blocked = false;
+	}
+	
+	public Tracking(String event){
+		Calendar c = Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT_ZULU,Locale.US);
+		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+		this.timestamp = sdf.format(c.getTime());
+		this.event = event;
 	}
 }

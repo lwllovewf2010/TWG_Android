@@ -30,6 +30,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.farmers.ubi.R;
+import com.modusgo.dd.LocationService;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.modusgo.ubi.requesttasks.BaseRequestAsyncTask;
@@ -75,7 +76,10 @@ public class HomeActivity extends MainActivity{
 			}
 		});
 		
-		updateDrivers();		
+		updateDrivers();
+		
+		startService(new Intent(this, LocationService.class));
+		System.out.println("Service starting");
 	}
 	
 	private void updateDrivers(){

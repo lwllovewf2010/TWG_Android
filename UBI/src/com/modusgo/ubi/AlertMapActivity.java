@@ -160,15 +160,6 @@ public class AlertMapActivity extends MainActivity {
 					int color = Color.parseColor("#009900");
 					map.addPolyline(options.color(color).width(8).zIndex(1));
 					
-					int colorSpeeding = Color.parseColor("#ef4136");
-					for (ArrayList<LatLng> route : trip.speedingRoutes) {
-						PolylineOptions optionsSpeeding = new PolylineOptions();
-						for (LatLng point : route) {
-							optionsSpeeding.add(point);
-						}
-						map.addPolyline(optionsSpeeding.color(colorSpeeding).width(8).zIndex(2));
-					}
-					
 					map.addMarker(new MarkerOptions().position(trip.route.get(0)).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_start)).title(vehicle.address));
 					map.addMarker(new MarkerOptions().position(trip.route.get(trip.route.size()-1)).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_finish)).title(vehicle.address));
 				}
@@ -420,6 +411,7 @@ public class AlertMapActivity extends MainActivity {
 			DbHelper dHelper = DbHelper.getInstance(AlertMapActivity.this);
 			dHelper.saveTrip(vehicle.id, trip);
 			dHelper.saveRoute(trip.id, trip.route);
+			dHelper.saveSpeedingRoute(trip.id, trip.speedingRoutes);
 			dHelper.savePoints(trip.id, trip.points);
 			dHelper.close();
 			
@@ -428,8 +420,8 @@ public class AlertMapActivity extends MainActivity {
 		
 		@Override
 		protected void onPostExecute(JSONObject result) {
-			updateMap(true);
 			super.onPostExecute(result);
+			updateMap(true);
 		}
 		
 		@Override

@@ -6,7 +6,7 @@ public class Constants {
 	public static final String GCM_SENDER_ID = "322787790569";
 	
 	public static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZZZZZ";
-	public static final String DATE_TIME_FORMAT_ZULU = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+	public static final String DATE_TIME_FORMAT_ZULU = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	public static final String DEFAULT_TIMEZONE = "GMT+00:00";
 	
 	public static final String PREF_CURRENT_DRIVER = "currentDriver";
@@ -26,13 +26,6 @@ public class Constants {
 	public static final String PREF_TIMEZONE_OFFSET = "time_zone_offset";
 	public static final String PREF_PHOTO = "photo";
 	public static final String PREF_DIAGNOSTIC = "diagnostic";
-	public static final String PREF_DEVICE_MEID = "deviceMEID";
-	public static final String PREF_DEVICE_TYPE = "deviceType";
-	public static final String PREF_DEVICE_EVENTS = "deviceEvents";
-	public static final String PREF_DEVICE_TRIPS = "deviceTrips";
-	public static final String PREF_DEVICE_IN_TRIP = "deviceInTrip";
-	public static final String PREF_DEVICE_DATA_URL = "deviceDataUrl";
-	public static final String PREF_DEVICE_AUTH_KEY = "deviceAuthKey";
 	public static final String PREF_EVENTS_LAST_CHECK = "eventsLastCheck";
 	public static final String PREF_GA_TRACKING_ID = "ga_trackingId";
 	public static final String PREF_GCM_REG_ID = "gmcRegId";
@@ -44,6 +37,9 @@ public class Constants {
 	public static final String PREF_MAINTENANCE_PRICES_ENABLED = "maintenancePricesEnabled";
 	public static final String PREF_DIAGNOSTICS_DELETE_POPUP_SHOWED = "diagsDeletePopup";
 	public static final String PREF_ALERTS_DELETE_POPUP_SHOWED = "alertsDeletePopup";
+	public static final String PREF_MOBILE_LATITUDE = "mobileLatitude";
+	public static final String PREF_MOBILE_LONGITUDE = "mobileLongitude";
+	public static final String PREF_CHARGER_CONNECTED = "chargerConnected";
 	
 	public static final String ROLE_CUSTOMER = "customer";
 
@@ -56,7 +52,6 @@ public class Constants {
 	public static final String API_AUTH_LOGIN = "ddclient";
 	public static final String API_AUTH_PASS = "h7di3g$fi2g";
 	public static final String DD_API_BASE_URL = "https://api.modusgo.com/dd/v1";
-	public static final int CHECK_IGNITION_FREQUENCY = 30000;
 	public static final int CHECK_IGNITION_NOT_AVAILABLE_TIME_LIMIT = 120000;
 	public static final String INTENT_ACTION_UPDATE_MAIN = "com.modusgo.dd.UPDATE";
 	public static final String REGISTRATION_BY_CODE_URL = DD_API_BASE_URL+"/regcode_register";

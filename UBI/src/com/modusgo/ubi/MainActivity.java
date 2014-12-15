@@ -37,6 +37,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.farmers.ubi.R;
+import com.modusgo.dd.LocationService;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -349,7 +350,7 @@ public class MainActivity extends FragmentActivity {
 		            break;
 		        case DRIVERSETUP:
 		        	//Driver setup
-		        	startActivity(new Intent(MainActivity.this, DriverSetupActivity.class));		        	
+		        	startActivity(new Intent(MainActivity.this, DriverSetupActivity.class));	        	
 		            break;
 		        case FEEDBACK:
 		        	//Feedback
@@ -388,6 +389,7 @@ public class MainActivity extends FragmentActivity {
 		        	//Logout
 		        	Utils.gaTrackScreen(MainActivity.this, "Logout");
 		        	prefs.edit().putString(Constants.PREF_AUTH_KEY, "").commit();
+		        	stopService(new Intent(MainActivity.this, LocationService.class));
 		    		Intent intent = new Intent(MainActivity.this, InitActivity.class);
 		    		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
 		    		startActivity(intent);
@@ -473,12 +475,12 @@ public class MainActivity extends FragmentActivity {
 	}
     
 	private void checkForCrashes() {
-//		CrashManager.register(this, Constants.HOCKEY_APP_ID, new CrashManagerListener() {
-//			@Override
-//			public boolean shouldAutoUploadCrashes() {
-//				return true;
-//			}
-//		});
+		CrashManager.register(this, Constants.HOCKEY_APP_ID, new CrashManagerListener() {
+			@Override
+			public boolean shouldAutoUploadCrashes() {
+				return true;
+			}
+		});
 	}
 
 	private void checkForUpdates() {
