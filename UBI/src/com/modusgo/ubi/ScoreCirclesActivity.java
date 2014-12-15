@@ -1,5 +1,6 @@
 package com.modusgo.ubi;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import android.database.Cursor;
@@ -199,8 +200,9 @@ public class ScoreCirclesActivity extends MainActivity{
 		overridePendingTransition(R.anim.flip_in,R.anim.flip_out);
 	}
 	
-	public static class CirclesSection{
+	public static class CirclesSection implements Serializable{
 		
+		private static final long serialVersionUID = 4900183600203934640L;
 		public String sectionName;
 		public int[] marks;
 		public double[] distances;

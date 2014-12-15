@@ -520,7 +520,7 @@ public class LimitsFragment extends Fragment {
 	
 	private ArrayList<Limit> getLimitsFromDB(){
 		DbHelper dbHelper = DbHelper.getInstance(getActivity());
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		SQLiteDatabase db = dbHelper.openDatabase();
 		
 		Cursor c = db.query(LimitsEntry.TABLE_NAME, 
 				new String[]{
@@ -551,7 +551,7 @@ public class LimitsFragment extends Fragment {
 			}
 		}
 		c.close();
-		db.close();
+		dbHelper.closeDatabase();
 		dbHelper.close();
 		
 		return limits;

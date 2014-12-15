@@ -154,10 +154,10 @@ public class PieChartView extends View{
     	
     	public PieSector(){}
     	
-    	public PieSector(float value, int colorId){
+    	public PieSector(float value, int color){
     		this.value = value;
     		colorPaint = new Paint();
-    		colorPaint.setColor(getResources().getColor(colorId));
+    		colorPaint.setColor(color);
     		colorPaint.setAntiAlias(true);
     		colorPaint.setStyle(Paint.Style.FILL);
     	}

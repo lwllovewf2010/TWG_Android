@@ -1,5 +1,8 @@
 package com.modusgo.dd;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -7,15 +10,18 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.modusgo.ubi.Constants;
 import com.modusgo.ubi.InitActivity;
 import com.farmers.ubi.R;
+import com.modusgo.ubi.requesttasks.GetDeviceInfoRequest;
+import com.modusgo.ubi.utils.Device;
 
 /**
  * This {@code IntentService} does the actual handling of the GCM message.
@@ -56,24 +62,68 @@ public class GcmIntentService extends IntentService {
             // If it's a regular GCM message, do some work.
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
             	
-            	if(extras.getString("in_trip").equals("1"))
-            		setInTrip(true);
-            	else
-            		setInTrip(false);
-
-                String message = extras.getString("message");
-            	if(!TextUtils.isEmpty(message))
-            		sendNotification(getResources().getString(R.string.app_name), message);  
+            	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            	Editor e  = prefs.edit();
+            	
+            	
+//            	for (String key : extras.keySet()) {
+//            	    Object value = extras.get(key);
+//            	    Log.d(TAG, String.format("%s %s (%s)", key,  
+//            	        value.toString(), value.getClass().getName()));
+//            	}
+            	
+            	if(extras.containsKey("aps")){
+					String apsJSON = extras.getString("aps");
+					try {
+						JSONObject jsonObj = new JSONObject(apsJSON);
+						if(jsonObj.optInt("content-available")==0){
+							String message = jsonObj.optString("alert");
+			            	if(!TextUtils.isEmpty(message))
+			            		sendNotification(getResources().getString(R.string.app_name), message);
+						}
+					} catch (JSONException e1) {
+						e1.printStackTrace();
+					}
+            	}
+            	
+            	if(extras.containsKey("in_trip")){
+					e.putBoolean(Device.PREF_DEVICE_IN_TRIP, !TextUtils.isEmpty(extras.getString("in_trip")));
+            	}
+            	else{
+					e.putBoolean(Device.PREF_DEVICE_IN_TRIP, false);            		
+            	}
+            	
+            	if(extras.containsKey("type")){
+					e.putString(Device.PREF_DEVICE_TYPE, extras.getString("type"));
+            	}
+            	
+            	if(extras.containsKey("events")){
+            		try{
+            			e.putBoolean(Device.PREF_DEVICE_EVENTS, Boolean.parseBoolean(extras.getString("events")));
+            		}
+            		catch(Exception ex){
+            			ex.printStackTrace();
+            			e.putBoolean(Device.PREF_DEVICE_EVENTS, false);
+            		}
+            	}
+            	if(extras.containsKey("latitude")){
+					e.putString(Device.PREF_DEVICE_LATITUDE, extras.getString("latitude"));
+            	}
+            	if(extras.containsKey("longitude")){
+					e.putString(Device.PREF_DEVICE_LONGITUDE, extras.getString("longitude"));
+            	}
+            	if(extras.containsKey("location_date")){
+					e.putString(Device.PREF_DEVICE_LOCATION_DATE, extras.getString("location_date"));
+            	}
+            	
+            	e.commit();
+            	
+            	new GetDeviceInfoRequest(this).execute();
             }
         }
         
         // Release the wake lock provided by the WakefulBroadcastReceiver.
         GcmBroadcastReceiver.completeWakefulIntent(intent);
-    }
-    
-    private void setInTrip(boolean inTrip){
-    	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        prefs.edit().putBoolean(Constants.PREF_DEVICE_IN_TRIP, inTrip).commit();
     }
 
     // Put the message into a notification and post it.

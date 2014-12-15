@@ -91,13 +91,15 @@ public class ScorePieChartActivity extends MainActivity{
     				ScorePieChartEntry._ID,
     				ScorePieChartEntry.COLUMN_NAME_VALUE,
     				ScorePieChartEntry.COLUMN_NAME_TITLE,
-    				ScorePieChartEntry.COLUMN_NAME_SUBTITLE},
+    				ScorePieChartEntry.COLUMN_NAME_SUBTITLE,
+    				ScorePieChartEntry.COLUMN_NAME_COLOR},
     				ScorePieChartEntry.COLUMN_NAME_VEHICLE_ID + " = ? AND "+ScorePieChartEntry.COLUMN_NAME_TAB + " = ?", new String[]{Long.toString(vehicle.id), pieChartTabs[i]}, null, null, ScorePieChartEntry._ID+" ASC");
     		
             int piecesCount = c.getCount();
             float[] values = new float[piecesCount];
             String[] titles = new String[piecesCount];
             String[] subtitles = new String[piecesCount];
+            int[] colors = new int[piecesCount];
             
     		if(c.moveToFirst()){
     			int j = 0;
@@ -105,6 +107,7 @@ public class ScorePieChartActivity extends MainActivity{
     				values[j] = c.getFloat(1);
     				titles[j] = c.getString(2);
     				subtitles[j] = c.getString(3);
+    				colors[j] = c.getInt(4);
     				j++;
     				c.moveToNext();
     			}
@@ -114,6 +117,7 @@ public class ScorePieChartActivity extends MainActivity{
     		bundle.putFloatArray(PieChartFragment.SAVED_VALUES, values);
     	    bundle.putStringArray(PieChartFragment.SAVED_TITLES, titles);
     	    bundle.putStringArray(PieChartFragment.SAVED_SUBTITLES, subtitles);
+    	    bundle.putIntArray(PieChartFragment.SAVED_COLORS, colors);
     		
         	RadioButton rb = (RadioButton)inflater.inflate(R.layout.radio_tab, rgPieCharts, false);
         	rb.setText(pieChartTabs[i]);
@@ -179,14 +183,16 @@ public class ScorePieChartActivity extends MainActivity{
 		public float[] values;
 		public String[] titles;
 		public String[] subtitles;
+		public int[] colorIds;
 		
 		public PieChartTab(String tabName, float[] values, String[] titles,
-				String[] subtitles) {
+				String[] subtitles, int[] colorIds) {
 			super();
 			this.tabName = tabName;
 			this.values = values;
 			this.titles = titles;
 			this.subtitles = subtitles;
+			this.colorIds = colorIds;
 		}
 	}
 }

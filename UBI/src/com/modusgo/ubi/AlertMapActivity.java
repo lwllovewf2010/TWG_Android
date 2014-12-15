@@ -1,11 +1,13 @@
 package com.modusgo.ubi;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
@@ -118,7 +120,22 @@ public class AlertMapActivity extends MainActivity {
 
 		setActionBarTitle(alert.title.toUpperCase(Locale.US));
 		tvDescription.setText(alert.description);
-		tvDate.setText(alert.timestamp);
+		
+		SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
+		SimpleDateFormat sdfTo = new SimpleDateFormat("MM/dd/yyyy KK:mm aa z", Locale.getDefault());
+		
+		TimeZone tzFrom = TimeZone.getTimeZone(Constants.DEFAULT_TIMEZONE);
+		sdfFrom.setTimeZone(tzFrom);
+		TimeZone tzTo = TimeZone.getTimeZone(prefs.getString(Constants.PREF_TIMEZONE_OFFSET, Constants.DEFAULT_TIMEZONE));
+		sdfTo.setTimeZone(tzTo);
+		
+		try {
+			tvDate.setText(sdfTo.format(sdfFrom.parse(alert.timestamp)));
+		} catch (ParseException e) {
+			tvDate.setText(alert.timestamp);
+			e.printStackTrace();
+		}
+		
 		if(!TextUtils.isEmpty(alert.address))
 			tvAddress.setText(alert.address);
 		else{
@@ -142,15 +159,6 @@ public class AlertMapActivity extends MainActivity {
 					
 					int color = Color.parseColor("#009900");
 					map.addPolyline(options.color(color).width(8).zIndex(1));
-					
-					int colorSpeeding = Color.parseColor("#ef4136");
-					for (ArrayList<LatLng> route : trip.speedingRoutes) {
-						PolylineOptions optionsSpeeding = new PolylineOptions();
-						for (LatLng point : route) {
-							optionsSpeeding.add(point);
-						}
-						map.addPolyline(optionsSpeeding.color(colorSpeeding).width(8).zIndex(2));
-					}
 					
 					map.addMarker(new MarkerOptions().position(trip.route.get(0)).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_start)).title(vehicle.address));
 					map.addMarker(new MarkerOptions().position(trip.route.get(trip.route.size()-1)).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_finish)).title(vehicle.address));
@@ -196,7 +204,7 @@ public class AlertMapActivity extends MainActivity {
 		Alert alert = new Alert(alertId);
 		
 		DbHelper dbHelper = DbHelper.getInstance(this);
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		SQLiteDatabase db = dbHelper.openDatabase();
 		Cursor c = db.query(AlertEntry.TABLE_NAME, 
 				new String[]{
 				AlertEntry._ID,
@@ -226,7 +234,7 @@ public class AlertMapActivity extends MainActivity {
 			alert.address = c.getString(11);
 		}
 		c.close();		
-		db.close();
+		dbHelper.closeDatabase();
 		dbHelper.close();
 		
 		return alert;
@@ -234,7 +242,7 @@ public class AlertMapActivity extends MainActivity {
 	
 	private Trip getTripFromDB(){
 		DbHelper dbHelper = DbHelper.getInstance(this);
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		SQLiteDatabase db = dbHelper.openDatabase();
 		Cursor c = db.query(TripEntry.TABLE_NAME, 
 				new String[]{
 				TripEntry._ID,
@@ -252,7 +260,7 @@ public class AlertMapActivity extends MainActivity {
 		Trip t = null;
 		
 		if(c.moveToFirst()){
-			t = new Trip(c.getLong(0), c.getInt(1), c.getString(2), c.getString(3), c.getFloat(4), c.getString(7));
+			t = new Trip(prefs, c.getLong(0), c.getInt(1), c.getString(2), c.getString(3), c.getFloat(4), c.getString(7));
 			t.averageSpeed = c.getFloat(5);
 			t.maxSpeed = c.getFloat(6);
 			t.viewedAt = c.getString(8);
@@ -276,7 +284,7 @@ public class AlertMapActivity extends MainActivity {
 			c.close();
 		}
 		
-		db.close();
+		dbHelper.closeDatabase();
 		dbHelper.close();
 		
 		return t;
@@ -351,11 +359,12 @@ public class AlertMapActivity extends MainActivity {
 		
 		@Override
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
-			trip = new Trip(alert.tripId, responseJSON.optInt("harsh_events_count"), Utils.fixTimezoneZ(responseJSON.optString("start_time")), Utils.fixTimezoneZ(responseJSON.optString("end_time")), responseJSON.optDouble("mileage"), responseJSON.optString("grade"));
+			trip = new Trip(prefs, alert.tripId, responseJSON.optInt("harsh_events_count"), Utils.fixTimezoneZ(responseJSON.optString("start_time")), Utils.fixTimezoneZ(responseJSON.optString("end_time")), responseJSON.optDouble("mileage"), responseJSON.optString("grade"));
 			
 			trip.averageSpeed = responseJSON.optDouble("avg_speed");
 			trip.maxSpeed = responseJSON.optDouble("max_speed");
 			SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);
+			sdf.setTimeZone(TimeZone.getTimeZone(Constants.DEFAULT_TIMEZONE));
 			trip.viewed = true;
 			trip.updatedAt = responseJSON.optString("updated_at");
 			trip.viewedAt = sdf.format(Calendar.getInstance().getTime());
@@ -402,6 +411,7 @@ public class AlertMapActivity extends MainActivity {
 			DbHelper dHelper = DbHelper.getInstance(AlertMapActivity.this);
 			dHelper.saveTrip(vehicle.id, trip);
 			dHelper.saveRoute(trip.id, trip.route);
+			dHelper.saveSpeedingRoute(trip.id, trip.speedingRoutes);
 			dHelper.savePoints(trip.id, trip.points);
 			dHelper.close();
 			
@@ -410,8 +420,8 @@ public class AlertMapActivity extends MainActivity {
 		
 		@Override
 		protected void onPostExecute(JSONObject result) {
-			updateMap(true);
 			super.onPostExecute(result);
+			updateMap(true);
 		}
 		
 		@Override

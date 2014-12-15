@@ -2620,7 +2620,7 @@ com.farmers.ubi.R$layout
 com.farmers.ubi.R$string
 com.farmers.ubi.R$style
 com.farmers.ubi.R$styleable:
-    3182:3182:public R$styleable()
+    3183:3183:public R$styleable()
 com.farmers.ubi.R$xml
 com.google.ads.AdRequest
 com.google.ads.AdRequest$ErrorCode
@@ -5606,11 +5606,8 @@ com.google.android.gms.internal.ly:
     public void requestLocationUpdates(com.google.android.gms.location.LocationRequest,com.google.android.gms.location.LocationListener,android.os.Looper)
     public void b(com.google.android.gms.internal.ma,android.app.PendingIntent)
     public void requestLocationUpdates(com.google.android.gms.location.LocationRequest,android.app.PendingIntent)
-    public void removeLocationUpdates(com.google.android.gms.location.LocationListener)
     public void removeLocationUpdates(android.app.PendingIntent)
     public void setMockLocation(android.location.Location)
-com.google.android.gms.internal.ly$b:
-    public void release()
 com.google.android.gms.internal.lz:
     public lz(android.content.Context,android.os.Looper,java.lang.String,com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks,com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener,java.lang.String)
     public lz(android.content.Context,android.os.Looper,java.lang.String,com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks,com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener,java.lang.String,java.lang.String)
@@ -5623,7 +5620,6 @@ com.google.android.gms.internal.lz:
     public void requestLocationUpdates(com.google.android.gms.location.LocationRequest,com.google.android.gms.location.LocationListener,android.os.Looper)
     public void b(com.google.android.gms.internal.ma,android.app.PendingIntent)
     public void requestLocationUpdates(com.google.android.gms.location.LocationRequest,android.app.PendingIntent)
-    public void removeLocationUpdates(com.google.android.gms.location.LocationListener)
     public void removeLocationUpdates(android.app.PendingIntent)
     public void setMockMode(boolean)
     public void setMockLocation(android.location.Location)
@@ -6129,7 +6125,6 @@ com.google.android.gms.location.LocationClient:
     public static android.location.Location getTriggeringLocation(android.content.Intent)
     public void requestLocationUpdates(com.google.android.gms.location.LocationRequest,com.google.android.gms.location.LocationListener,android.os.Looper)
     public void requestLocationUpdates(com.google.android.gms.location.LocationRequest,android.app.PendingIntent)
-    public void removeLocationUpdates(com.google.android.gms.location.LocationListener)
     public void removeLocationUpdates(android.app.PendingIntent)
     public void setMockMode(boolean)
     public void setMockLocation(android.location.Location)
@@ -6154,9 +6149,7 @@ com.google.android.gms.location.LocationRequest:
     public long getExpirationTime()
     public com.google.android.gms.location.LocationRequest setNumUpdates(int)
     public int getNumUpdates()
-    public com.google.android.gms.location.LocationRequest setSmallestDisplacement(float)
     public float getSmallestDisplacement()
-    private static void a(float)
 com.google.android.gms.location.LocationServices
 com.google.android.gms.location.LocationServices$1
 com.google.android.gms.location.LocationServices$a
@@ -7479,6 +7472,12 @@ com.modusgo.dd.GcmIntentService:
     public static final int NOTIFICATION_ID
     android.support.v4.app.NotificationCompat$Builder builder
     public static final java.lang.String TAG
+com.modusgo.dd.LocationService:
+    private static final float TRIP_START_SPEED
+    private static final float TRIP_STAY_SPEED
+    private static final int MAX_STAY_TIME
+    private static final java.lang.String PREF_IN_TRIP_NOW
+    public static final int GET_DEVICE_FREQUENCY
 com.modusgo.dd.PhoneUsageSaverService:
     public static final java.lang.String PREF_UNLOCK_COUNT
     private static final java.lang.String PREF_PHONE_ON
@@ -7491,85 +7490,17 @@ com.modusgo.dd.RegisterByCodeActivity:
 com.modusgo.dd.RegisterByCodeActivity$UserRegistrationServerError:
     private static final long serialVersionUID
 com.modusgo.dd.TrackingStatusService:
-    java.util.ArrayList whitelist
-    java.util.ArrayList blacklist
+    public static final int GET_DEVICE_FREQUENCY
+com.modusgo.dd.requests.BasicAsyncTask
+com.modusgo.dd.requests.CheckIgnitionRequest
+com.modusgo.dd.requests.SendStatsRequest
 com.modusgo.ubi.AlertMapActivity:
     public static final java.lang.String EXTRA_ALERT_ID
 com.modusgo.ubi.AlertsActivity:
     private static final int ALERTS_PER_REQUEST
 com.modusgo.ubi.CirclesFragment:
     public static final java.lang.String SAVED_SECTIONS
-com.modusgo.ubi.Constants:
-    public static final java.lang.String HOCKEY_APP_ID
-    public static final java.lang.String GCM_SENDER_ID
-    public static final java.lang.String DATE_TIME_FORMAT
-    public static final java.lang.String DATE_TIME_FORMAT_ZULU
-    public static final java.lang.String PREF_CURRENT_DRIVER
-    public static final java.lang.String PREF_AUTH_KEY
-    public static final java.lang.String PREF_CLIENT_ID
-    public static final java.lang.String PREF_SHOW_TIP_POPUP
-    public static final java.lang.String PREF_WELCOME_PAGES
-    public static final java.lang.String PREF_UNITS_OF_MEASURE
-    public static final java.lang.String PREF_DRIVER_ID
-    public static final java.lang.String PREF_VEHICLE_ID
-    public static final java.lang.String PREF_FIRST_NAME
-    public static final java.lang.String PREF_LAST_NAME
-    public static final java.lang.String PREF_EMAIL
-    public static final java.lang.String PREF_ROLE
-    public static final java.lang.String PREF_PHONE
-    public static final java.lang.String PREF_TIMEZONE
-    public static final java.lang.String PREF_PHOTO
-    public static final java.lang.String PREF_DIAGNOSTIC
-    public static final java.lang.String PREF_DEVICE_MEID
-    public static final java.lang.String PREF_DEVICE_TYPE
-    public static final java.lang.String PREF_DEVICE_EVENTS
-    public static final java.lang.String PREF_DEVICE_TRIPS
-    public static final java.lang.String PREF_DEVICE_IN_TRIP
-    public static final java.lang.String PREF_DEVICE_DATA_URL
-    public static final java.lang.String PREF_DEVICE_AUTH_KEY
-    public static final java.lang.String PREF_EVENTS_LAST_CHECK
-    public static final java.lang.String PREF_GA_TRACKING_ID
-    public static final java.lang.String PREF_GCM_REG_ID
-    public static final java.lang.String PREF_APP_VERSION
-    public static final java.lang.String PREF_CONTACT_PHONE
-    public static final java.lang.String PREF_AGENT_PHONE
-    public static final java.lang.String PREF_FIND_MECHANIC_ENABLED
-    public static final java.lang.String PREF_DTC_PRICES_ENABLED
-    public static final java.lang.String PREF_MAINTENANCE_PRICES_ENABLED
-    public static final java.lang.String PREF_DIAGNOSTICS_DELETE_POPUP_SHOWED
-    public static final java.lang.String PREF_ALERTS_DELETE_POPUP_SHOWED
-    public static final java.lang.String ROLE_CUSTOMER
-    public static final java.lang.String API_BASE_URL_PREFIX
-    public static final java.lang.String API_BASE_URL_POSTFIX
-    public static final java.lang.String API_PLATFORM
-    public static final java.lang.String PREF_DD_ENABLED
-    public static final java.lang.String API_AUTH_LOGIN
-    public static final java.lang.String API_AUTH_PASS
-    public static final java.lang.String DD_API_BASE_URL
-    public static final int CHECK_IGNITION_FREQUENCY
-    public static final int CHECK_IGNITION_NOT_AVAILABLE_TIME_LIMIT
-    public static final java.lang.String INTENT_ACTION_UPDATE_MAIN
-    public static final java.lang.String REGISTRATION_BY_CODE_URL
-    public static final java.lang.String PREF_REG_CODE
-    public static final java.lang.String PREF_BR_LOGIN_SCREEN_BG_IMAGE
-    public static final java.lang.String PREF_BR_LOGIN_SCREEN_LOGO
-    public static final java.lang.String PREF_BR_BUTTONS_BG_COLOR
-    public static final java.lang.String PREF_BR_BUTTONS_TEXT_COLOR
-    public static final java.lang.String PREF_BR_TITLE_BAR_BG
-    public static final java.lang.String PREF_BR_TITLE_BAR_BG_COLOR
-    public static final java.lang.String PREF_BR_TITLE_BAR_TEXT_COLOR
-    public static final java.lang.String PREF_BR_TITLE_BAR_BUTTONS_COLOR
-    public static final java.lang.String PREF_BR_MENU_LOGO
-    public static final java.lang.String PREF_BR_SWITCH_DRIVER_MENU_BUTTON_COLOR
-    public static final java.lang.String PREF_BR_LIST_HEADER_LINE_COLOR
-    public static final java.lang.String BUTTON_BG_COLOR
-    public static final java.lang.String BUTTON_TEXT_COLOR
-    public static final java.lang.String SWITCH_DRIVER_BUTTON_BG_COLOR
-    public static final java.lang.String TITLE_BAR_BG_COLOR
-    public static final java.lang.String TITLE_BAR_TEXT_COLOR
-    public static final java.lang.String LIST_HEADER_LINE_COLOR
-    public static final java.lang.String TITLE_BAR_BUTTONS_COLOR
-    3:3:public Constants()
+com.modusgo.ubi.Constants
 com.modusgo.ubi.DiagnosticDetailActivity:
     public static final java.lang.String EXTRA_DTC
 com.modusgo.ubi.DiagnosticsFragment:
@@ -7590,24 +7521,24 @@ com.modusgo.ubi.FindMyCarActivity$ErrorDialogFragment
 com.modusgo.ubi.LimitsFragment:
     579:582:private java.lang.String getTime24String(int,int)
 com.modusgo.ubi.MainActivity:
-    484:486:public void showFeedbackActivity()
+    492:494:public void showFeedbackActivity()
 com.modusgo.ubi.MainActivity$MenuItems:
-    73:73:public int toInt()
-    77:77:public java.lang.String[] valuesString()
+    74:74:public int toInt()
+    78:78:public java.lang.String[] valuesString()
 com.modusgo.ubi.PieChartFragment:
-    public static final java.lang.String SAVED_VISIBILITIES
     public static final java.lang.String SAVED_VALUES
     public static final java.lang.String SAVED_SUBTITLES
     public static final java.lang.String SAVED_TITLES
-    42:48:public PieChartFragment(float[],java.lang.String[],java.lang.String[])
-    96:106:private void hideMarker(android.view.View,long)
-    109:119:private void showMarker(android.view.View,long)
+    public static final java.lang.String SAVED_COLORS
+    37:41:public PieChartFragment(float[],java.lang.String[],java.lang.String[])
 com.modusgo.ubi.Recall:
     private static final long serialVersionUID
 com.modusgo.ubi.RecallActivity:
     public static final java.lang.String EXTRA_RECALL
 com.modusgo.ubi.ScoreCirclesActivity:
     public static final java.lang.String SAVED_CIRCLES_BUNDLE
+com.modusgo.ubi.ScoreCirclesActivity$CirclesSection:
+    private static final long serialVersionUID
 com.modusgo.ubi.ScoreInfoActivity:
     private static final java.lang.String ATTRIBUTE_NAME_VALUE
     private static final java.lang.String ATTRIBUTE_NAME_TITLE
@@ -7628,6 +7559,8 @@ com.modusgo.ubi.SignInActivity$ScreenSlidePageFragment:
     int mNum
 com.modusgo.ubi.TitledFragment:
     public static final java.lang.String SAVED_TITLE
+com.modusgo.ubi.Tracking:
+    public long id
 com.modusgo.ubi.Trip:
     private static final long serialVersionUID
 com.modusgo.ubi.TripActivity:
@@ -7651,8 +7584,6 @@ com.modusgo.ubi.customviews.PieChartView$PieSector:
     155:155:public PieChartView$PieSector(com.modusgo.ubi.customviews.PieChartView)
 com.modusgo.ubi.db.AlertContract
 com.modusgo.ubi.db.AlertContract$AlertEntry
-com.modusgo.ubi.db.DDEventContract
-com.modusgo.ubi.db.DDEventContract$DDEventEntry
 com.modusgo.ubi.db.DTCContract
 com.modusgo.ubi.db.DTCContract$DTCEntry
 com.modusgo.ubi.db.DbHelper:
@@ -7676,12 +7607,16 @@ com.modusgo.ubi.db.ScoreCirclesContract
 com.modusgo.ubi.db.ScoreCirclesContract$ScoreCirclesEntry
 com.modusgo.ubi.db.ScoreGraphContract
 com.modusgo.ubi.db.ScoreGraphContract$ScoreGraphEntry
+com.modusgo.ubi.db.ScoreInfoContract
+com.modusgo.ubi.db.ScoreInfoContract$ScoreInfoEntry
 com.modusgo.ubi.db.ScorePercentageContract
 com.modusgo.ubi.db.ScorePercentageContract$ScorePercentageEntry
 com.modusgo.ubi.db.ScorePieChartContract
 com.modusgo.ubi.db.ScorePieChartContract$ScorePieChartEntry
 com.modusgo.ubi.db.SpeedingRouteContract
 com.modusgo.ubi.db.SpeedingRouteContract$SpeedingRouteEntry
+com.modusgo.ubi.db.TrackingContract
+com.modusgo.ubi.db.TrackingContract$TrackingEntry
 com.modusgo.ubi.db.TripContract
 com.modusgo.ubi.db.TripContract$TripEntry
 com.modusgo.ubi.db.VehicleContract
@@ -7690,8 +7625,31 @@ com.modusgo.ubi.db.WarrantyInfoContract
 com.modusgo.ubi.db.WarrantyInfoContract$WarrantyInfoEntry
 com.modusgo.ubi.requesttasks.BaseRequestAsyncTask:
     35:36:public BaseRequestAsyncTask()
+com.modusgo.ubi.requesttasks.GetDeviceInfoRequest:
+    java.util.ArrayList eventIds
 com.modusgo.ubi.utils.AnimationUtils:
     10:10:public AnimationUtils()
+com.modusgo.ubi.utils.Device:
+    public static final java.lang.String PREF_CURRENT_TRACKING_MODE
+    public static final java.lang.String PREF_DEVICE_MEID
+    public static final java.lang.String PREF_DEVICE_TYPE
+    public static final java.lang.String PREF_DEVICE_EVENTS
+    public static final java.lang.String PREF_DEVICE_TRIPS
+    public static final java.lang.String PREF_DEVICE_IN_TRIP
+    public static final java.lang.String PREF_DEVICE_LATITUDE
+    public static final java.lang.String PREF_DEVICE_LONGITUDE
+    public static final java.lang.String PREF_DEVICE_LOCATION_DATE
+    private static final java.lang.String PREF_LAST_SENDEVENT_MILLIS
+    public static final java.lang.String DEVICE_TYPE_OBD
+    public static final java.lang.String DEVICE_TYPE_OBDBLE
+    public static final java.lang.String DEVICE_TYPE_SMARTPHONE
+    public static final java.lang.String DEVICE_TYPE_IBEACON
+    public static final java.lang.String MODE_LIGHT_TRACKING
+    public static final java.lang.String MODE_MEDIUM_TRACKING
+    public static final java.lang.String MODE_SIGNIFICATION_TRACKING
+    public static final java.lang.String MODE_NAVIGATION_TRACKING
+    public static final java.lang.String MODE_SUPER_TRACKING
+    15:15:public Device()
 com.modusgo.ubi.utils.RequestGet:
     19:21:public RequestGet(java.lang.String)
 com.modusgo.ubi.utils.SwipeDismissListViewTouchListener
@@ -7702,8 +7660,9 @@ com.modusgo.ubi.utils.SwipeDismissListViewTouchListener$4
 com.modusgo.ubi.utils.SwipeDismissListViewTouchListener$DismissCallbacks
 com.modusgo.ubi.utils.SwipeDismissListViewTouchListener$PendingDismissData
 com.modusgo.ubi.utils.Utils:
-    41:41:public Utils()
-    276:277:public static android.graphics.Bitmap decodeBase64(java.lang.String)
+    42:42:public Utils()
+    89:106:public static org.json.JSONObject getJSONObjectFromAssets(android.content.Context,java.lang.String)
+    278:279:public static android.graphics.Bitmap decodeBase64(java.lang.String)
 com.nostra13.universalimageloader.cache.disc.DiscCacheAware:
     public abstract java.io.File getDirectory()
     public abstract boolean remove(java.lang.String)
@@ -8135,7 +8094,6 @@ net.hockeyapp.android.CrashManager:
     89:90:public static void register(android.content.Context,java.lang.String)
     127:128:public static void initialize(android.content.Context,java.lang.String,net.hockeyapp.android.CrashManagerListener)
     142:143:public static void initialize(android.content.Context,java.lang.String,java.lang.String,net.hockeyapp.android.CrashManagerListener)
-net.hockeyapp.android.ExpiryInfoActivity
 net.hockeyapp.android.FeedbackActivity
 net.hockeyapp.android.FeedbackActivity$1
 net.hockeyapp.android.FeedbackActivity$2
@@ -8167,36 +8125,25 @@ net.hockeyapp.android.Strings:
     public static final int FEEDBACK_FAILED_TEXT_ID
     37:37:public Strings()
     165:165:public static java.lang.String get(int)
-net.hockeyapp.android.Tracking
+net.hockeyapp.android.Tracking:
+    private static final java.lang.String START_TIME_KEY
+    private static final java.lang.String USAGE_TIME_KEY
+    42:42:public Tracking()
+    60:69:public static void startUsage(android.app.Activity)
+    80:101:public static void stopUsage(android.app.Activity)
 net.hockeyapp.android.UpdateActivity:
     1:1:public bridge synthetic android.view.View getLayoutView()
 net.hockeyapp.android.UpdateActivityInterface
-net.hockeyapp.android.UpdateFragment
-net.hockeyapp.android.UpdateFragment$1
+net.hockeyapp.android.UpdateFragment:
+    89:95:public static net.hockeyapp.android.UpdateFragment newInstance(org.json.JSONArray,java.lang.String)
 net.hockeyapp.android.UpdateManager:
     53:53:public UpdateManager()
-    71:72:public static void register(android.app.Activity,java.lang.String)
-    82:83:public static void register(android.app.Activity,java.lang.String,boolean)
-    94:95:public static void register(android.app.Activity,java.lang.String,net.hockeyapp.android.UpdateManagerListener,boolean)
-    106:116:public static void register(android.app.Activity,java.lang.String,java.lang.String,net.hockeyapp.android.UpdateManagerListener,boolean)
     126:127:public static void registerForBackground(android.content.Context,java.lang.String,net.hockeyapp.android.UpdateManagerListener)
     138:145:public static void registerForBackground(android.content.Context,java.lang.String,java.lang.String,net.hockeyapp.android.UpdateManagerListener)
     151:158:public static void unregister()
-    165:176:private static boolean checkExpiryDate(java.lang.ref.WeakReference,net.hockeyapp.android.UpdateManagerListener)
-    184:191:private static boolean checkExpiryDateForBackground(net.hockeyapp.android.UpdateManagerListener)
-    198:210:private static boolean installedFromMarket(java.lang.ref.WeakReference)
-    218:228:private static void startExpiryInfoIntent(java.lang.ref.WeakReference)
-    235:242:private static void startUpdateTask(java.lang.ref.WeakReference,java.lang.String,java.lang.String,net.hockeyapp.android.UpdateManagerListener,boolean)
     249:256:private static void startUpdateTaskForBackground(java.lang.ref.WeakReference,java.lang.String,java.lang.String,net.hockeyapp.android.UpdateManagerListener)
-    263:271:private static boolean dialogShown(java.lang.ref.WeakReference)
-    280:283:public static java.lang.Boolean fragmentsSupported()
-    291:302:public static java.lang.Boolean runsOnTablet(java.lang.ref.WeakReference)
 net.hockeyapp.android.UpdateManagerListener:
     41:41:public UpdateManagerListener()
-    46:46:public java.lang.Class getUpdateActivityClass()
-    53:53:public java.lang.Class getUpdateFragmentClass()
-    84:84:public java.util.Date getExpiryDate()
-    92:92:public boolean onBuildExpired()
 net.hockeyapp.android.adapters.MessagesAdapter
 net.hockeyapp.android.listeners.SendFeedbackListener
 net.hockeyapp.android.objects.ErrorObject:
@@ -8214,13 +8161,9 @@ net.hockeyapp.android.tasks.CheckUpdateTask:
     protected static final java.lang.String INTENT_EXTRA_JSON
     81:82:public CheckUpdateTask(java.lang.ref.WeakReference,java.lang.String)
     85:86:public CheckUpdateTask(java.lang.ref.WeakReference,java.lang.String,java.lang.String)
-    88:101:public CheckUpdateTask(java.lang.ref.WeakReference,java.lang.String,java.lang.String,net.hockeyapp.android.UpdateManagerListener)
-    104:111:public void attach(java.lang.ref.WeakReference)
     114:115:public void detach()
-    209:211:protected void cleanUp()
-net.hockeyapp.android.tasks.CheckUpdateTaskWithUI
-net.hockeyapp.android.tasks.CheckUpdateTaskWithUI$1
-net.hockeyapp.android.tasks.CheckUpdateTaskWithUI$2
+net.hockeyapp.android.tasks.CheckUpdateTaskWithUI:
+    79:81:public void detach()
 net.hockeyapp.android.tasks.ParseFeedbackTask
 net.hockeyapp.android.tasks.SendFeedbackTask
 net.hockeyapp.android.utils.ConnectionManager$ConnectionManagerHolder:
@@ -8250,10 +8193,10 @@ net.hockeyapp.android.utils.UiThreadUtil$WbUtilHolder
 net.hockeyapp.android.utils.Util
 net.hockeyapp.android.utils.VersionCache:
     40:40:public VersionCache()
-    44:50:public static void setVersionInfo(android.content.Context,java.lang.String)
 net.hockeyapp.android.utils.ViewHelper:
     6:6:public ViewHelper()
-net.hockeyapp.android.views.ExpiryInfoView
+net.hockeyapp.android.views.ExpiryInfoView:
+    48:49:public ExpiryInfoView(android.content.Context)
 net.hockeyapp.android.views.FeedbackMessageView
 net.hockeyapp.android.views.FeedbackView
 net.hockeyapp.android.views.UpdateView:

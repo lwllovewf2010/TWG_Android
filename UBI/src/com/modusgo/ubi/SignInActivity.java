@@ -44,6 +44,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.requesttasks.BasePostRequestAsyncTask;
+import com.modusgo.ubi.utils.Device;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -437,12 +438,13 @@ public class SignInActivity extends FragmentActivity {
 			}
 			if(responseJSON.has("device")){
 				JSONObject deviceJSON = responseJSON.getJSONObject("device");
-				e.putString(Constants.PREF_DEVICE_MEID, deviceJSON.optString("meid"));
-				e.putString(Constants.PREF_DEVICE_TYPE, deviceJSON.optString("type"));
-				e.putString(Constants.PREF_DEVICE_DATA_URL, deviceJSON.optString("data_url"));
-				e.putString(Constants.PREF_DEVICE_AUTH_KEY, deviceJSON.optString("auth_key"));
-				e.putBoolean(Constants.PREF_DEVICE_EVENTS, deviceJSON.optBoolean("events"));
-				e.putBoolean(Constants.PREF_DEVICE_TRIPS, deviceJSON.optBoolean("trips"));
+				e.putString(Device.PREF_DEVICE_TYPE, deviceJSON.optString("type"));
+				e.putString(Device.PREF_DEVICE_MEID, deviceJSON.optString("meid"));
+				e.putBoolean(Device.PREF_DEVICE_EVENTS, deviceJSON.optBoolean("events"));
+				e.putBoolean(Device.PREF_DEVICE_IN_TRIP, !TextUtils.isEmpty(deviceJSON.optString("in_trip")));
+				e.putString(Device.PREF_DEVICE_LATITUDE, deviceJSON.optString("latitude"));
+				e.putString(Device.PREF_DEVICE_LONGITUDE, deviceJSON.optString("longitude"));
+				e.putString(Device.PREF_DEVICE_LOCATION_DATE, deviceJSON.optString("location_date"));
 			}
 			e.commit();
 			

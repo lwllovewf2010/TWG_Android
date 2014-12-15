@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
@@ -244,13 +245,24 @@ public class DiagnosticsFragment extends Fragment{
 	private void updateInfo(){
 		SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
 		SimpleDateFormat sdfTo = new SimpleDateFormat("MM/dd/yyyy KK:mm aa z", Locale.getDefault());
+		
+		TimeZone tzFrom = TimeZone.getTimeZone(Constants.DEFAULT_TIMEZONE);
+		sdfFrom.setTimeZone(tzFrom);
+		TimeZone tzTo = TimeZone.getTimeZone(prefs.getString(Constants.PREF_TIMEZONE_OFFSET, Constants.DEFAULT_TIMEZONE));
+		sdfTo.setTimeZone(tzTo);
 
-		try {
-			tvLastCheckup.setText(sdfTo.format(sdfFrom.parse(vehicle.carLastCheckup)));
-		} catch (ParseException e) {
+		if(TextUtils.isEmpty(vehicle.carLastCheckup)){
 			tvLastCheckup.setText("N/A");
-			e.printStackTrace();
 		}
+		else{
+			try {
+				tvLastCheckup.setText(sdfTo.format(sdfFrom.parse(vehicle.carLastCheckup)));
+			} catch (ParseException e) {
+				tvLastCheckup.setText(vehicle.carLastCheckup);
+				e.printStackTrace();
+			}
+		}
+		
 		if(!TextUtils.isEmpty(vehicle.carCheckupStatus))
 			tvStatus.setText(vehicle.carCheckupStatus);
 		else
@@ -260,7 +272,7 @@ public class DiagnosticsFragment extends Fragment{
 		
 		//--------------------------------------------- DTC ------------------------------------
 		DbHelper dbHelper = DbHelper.getInstance(getActivity());
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		SQLiteDatabase db = dbHelper.openDatabase();
 		
 		Cursor c = db.query(DTCEntry.TABLE_NAME, 
 				new String[]{
@@ -540,6 +552,8 @@ public class DiagnosticsFragment extends Fragment{
 			}
 		}
 		c.close();
+		dbHelper.closeDatabase();
+		dbHelper.close();
 		
 	}
 	

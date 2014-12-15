@@ -7,11 +7,13 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -24,6 +26,7 @@ import com.farmers.ubi.R;
 import com.modusgo.ubi.customviews.ExpandableHeightGridView;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.ScoreGraphContract.ScoreGraphEntry;
+import com.modusgo.ubi.db.ScoreInfoContract.ScoreInfoEntry;
 import com.modusgo.ubi.db.ScorePercentageContract.ScorePercentageEntry;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.modusgo.ubi.utils.Utils;
@@ -58,7 +61,8 @@ public class ScoreInfoActivity extends MainActivity{
 		}
 
 		vehicle = getVehicleFromDb(vehicleId);
-		
+
+		llAdditionalData = (LinearLayout) findViewById(R.id.llValue);
 		ExpandableHeightGridView gvPercentData = (ExpandableHeightGridView) findViewById(R.id.gvPercentData);
 		//gvPercentData.setColumnWidth(100);
 		gvPercentData.setNumColumns(3);
@@ -66,9 +70,10 @@ public class ScoreInfoActivity extends MainActivity{
 		percentInfoData = new ArrayList<Map<String, Object>>();
 		
 		DbHelper dbHelper = DbHelper.getInstance(this);
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		SQLiteDatabase db = dbHelper.openDatabase();
+		fillAdditionalInfo(db);
 		boolean updateSuccessful = updatePercentInfoAdapter(db);
-		db.close();
+		dbHelper.closeDatabase();
 		dbHelper.close();
 		if(!updateSuccessful){
 			finish();
@@ -110,9 +115,6 @@ public class ScoreInfoActivity extends MainActivity{
 				}
 			}
 		});
-		
-		llAdditionalData = (LinearLayout) findViewById(R.id.llValue);
-		fillAdditionalInfo();
         
 	}
 	
@@ -124,7 +126,7 @@ public class ScoreInfoActivity extends MainActivity{
 	
 	private Vehicle getVehicleFromDb(long id){
 		DbHelper dHelper = DbHelper.getInstance(this);
-		SQLiteDatabase db = dHelper.getReadableDatabase();
+		SQLiteDatabase db = dHelper.openDatabase();
 		Cursor c = db.query(VehicleEntry.TABLE_NAME, 
 				new String[]{
 				VehicleEntry._ID,
@@ -144,7 +146,7 @@ public class ScoreInfoActivity extends MainActivity{
 			v.lastTripDate = c.getString(4);
 		}
 		c.close();
-		db.close();
+		dHelper.closeDatabase();
 		dHelper.close();
 		return v;
 	}
@@ -187,22 +189,49 @@ public class ScoreInfoActivity extends MainActivity{
 		return true;
 	}
 	
-	private void fillAdditionalInfo(){
+	private void fillAdditionalInfo(SQLiteDatabase db){
+		Cursor c = db.query(ScoreInfoEntry.TABLE_NAME, 
+				new String[]{
+				ScoreInfoEntry._ID,
+				ScoreInfoEntry.COLUMN_NAME_PROFILE_DATE,
+				ScoreInfoEntry.COLUMN_NAME_START_DATE,
+				ScoreInfoEntry.COLUMN_NAME_PROFILE_DRIVING_MILES,
+				ScoreInfoEntry.COLUMN_NAME_ESTIMATED_ANNUAL_DRIVING}, 
+				ScoreInfoEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id, null, null, null, ScoreGraphEntry._ID+" ASC");
+		
 		SimpleDateFormat sdf = new SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault());
-		DecimalFormat df = new DecimalFormat("0.000");
+		TimeZone tzTo = TimeZone.getTimeZone(prefs.getString(Constants.PREF_TIMEZONE_OFFSET, Constants.DEFAULT_TIMEZONE));
+		sdf.setTimeZone(tzTo);
+		DecimalFormat df = new DecimalFormat("0");
 		
 		LinkedHashMap<String, String> infoFields = new LinkedHashMap<String, String>();
 		infoFields.put("Last trip", Utils.convertTime(vehicle.lastTripDate, sdf));
 		infoFields.put("VIN", vehicle.carVIN);
-		infoFields.put("Profile date", "N/A");
-		infoFields.put("Start date", "N/A");
-		if(prefs.getString(Constants.PREF_UNITS_OF_MEASURE, "mile").equals("mile")){
-			infoFields.put("Profile driving miles", df.format(vehicle.totalDistance)+" Miles");
+		
+		if(c.moveToFirst()){
+			String profileDate = Utils.convertTime(c.getString(1), sdf);
+			if(TextUtils.isEmpty(profileDate))
+				infoFields.put("Profile date", "N/A");
+			else
+				infoFields.put("Profile date", profileDate);
+			
+			String startDate = Utils.convertTime(c.getString(2), sdf);
+			if(TextUtils.isEmpty(startDate))
+				infoFields.put("Start date", "N/A");
+			else
+				infoFields.put("Start date", startDate);
+			
+			if(prefs.getString(Constants.PREF_UNITS_OF_MEASURE, "mile").equals("mile")){
+				infoFields.put("Profile driving distance (Miles)", df.format(c.getFloat(3))+" Miles");
+				infoFields.put("Estimated annual driving", df.format(c.getFloat(4))+" Miles");
+			}
+			else{
+				infoFields.put("Profile driving distance (Kilometers)", df.format(c.getFloat(3))+" KM");
+				infoFields.put("Estimated annual driving", df.format(c.getFloat(4))+" KM");
+			}
+			
 		}
-		else{
-			infoFields.put("Profile driving kilometers", df.format(vehicle.totalDistance)+" KM");
-		}
-		infoFields.put("Estimated annual driving", "N/A");
+		c.close();
 		
 		LayoutInflater inflater = getLayoutInflater();
 		

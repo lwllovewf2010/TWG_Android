@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
@@ -33,6 +34,7 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.modusgo.dd.CallSaverService;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.requesttasks.SendEventsRequest;
+import com.modusgo.ubi.utils.Device;
 import com.modusgo.ubi.utils.RequestGet;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -218,6 +220,7 @@ public class InitActivity extends FragmentActivity {
 							e.putString(Constants.PREF_ROLE, driverJSON.optString(Constants.PREF_ROLE));
 							e.putString(Constants.PREF_PHONE, driverJSON.optString(Constants.PREF_PHONE));
 							e.putString(Constants.PREF_TIMEZONE, driverJSON.optString(Constants.PREF_TIMEZONE));
+							e.putString(Constants.PREF_TIMEZONE_OFFSET, driverJSON.optString(Constants.PREF_TIMEZONE_OFFSET));
 							e.putString(Constants.PREF_PHOTO, driverJSON.optString(Constants.PREF_PHOTO));
 						}
 						
@@ -273,12 +276,15 @@ public class InitActivity extends FragmentActivity {
 						
 						if(responseJSON.has("device")){
 							JSONObject deviceJSON = responseJSON.getJSONObject("device");
-							e.putString(Constants.PREF_DEVICE_MEID, deviceJSON.optString("meid"));
-							e.putString(Constants.PREF_DEVICE_TYPE, deviceJSON.optString("type"));
-							e.putString(Constants.PREF_DEVICE_DATA_URL, deviceJSON.optString("data_url"));
-							e.putString(Constants.PREF_DEVICE_AUTH_KEY, deviceJSON.optString("auth_key"));
-							e.putBoolean(Constants.PREF_DEVICE_EVENTS, deviceJSON.optBoolean("events"));
-							e.putBoolean(Constants.PREF_DEVICE_TRIPS, deviceJSON.optBoolean("trips"));
+							e.putString(Device.PREF_DEVICE_TYPE, deviceJSON.optString("type"));
+							e.putString(Device.PREF_DEVICE_MEID, deviceJSON.optString("meid"));
+							e.putBoolean(Device.PREF_DEVICE_EVENTS, deviceJSON.optBoolean("events"));
+							e.putBoolean(Device.PREF_DEVICE_IN_TRIP, !TextUtils.isEmpty(deviceJSON.optString("in_trip")));
+							e.putString(Device.PREF_DEVICE_LATITUDE, deviceJSON.optString("latitude"));
+							e.putString(Device.PREF_DEVICE_LONGITUDE, deviceJSON.optString("longitude"));
+							e.putString(Device.PREF_DEVICE_LOCATION_DATE, deviceJSON.optString("location_date"));
+							
+							Device.checkDevice(getApplicationContext());
 						}
 
 						e.commit();

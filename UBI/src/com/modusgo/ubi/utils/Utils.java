@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 import java.util.UUID;
 
 import org.apache.http.HttpResponse;
@@ -140,6 +141,7 @@ public class Utils {
 	
 	public static String convertTime(String date, SimpleDateFormat sdfTo){
 		SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
+		sdfFrom.setTimeZone(TimeZone.getTimeZone(Constants.DEFAULT_TIMEZONE));
 		try {
 			return sdfTo.format(sdfFrom.parse(date));
 		} catch (ParseException e) {

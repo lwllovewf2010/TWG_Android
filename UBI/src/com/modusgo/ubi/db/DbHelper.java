@@ -19,11 +19,13 @@ import com.modusgo.ubi.Recall;
 import com.modusgo.ubi.ScoreCirclesActivity.CirclesSection;
 import com.modusgo.ubi.ScoreFragment.MonthStats;
 import com.modusgo.ubi.ScorePieChartActivity.PieChartTab;
+import com.modusgo.ubi.Tracking;
 import com.modusgo.ubi.Trip;
 import com.modusgo.ubi.Trip.Point;
 import com.modusgo.ubi.Vehicle;
 import com.modusgo.ubi.db.AlertContract.AlertEntry;
-import com.modusgo.ubi.db.DDEventContract.DDEventEntry;
+import com.modusgo.ubi.db.ScoreInfoContract.ScoreInfoEntry;
+import com.modusgo.ubi.db.TrackingContract.TrackingEntry;
 import com.modusgo.ubi.db.DTCContract.DTCEntry;
 import com.modusgo.ubi.db.LimitsContract.LimitsEntry;
 import com.modusgo.ubi.db.MaintenanceContract.MaintenanceEntry;
@@ -135,13 +137,22 @@ public class DbHelper extends SQLiteOpenHelper {
 		    ScorePercentageEntry.COLUMN_NAME_STAT_NAME + TEXT_TYPE + COMMA_SEP +
 		    ScorePercentageEntry.COLUMN_NAME_STAT_VALUE + INT_TYPE +  " ); ",
 	
+		    "CREATE TABLE " + ScoreInfoEntry.TABLE_NAME + " (" +
+		    ScoreInfoEntry._ID + " INTEGER PRIMARY KEY," +
+		    ScoreInfoEntry.COLUMN_NAME_VEHICLE_ID + INT_TYPE + COMMA_SEP +
+		    ScoreInfoEntry.COLUMN_NAME_PROFILE_DATE + TEXT_TYPE + COMMA_SEP +
+		    ScoreInfoEntry.COLUMN_NAME_START_DATE + TEXT_TYPE + COMMA_SEP +
+		    ScoreInfoEntry.COLUMN_NAME_PROFILE_DRIVING_MILES + FLOAT_TYPE + COMMA_SEP +
+		    ScoreInfoEntry.COLUMN_NAME_ESTIMATED_ANNUAL_DRIVING + FLOAT_TYPE +  " ); ",
+	
 		    "CREATE TABLE " + ScorePieChartEntry.TABLE_NAME + " (" +
 		    ScorePieChartEntry._ID + " INTEGER PRIMARY KEY," +
 		    ScorePieChartEntry.COLUMN_NAME_VEHICLE_ID + INT_TYPE + COMMA_SEP +
 		    ScorePieChartEntry.COLUMN_NAME_TAB + TEXT_TYPE + COMMA_SEP +
 		    ScorePieChartEntry.COLUMN_NAME_VALUE + FLOAT_TYPE + COMMA_SEP +
 		    ScorePieChartEntry.COLUMN_NAME_TITLE + TEXT_TYPE + COMMA_SEP +
-		    ScorePieChartEntry.COLUMN_NAME_SUBTITLE + TEXT_TYPE + " ); ",
+		    ScorePieChartEntry.COLUMN_NAME_SUBTITLE + TEXT_TYPE + COMMA_SEP +
+		    ScorePieChartEntry.COLUMN_NAME_COLOR + INT_TYPE + " ); ",
 	
 		    "CREATE TABLE " + ScoreCirclesEntry.TABLE_NAME + " (" +
 		    ScoreCirclesEntry._ID + " INTEGER PRIMARY KEY," +
@@ -219,10 +230,21 @@ public class DbHelper extends SQLiteOpenHelper {
 			AlertEntry.COLUMN_NAME_GEOFENCE + TEXT_TYPE + COMMA_SEP +
 			AlertEntry.COLUMN_NAME_ADDRESS + TEXT_TYPE + " ); ",
 		    
-		    "CREATE TABLE " + DDEventEntry.TABLE_NAME + " (" +
-		    DDEventEntry._ID + " INTEGER PRIMARY KEY," +
-		    DDEventEntry.COLUMN_NAME_EVENT + TEXT_TYPE + COMMA_SEP +
-			DDEventEntry.COLUMN_NAME_TIMESTAMP + TEXT_TYPE + " )"};
+		    "CREATE TABLE " + TrackingEntry.TABLE_NAME + " (" +
+		    TrackingEntry._ID + " INTEGER PRIMARY KEY," +
+		    TrackingEntry.COLUMN_NAME_TIMESTAMP + TEXT_TYPE + COMMA_SEP +
+		    TrackingEntry.COLUMN_NAME_LATITUDE + FLOAT_TYPE + COMMA_SEP +
+		    TrackingEntry.COLUMN_NAME_LONGITUDE + FLOAT_TYPE + COMMA_SEP +
+		    TrackingEntry.COLUMN_NAME_ALTITUDE + FLOAT_TYPE + COMMA_SEP +
+		    TrackingEntry.COLUMN_NAME_HEADING + FLOAT_TYPE + COMMA_SEP +
+		    TrackingEntry.COLUMN_NAME_HORIZONTAL_ACCURACY + FLOAT_TYPE + COMMA_SEP +
+		    TrackingEntry.COLUMN_NAME_VERTICAL_ACCURACY + FLOAT_TYPE + COMMA_SEP +
+		    TrackingEntry.COLUMN_NAME_SATELITES + INT_TYPE + COMMA_SEP +
+		    TrackingEntry.COLUMN_NAME_FIX_STATUS + INT_TYPE + COMMA_SEP +
+		    TrackingEntry.COLUMN_NAME_SPEED + FLOAT_TYPE + COMMA_SEP +
+		    TrackingEntry.COLUMN_NAME_EVENT + TEXT_TYPE + COMMA_SEP +
+		    TrackingEntry.COLUMN_NAME_RAW_DATA + TEXT_TYPE + COMMA_SEP +
+			TrackingEntry.COLUMN_NAME_BLOCKED + INT_TYPE + " )"};
 
 	private static final String[] SQL_DELETE_ENTRIES = new String[]{
 	"DROP TABLE IF EXISTS " + VehicleEntry.TABLE_NAME,
@@ -232,6 +254,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	"DROP TABLE IF EXISTS " + PointEntry.TABLE_NAME,
 	"DROP TABLE IF EXISTS " + ScoreGraphEntry.TABLE_NAME,
 	"DROP TABLE IF EXISTS " + ScorePercentageEntry.TABLE_NAME,
+	"DROP TABLE IF EXISTS " + ScoreInfoEntry.TABLE_NAME,
 	"DROP TABLE IF EXISTS " + ScorePieChartEntry.TABLE_NAME,
 	"DROP TABLE IF EXISTS " + ScoreCirclesEntry.TABLE_NAME,
 	"DROP TABLE IF EXISTS " + DTCEntry.TABLE_NAME,
@@ -240,15 +263,17 @@ public class DbHelper extends SQLiteOpenHelper {
 	"DROP TABLE IF EXISTS " + WarrantyInfoEntry.TABLE_NAME,
 	"DROP TABLE IF EXISTS " + LimitsEntry.TABLE_NAME,
 	"DROP TABLE IF EXISTS " + AlertEntry.TABLE_NAME,
-	"DROP TABLE IF EXISTS " + DDEventEntry.TABLE_NAME};
+	"DROP TABLE IF EXISTS " + TrackingEntry.TABLE_NAME};
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 44;
+	public static final int DATABASE_VERSION = 49;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;
+    private SQLiteDatabase database;
+    private int databaseOpenCounter = 0;
 	
-	public static DbHelper getInstance(Context context) {
+	public static synchronized DbHelper getInstance(Context context) {
 		// Use the application context, which will ensure that you 
 		// don't accidentally leak an Activity's context.
 		// See this article for more information: http://bit.ly/6LRzfx
@@ -256,6 +281,26 @@ public class DbHelper extends SQLiteOpenHelper {
 			sInstance = new DbHelper(context.getApplicationContext());
 		}
 		return sInstance;
+	}
+	
+	public synchronized SQLiteDatabase openDatabase() {
+        databaseOpenCounter++;
+        if(databaseOpenCounter == 1) {
+            database = sInstance.getWritableDatabase();
+        }
+        return database;
+    }
+	
+	public synchronized void closeDatabase() {
+        databaseOpenCounter--;
+        if(databaseOpenCounter == 0) {
+            database.close();
+        }
+	}
+	@Override
+	public synchronized void close() {
+		if(databaseOpenCounter == 0)
+			super.close();
 	}
 	
 	public DbHelper(Context context) {
@@ -280,7 +325,8 @@ public class DbHelper extends SQLiteOpenHelper {
 	}
 	
 	public ArrayList<Vehicle> getVehiclesShort(){
-		SQLiteDatabase db = sInstance.getReadableDatabase();
+		System.out.println("Get vehicles short");
+		SQLiteDatabase db = openDatabase();
 		Cursor c = db.query(VehicleEntry.TABLE_NAME, 
 				new String[]{
 				VehicleEntry._ID,
@@ -314,11 +360,13 @@ public class DbHelper extends SQLiteOpenHelper {
 			}
 		}
 		c.close();
+		closeDatabase();
 		return drivers;
 	}
 	
 	public Vehicle getVehicleShort(long id){
-		SQLiteDatabase db = sInstance.getReadableDatabase();
+		System.out.println("Get vehicle short");
+		SQLiteDatabase db = openDatabase();
 		Cursor c = db.query(VehicleEntry.TABLE_NAME, 
 				new String[]{
 				VehicleEntry._ID,
@@ -338,12 +386,13 @@ public class DbHelper extends SQLiteOpenHelper {
 			d.longitude = c.getDouble(4);
 		}
 		c.close();
-		db.close();
+		closeDatabase();
 		return d;
 	}
 	
 	public Vehicle getVehicle(long id){
-		SQLiteDatabase db = sInstance.getReadableDatabase();
+		System.out.println("Get vehicle");
+		SQLiteDatabase db = openDatabase();
 		Cursor c = db.query(VehicleEntry.TABLE_NAME, 
 				new String[]{
 				VehicleEntry._ID,
@@ -418,7 +467,7 @@ public class DbHelper extends SQLiteOpenHelper {
 				
 		}
 		c.close();
-		db.close();
+		closeDatabase();
 		return v;
 	}
 	
@@ -429,7 +478,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	}
 	
 	public void saveVehicles(ArrayList<Vehicle> drivers, boolean removeVehicles){
-		SQLiteDatabase database = sInstance.getWritableDatabase();
+		SQLiteDatabase database = openDatabase();
 		
 		if(database!=null && drivers!=null){
 			String[] fields = new String[]{
@@ -513,7 +562,6 @@ public class DbHelper extends SQLiteOpenHelper {
 		    	statement.execute();
 		    	
 			}
-		    
 		    database.setTransactionSuccessful();	
 		    database.endTransaction();
 		    statement.close();
@@ -529,7 +577,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		    }
 		}
 		
-		database.close();
+		closeDatabase();
 	}
 	
 	public void saveVehicles(ArrayList<Vehicle> drivers){
@@ -543,7 +591,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	}
 	
 	public void saveTrips(long driverId, ArrayList<Trip> trips){
-		SQLiteDatabase database = sInstance.getWritableDatabase();
+		SQLiteDatabase database = openDatabase();
 		
 		if(database!=null && database.isOpen() && trips!=null){
 			String sql = "INSERT OR REPLACE INTO "+ TripEntry.TABLE_NAME +" ("
@@ -613,12 +661,12 @@ public class DbHelper extends SQLiteOpenHelper {
 //		    removeStatement.close();
 		}
 		
-		database.close();
+		closeDatabase();
 		
 	}
 	
 	public void saveRoute(long tripId, ArrayList<LatLng> route){
-		SQLiteDatabase database = sInstance.getWritableDatabase();
+		SQLiteDatabase database = openDatabase();
 		
 		if(database!=null && route!=null){
 			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+RouteEntry.TABLE_NAME+" WHERE "+RouteEntry.COLUMN_NAME_TRIP_ID+" = "+tripId);
@@ -650,11 +698,11 @@ public class DbHelper extends SQLiteOpenHelper {
 		    statement.close();
 		}
 		
-		database.close();
+		closeDatabase();
 	}
 	
 	public void saveSpeedingRoute(long tripId, ArrayList<ArrayList<LatLng>> routes){
-		SQLiteDatabase database = sInstance.getWritableDatabase();
+		SQLiteDatabase database = openDatabase();
 		
 		if(database!=null && routes!=null){
 			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+SpeedingRouteEntry.TABLE_NAME+" WHERE "+SpeedingRouteEntry.COLUMN_NAME_TRIP_ID+" = "+tripId);
@@ -693,11 +741,11 @@ public class DbHelper extends SQLiteOpenHelper {
 		    statement.close();
 		}
 		
-		database.close();
+		closeDatabase();
 	}
 	
 	public void savePoints(long tripId, ArrayList<Point> points){
-		SQLiteDatabase database = sInstance.getWritableDatabase();
+		SQLiteDatabase database = openDatabase();
 		
 		if(database!=null && points!=null){
 			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+PointEntry.TABLE_NAME+" WHERE "+PointEntry.COLUMN_NAME_TRIP_ID+" = "+tripId);
@@ -735,11 +783,11 @@ public class DbHelper extends SQLiteOpenHelper {
 		    statement.close();
 		}
 		
-		database.close();
+		closeDatabase();
 	}
 	
 	public void saveScoreGraph(long driverId, MonthStats[] yearStats){
-		SQLiteDatabase database = sInstance.getWritableDatabase();
+		SQLiteDatabase database = openDatabase();
 		
 		if(database!=null && yearStats!=null){
 			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+ScoreGraphEntry.TABLE_NAME+" WHERE "+ScoreGraphEntry.COLUMN_NAME_VEHICLE_ID+" = "+driverId);
@@ -773,11 +821,11 @@ public class DbHelper extends SQLiteOpenHelper {
 		    statement.close();
 		}
 		
-		database.close();
+		closeDatabase();
 	}
 	
 	public void saveScorePercentage(long driverId, LinkedHashMap<String, Integer> valuesMap){
-		SQLiteDatabase database = sInstance.getWritableDatabase();
+		SQLiteDatabase database = openDatabase();
 		
 		if(database!=null && valuesMap!=null){
 			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+ScorePercentageEntry.TABLE_NAME+" WHERE "+ScorePercentageEntry.COLUMN_NAME_VEHICLE_ID+" = "+driverId);
@@ -813,11 +861,50 @@ public class DbHelper extends SQLiteOpenHelper {
 		    statement.close();
 		}
 		
-		database.close();
+		closeDatabase();
+	}
+	
+	public void saveScoreInfo(long vehicleId, String profileDate, String startDate, float profileDrivingMiles, float estimatedAnnualDriving){
+		SQLiteDatabase database = openDatabase();
+		
+		if(database!=null){
+			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+ScoreInfoEntry.TABLE_NAME+" WHERE "+ScoreInfoEntry.COLUMN_NAME_VEHICLE_ID+" = "+vehicleId);
+		    database.beginTransaction();
+		    removeStatement.clearBindings();
+	        removeStatement.execute();
+	        database.setTransactionSuccessful();	
+		    database.endTransaction();
+		    removeStatement.close();
+			
+			String sql = "INSERT INTO "+ ScoreInfoEntry.TABLE_NAME +" ("
+					+ ScoreInfoEntry.COLUMN_NAME_VEHICLE_ID +","
+					+ ScoreInfoEntry.COLUMN_NAME_PROFILE_DATE +","
+					+ ScoreInfoEntry.COLUMN_NAME_START_DATE +","
+					+ ScoreInfoEntry.COLUMN_NAME_PROFILE_DRIVING_MILES +","
+					+ ScoreInfoEntry.COLUMN_NAME_ESTIMATED_ANNUAL_DRIVING
+					+ ") VALUES (?,?,?,?,?);";
+			
+			SQLiteStatement statement = database.compileStatement(sql);
+		    database.beginTransaction();
+		    
+		    statement.clearBindings();
+		    statement.bindLong(1, vehicleId);
+		    statement.bindString(2, profileDate);
+		    statement.bindString(3, startDate);
+		    statement.bindDouble(4, profileDrivingMiles);
+		    statement.bindDouble(5, estimatedAnnualDriving);
+		    statement.execute();
+		    
+		    database.setTransactionSuccessful();	
+		    database.endTransaction();
+		    statement.close();
+		}
+		
+		closeDatabase();
 	}
 	
 	public void saveScorePieCharts(long driverId, ArrayList<PieChartTab> tabs){
-		SQLiteDatabase database = sInstance.getWritableDatabase();
+		SQLiteDatabase database = openDatabase();
 		
 		if(database!=null && tabs!=null){
 			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+ScorePieChartEntry.TABLE_NAME+" WHERE "+ScorePieChartEntry.COLUMN_NAME_VEHICLE_ID+" = "+driverId);
@@ -833,8 +920,9 @@ public class DbHelper extends SQLiteOpenHelper {
 					+ ScorePieChartEntry.COLUMN_NAME_TAB +","
 					+ ScorePieChartEntry.COLUMN_NAME_VALUE +","
 					+ ScorePieChartEntry.COLUMN_NAME_TITLE +","
-					+ ScorePieChartEntry.COLUMN_NAME_SUBTITLE
-					+ ") VALUES (?,?,?,?,?);";
+					+ ScorePieChartEntry.COLUMN_NAME_SUBTITLE +","
+					+ ScorePieChartEntry.COLUMN_NAME_COLOR
+					+ ") VALUES (?,?,?,?,?,?);";
 			
 			SQLiteStatement statement = database.compileStatement(sql);
 		    database.beginTransaction();
@@ -851,6 +939,7 @@ public class DbHelper extends SQLiteOpenHelper {
 			    		statement.bindString(5, tab.subtitles[i]);
 			    	else
 			    		statement.bindString(5, "");
+		    		statement.bindLong(6, tab.colorIds[i]);
 			    	statement.execute();
 				}
 			}
@@ -860,11 +949,11 @@ public class DbHelper extends SQLiteOpenHelper {
 		    statement.close();
 		}
 		
-		database.close();
+		closeDatabase();
 	}
 	
 	public void saveScoreCircles(long driverId, LinkedHashMap<String, ArrayList<CirclesSection>> tabs){
-		SQLiteDatabase database = sInstance.getWritableDatabase();
+		SQLiteDatabase database = openDatabase();
 		
 		if(database!=null && tabs!=null){
 			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+ScoreCirclesEntry.TABLE_NAME+" WHERE "+ScoreCirclesEntry.COLUMN_NAME_VEHICLE_ID+" = "+driverId);
@@ -908,11 +997,11 @@ public class DbHelper extends SQLiteOpenHelper {
 		    statement.close();
 		}
 		
-		database.close();
+		closeDatabase();
 	}
 	
 	public void saveDTCs(long vehicleId, ArrayList<DiagnosticsTroubleCode> dtcs){
-		SQLiteDatabase database = sInstance.getWritableDatabase();
+		SQLiteDatabase database = openDatabase();
 		
 		if(database!=null && dtcs!=null){
 			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+DTCEntry.TABLE_NAME+" WHERE "+DTCEntry.COLUMN_NAME_VEHICLE_ID+" = "+vehicleId);
@@ -965,11 +1054,11 @@ public class DbHelper extends SQLiteOpenHelper {
 		    statement.close();
 		}
 		
-		database.close();
+		closeDatabase();
 	}
 	
 	public void saveRecalls(long vehicleId, ArrayList<Recall> recalls){
-		SQLiteDatabase database = sInstance.getWritableDatabase();
+		SQLiteDatabase database = openDatabase();
 		
 		if(database!=null && recalls!=null){
 			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+RecallEntry.TABLE_NAME+" WHERE "+RecallEntry.COLUMN_NAME_VEHICLE_ID+" = "+vehicleId);
@@ -1013,11 +1102,11 @@ public class DbHelper extends SQLiteOpenHelper {
 		    statement.close();
 		}
 		
-		database.close();
+		closeDatabase();
 	}
 	
 	public void deleteRecall(long vehicleId, long recallId){
-		SQLiteDatabase database = sInstance.getWritableDatabase();
+		SQLiteDatabase database = openDatabase();
 		
 		if(database!=null){
 			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+RecallEntry.TABLE_NAME+" WHERE "+RecallEntry.COLUMN_NAME_VEHICLE_ID+" = "+vehicleId +
@@ -1030,11 +1119,11 @@ public class DbHelper extends SQLiteOpenHelper {
 		    removeStatement.close();
 		}
 		
-		database.close();
+		closeDatabase();
 	}
 	
 	public void saveMaintenances(long vehicleId, ArrayList<Maintenance> maintenances){
-		SQLiteDatabase database = sInstance.getWritableDatabase();
+		SQLiteDatabase database = openDatabase();
 		
 		if(database!=null && maintenances!=null){
 			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+MaintenanceEntry.TABLE_NAME+" WHERE "+MaintenanceEntry.COLUMN_NAME_VEHICLE_ID+" = "+vehicleId);
@@ -1075,11 +1164,11 @@ public class DbHelper extends SQLiteOpenHelper {
 		    statement.close();
 		}
 		
-		database.close();
+		closeDatabase();
 	}
 	
 	public void deleteMaintenance(long vehicleId, long maintenanceId){
-		SQLiteDatabase database = sInstance.getWritableDatabase();
+		SQLiteDatabase database = openDatabase();
 		
 		if(database!=null){
 			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+MaintenanceEntry.TABLE_NAME+" WHERE "+MaintenanceEntry.COLUMN_NAME_VEHICLE_ID+" = "+vehicleId +
@@ -1092,11 +1181,11 @@ public class DbHelper extends SQLiteOpenHelper {
 		    removeStatement.close();
 		}
 		
-		database.close();
+		closeDatabase();
 	}
 	
 	public void saveWarrantyInformation(long vehicleId, ArrayList<WarrantyInformation> warrantyInfo){
-		SQLiteDatabase database = sInstance.getWritableDatabase();
+		SQLiteDatabase database = openDatabase();
 		
 		if(database!=null && warrantyInfo!=null){
 			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+WarrantyInfoEntry.TABLE_NAME+" WHERE "+WarrantyInfoEntry.COLUMN_NAME_VEHICLE_ID+" = "+vehicleId);
@@ -1131,11 +1220,11 @@ public class DbHelper extends SQLiteOpenHelper {
 		    statement.close();
 		}
 		
-		database.close();
+		closeDatabase();
 	}
 	
 	public void saveLimits(long driverId, ArrayList<Limit> limits){
-		SQLiteDatabase database = sInstance.getWritableDatabase();
+		SQLiteDatabase database = openDatabase();
 		
 		if(database!=null && limits!=null){
 			SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+LimitsEntry.TABLE_NAME+" WHERE "+LimitsEntry.COLUMN_NAME_VEHICLE_ID+" = "+driverId);
@@ -1180,11 +1269,11 @@ public class DbHelper extends SQLiteOpenHelper {
 		    statement.close();
 		}
 		
-		database.close();
+		closeDatabase();
 	}
 	
 	public void saveAlert(long vehicleId, Alert alert){
-		SQLiteDatabase database = sInstance.getWritableDatabase();
+		SQLiteDatabase database = openDatabase();
 		
 		if(database!=null){		    
 		    String sql = "INSERT OR REPLACE INTO "+ AlertEntry.TABLE_NAME +" ("
@@ -1224,12 +1313,12 @@ public class DbHelper extends SQLiteOpenHelper {
 		    database.endTransaction();
 		    statement.close();
 			
-			database.close();
+			closeDatabase();
 		}
 	}
 	
 	public void saveAlerts(long vehicleId, ArrayList<Alert> alerts){
-		SQLiteDatabase database = sInstance.getWritableDatabase();
+		SQLiteDatabase database = openDatabase();
 		
 		if(database!=null && alerts!=null){
 			
@@ -1275,11 +1364,11 @@ public class DbHelper extends SQLiteOpenHelper {
 		    statement.close();
 		}
 		
-		database.close();
+		closeDatabase();
 	}
 	
 	public void deleteAlert(long vehicleId, long alertId){
-		SQLiteDatabase database = sInstance.getWritableDatabase();
+		SQLiteDatabase database = openDatabase();
 		
 		if(database!=null){
 			SQLiteStatement removeStatement = database.compileStatement(
@@ -1292,11 +1381,11 @@ public class DbHelper extends SQLiteOpenHelper {
 		    removeStatement.close();
 		}
 		
-		database.close();
+		closeDatabase();
 	}
 	
 	public void deleteAllAlerts(long vehicleId){
-		SQLiteDatabase database = sInstance.getWritableDatabase();
+		SQLiteDatabase database = openDatabase();
 		
 		if(database!=null){
 			SQLiteStatement removeStatement = database.compileStatement(
@@ -1309,36 +1398,58 @@ public class DbHelper extends SQLiteOpenHelper {
 		    removeStatement.close();
 		}
 		
-		database.close();
+		closeDatabase();
 	}
 	
-	public void saveDDEvent(String event, String timestamp){
-		SQLiteDatabase database = sInstance.getWritableDatabase();
+	public void saveTrackingEvent(Tracking timepoint){
+		SQLiteDatabase database = openDatabase();
 		
 		if(database!=null){
 			
-			String sql = "INSERT INTO "+ DDEventEntry.TABLE_NAME +" ("
-					+ DDEventEntry.COLUMN_NAME_EVENT +","
-					+ DDEventEntry.COLUMN_NAME_TIMESTAMP
-					+ ") VALUES (?,?);";
+			String sql = "INSERT INTO "+ TrackingEntry.TABLE_NAME +" ("
+					+ TrackingEntry.COLUMN_NAME_TIMESTAMP + ","
+					+ TrackingEntry.COLUMN_NAME_EVENT + ","
+					+ TrackingEntry.COLUMN_NAME_LATITUDE + ","
+					+ TrackingEntry.COLUMN_NAME_LONGITUDE + ","
+					+ TrackingEntry.COLUMN_NAME_ALTITUDE + ","
+					+ TrackingEntry.COLUMN_NAME_SATELITES + ","
+					+ TrackingEntry.COLUMN_NAME_HEADING + ","
+					+ TrackingEntry.COLUMN_NAME_SPEED + ","
+					+ TrackingEntry.COLUMN_NAME_FIX_STATUS + ","
+					+ TrackingEntry.COLUMN_NAME_RAW_DATA + ","
+					+ TrackingEntry.COLUMN_NAME_HORIZONTAL_ACCURACY + ","
+					+ TrackingEntry.COLUMN_NAME_VERTICAL_ACCURACY + ","
+					+ TrackingEntry.COLUMN_NAME_BLOCKED
+					+ ") VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?);";
 			
 			SQLiteStatement statement = database.compileStatement(sql);
 		    database.beginTransaction();
 		    
 		    statement.clearBindings();
-		    statement.bindString(1, event);
-		    statement.bindString(2, timestamp);
+		    statement.bindString(1, timepoint.timestamp);
+		    statement.bindString(2, timepoint.event);
+		    statement.bindDouble(3, timepoint.latitude);
+		    statement.bindDouble(4, timepoint.longitude);
+		    statement.bindDouble(5, timepoint.altitude);
+		    statement.bindLong(6, timepoint.satelites);
+		    statement.bindDouble(7, timepoint.heading);
+		    statement.bindDouble(8, timepoint.speed);
+		    statement.bindLong(9, timepoint.fixStatus ? 1 : 0);
+		    statement.bindString(10, timepoint.rawData);
+		    statement.bindDouble(11, timepoint.horizontalAccuracy);
+		    statement.bindDouble(12, timepoint.verticalAccuracy);
+		    statement.bindLong(13, timepoint.blocked ? 1 : 0);
 		    statement.execute();
 		    
 		    database.setTransactionSuccessful();	
 		    database.endTransaction();
 		    statement.close();
 		}
-		database.close();
+		closeDatabase();
 	}
 	
-	public void deleteDDEvents(ArrayList<Long> ids){
-		SQLiteDatabase database = sInstance.getWritableDatabase();
+	public void setTrackingEventsBlock(ArrayList<Long> ids, boolean blocked){
+		SQLiteDatabase database = openDatabase();
 		
 		if(database!=null && ids!=null && ids.size()>0){
 			
@@ -1348,7 +1459,9 @@ public class DbHelper extends SQLiteOpenHelper {
 		    	sIds+= i!=idsSize-1 ? ids.get(i)+"," : ids.get(i);
 		    }
 			
-		    SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+DDEventEntry.TABLE_NAME+" WHERE "+DDEventEntry._ID+" IN (" + sIds + ")");
+		    String blockStr = blocked ? "1" : "0";
+		    
+		    SQLiteStatement removeStatement = database.compileStatement("UPDATE "+TrackingEntry.TABLE_NAME+"SET " + TrackingEntry.COLUMN_NAME_BLOCKED + "= '"+blockStr+"' WHERE "+TrackingEntry._ID+" IN (" + sIds + ")");
 		    database.beginTransaction();
 		    removeStatement.clearBindings();
 	        removeStatement.execute();
@@ -1357,7 +1470,30 @@ public class DbHelper extends SQLiteOpenHelper {
 		    removeStatement.close();
 		    
 		}
-		database.close();
+		closeDatabase();
+	}
+	
+	public void deleteTrackingEvents(ArrayList<Long> ids){
+		SQLiteDatabase database = openDatabase();
+		
+		if(database!=null && ids!=null && ids.size()>0){
+			
+			String sIds = "";
+			int idsSize = ids.size();
+		    for (int i = 0; i < idsSize; i++) {
+		    	sIds+= i!=idsSize-1 ? ids.get(i)+"," : ids.get(i);
+		    }
+			
+		    SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+TrackingEntry.TABLE_NAME+" WHERE "+TrackingEntry._ID+" IN (" + sIds + ")");
+		    database.beginTransaction();
+		    removeStatement.clearBindings();
+	        removeStatement.execute();
+	        database.setTransactionSuccessful();
+		    database.endTransaction();
+		    removeStatement.close();
+		    
+		}
+		closeDatabase();
 	}
 	
 	private String buildSQLStatementString(String start, String tableName, String[] fields){

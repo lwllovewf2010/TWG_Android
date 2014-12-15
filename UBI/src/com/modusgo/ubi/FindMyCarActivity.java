@@ -371,53 +371,63 @@ OnConnectionFailedListener, LocationListener {
 		}
 		
 		@Override
-		protected void onSuccess(JSONObject responseJSON) throws JSONException {
-			if(locationUpdatesEnabled){
-				JSONArray routesJSON = responseJSON.getJSONArray("routes");
-				if(routesJSON.length()>0){
-					
-					long distanceForSegment = routesJSON.getJSONObject(0).getJSONArray("legs").getJSONObject(0).getJSONObject("distance").getInt("value");
-					String timeForSegment = routesJSON.getJSONObject(0).getJSONArray("legs").getJSONObject(0).getJSONObject("duration").getString("text");
-	
-	                JSONArray steps = routesJSON.getJSONObject(0).getJSONArray("legs").getJSONObject(0).getJSONArray("steps");
-	
-	                points.clear();
-	                for(int i=0; i < steps.length(); i++) {
-	                    String polyline = steps.getJSONObject(i).getJSONObject("polyline").getString("points");
-	                    points.addAll(decodePolyline(polyline));
-	                }
-	                
-	                DecimalFormat df = new DecimalFormat("0.00");
-	                
-	                if(prefs.getString(Constants.PREF_UNITS_OF_MEASURE, "mile").equals("mile")){
-		                tvDistance.setText(""+df.format(Utils.metersToMiles(distanceForSegment)));
-	        			tvDistanceUnits.setText("Miles");
-	        		}
-	        		else{
-		                tvDistance.setText(""+df.format(Utils.metersToKm(distanceForSegment)));
-		                tvDistanceUnits.setText("KM");
-	        		}
-	                tvTime.setText("Time: "+timeForSegment);
-	                
-	                updateMap();
-	                
-	                btnStart.setText("Stop");
-	                
-	                llInfo.setVisibility(View.VISIBLE);
-					tvInfo.setVisibility(View.GONE);
+		protected void onPostExecute(JSONObject result) {
+			try{
+				if(locationUpdatesEnabled){
+					JSONArray routesJSON = result.getJSONArray("routes");
+					if(routesJSON.length()>0){
+						
+						long distanceForSegment = routesJSON.getJSONObject(0).getJSONArray("legs").getJSONObject(0).getJSONObject("distance").getInt("value");
+						String timeForSegment = routesJSON.getJSONObject(0).getJSONArray("legs").getJSONObject(0).getJSONObject("duration").getString("text");
+		
+		                JSONArray steps = routesJSON.getJSONObject(0).getJSONArray("legs").getJSONObject(0).getJSONArray("steps");
+		
+		                points.clear();
+		                for(int i=0; i < steps.length(); i++) {
+		                    String polyline = steps.getJSONObject(i).getJSONObject("polyline").getString("points");
+		                    points.addAll(decodePolyline(polyline));
+		                }
+		                
+		                DecimalFormat df = new DecimalFormat("0.00");
+		                
+		                if(prefs.getString(Constants.PREF_UNITS_OF_MEASURE, "mile").equals("mile")){
+			                tvDistance.setText(""+df.format(Utils.metersToMiles(distanceForSegment)));
+		        			tvDistanceUnits.setText("Miles");
+		        		}
+		        		else{
+			                tvDistance.setText(""+df.format(Utils.metersToKm(distanceForSegment)));
+			                tvDistanceUnits.setText("KM");
+		        		}
+		                tvTime.setText("Time: "+timeForSegment);
+		                
+		                updateMap();
+		                
+		                btnStart.setText("Stop");
+		                
+		                llInfo.setVisibility(View.VISIBLE);
+						tvInfo.setVisibility(View.GONE);
+					}
+					else{
+						onError("Unable to calculate route");
+					}
+					btnStart.setEnabled(true);
 				}
-				else{
-					llInfo.setVisibility(View.GONE);
-					tvInfo.setText("Unable to calculate route");
-					tvInfo.setVisibility(View.VISIBLE);
-					
-					btnStart.setText("Start");
-					if(mLocationClient!=null && mLocationClient.isConnected())
-						mLocationClient.disconnect();
-				}
-				btnStart.setEnabled(true);
 			}
-			super.onSuccess(responseJSON);
+			catch(JSONException e){
+				onError("Unable to calculate route");
+				e.printStackTrace();
+			}
+		}
+		
+		@Override
+		protected void onError(String message) {
+			llInfo.setVisibility(View.GONE);
+			tvInfo.setText(message);
+			tvInfo.setVisibility(View.VISIBLE);
+			
+			btnStart.setText("Start");
+			if(mLocationClient!=null && mLocationClient.isConnected())
+				mLocationClient.disconnect();
 		}
 	}
 
