@@ -1,5 +1,7 @@
 package com.modusgo.dd;
 
+import java.util.List;
+
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -11,6 +13,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 
@@ -20,6 +23,12 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
+import com.kontakt.sdk.android.configuration.ForceScanConfiguration;
+import com.kontakt.sdk.android.configuration.MonitorPeriod;
+import com.kontakt.sdk.android.connection.OnServiceBoundListener;
+import com.kontakt.sdk.android.device.Beacon;
+import com.kontakt.sdk.android.device.Region;
+import com.kontakt.sdk.android.manager.BeaconManager;
 import com.modusgo.ubi.Constants;
 import com.modusgo.ubi.InitActivity;
 import com.modusgo.ubi.R;
@@ -60,6 +69,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	private LocationClient mLocationClient;
     private LocationRequest mLocationRequest;
     
+    private BeaconManager beaconManager;    
 	
 	@Override
 	public void onCreate() {
@@ -125,11 +135,57 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		    registerReceiver(phoneScreenOnOffReceiver, filter);
 	    }
 	    
+	    if(prefs.getString(Device.PREF_DEVICE_TYPE, "").equals(Device.DEVICE_TYPE_IBEACON)){
+	    	beaconManager = BeaconManager.newInstance(this);
+	        beaconManager.setMonitorPeriod(MonitorPeriod.MINIMAL);
+	        beaconManager.setForceScanConfiguration(ForceScanConfiguration.DEFAULT);
+	        beaconManager.registerMonitoringListener(new BeaconManager.MonitoringListener() {
+	            @Override
+	            public void onMonitorStart() {}
+
+	            @Override
+	            public void onMonitorStop() {}
+
+	            @Override
+	            public void onBeaconsUpdated(final Region region, final List<Beacon> beacons) {}
+
+	            @Override
+	            public void onBeaconAppeared(final Region region, final Beacon beacon) {}
+
+	            @Override
+	            public void onRegionEntered(final Region region) {}
+
+	            @Override
+	            public void onRegionAbandoned(final Region region) {}
+	        });
+	    }
+	    
 		return START_STICKY;//super.onStartCommand(intent, flags, startId);
 	}
 	
+	private void iBeaconConnect() {
+        try {
+            beaconManager.connect(new OnServiceBoundListener() {
+                @Override
+                public void onServiceBound() {
+                    try {
+                        beaconManager.startMonitoring(Region.EVERYWHERE);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        } catch (RemoteException e) {
+//        	throw new IllegalStateException(e);
+        	e.printStackTrace();
+        }
+    }
+	
 	private void updateServiceMode(){
 		String mode = prefs.getString(Device.PREF_CURRENT_TRACKING_MODE, "");
+		if(beaconManager!=null){
+			beaconManager.stopMonitoring();
+		}
 		
 		switch (mode) {
 		case Device.MODE_LIGHT_TRACKING:
@@ -141,7 +197,11 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 
 			break;
 		case Device.MODE_SIGNIFICATION_TRACKING:
-
+			
+			if(beaconManager.isBluetoothEnabled()) {
+	            iBeaconConnect();
+	        }
+			
 			break;
 		case Device.MODE_MEDIUM_TRACKING:
 			mLocationRequest = LocationRequest.create();
@@ -180,7 +240,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		NotificationCompat.Builder mBuilder =
 		        new NotificationCompat.Builder(this)
 		        .setSmallIcon(R.drawable.ic_launcher)
-		        .setContentTitle(getResources().getString(R.string.app_name))
+		        .setContentTitle(getResources().getString(R.string.app_name)) 
 		        .setContentText("Your trip is "+(prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false) ? "in progress." : "stopped."));
 
 		Intent resultIntent = new Intent(this, InitActivity.class);
@@ -268,6 +328,11 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		}*/
 		
 		unregisterReceiver(phoneScreenOnOffReceiver);
+		
+		if(beaconManager!=null){
+			beaconManager.disconnect();
+	        beaconManager = null;
+		}
 		
 		mInProgress = false;
         if(servicesAvailable && mLocationClient != null) {
