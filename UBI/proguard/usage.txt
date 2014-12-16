@@ -7456,7 +7456,6 @@ com.modusgo.dd.LocationService:
     private static final float TRIP_START_SPEED
     private static final float TRIP_STAY_SPEED
     private static final int MAX_STAY_TIME
-    private static final java.lang.String PREF_IN_TRIP_NOW
     public static final int GET_DEVICE_FREQUENCY
 com.modusgo.dd.PhoneUsageSaverService:
     public static final java.lang.String PREF_UNLOCK_COUNT
@@ -7639,6 +7638,7 @@ com.modusgo.ubi.utils.Device:
     public static final java.lang.String PREF_DEVICE_LATITUDE
     public static final java.lang.String PREF_DEVICE_LONGITUDE
     public static final java.lang.String PREF_DEVICE_LOCATION_DATE
+    public static final java.lang.String PREF_IN_TRIP_NOW
     private static final java.lang.String PREF_LAST_SENDEVENT_MILLIS
     public static final java.lang.String DEVICE_TYPE_OBD
     public static final java.lang.String DEVICE_TYPE_OBDBLE
