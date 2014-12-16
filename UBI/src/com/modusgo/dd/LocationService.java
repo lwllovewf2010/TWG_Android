@@ -35,8 +35,6 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	private static final float TRIP_STAY_SPEED = 3f/3.6f;
 	private static final int MAX_STAY_TIME = 2*60*1000;
 	
-	private static final String PREF_IN_TRIP_NOW = "inTripNow";
-	
 	public static final int GET_DEVICE_FREQUENCY = 60*60*1000;
 	
 	private long stayFromMillis = 0;
@@ -48,7 +46,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	private Handler checkIgnitionHandler;
 	private Runnable checkIgnitionRunnable;
 	
-	PhoneScreenOnOffReceiver receiver;
+	PhoneScreenOnOffReceiver phoneScreenOnOffReceiver;
 	//private boolean smsReceiverRegistered = false;
 	//private boolean callReceiverRegistered = false;
 	
@@ -91,25 +89,8 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		
 		updateServiceMode();
+		updateNotification();
 		
-		NotificationCompat.Builder mBuilder =
-		        new NotificationCompat.Builder(this)
-		        .setSmallIcon(R.drawable.ic_launcher)
-		        .setContentTitle(getResources().getString(R.string.app_name))
-		        .setContentText("Your trip is "+(prefs.getBoolean(Device.PREF_DEVICE_IN_TRIP, false) ? "stopped." : "in progress."));
-
-		Intent resultIntent = new Intent(this, InitActivity.class);
-
-		PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_CANCEL_CURRENT);//stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-		mBuilder.setContentIntent(resultPendingIntent);
-		Notification n = mBuilder.build();
-		n.flags |= Notification.FLAG_ONGOING_EVENT;
-		
-		startForeground(notificationId, n);
-		
-		if(checkIgnitionHandler!=null) 
-			checkIgnitionHandler.removeCallbacks(checkIgnitionRunnable);
-				
 		setUpLocationClientIfNeeded();
         if(!mLocationClient.isConnected() || !mLocationClient.isConnecting() && !mInProgress)
         {
@@ -117,25 +98,33 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
         	mLocationClient.connect();
         }
 		
-		checkIgnitionHandler = new Handler();
-	    checkIgnitionRunnable = new Runnable() {
-	        @Override
-	        public void run() {
-	        	
-	        	if(!prefs.getString(Constants.PREF_AUTH_KEY, "").equals("")){
-		        	new GetDeviceInfoRequest(LocationService.this).execute();
-		            checkIgnitionHandler.postDelayed(this, GET_DEVICE_FREQUENCY);
-	        	}
-	        }
-	    };
-	    checkIgnitionHandler.postDelayed(checkIgnitionRunnable, 0);
+        if(checkIgnitionHandler==null){
+        	checkIgnitionHandler = new Handler();
+        }
+        
+        if(checkIgnitionRunnable==null){
+			checkIgnitionHandler.removeCallbacks(checkIgnitionRunnable);
+        	checkIgnitionRunnable = new Runnable() {
+    	        @Override
+    	        public void run() {
+    	        	
+    	        	if(!prefs.getString(Constants.PREF_AUTH_KEY, "").equals("")){
+    		        	new GetDeviceInfoRequest(LocationService.this).execute();
+    		            checkIgnitionHandler.postDelayed(this, GET_DEVICE_FREQUENCY);
+    	        	}
+    	        }
+    	    };
+    	    checkIgnitionHandler.postDelayed(checkIgnitionRunnable, 0);
+        }	    
 	    
-	    receiver = new PhoneScreenOnOffReceiver();
-	    IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
-	    filter.addAction(Intent.ACTION_SCREEN_OFF);
-	    filter.addAction(Intent.ACTION_SCREEN_OFF);
-	    registerReceiver(receiver, filter);
-		
+	    if(phoneScreenOnOffReceiver==null){
+		    phoneScreenOnOffReceiver = new PhoneScreenOnOffReceiver();
+		    IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+		    filter.addAction(Intent.ACTION_SCREEN_OFF);
+		    filter.addAction(Intent.ACTION_SCREEN_OFF);
+		    registerReceiver(phoneScreenOnOffReceiver, filter);
+	    }
+	    
 		return START_STICKY;//super.onStartCommand(intent, flags, startId);
 	}
 	
@@ -187,50 +176,69 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		}
 	}
 	
+	private void updateNotification(){
+		NotificationCompat.Builder mBuilder =
+		        new NotificationCompat.Builder(this)
+		        .setSmallIcon(R.drawable.ic_launcher)
+		        .setContentTitle(getResources().getString(R.string.app_name))
+		        .setContentText("Your trip is "+(prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false) ? "in progress." : "stopped."));
+
+		Intent resultIntent = new Intent(this, InitActivity.class);
+
+		PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_CANCEL_CURRENT);//stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+		mBuilder.setContentIntent(resultPendingIntent);
+		Notification n = mBuilder.build();
+		n.flags |= Notification.FLAG_ONGOING_EVENT;
+		
+		startForeground(notificationId, n);
+	}
+	
 	@Override
     public void onLocationChanged(Location location) {
         // Report to the UI that the location was updated
-        String msg = Double.toString(location.getLatitude()) + "," +
-                Double.toString(location.getLongitude());
-        System.out.println(msg);
-        
-        Editor e = prefs.edit();
-        e.putString(Constants.PREF_MOBILE_LATITUDE, ""+location.getLatitude());
-        e.putString(Constants.PREF_MOBILE_LONGITUDE, ""+location.getLongitude());
-        
         String deviceType = prefs.getString(Device.PREF_DEVICE_TYPE, "");
 		
-        boolean deviceInTrip = prefs.getBoolean(Device.PREF_DEVICE_IN_TRIP, false);
-        boolean inTripNow = prefs.getBoolean(PREF_IN_TRIP_NOW, false);
+        boolean deviceInTrip = prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false);
+        String event = "";
         
-    	if(inTripNow && deviceInTrip){
-    		savePoint(location, "");
-    	}
-    	else if(!inTripNow && deviceInTrip){
-    		if(deviceType.equals(Device.DEVICE_TYPE_SMARTPHONE) && location.getSpeed()>TRIP_START_SPEED){
-            	e.putBoolean(PREF_IN_TRIP_NOW, true);
-            	inTripNow = true;
-    			savePoint(location, "start");
-            }
-    	}
-    	else if(inTripNow && !deviceInTrip){
-    		if((deviceType.equals(Device.DEVICE_TYPE_SMARTPHONE) || deviceType.equals(Device.DEVICE_TYPE_IBEACON)) && location.getSpeed() < TRIP_STAY_SPEED){
-	    		if(stayFromMillis==0)
+        if(deviceType.equals(Device.DEVICE_TYPE_SMARTPHONE) && !deviceInTrip && location.getSpeed()>TRIP_START_SPEED){
+        	event = "start";
+        }
+        
+        if((deviceType.equals(Device.DEVICE_TYPE_SMARTPHONE) || deviceType.equals(Device.DEVICE_TYPE_IBEACON)) && deviceInTrip){
+        	
+        	if(location.getSpeed() < TRIP_STAY_SPEED){
+        		if(stayFromMillis==0)
 	    			stayFromMillis = System.currentTimeMillis();
 	    		else if(System.currentTimeMillis() - stayFromMillis > MAX_STAY_TIME){
-	    			stayFromMillis = 0;
-	    			e.putBoolean(PREF_IN_TRIP_NOW, false);
-	    			inTripNow = false;
-	    			savePoint(location, "stop");
+	    			event = "stop";
 	    		}
-    		}
-    	}
-    	
-    	e.commit();
+        	}
+        	else {
+        		stayFromMillis = 0;
+			}
+        }
+        
+        savePoint(location, event);    	
         Device.checkDevice(this);
     }
 	
 	private void savePoint(Location location, String event){
+
+        String msg = Double.toString(location.getLatitude()) + "," +
+                Double.toString(location.getLongitude()) + ", speed: " + (location.getSpeed()*3.6f) + "event: "+event;
+        System.out.println(msg);
+		
+		Editor e = prefs.edit();
+        e.putString(Constants.PREF_MOBILE_LATITUDE, ""+location.getLatitude());
+        e.putString(Constants.PREF_MOBILE_LONGITUDE, ""+location.getLongitude());
+        
+		if(event.equals("start"))
+			e.putBoolean(Device.PREF_IN_TRIP_NOW, true);
+		else if(event.equals("stop"))
+			e.putBoolean(Device.PREF_IN_TRIP_NOW, false);
+    	e.commit();
+    	
 		DbHelper dbhelper = DbHelper.getInstance(this);
     	dbhelper.saveTrackingEvent(new Tracking(
     			location.getTime(), 
@@ -244,7 +252,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
     			true, 
     			location.getSpeed(), 
     			event, 
-    			""));
+    			""), prefs.getLong(Constants.PREF_DRIVER_ID, 0));
     	dbhelper.close();
 	}
 	
@@ -259,7 +267,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 			callReceiverRegistered = false;
 		}*/
 		
-		unregisterReceiver(receiver);
+		unregisterReceiver(phoneScreenOnOffReceiver);
 		
 		mInProgress = false;
         if(servicesAvailable && mLocationClient != null) {

@@ -75,10 +75,10 @@ public class HomeActivity extends MainActivity{
 			}
 		});
 		
-		updateDrivers();
-		
-		stopService(new Intent(this, LocationService.class));
+		startService(new Intent(this, LocationService.class));
 		System.out.println("Service starting");
+		
+		updateDrivers();
 	}
 	
 	private void updateDrivers(){
