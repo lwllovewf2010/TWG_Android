@@ -56,7 +56,7 @@ public class MainActivity extends FragmentActivity {
     private String actionBarTitle = "";
     public Vehicle vehicle;
     
-    public static enum MenuItems {HOME("HOME",0), COMPARE("COMPARE",1), CALLSUPPORT("CONTACT CLAIMS",2), AGENT("CALL MY AGENT",3),
+    public static enum MenuItems {HOME("HOME",0), COMPARE("COMPARE",1), CALLSUPPORT("CONTACT CLAIMS",2), AGENT("CALL FARMERS",3),
     	FEEDBACK("FEEDBACK",4), FINDAMECHANIC("FIND A MECHANIC",5), SETTINGS("SETTINGS",6), DRIVERSETUP("DRIVER SETUP",7), TOS("TERMS OF SERVICE",8), 
     	PRIVACY("PRIVACY POLICY",9),LOGOUT("LOGOUT",10); 
 	    private MenuItems(final String text, final int num) {
@@ -396,7 +396,7 @@ public class MainActivity extends FragmentActivity {
 			            startActivity(callAgentIntent);
 		        	}
 
-		        	Utils.gaTrackScreen(MainActivity.this, "Call my agent");
+		        	Utils.gaTrackScreen(MainActivity.this, "Call Farmers");
 		        	break;
 		        case TOS:
 		        	//Terms of service
