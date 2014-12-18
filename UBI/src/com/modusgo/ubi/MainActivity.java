@@ -10,6 +10,7 @@ import net.hockeyapp.android.UpdateManager;
 import android.app.ActionBar;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -122,6 +123,14 @@ public class MainActivity extends FragmentActivity {
 	    
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        TextView tvVersion = (TextView) findViewById(R.id.tvVersion);
+        
+        try {
+			tvVersion.setText("Version: " + getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+		} catch (NameNotFoundException e) {
+			tvVersion.setText("Version: undefined");
+			e.printStackTrace();
+		}
         
         MenuItems[] menuItemsArray = MenuItems.values();
         menuItems = new ArrayList<MenuItems>();
@@ -179,6 +188,7 @@ public class MainActivity extends FragmentActivity {
         };
         
         
+//        mDrawerList.addFooterView(getLayoutInflater().inflate(R.layout.drawer_list_version_item, null, false));
         // set up the drawer's list view with items and click listener
         mDrawerList.setAdapter(adapter);
 
@@ -333,7 +343,7 @@ public class MainActivity extends FragmentActivity {
         	
         	System.out.println();
         	
-        	if(position!=mDrawerSelectedItem){
+        	if(position!=mDrawerSelectedItem && position<menuItems.size()){
         		switch (menuItems.get(position)) {
 		        case HOME:
 		        	//Home
