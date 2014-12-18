@@ -1221,6 +1221,7 @@ com.farmers.ubi.R$color: int btn_orange_light
 com.farmers.ubi.R$color: int btn_text_gray_white
 com.farmers.ubi.R$color: int btn_text_orange
 com.farmers.ubi.R$color: int btn_text_orange_white
+com.farmers.ubi.R$color: int btn_text_white_gray
 com.farmers.ubi.R$color: int btn_transparent_orange
 com.farmers.ubi.R$color: int btn_transparent_orange_light
 com.farmers.ubi.R$color: int circular_progress_default_background
@@ -1594,6 +1595,9 @@ com.farmers.ubi.R$drawable: int rectangle_orange_with_border
 com.farmers.ubi.R$drawable: int rectangle_orange_with_border_rounded
 com.farmers.ubi.R$drawable: int rectangle_with_border
 com.farmers.ubi.R$drawable: int rectangle_with_border_rounded
+com.farmers.ubi.R$drawable: int rectanle_rounded_gray
+com.farmers.ubi.R$drawable: int rectanle_rounded_green
+com.farmers.ubi.R$drawable: int rectanle_rounded_red
 com.farmers.ubi.R$drawable: int red_rounded_rectangle_radius_10
 com.farmers.ubi.R$drawable: int red_rounded_rectangle_radius_8
 com.farmers.ubi.R$drawable: int route
@@ -1649,6 +1653,7 @@ com.farmers.ubi.R$id: int book_now
 com.farmers.ubi.R$id: int bottom
 com.farmers.ubi.R$id: int bottom_line
 com.farmers.ubi.R$id: int bottom_wrapper
+com.farmers.ubi.R$id: int btnBackToLogin
 com.farmers.ubi.R$id: int btnCancel
 com.farmers.ubi.R$id: int btnDelete
 com.farmers.ubi.R$id: int btnEdit
@@ -1695,6 +1700,7 @@ com.farmers.ubi.R$id: int editPhone
 com.farmers.ubi.R$id: int editText
 com.farmers.ubi.R$id: int editValue
 com.farmers.ubi.R$id: int edit_query
+com.farmers.ubi.R$id: int email
 com.farmers.ubi.R$id: int end
 com.farmers.ubi.R$id: int expand_activities_button
 com.farmers.ubi.R$id: int expanded_menu
@@ -1880,6 +1886,7 @@ com.farmers.ubi.R$id: int tvLocation
 com.farmers.ubi.R$id: int tvLocationLabel
 com.farmers.ubi.R$id: int tvMaxSpeed
 com.farmers.ubi.R$id: int tvMaxSpeedUnits
+com.farmers.ubi.R$id: int tvMessage
 com.farmers.ubi.R$id: int tvName
 com.farmers.ubi.R$id: int tvParameter
 com.farmers.ubi.R$id: int tvParameterSign
@@ -1905,6 +1912,7 @@ com.farmers.ubi.R$id: int tvTotals
 com.farmers.ubi.R$id: int tvValue
 com.farmers.ubi.R$id: int tvValue2
 com.farmers.ubi.R$id: int tvVehicle
+com.farmers.ubi.R$id: int tvVersion
 com.farmers.ubi.R$id: int underline
 com.farmers.ubi.R$id: int up
 com.farmers.ubi.R$id: int useLogo
@@ -1953,6 +1961,7 @@ com.farmers.ubi.R$layout: int activity_driver_setup
 com.farmers.ubi.R$layout: int activity_education
 com.farmers.ubi.R$layout: int activity_find_mechanic
 com.farmers.ubi.R$layout: int activity_find_my_car
+com.farmers.ubi.R$layout: int activity_forgot_password
 com.farmers.ubi.R$layout: int activity_geofence
 com.farmers.ubi.R$layout: int activity_home
 com.farmers.ubi.R$layout: int activity_init
@@ -1977,6 +1986,7 @@ com.farmers.ubi.R$layout: int diagnostics_item
 com.farmers.ubi.R$layout: int dialog_feedback
 com.farmers.ubi.R$layout: int dialog_numbers
 com.farmers.ubi.R$layout: int drawer_list_item
+com.farmers.ubi.R$layout: int drawer_list_version_item
 com.farmers.ubi.R$layout: int driver_details_fragment
 com.farmers.ubi.R$layout: int driver_header
 com.farmers.ubi.R$layout: int driver_tabs_bg
@@ -4031,6 +4041,8 @@ com.modusgo.ubi.FindMechanicActivity
 com.modusgo.ubi.FindMechanicActivity: FindMechanicActivity()
 com.modusgo.ubi.FindMyCarActivity
 com.modusgo.ubi.FindMyCarActivity: FindMyCarActivity()
+com.modusgo.ubi.ForgotPasswordActivity
+com.modusgo.ubi.ForgotPasswordActivity: ForgotPasswordActivity()
 com.modusgo.ubi.GeofenceActivity
 com.modusgo.ubi.GeofenceActivity: GeofenceActivity()
 com.modusgo.ubi.HomeActivity

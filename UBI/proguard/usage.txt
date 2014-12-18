@@ -2620,7 +2620,7 @@ com.farmers.ubi.R$layout
 com.farmers.ubi.R$string
 com.farmers.ubi.R$style
 com.farmers.ubi.R$styleable:
-    3183:3183:public R$styleable()
+    3193:3193:public R$styleable()
 com.farmers.ubi.R$xml
 com.google.ads.AdRequest
 com.google.ads.AdRequest$ErrorCode
@@ -7517,13 +7517,15 @@ com.modusgo.ubi.FindMechanicActivity:
 com.modusgo.ubi.FindMyCarActivity:
     public static final java.lang.String EXTRA_POINTS
 com.modusgo.ubi.FindMyCarActivity$ErrorDialogFragment
+com.modusgo.ubi.ForgotPasswordActivity$RestorePasswordTask:
+    int status
 com.modusgo.ubi.LimitsFragment:
     579:582:private java.lang.String getTime24String(int,int)
 com.modusgo.ubi.MainActivity:
-    492:494:public void showFeedbackActivity()
+    523:525:public void showFeedbackActivity()
 com.modusgo.ubi.MainActivity$MenuItems:
-    74:74:public int toInt()
-    78:78:public java.lang.String[] valuesString()
+    76:76:public int toInt()
+    80:80:public java.lang.String[] valuesString()
 com.modusgo.ubi.PieChartFragment:
     public static final java.lang.String SAVED_VALUES
     public static final java.lang.String SAVED_SUBTITLES
