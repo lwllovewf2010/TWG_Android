@@ -57,7 +57,8 @@ public class MainActivity extends FragmentActivity {
     public Vehicle vehicle;
     
     public static enum MenuItems {HOME("HOME",0), COMPARE("COMPARE",1), CALLSUPPORT("CONTACT CLAIMS",2), AGENT("CALL MY AGENT",3),
-    	FEEDBACK("FEEDBACK",4), FINDAMECHANIC("FIND A MECHANIC",5), SETTINGS("SETTINGS",6), DRIVERSETUP("DRIVER SETUP",7), LOGOUT("LOGOUT",8); 
+    	FEEDBACK("FEEDBACK",4), FINDAMECHANIC("FIND A MECHANIC",5), SETTINGS("SETTINGS",6), DRIVERSETUP("DRIVER SETUP",7), TOS("TERMS OF SERVICE",8), 
+    	PRIVACY("PRIVACY POLICY",9),LOGOUT("LOGOUT",10); 
 	    private MenuItems(final String text, final int num) {
 	        this.text = text;
 	        this.num = num;
@@ -145,6 +146,8 @@ public class MainActivity extends FragmentActivity {
         	menuItems.add(MenuItems.FINDAMECHANIC);
         menuItems.add(MenuItems.SETTINGS);
         //menuItems.add(MenuItems.DRIVERSETUP);
+        menuItems.add(MenuItems.TOS);
+        menuItems.add(MenuItems.PRIVACY);
         menuItems.add(MenuItems.LOGOUT);
        
         ArrayAdapter<MenuItems> adapter = new ArrayAdapter<MenuItems>(this, R.layout.drawer_list_item, menuItemsArray){
@@ -394,6 +397,24 @@ public class MainActivity extends FragmentActivity {
 		        	}
 
 		        	Utils.gaTrackScreen(MainActivity.this, "Call my agent");
+		        	break;
+		        case TOS:
+		        	//Terms of service
+		        	String tosUrl = "http://signal.modusgo.com/terms";
+		        	Intent i = new Intent(Intent.ACTION_VIEW);
+		        	i.setData(Uri.parse(tosUrl));
+		        	startActivity(i);
+
+		        	Utils.gaTrackScreen(MainActivity.this, "Terms of Service");
+		        	break;
+		        case PRIVACY:
+		        	//Privacy policy
+		        	String privacyUrl = "http://signal.modusgo.com/privacy";
+		        	Intent i2 = new Intent(Intent.ACTION_VIEW);
+		        	i2.setData(Uri.parse(privacyUrl));
+		        	startActivity(i2);
+
+		        	Utils.gaTrackScreen(MainActivity.this, "Terms of Service");
 		        	break;
 		        case LOGOUT:
 		        	//Logout
