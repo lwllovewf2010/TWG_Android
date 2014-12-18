@@ -1,6 +1,7 @@
 package com.modusgo.dd;
 
 import java.util.List;
+import java.util.UUID;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -10,6 +11,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -28,6 +30,7 @@ import com.kontakt.sdk.android.configuration.MonitorPeriod;
 import com.kontakt.sdk.android.connection.OnServiceBoundListener;
 import com.kontakt.sdk.android.device.Beacon;
 import com.kontakt.sdk.android.device.Region;
+import com.kontakt.sdk.android.factory.Filters;
 import com.kontakt.sdk.android.manager.BeaconManager;
 import com.modusgo.ubi.Constants;
 import com.modusgo.ubi.InitActivity;
@@ -135,29 +138,53 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		    registerReceiver(phoneScreenOnOffReceiver, filter);
 	    }
 	    
-	    if(prefs.getString(Device.PREF_DEVICE_TYPE, "").equals(Device.DEVICE_TYPE_IBEACON)){
+	    if(prefs.getString(Device.PREF_DEVICE_TYPE, "").equals(Device.DEVICE_TYPE_IBEACON) && beaconManager==null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2){
 	    	beaconManager = BeaconManager.newInstance(this);
-	        beaconManager.setMonitorPeriod(MonitorPeriod.MINIMAL);
-	        beaconManager.setForceScanConfiguration(ForceScanConfiguration.DEFAULT);
-	        beaconManager.registerMonitoringListener(new BeaconManager.MonitoringListener() {
-	            @Override
-	            public void onMonitorStart() {}
-
-	            @Override
-	            public void onMonitorStop() {}
-
-	            @Override
-	            public void onBeaconsUpdated(final Region region, final List<Beacon> beacons) {}
-
-	            @Override
-	            public void onBeaconAppeared(final Region region, final Beacon beacon) {}
-
-	            @Override
-	            public void onRegionEntered(final Region region) {}
-
-	            @Override
-	            public void onRegionAbandoned(final Region region) {}
-	        });
+	    	beaconManager.setMonitorPeriod(MonitorPeriod.MINIMAL);
+	    	beaconManager.setForceScanConfiguration(ForceScanConfiguration.DEFAULT);
+        	System.out.println("ibeacon set filter : "+prefs.getString(Device.PREF_DEVICE_MEID, ""));
+	    	beaconManager.addFilter(Filters.newProximityUUIDFilter(UUID.fromString(prefs.getString(Device.PREF_DEVICE_MEID, ""))));
+	    	beaconManager.registerMonitoringListener(new BeaconManager.MonitoringListener() {
+	    		@Override
+	    		public void onMonitorStart() {
+	    			System.out.println("ibeacon monitor start");
+	    		}
+	    		
+	    		@Override
+	    		public void onMonitorStop() {
+	    			System.out.println("ibeacon monitor stop");
+	    		}
+	    		
+	    		@Override
+	    		public void onBeaconsUpdated(final Region region, final List<Beacon> beacons) {
+	    			System.out.println("ibeacons updated, "+beacons.size());
+	    			if(!prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false)){
+	    				savePoint("start");
+	    			}
+	    		}
+	    		
+	    		@Override
+	    		public void onBeaconAppeared(final Region region, final Beacon beacon) {
+	    			System.out.println("ibeacon appeared ");
+	    		}
+	    		
+	    		@Override
+	    		public void onRegionEntered(final Region region) {
+	    			System.out.println("ibeacon region entered");
+	    			if(prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false)){
+	    				savePoint("connected");
+	    			}
+	    			else{
+	    				savePoint("start");
+	    			}
+	    		}
+	    		
+	    		@Override
+	    		public void onRegionAbandoned(final Region region) {
+	    			System.out.println("ibeacon region abdandoned");
+	    			savePoint("disconnected");
+	    		}
+	    	});
 	    }
 	    
 		return START_STICKY;//super.onStartCommand(intent, flags, startId);
@@ -165,11 +192,14 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	
 	private void iBeaconConnect() {
         try {
+        	System.out.println("ibeacon connect");
             beaconManager.connect(new OnServiceBoundListener() {
                 @Override
                 public void onServiceBound() {
                     try {
-                        beaconManager.startMonitoring(Region.EVERYWHERE);
+                    	System.out.println("ibeacon start monitoring");
+                        beaconManager.startMonitoring();
+                    	
                     } catch (RemoteException e) {
                         e.printStackTrace();
                     }
@@ -197,8 +227,8 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 
 			break;
 		case Device.MODE_SIGNIFICATION_TRACKING:
-			
-			if(beaconManager.isBluetoothEnabled()) {
+			System.out.println("signification mode");
+			if(beaconManager!=null && beaconManager.isBluetoothEnabled()) {
 	            iBeaconConnect();
 	        }
 			
@@ -316,6 +346,35 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
     	dbhelper.close();
 	}
 	
+	private void savePoint(String event){
+
+        String msg = "event: "+event;
+        System.out.println(msg);
+		
+        Editor e = prefs.edit();
+		if(event.equals("start"))
+			e.putBoolean(Device.PREF_IN_TRIP_NOW, true);
+		else if(event.equals("stop"))
+			e.putBoolean(Device.PREF_IN_TRIP_NOW, false);
+    	e.commit();
+    	
+		DbHelper dbhelper = DbHelper.getInstance(this);
+    	dbhelper.saveTrackingEvent(new Tracking(
+    			System.currentTimeMillis(), 
+    			0, 
+    			0, 
+    			0, 
+    			0, 
+    			0, 
+    			0, 
+    			0, 
+    			true, 
+    			0, 
+    			event, 
+    			""), prefs.getLong(Constants.PREF_DRIVER_ID, 0));
+    	dbhelper.close();
+	}
+	
 	@Override
 	public void onDestroy() {
 		/*if(smsReceiverRegistered){
@@ -328,8 +387,11 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		}*/
 		
 		unregisterReceiver(phoneScreenOnOffReceiver);
-		
+
+		System.out.println("service destroy ");
 		if(beaconManager!=null){
+			System.out.println("ibeacon disconnect ");
+			beaconManager.stopMonitoring();
 			beaconManager.disconnect();
 	        beaconManager = null;
 		}
