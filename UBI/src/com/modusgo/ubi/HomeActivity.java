@@ -76,7 +76,7 @@ public class HomeActivity extends MainActivity{
 			}
 		});
 		
-		startService(new Intent(this, LocationService.class));
+		stopService(new Intent(this, LocationService.class));
 		System.out.println("Service starting");
 		
 		updateDrivers();
