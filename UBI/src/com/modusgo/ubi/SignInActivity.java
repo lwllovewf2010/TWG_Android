@@ -118,10 +118,8 @@ public class SignInActivity extends FragmentActivity {
 			btnForgotPassword.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					String url = "http://" + clientId + ".test.modusgo.com/drivers/password/new";
-					Intent i = new Intent(Intent.ACTION_VIEW);
-					i.setData(Uri.parse(url));
-					startActivity(i);
+					startActivity(new Intent(SignInActivity.this, ForgotPasswordActivity.class));
+					overridePendingTransition(R.anim.flip_in,R.anim.flip_out);
 				}
 			});
 		}
@@ -163,7 +161,7 @@ public class SignInActivity extends FragmentActivity {
 	
 	@Override
 	protected void onResume() {
-		 Utils.gaTrackScreen(this, "Sign In Sceen");
+		Utils.gaTrackScreen(this, "Sign In Screen");
 		super.onResume();
 	}
 	
