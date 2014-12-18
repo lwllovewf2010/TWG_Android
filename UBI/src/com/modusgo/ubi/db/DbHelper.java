@@ -232,6 +232,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		    
 		    "CREATE TABLE " + TrackingEntry.TABLE_NAME + " (" +
 		    TrackingEntry._ID + " INTEGER PRIMARY KEY," +
+		    TrackingEntry.COLUMN_NAME_DRIVER_ID + INT_TYPE + COMMA_SEP +
 		    TrackingEntry.COLUMN_NAME_TIMESTAMP + TEXT_TYPE + COMMA_SEP +
 		    TrackingEntry.COLUMN_NAME_LATITUDE + FLOAT_TYPE + COMMA_SEP +
 		    TrackingEntry.COLUMN_NAME_LONGITUDE + FLOAT_TYPE + COMMA_SEP +
@@ -266,7 +267,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	"DROP TABLE IF EXISTS " + TrackingEntry.TABLE_NAME};
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 49;
+	public static final int DATABASE_VERSION = 50;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;
@@ -1401,12 +1402,13 @@ public class DbHelper extends SQLiteOpenHelper {
 		closeDatabase();
 	}
 	
-	public void saveTrackingEvent(Tracking timepoint){
+	public void saveTrackingEvent(Tracking timepoint, long driverId){
 		SQLiteDatabase database = openDatabase();
 		
 		if(database!=null){
 			
 			String sql = "INSERT INTO "+ TrackingEntry.TABLE_NAME +" ("
+					+ TrackingEntry.COLUMN_NAME_DRIVER_ID + ","
 					+ TrackingEntry.COLUMN_NAME_TIMESTAMP + ","
 					+ TrackingEntry.COLUMN_NAME_EVENT + ","
 					+ TrackingEntry.COLUMN_NAME_LATITUDE + ","
@@ -1420,25 +1422,26 @@ public class DbHelper extends SQLiteOpenHelper {
 					+ TrackingEntry.COLUMN_NAME_HORIZONTAL_ACCURACY + ","
 					+ TrackingEntry.COLUMN_NAME_VERTICAL_ACCURACY + ","
 					+ TrackingEntry.COLUMN_NAME_BLOCKED
-					+ ") VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?);";
+					+ ") VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
 			
 			SQLiteStatement statement = database.compileStatement(sql);
 		    database.beginTransaction();
 		    
 		    statement.clearBindings();
-		    statement.bindString(1, timepoint.timestamp);
-		    statement.bindString(2, timepoint.event);
-		    statement.bindDouble(3, timepoint.latitude);
-		    statement.bindDouble(4, timepoint.longitude);
-		    statement.bindDouble(5, timepoint.altitude);
-		    statement.bindLong(6, timepoint.satelites);
-		    statement.bindDouble(7, timepoint.heading);
-		    statement.bindDouble(8, timepoint.speed);
-		    statement.bindLong(9, timepoint.fixStatus ? 1 : 0);
-		    statement.bindString(10, timepoint.rawData);
-		    statement.bindDouble(11, timepoint.horizontalAccuracy);
-		    statement.bindDouble(12, timepoint.verticalAccuracy);
-		    statement.bindLong(13, timepoint.blocked ? 1 : 0);
+		    statement.bindLong(1, driverId);
+		    statement.bindString(2, timepoint.timestamp);
+		    statement.bindString(3, timepoint.event);
+		    statement.bindDouble(4, timepoint.latitude);
+		    statement.bindDouble(5, timepoint.longitude);
+		    statement.bindDouble(6, timepoint.altitude);
+		    statement.bindLong(7, timepoint.satelites);
+		    statement.bindDouble(8, timepoint.heading);
+		    statement.bindDouble(9, timepoint.speed);
+		    statement.bindLong(10, timepoint.fixStatus ? 1 : 0);
+		    statement.bindString(11, timepoint.rawData);
+		    statement.bindDouble(12, timepoint.horizontalAccuracy);
+		    statement.bindDouble(13, timepoint.verticalAccuracy);
+		    statement.bindLong(14, timepoint.blocked ? 1 : 0);
 		    statement.execute();
 		    
 		    database.setTransactionSuccessful();	
@@ -1461,7 +1464,7 @@ public class DbHelper extends SQLiteOpenHelper {
 			
 		    String blockStr = blocked ? "1" : "0";
 		    
-		    SQLiteStatement removeStatement = database.compileStatement("UPDATE "+TrackingEntry.TABLE_NAME+"SET " + TrackingEntry.COLUMN_NAME_BLOCKED + "= '"+blockStr+"' WHERE "+TrackingEntry._ID+" IN (" + sIds + ")");
+		    SQLiteStatement removeStatement = database.compileStatement("UPDATE "+TrackingEntry.TABLE_NAME+" SET " + TrackingEntry.COLUMN_NAME_BLOCKED + "= '"+blockStr+"' WHERE "+TrackingEntry._ID+" IN (" + sIds + ")");
 		    database.beginTransaction();
 		    removeStatement.clearBindings();
 	        removeStatement.execute();

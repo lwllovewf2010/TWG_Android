@@ -46,8 +46,8 @@ public class GetDeviceInfoRequest extends BaseRequestAsyncTask {
 		e.putString(Device.PREF_DEVICE_MEID, responseJSON.optString("meid"));
 		e.putBoolean(Device.PREF_DEVICE_EVENTS, responseJSON.optBoolean("events"));
 		e.putBoolean(Device.PREF_DEVICE_IN_TRIP, !TextUtils.isEmpty(responseJSON.optString("in_trip")));
-		e.putString(Device.PREF_DEVICE_LATITUDE, responseJSON.optString("latitude"));
-		e.putString(Device.PREF_DEVICE_LONGITUDE, responseJSON.optString("longitude"));
+		e.putString(Device.PREF_DEVICE_LATITUDE, responseJSON.optString("latitude", "0"));
+		e.putString(Device.PREF_DEVICE_LONGITUDE, responseJSON.optString("longitude", "0"));
 		e.putString(Device.PREF_DEVICE_LOCATION_DATE, responseJSON.optString("location_date"));
 		
 		e.putLong(Constants.PREF_EVENTS_LAST_CHECK, System.currentTimeMillis());			

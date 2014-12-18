@@ -12,6 +12,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.modusgo.ubi.Constants;
 import com.modusgo.ubi.db.TrackingContract.TrackingEntry;
 import com.modusgo.ubi.db.DbHelper;
 
@@ -42,8 +43,9 @@ public class SendEventsRequest extends BasePostRequestAsyncTask {
 				TrackingEntry.COLUMN_NAME_RAW_DATA,
 				TrackingEntry.COLUMN_NAME_HORIZONTAL_ACCURACY,
 				TrackingEntry.COLUMN_NAME_VERTICAL_ACCURACY,
-				TrackingEntry.COLUMN_NAME_BLOCKED}, 
-				TrackingEntry.COLUMN_NAME_BLOCKED+ " = ?", new String[]{"0"}, null, null, null, "30");
+				TrackingEntry.COLUMN_NAME_BLOCKED,
+				TrackingEntry.COLUMN_NAME_DRIVER_ID}, 
+				TrackingEntry.COLUMN_NAME_BLOCKED+ " = ? AND "+TrackingEntry.COLUMN_NAME_DRIVER_ID + " =? ", new String[]{"0", String.valueOf(prefs.getLong(Constants.PREF_DRIVER_ID, 0))}, null, null, null, "30");
 		
 		JSONObject rootJSON = new JSONObject();
 		JSONArray timepointsJSON = new JSONArray();

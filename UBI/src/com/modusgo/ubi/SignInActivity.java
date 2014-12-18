@@ -119,10 +119,8 @@ public class SignInActivity extends FragmentActivity {
 			btnForgotPassword.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					String url = "http://" + clientId + ".test.modusgo.com/drivers/password/new";
-					Intent i = new Intent(Intent.ACTION_VIEW);
-					i.setData(Uri.parse(url));
-					startActivity(i);
+					startActivity(new Intent(SignInActivity.this, ForgotPasswordActivity.class));
+					overridePendingTransition(R.anim.flip_in,R.anim.flip_out);
 				}
 			});
 		}
@@ -164,7 +162,7 @@ public class SignInActivity extends FragmentActivity {
 	
 	@Override
 	protected void onResume() {
-		 Utils.gaTrackScreen(this, "Sign In Sceen");
+		Utils.gaTrackScreen(this, "Sign In Screen");
 		super.onResume();
 	}
 	
@@ -435,6 +433,8 @@ public class SignInActivity extends FragmentActivity {
 				e.putString(Constants.PREF_PHONE, driverJSON.optString(Constants.PREF_PHONE));
 				e.putString(Constants.PREF_TIMEZONE, driverJSON.optString(Constants.PREF_TIMEZONE));
 				e.putString(Constants.PREF_PHOTO, driverJSON.optString(Constants.PREF_PHOTO));
+				
+				prefs.edit().putLong(Constants.PREF_DRIVER_ID, driverJSON.optLong(Constants.PREF_DRIVER_ID)).commit();
 			}
 			if(responseJSON.has("device")){
 				JSONObject deviceJSON = responseJSON.getJSONObject("device");
@@ -442,8 +442,8 @@ public class SignInActivity extends FragmentActivity {
 				e.putString(Device.PREF_DEVICE_MEID, deviceJSON.optString("meid"));
 				e.putBoolean(Device.PREF_DEVICE_EVENTS, deviceJSON.optBoolean("events"));
 				e.putBoolean(Device.PREF_DEVICE_IN_TRIP, !TextUtils.isEmpty(deviceJSON.optString("in_trip")));
-				e.putString(Device.PREF_DEVICE_LATITUDE, deviceJSON.optString("latitude"));
-				e.putString(Device.PREF_DEVICE_LONGITUDE, deviceJSON.optString("longitude"));
+				e.putString(Device.PREF_DEVICE_LATITUDE, deviceJSON.optString("latitude", "0"));
+				e.putString(Device.PREF_DEVICE_LONGITUDE, deviceJSON.optString("longitude", "0"));
 				e.putString(Device.PREF_DEVICE_LOCATION_DATE, deviceJSON.optString("location_date"));
 			}
 			e.commit();
