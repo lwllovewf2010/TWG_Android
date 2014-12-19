@@ -19,6 +19,7 @@ import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 
+import com.bugsnag.android.Bugsnag;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -50,6 +51,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	public static final int GET_DEVICE_FREQUENCY = 60*60*1000;
 	
 	private long stayFromMillis = 0;
+	private long lastLocationUpdateTime = 0;
 	
 	public LocationService() {
 		super();
@@ -57,6 +59,10 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	
 	private Handler checkIgnitionHandler;
 	private Runnable checkIgnitionRunnable;
+
+	private Handler checkLocationUpdatesHandler;
+	private Runnable checkLocationUpdatesRunnable;
+	private int checkLocationUpdatesFrequency = 60*1000;
 	
 	PhoneScreenOnOffReceiver phoneScreenOnOffReceiver;
 	//private boolean smsReceiverRegistered = false;
@@ -72,7 +78,8 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	private LocationClient mLocationClient;
     private LocationRequest mLocationRequest;
     
-    private BeaconManager beaconManager;    
+    private BeaconManager beaconManager;
+    private boolean beaconConnected = false;
 	
 	@Override
 	public void onCreate() {
@@ -128,7 +135,28 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
     	        }
     	    };
     	    checkIgnitionHandler.postDelayed(checkIgnitionRunnable, 0);
-        }	    
+        }
+        
+        if(checkLocationUpdatesHandler==null){
+			checkLocationUpdatesHandler = new Handler();
+        }
+        
+        if(checkLocationUpdatesRunnable==null){
+        	checkLocationUpdatesHandler.removeCallbacks(checkLocationUpdatesRunnable);
+			checkLocationUpdatesRunnable = new Runnable() {
+    	        @Override
+    	        public void run() {
+    	        	if(System.currentTimeMillis() - lastLocationUpdateTime > MAX_STAY_TIME){
+    	        		Bugsnag.notify(new RuntimeException("Trip stop, no location for 2 minutes"));
+    	        		System.out.println("Trip stop, no location for 2 minutes");
+    	        		savePoint("stop");
+    	        		checkLocationUpdatesHandler.removeCallbacks(checkLocationUpdatesRunnable);
+    	        	}
+    	        	else
+    	        		checkLocationUpdatesHandler.postDelayed(this, checkLocationUpdatesFrequency);
+    	        }
+    	    };
+        }
 	    
 	    if(phoneScreenOnOffReceiver==null){
 		    phoneScreenOnOffReceiver = new PhoneScreenOnOffReceiver();
@@ -136,55 +164,6 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		    filter.addAction(Intent.ACTION_SCREEN_OFF);
 		    filter.addAction(Intent.ACTION_SCREEN_OFF);
 		    registerReceiver(phoneScreenOnOffReceiver, filter);
-	    }
-	    
-	    if(prefs.getString(Device.PREF_DEVICE_TYPE, "").equals(Device.DEVICE_TYPE_IBEACON) && beaconManager==null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2){
-	    	beaconManager = BeaconManager.newInstance(this);
-	    	beaconManager.setMonitorPeriod(MonitorPeriod.MINIMAL);
-	    	beaconManager.setForceScanConfiguration(ForceScanConfiguration.DEFAULT);
-        	System.out.println("ibeacon set filter : "+prefs.getString(Device.PREF_DEVICE_MEID, ""));
-	    	beaconManager.addFilter(Filters.newProximityUUIDFilter(UUID.fromString(prefs.getString(Device.PREF_DEVICE_MEID, ""))));
-	    	beaconManager.registerMonitoringListener(new BeaconManager.MonitoringListener() {
-	    		@Override
-	    		public void onMonitorStart() {
-	    			System.out.println("ibeacon monitor start");
-	    		}
-	    		
-	    		@Override
-	    		public void onMonitorStop() {
-	    			System.out.println("ibeacon monitor stop");
-	    		}
-	    		
-	    		@Override
-	    		public void onBeaconsUpdated(final Region region, final List<Beacon> beacons) {
-	    			System.out.println("ibeacons updated, "+beacons.size());
-	    			if(!prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false)){
-	    				savePoint("start");
-	    			}
-	    		}
-	    		
-	    		@Override
-	    		public void onBeaconAppeared(final Region region, final Beacon beacon) {
-	    			System.out.println("ibeacon appeared ");
-	    		}
-	    		
-	    		@Override
-	    		public void onRegionEntered(final Region region) {
-	    			System.out.println("ibeacon region entered");
-	    			if(prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false)){
-	    				savePoint("connected");
-	    			}
-	    			else{
-	    				savePoint("start");
-	    			}
-	    		}
-	    		
-	    		@Override
-	    		public void onRegionAbandoned(final Region region) {
-	    			System.out.println("ibeacon region abdandoned");
-	    			savePoint("disconnected");
-	    		}
-	    	});
 	    }
 	    
 		return START_STICKY;//super.onStartCommand(intent, flags, startId);
@@ -213,8 +192,81 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	
 	private void updateServiceMode(){
 		String mode = prefs.getString(Device.PREF_CURRENT_TRACKING_MODE, "");
-		if(beaconManager!=null){
-			beaconManager.stopMonitoring();
+		System.out.println("Mode: "+mode);
+		
+		if(prefs.getString(Device.PREF_DEVICE_TYPE, "").equals(Device.DEVICE_TYPE_IBEACON)){
+			if(beaconManager==null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2){
+		    	beaconManager = BeaconManager.newInstance(this);
+		    	beaconManager.setMonitorPeriod(MonitorPeriod.MINIMAL);
+		    	beaconManager.setForceScanConfiguration(ForceScanConfiguration.DEFAULT);
+		    	System.out.println("ubi ibeacon init");
+	        	System.out.println("ibeacon set filter : "+prefs.getString(Device.PREF_DEVICE_MEID, ""));
+	        	String beaconId = prefs.getString(Device.PREF_DEVICE_MEID, "");
+	        	if(beaconId.length()>4)
+	        		beaconManager.addFilter(Filters.newProximityUUIDFilter(UUID.fromString(beaconId)));
+	        	else
+	        		beaconManager.addFilter(Filters.newBeaconUniqueIdFilter(beaconId));
+		    	beaconManager.registerMonitoringListener(new BeaconManager.MonitoringListener() {
+		    		@Override
+		    		public void onMonitorStart() {
+		    			System.out.println("ibeacon monitor start");
+		    		}
+		    		
+		    		@Override
+		    		public void onMonitorStop() {
+		    			System.out.println("ibeacon monitor stop");
+		    		}
+		    		
+		    		@Override
+		    		public void onBeaconsUpdated(final Region region, final List<Beacon> beacons) {
+		    			System.out.println("ibeacons updated, "+beacons.size()+" beacon connected: "+beaconConnected+" trip in process: "+prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false));
+		    			if(!beaconConnected || !prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false)){
+			    			beaconConnected = true;
+			    			if(prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false)){
+			    				savePoint("connected");
+			    			}
+			    			else{
+			    				savePoint("start");
+			    			}
+		    			}
+		    		}
+		    		
+		    		@Override
+		    		public void onBeaconAppeared(final Region region, final Beacon beacon) {
+		    			System.out.println("ibeacon appeared, "+beacon.getBeaconUniqueId());
+		    		}
+		    		
+		    		@Override
+		    		public void onRegionEntered(final Region region) {
+		    			System.out.println("ibeacon region entered, bc: "+beaconConnected);
+		    			if(!beaconConnected || !prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false)){
+			    			beaconConnected = true;
+			    			if(prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false)){
+			    				savePoint("connected");
+			    			}
+			    			else{
+			    				savePoint("start");
+			    			}
+		    			}
+		    		}
+		    		
+		    		@Override
+		    		public void onRegionAbandoned(final Region region) {
+		    			System.out.println("ibeacon region abdandoned");
+		    			if(beaconConnected){
+			    			beaconConnected = false;
+			    			savePoint("disconnected");
+		    			}
+		    		}
+		    	});
+		    	iBeaconConnect();
+			}
+	    }
+		else{
+			if(beaconManager!=null){
+				System.out.println("ibeacon monitoring stop on update");
+				beaconManager.stopMonitoring();
+			}
 		}
 		
 		switch (mode) {
@@ -227,10 +279,6 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 
 			break;
 		case Device.MODE_SIGNIFICATION_TRACKING:
-			System.out.println("signification mode");
-			if(beaconManager!=null && beaconManager.isBluetoothEnabled()) {
-	            iBeaconConnect();
-	        }
 			
 			break;
 		case Device.MODE_MEDIUM_TRACKING:
@@ -271,7 +319,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		        new NotificationCompat.Builder(this)
 		        .setSmallIcon(R.drawable.ic_launcher)
 		        .setContentTitle(getResources().getString(R.string.app_name)) 
-		        .setContentText("Your trip is "+(prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false) ? "in progress." : "stopped."));
+		        .setContentText("Your trip is " + ((prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false) ? "in progress." : "stopped.") + "Mode: " + prefs.getString(Device.PREF_CURRENT_TRACKING_MODE, "none")));
 
 		Intent resultIntent = new Intent(this, InitActivity.class);
 
@@ -281,6 +329,20 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		n.flags |= Notification.FLAG_ONGOING_EVENT;
 		
 		startForeground(notificationId, n);
+	}
+	
+	private void updateLocationUpdatesHandler(){
+		final String deviceType = prefs.getString(Device.PREF_DEVICE_TYPE, "");
+		if(checkLocationUpdatesHandler!=null && checkLocationUpdatesRunnable!=null){
+			if(prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false) && (deviceType.equals(Device.DEVICE_TYPE_SMARTPHONE) || (deviceType.equals(Device.DEVICE_TYPE_IBEACON) && !beaconConnected))){
+				System.out.println("post check location updates");
+		    	checkLocationUpdatesHandler.postDelayed(checkLocationUpdatesRunnable, 0);
+			}
+			else{
+				System.out.println("remove check location updates");
+				checkLocationUpdatesHandler.removeCallbacks(checkLocationUpdatesRunnable);
+			}
+		}
 	}
 	
 	@Override
@@ -295,7 +357,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
         	event = "start";
         }
         
-        if((deviceType.equals(Device.DEVICE_TYPE_SMARTPHONE) || deviceType.equals(Device.DEVICE_TYPE_IBEACON)) && deviceInTrip){
+        if((deviceType.equals(Device.DEVICE_TYPE_SMARTPHONE) || (deviceType.equals(Device.DEVICE_TYPE_IBEACON) && !beaconConnected)) && deviceInTrip){
         	
         	if(location.getSpeed() < TRIP_STAY_SPEED){
         		if(stayFromMillis==0)
@@ -309,22 +371,30 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 			}
         }
         
-        savePoint(location, event);    	
-        Device.checkDevice(this);
+        lastLocationUpdateTime = System.currentTimeMillis();
+        savePoint(location, event);
     }
 	
 	private void savePoint(Location location, String event){
 
-        String msg = Double.toString(location.getLatitude()) + "," +
-                Double.toString(location.getLongitude()) + ", speed: " + (location.getSpeed()*3.6f) + "event: "+event;
+        String msg ="point " + Double.toString(location.getLatitude()) + "," +
+                Double.toString(location.getLongitude()) + ", accuracy: "+location.getAccuracy() + ", speed: " + (location.getSpeed()*3.6f) + "event: "+event;
         System.out.println(msg);
+        
+        if(event.equals(""))
+        	Bugsnag.addToTab("User", "Point data", msg);
+        else
+        	Bugsnag.notify(new RuntimeException(msg));
 		
 		Editor e = prefs.edit();
         e.putString(Constants.PREF_MOBILE_LATITUDE, ""+location.getLatitude());
         e.putString(Constants.PREF_MOBILE_LONGITUDE, ""+location.getLongitude());
         
-		if(event.equals("start"))
+		if(event.equals("start")){
 			e.putBoolean(Device.PREF_IN_TRIP_NOW, true);
+    		stayFromMillis = 0;
+    		lastLocationUpdateTime = System.currentTimeMillis();
+		}
 		else if(event.equals("stop"))
 			e.putBoolean(Device.PREF_IN_TRIP_NOW, false);
     	e.commit();
@@ -344,16 +414,23 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
     			event, 
     			""), prefs.getLong(Constants.PREF_DRIVER_ID, 0));
     	dbhelper.close();
+    	
+    	updateNotification();
+    	updateLocationUpdatesHandler();    	
+        Device.checkDevice(this);
 	}
 	
 	private void savePoint(String event){
 
-        String msg = "event: "+event;
+        String msg = "ibeacon point event: "+event;
         System.out.println(msg);
 		
         Editor e = prefs.edit();
-		if(event.equals("start"))
+		if(event.equals("start")){
 			e.putBoolean(Device.PREF_IN_TRIP_NOW, true);
+    		stayFromMillis = 0;
+    		lastLocationUpdateTime = System.currentTimeMillis();			
+		}
 		else if(event.equals("stop"))
 			e.putBoolean(Device.PREF_IN_TRIP_NOW, false);
     	e.commit();
@@ -373,6 +450,11 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
     			event, 
     			""), prefs.getLong(Constants.PREF_DRIVER_ID, 0));
     	dbhelper.close();
+
+		Bugsnag.notify(new RuntimeException("event: "+event));
+    	updateNotification();
+    	updateLocationUpdatesHandler();    	
+        Device.checkDevice(this);
 	}
 	
 	@Override
@@ -450,6 +532,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	        e.putString(Constants.PREF_MOBILE_LONGITUDE, ""+lastLocation.getLongitude());
 	        e.commit();
     	}
+        lastLocationUpdateTime = System.currentTimeMillis();
         
         System.out.println("Location service Connected");
     }

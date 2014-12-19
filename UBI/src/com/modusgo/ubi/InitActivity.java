@@ -29,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bugsnag.android.Bugsnag;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.modusgo.dd.CallSaverService;
 import com.modusgo.ubi.db.DbHelper;
@@ -66,6 +67,8 @@ public class InitActivity extends FragmentActivity {
 	        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext()).build();
 			ImageLoader.getInstance().init(config);
 	    }
+	    
+	    Bugsnag.register(this, Constants.BUGSNAG_ID);
 	    
 	    prefs = PreferenceManager.getDefaultSharedPreferences(InitActivity.this);
 	    clientId = prefs.getString(Constants.PREF_CLIENT_ID, "");
@@ -222,6 +225,7 @@ public class InitActivity extends FragmentActivity {
 							e.putString(Constants.PREF_PHOTO, driverJSON.optString(Constants.PREF_PHOTO));
 							
 							prefs.edit().putLong(Constants.PREF_DRIVER_ID, driverJSON.optLong(Constants.PREF_DRIVER_ID)).commit();
+							Bugsnag.addToTab("User", "E-mail", driverJSON.optString(Constants.PREF_EMAIL));
 						}
 						
 						if(responseJSON.has("info")){
@@ -283,6 +287,10 @@ public class InitActivity extends FragmentActivity {
 							e.putString(Device.PREF_DEVICE_LATITUDE, deviceJSON.optString("latitude", "0"));
 							e.putString(Device.PREF_DEVICE_LONGITUDE, deviceJSON.optString("longitude", "0"));
 							e.putString(Device.PREF_DEVICE_LOCATION_DATE, deviceJSON.optString("location_date"));
+							
+							Bugsnag.addToTab("User", "Device Type", deviceJSON.optString("type"));
+							Bugsnag.addToTab("User", "Device MEID", deviceJSON.optString("meid"));
+							Bugsnag.addToTab("User", "DD Events", deviceJSON.optString("events"));
 							
 							Device.checkDevice(getApplicationContext());
 						}

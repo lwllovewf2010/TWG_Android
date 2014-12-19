@@ -4,6 +4,7 @@ public class Constants {
 	
 	public static final String HOCKEY_APP_ID = "caca040742c8345b8594ac0bd7a71418";
 	public static final String GCM_SENDER_ID = "322787790569";
+	public static final String BUGSNAG_ID = "2958efd901626a959cd1149956d3be08";
 	
 	public static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZZZZZ";
 	public static final String DATE_TIME_FORMAT_ZULU = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";

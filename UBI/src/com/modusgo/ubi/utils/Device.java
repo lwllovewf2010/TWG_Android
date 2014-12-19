@@ -14,6 +14,8 @@ import com.modusgo.ubi.requesttasks.SendEventsRequest;
 
 public class Device {
 	
+	private static final int EVENTS_SENDING_FREQUENCY = 3*60*1000;
+	
 	public static final String PREF_CURRENT_TRACKING_MODE = "currentTracking";
 	public static final String PREF_DEVICE_MEID = "deviceMEID";
 	public static final String PREF_DEVICE_TYPE = "deviceType";
@@ -42,7 +44,7 @@ public class Device {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		Editor e = prefs.edit();
 		
-		if(System.currentTimeMillis() - prefs.getLong(PREF_LAST_SENDEVENT_MILLIS, 0) > 600000){
+		if(System.currentTimeMillis() - prefs.getLong(PREF_LAST_SENDEVENT_MILLIS, 0) >= EVENTS_SENDING_FREQUENCY){
 			e.putLong(PREF_LAST_SENDEVENT_MILLIS, System.currentTimeMillis());
 			new SendEventsRequest(context).execute();
 		}
