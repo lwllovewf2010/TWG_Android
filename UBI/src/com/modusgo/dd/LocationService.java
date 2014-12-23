@@ -4,13 +4,17 @@ import java.util.List;
 import java.util.UUID;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -130,6 +134,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
     	        	
     	        	if(!prefs.getString(Constants.PREF_AUTH_KEY, "").equals("")){
     		        	new GetDeviceInfoRequest(LocationService.this).execute();
+    		        	updateNotification();
     		            checkIgnitionHandler.postDelayed(this, GET_DEVICE_FREQUENCY);
     	        	}
     	        }
@@ -315,6 +320,38 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	}
 	
 	private void updateNotification(){
+		
+		String servicesToEnable = "";
+		int servicesToEnableCount = 0;
+		
+		if(prefs.getString(Device.PREF_DEVICE_TYPE, "").equals(Device.DEVICE_TYPE_OBD)){
+			if(prefs.getBoolean(Device.PREF_DEVICE_EVENTS, false)){
+				if(!isLocationServicesEnabled()){
+			    	servicesToEnable += "Location services";
+			    	servicesToEnableCount++;
+				}
+			}
+		}
+		else{
+			if(!isLocationServicesEnabled()){
+		    	servicesToEnable += "Location services";
+		    	servicesToEnableCount++;
+			}
+		}
+		
+		if(prefs.getString(Device.PREF_DEVICE_TYPE, "").equals(Device.DEVICE_TYPE_IBEACON) || prefs.getString(Device.PREF_DEVICE_TYPE, "").equals(Device.DEVICE_TYPE_OBDBLE)){
+			if(!isBluetoothServicesEnabled()){
+				servicesToEnable += servicesToEnableCount > 0 ? ", " : "";
+		    	servicesToEnable += "Bluetooth service";
+		    	servicesToEnableCount++;
+			}
+		}
+
+		if(servicesToEnableCount>0){
+	    	showNotification("Please, enable next service" + (servicesToEnableCount > 1 ? "s" : "") + " for better experience: "+servicesToEnable, new Intent(android.provider.Settings.ACTION_SETTINGS));
+		}
+		
+		
 		NotificationCompat.Builder mBuilder =
 		        new NotificationCompat.Builder(this)
 		        .setSmallIcon(R.drawable.ic_launcher)
@@ -329,6 +366,47 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		n.flags |= Notification.FLAG_ONGOING_EVENT;
 		
 		startForeground(notificationId, n);
+	}
+	
+	private boolean isLocationServicesEnabled(){
+		LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		try {
+			if(lm.isProviderEnabled(LocationManager.GPS_PROVIDER))
+				return true;
+			else
+				return false;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return false;
+		}
+	}
+	
+	private boolean isBluetoothServicesEnabled(){
+		BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		if (mBluetoothAdapter == null) {
+		    // Device does not support Bluetooth
+			return false;
+		} else {
+		    if (!mBluetoothAdapter.isEnabled())
+		    	return true;
+		    else
+		    	return false;
+		}
+	}
+	
+	private void showNotification(String message, Intent resultIntent){
+		NotificationCompat.Builder mBuilder =
+		        new NotificationCompat.Builder(this)
+		        .setSmallIcon(R.drawable.ic_launcher)
+		        .setContentTitle(getString(R.string.app_name))
+		        .setContentText(message)
+		        .setAutoCancel(true);
+		
+		PendingIntent resultPendingIntent = PendingIntent.getActivity(this,0,resultIntent,Intent.FLAG_ACTIVITY_NEW_TASK);
+		mBuilder.setContentIntent(resultPendingIntent);
+		
+		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		mNotificationManager.notify(29, mBuilder.build());
 	}
 	
 	private void updateLocationUpdatesHandler(){
