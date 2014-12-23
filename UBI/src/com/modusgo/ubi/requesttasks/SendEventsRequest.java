@@ -17,6 +17,8 @@ import com.modusgo.ubi.db.TrackingContract.TrackingEntry;
 import com.modusgo.ubi.db.DbHelper;
 
 public class SendEventsRequest extends BasePostRequestAsyncTask {
+
+	private static final float MPS_TO_MPH = 2.2369f;
 	
 	ArrayList<Long> eventIds;
 	
@@ -68,7 +70,7 @@ public class SendEventsRequest extends BasePostRequestAsyncTask {
 					tpLocationJSON.put("altitude", c.getDouble(5));
 					tpLocationJSON.put("satellites", c.getInt(6));
 					tpLocationJSON.put("heading", c.getFloat(7));
-					tpLocationJSON.put("speed", c.getFloat(8));
+					tpLocationJSON.put("speed", c.getFloat(8) * MPS_TO_MPH);
 					tpLocationJSON.put("fix_status", c.getInt(9));
 					tpJSON.put("location", tpLocationJSON);
 					JSONObject tpDataJSON = new JSONObject();
