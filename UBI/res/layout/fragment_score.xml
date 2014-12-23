@@ -37,63 +37,36 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginTop="5dp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
+            android:paddingLeft="20dp"
+            android:background="@color/btn_transparent_orange_light"
             android:gravity="center"
-            android:background="@color/btn_transparent_orange_light" >
+            android:orientation="horizontal"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp" >
+
+            <com.modusgo.ubi.customviews.TypefacedTextView
+                android:id="@+id/tvScore"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:background="@drawable/circle_score_orange"
+                android:gravity="center"
+                android:text="C+"
+                android:textColor="#FFF"
+                android:textSize="40sp"
+                ubi:typeface="arialbd.ttf" />
 
             <com.modusgo.ubi.customviews.TypefacedTextView
                 android:id="@+id/tvThisMonthMessage"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight=".5"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
+                android:layout_weight=".5"
                 android:text="This month\nAverage Score\nYou can do better!"
                 android:textColor="@color/ubi_orange"
                 android:textSize="12sp"
                 ubi:typeface="arialbd.ttf" />
-
-            <com.modusgo.ubi.customviews.TypefacedTextView
-                android:id="@+id/tvScore"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:background="@drawable/circle_score_orange"
-                android:gravity="center"
-                android:text="C+"
-                android:textColor="#FFF"
-                android:textSize="35sp"
-                ubi:typeface="arialbd.ttf" />
-
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight=".5"
-                android:gravity="bottom|right"
-                android:layout_marginRight="10dp"
-                android:paddingBottom="8dp"
-                android:orientation="vertical" >
-
-                <ImageView
-                    android:id="@+id/imageLastMonthArrow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignLeft="@+id/tvLastMonthMessage"
-                    android:layout_alignRight="@+id/tvLastMonthMessage"
-                    android:src="@drawable/arrow_down_red" />
-
-                <com.modusgo.ubi.customviews.TypefacedTextView
-                    android:id="@+id/tvLastMonthMessage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/imageLastMonthArrow"
-                    android:text="B+ Last Month"
-                    android:textColor="@color/ubi_red"
-                    android:textSize="12sp"
-                    ubi:typeface="EncodeSansNormal-300-Light.ttf" />
-            </RelativeLayout>
         </LinearLayout>
 
         <com.echo.holographlibrary.BarGraph
