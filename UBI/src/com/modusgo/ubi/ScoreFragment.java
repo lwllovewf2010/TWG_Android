@@ -586,12 +586,12 @@ public class ScoreFragment extends Fragment{
 			JSONObject jsonStatsPage = jsonStats.getJSONObject(pageName);
 			
 			ArrayList<CirclesSection> sections = new ArrayList<CirclesSection>();
-			sections.add(new CirclesSection("Use of Speed", getMarksFromJson("pace", jsonMarkPage), getDistancesFromJson("pace", jsonStatsPage)));
-			sections.add(new CirclesSection("Cornering", getMarksFromJson("cornering", jsonMarkPage), getDistancesFromJson("cornering", jsonStatsPage)));
-			sections.add(new CirclesSection("Intersection Acceleration", getMarksFromJson("junctionacceleration", jsonMarkPage), getDistancesFromJson("junctionacceleration", jsonStatsPage)));
-			sections.add(new CirclesSection("Road Acceleration", getMarksFromJson("roadacceleration", jsonMarkPage), getDistancesFromJson("roadacceleration", jsonStatsPage)));
-			sections.add(new CirclesSection("Intersection Braking", getMarksFromJson("junctionbrake", jsonMarkPage), getDistancesFromJson("junctionbrake", jsonStatsPage)));
-			sections.add(new CirclesSection("Road Braking", getMarksFromJson("roadbrake", jsonMarkPage), getDistancesFromJson("roadbrake", jsonStatsPage)));
+			sections.add(new CirclesSection("Use of Speed", getMarksFromJson("pace", jsonMarkPage), getDistancesFromJson(jsonStatsPage)));
+			sections.add(new CirclesSection("Cornering", getMarksFromJson("cornering", jsonMarkPage), getDistancesFromJson(jsonStatsPage)));
+			sections.add(new CirclesSection("Intersection Acceleration", getMarksFromJson("junctionacceleration", jsonMarkPage), getDistancesFromJson(jsonStatsPage)));
+			sections.add(new CirclesSection("Road Acceleration", getMarksFromJson("roadacceleration", jsonMarkPage), getDistancesFromJson(jsonStatsPage)));
+			sections.add(new CirclesSection("Intersection Braking", getMarksFromJson("junctionbrake", jsonMarkPage), getDistancesFromJson(jsonStatsPage)));
+			sections.add(new CirclesSection("Road Braking", getMarksFromJson("roadbrake", jsonMarkPage), getDistancesFromJson(jsonStatsPage)));
 			
 			return sections;
 		}
@@ -611,7 +611,7 @@ public class ScoreFragment extends Fragment{
 					};
 		}
 		
-		private double[] getDistancesFromJson(String statName, JSONObject json) throws JSONException{
+		private double[] getDistancesFromJson(JSONObject json) throws JSONException{
 
 			JSONObject jsonUrbanHighway = json.getJSONObject("trunk");
 			JSONObject jsonUrbanMajor = json.getJSONObject("major");
@@ -619,10 +619,10 @@ public class ScoreFragment extends Fragment{
 			JSONObject jsonUrbanLocal = json.getJSONObject("local");
 			
 			return new double[]{
-					jsonUrbanHighway.optDouble(statName),
-					jsonUrbanMajor.optDouble(statName),
-					jsonUrbanMinor.optDouble(statName),
-					jsonUrbanLocal.optDouble(statName),
+					jsonUrbanHighway.optDouble("distance"),
+					jsonUrbanMajor.optDouble("distance"),
+					jsonUrbanMinor.optDouble("distance"),
+					jsonUrbanLocal.optDouble("distance"),
 					};
 		}
 		
