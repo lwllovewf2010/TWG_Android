@@ -52,8 +52,6 @@ public class ScoreFragment extends Fragment{
 	View llContent;
 	TextView tvScore;
 	TextView tvThisMonthMessage;
-	TextView tvLastMonthMessage;
-	ImageView imageLastMonthArrow;
 	BarGraph graph;
 	
 	MonthStats[] yearStats;
@@ -103,8 +101,6 @@ public class ScoreFragment extends Fragment{
 		llContent = rootView.findViewById(R.id.llContent);
 		tvScore = (TextView) rootView.findViewById(R.id.tvScore);
 		tvThisMonthMessage = (TextView) rootView.findViewById(R.id.tvThisMonthMessage);
-		tvLastMonthMessage = (TextView) rootView.findViewById(R.id.tvLastMonthMessage);
-		imageLastMonthArrow = (ImageView) rootView.findViewById(R.id.imageLastMonthArrow);
 		graph = (BarGraph) rootView.findViewById(R.id.graph);
 		
 		((View)tvScore.getParent()).setOnClickListener(new OnClickListener() {
@@ -199,7 +195,6 @@ public class ScoreFragment extends Fragment{
 		if(!grade.equals("")){
 			tvThisMonthMessage.setGravity(Gravity.LEFT);
 			tvScore.setVisibility(View.VISIBLE);
-			tvLastMonthMessage.setVisibility(View.VISIBLE);
 			
 			String thisMonthMessage = "This month:\n";
 			tvScore.setText(grade);
@@ -236,37 +231,12 @@ public class ScoreFragment extends Fragment{
 			}
 			
 			tvThisMonthMessage.setText(thisMonthMessage);
-			
-			Calendar c = Calendar.getInstance();
-			TimeZone tzTo = TimeZone.getTimeZone(prefs.getString(Constants.PREF_TIMEZONE_OFFSET, Constants.DEFAULT_TIMEZONE));
-			c.setTimeZone(tzTo);
-			int currentMonth = c.get(Calendar.MONTH);
-			String lastMonthGrade = yearStats[currentMonth-1].grade;
-			
-			if(!lastMonthGrade.equals("")){
-				tvLastMonthMessage.setText(lastMonthGrade+" Last Month");
-				if(gradeToNumber(grade)>gradeToNumber(lastMonthGrade)){
-					tvLastMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_green));
-					imageLastMonthArrow.setImageResource(R.drawable.arrow_up_green);
-				}
-				else{
-					tvLastMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_red));
-					imageLastMonthArrow.setImageResource(R.drawable.arrow_down_red);				
-				}
-			}
-			else{
-				tvLastMonthMessage.setText("N/A Last Month");
-				tvLastMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_gray));
-				imageLastMonthArrow.setVisibility(View.INVISIBLE);
-			}
 		}
 		else{
 			tvThisMonthMessage.setText("Scoring will be available soon");
 			tvThisMonthMessage.setGravity(Gravity.CENTER);
 			tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_gray));
 			tvScore.setVisibility(View.INVISIBLE);
-			tvLastMonthMessage.setVisibility(View.INVISIBLE);
-			imageLastMonthArrow.setVisibility(View.INVISIBLE);
 		}
 	}
 	
