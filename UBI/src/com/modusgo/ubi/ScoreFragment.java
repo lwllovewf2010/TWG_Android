@@ -589,7 +589,7 @@ public class ScoreFragment extends Fragment{
 			sections.add(new CirclesSection("Use of Speed", getMarksFromJson("pace", jsonMarkPage), getDistancesFromJson("pace", jsonStatsPage)));
 			sections.add(new CirclesSection("Cornering", getMarksFromJson("cornering", jsonMarkPage), getDistancesFromJson("cornering", jsonStatsPage)));
 			sections.add(new CirclesSection("Intersection Acceleration", getMarksFromJson("junctionacceleration", jsonMarkPage), getDistancesFromJson("junctionacceleration", jsonStatsPage)));
-			sections.add(new CirclesSection("Road Acceleration", getMarksFromJson("pace", jsonMarkPage), getDistancesFromJson("roadacceleration", jsonStatsPage)));
+			sections.add(new CirclesSection("Road Acceleration", getMarksFromJson("roadacceleration", jsonMarkPage), getDistancesFromJson("roadacceleration", jsonStatsPage)));
 			sections.add(new CirclesSection("Intersection Braking", getMarksFromJson("junctionbrake", jsonMarkPage), getDistancesFromJson("junctionbrake", jsonStatsPage)));
 			sections.add(new CirclesSection("Road Braking", getMarksFromJson("roadbrake", jsonMarkPage), getDistancesFromJson("roadbrake", jsonStatsPage)));
 			
@@ -630,10 +630,13 @@ public class ScoreFragment extends Fragment{
 			switch (score) {
 			case "ideal":
 				return 3;
-			case "average":
-				return 2;
+			case "good":
 			case "high":
+				return 2;
+			case "average":
+			case "poor":
 				return 1;
+			case "low":
 			case "unknown":
 				return 0;
 			default:
