@@ -91,34 +91,33 @@ OnConnectionFailedListener, LocationListener{
 
         // Gets to GoogleMap from the MapView and does initialization stuff
         map = mapView.getMap();
-        map.getUiSettings().setMyLocationButtonEnabled(false);
-
-        MapsInitializer.initialize(this);
-        
-        // Updates the location and zoom of the MapView
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(37.8430094,-95.0098992), 1);
-        map.animateCamera(cameraUpdate);
-        
-        map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
-			@Override
-			public void onMapLoaded() {
-				updateMap();
-			}
-		});
+        if(map!=null){
+	        map.getUiSettings().setMyLocationButtonEnabled(false);
+	
+	        MapsInitializer.initialize(this);
+	        
+	        // Updates the location and zoom of the MapView
+	        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(37.8430094,-95.0098992), 1);
+	        map.animateCamera(cameraUpdate);
+	        
+	        map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
+				@Override
+				public void onMapLoaded() {
+					updateMap();
+				}
+			});
+        }
         
         mechanics = new ArrayList<MechanicInfo>();
         adapter = new MechanicsAdapter(this, R.layout.find_mechanic_item, mechanics);
         listView.setAdapter(adapter);
-
-        llProgress.setVisibility(View.VISIBLE);
-        listView.setVisibility(View.GONE);
         
         setUpLocationClientIfNeeded();
         mLocationClient.connect();
 	}
 	
 	private void updateMap(){
-		if(mechanics.size()>0){	
+		if(map!=null && mechanics.size()>0){	
 			map.clear();
 			Builder builder = LatLngBounds.builder();
 			for (MechanicInfo mi : mechanics) {
@@ -278,7 +277,8 @@ OnConnectionFailedListener, LocationListener{
 				@Override
 				public void onClick(View v) {
 					CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(mi.coordinate, 15);
-			        map.animateCamera(cameraUpdate);
+			        if(map!=null)
+			        	map.animateCamera(cameraUpdate);
 				}
 			});
 			
@@ -314,6 +314,13 @@ OnConnectionFailedListener, LocationListener{
 		}
 		
 		@Override
+		protected void onPreExecute() {
+			llProgress.setVisibility(View.VISIBLE);
+			listView.setVisibility(View.GONE);
+			super.onPreExecute();
+		}
+		
+		@Override
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
 			JSONArray mechanicsJSON = responseJSON.getJSONArray("results");
         	mechanics.clear();
@@ -336,8 +343,7 @@ OnConnectionFailedListener, LocationListener{
 	        			iconFactory.makeIcon(""+(i+1), 10, Color.WHITE, typeface)));
 			}
 			
-        	if(map!=null)
-        		updateMap();
+        	updateMap();
         	
 			super.onSuccess(responseJSON);
 		}

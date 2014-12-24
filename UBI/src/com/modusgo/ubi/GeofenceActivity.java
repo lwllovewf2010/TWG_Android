@@ -101,54 +101,56 @@ public class GeofenceActivity extends MainActivity {
 
         // Gets to GoogleMap from the MapView and does initialization stuff
         map = mapView.getMap();
-        map.getUiSettings().setMyLocationButtonEnabled(false);
-        map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
-			@Override
-			public void onMapLoaded() {
-				CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(37.8430094,-95.0098992), 1);
-		        map.animateCamera(cameraUpdate);
-				new GetGeofenceTask(GeofenceActivity.this).execute("vehicles/"+vehicle.id+"/limits.json");
-			}
-		});
-        map.setOnMapLongClickListener(new OnMapLongClickListener() {
-			
-			@Override
-			public void onMapLongClick(LatLng point) {
-				if(mapEnabled){
-					if(points.size()>0){
-						map.clear();
-						points.clear();
-						tvRadius.setText("n/a");
-						if(prefs.getString(Constants.PREF_UNITS_OF_MEASURE, "mile").equals("mile")){
-							tvRadiusUnits.setText("MILES");
+        if(map!=null){
+	        map.getUiSettings().setMyLocationButtonEnabled(false);
+	        map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
+				@Override
+				public void onMapLoaded() {
+					CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(37.8430094,-95.0098992), 1);
+			        map.animateCamera(cameraUpdate);
+					new GetGeofenceTask(GeofenceActivity.this).execute("vehicles/"+vehicle.id+"/limits.json");
+				}
+			});
+	        map.setOnMapLongClickListener(new OnMapLongClickListener() {
+				
+				@Override
+				public void onMapLongClick(LatLng point) {
+					if(mapEnabled){
+						if(points.size()>0){
+							map.clear();
+							points.clear();
+							tvRadius.setText("n/a");
+							if(prefs.getString(Constants.PREF_UNITS_OF_MEASURE, "mile").equals("mile")){
+								tvRadiusUnits.setText("MILES");
+							}
+							else{
+								tvRadiusUnits.setText("KM");
+							}
+							updateSaveBtn("Finsih");
+					        tvInstructions.setText("Tap anywhere on\nthe map to begin setting up\nyour geofence borders");
+							geofencingStarted = true;
 						}
-						else{
-							tvRadiusUnits.setText("KM");
-						}
-						updateSaveBtn("Finsih");
-				        tvInstructions.setText("Tap anywhere on\nthe map to begin setting up\nyour geofence borders");
-						geofencingStarted = true;
 					}
 				}
-			}
-		});
-        
-        map.setOnMapClickListener(new OnMapClickListener() {
-			
-			@Override
-			public void onMapClick(LatLng point) {
-				if(mapEnabled && geofencingStarted){
-					points.add(point);
-					drawPolyline();
-					updateSaveBtn("Finish");
+			});
+	        
+	        map.setOnMapClickListener(new OnMapClickListener() {
+				
+				@Override
+				public void onMapClick(LatLng point) {
+					if(mapEnabled && geofencingStarted){
+						points.add(point);
+						drawPolyline();
+						updateSaveBtn("Finish");
+					}
+					if(points.size()>0){
+						tvInstructions.setText("Tap anywhere on the map to set next point");
+					}
 				}
-				if(points.size()>0){
-					tvInstructions.setText("Tap anywhere on the map to set next point");
-				}
-			}
-		});
-        
-        MapsInitializer.initialize(this);     
+			});
+	        
+	        MapsInitializer.initialize(this);
+        }
 
 		mapEnabled = false;
 		
@@ -186,45 +188,49 @@ public class GeofenceActivity extends MainActivity {
 	}
 	
 	private void drawPolyline(){
-		map.clear();
-		
-		PolylineOptions options = new PolylineOptions();
-		final Builder builder = LatLngBounds.builder();
-		
-		for (int i = 0; i < points.size(); i++) {
-			options.add(points.get(i));
-			if(i!=points.size()-1)
-				map.addMarker(new MarkerOptions().position(points.get(i)).anchor(0.5f, 0.5f).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_geofence_point)));
-			else
-				map.addMarker(new MarkerOptions().position(points.get(i)).anchor(0.5f, 0.5f).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_geofence_start)));
-			builder.include(points.get(i));
+		if(map!=null){
+			map.clear();
+			
+			PolylineOptions options = new PolylineOptions();
+			final Builder builder = LatLngBounds.builder();
+			
+			for (int i = 0; i < points.size(); i++) {
+				options.add(points.get(i));
+				if(i!=points.size()-1)
+					map.addMarker(new MarkerOptions().position(points.get(i)).anchor(0.5f, 0.5f).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_geofence_point)));
+				else
+					map.addMarker(new MarkerOptions().position(points.get(i)).anchor(0.5f, 0.5f).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_geofence_start)));
+				builder.include(points.get(i));
+			}
+			
+			int color = Color.parseColor("#FFFFFF");
+			map.addPolyline(options.color(color).width(8));
+			
+			LatLngBounds llb = builder.build();
+			updateRadius(llb);
 		}
-		
-		int color = Color.parseColor("#FFFFFF");
-		map.addPolyline(options.color(color).width(8));
-		
-		LatLngBounds llb = builder.build();
-		updateRadius(llb);
 	}
 	
 	private void drawClosedPolyline(){
-		map.clear();
-		
-		PolylineOptions options = new PolylineOptions();
-		final Builder builder = LatLngBounds.builder();
-		
-		for (LatLng point : points) {
-			options.add(point);
-			builder.include(point);
-			map.addMarker(new MarkerOptions().position(point).anchor(0.5f, 0.5f).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_geofence_point)));
+		if(map!=null){
+			map.clear();
+			
+			PolylineOptions options = new PolylineOptions();
+			final Builder builder = LatLngBounds.builder();
+			
+			for (LatLng point : points) {
+				options.add(point);
+				builder.include(point);
+				map.addMarker(new MarkerOptions().position(point).anchor(0.5f, 0.5f).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_geofence_point)));
+			}
+			options.add(points.get(0));
+			
+			int color = Color.parseColor("#FFFFFF");
+			map.addPolyline(options.color(color).width(8));
+			
+			LatLngBounds llb = builder.build();
+			updateRadius(llb);
 		}
-		options.add(points.get(0));
-		
-		int color = Color.parseColor("#FFFFFF");
-		map.addPolyline(options.color(color).width(8));
-		
-		LatLngBounds llb = builder.build();
-		updateRadius(llb);
 		
 	}
 	
@@ -238,36 +244,38 @@ public class GeofenceActivity extends MainActivity {
 	}
 	
 	private void updateActivity(){
-		if(points!=null && points.size()>0){
-			PolylineOptions options = new PolylineOptions();
-			final Builder builder = LatLngBounds.builder();
-
-			map.clear();
-			for (LatLng point : points) {
-				options.add(point);
-				builder.include(point);
-				map.addMarker(new MarkerOptions().position(point).anchor(0.5f, 0.5f).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_geofence_point)));
+		if(map!=null){
+			if(points!=null && points.size()>0){
+				PolylineOptions options = new PolylineOptions();
+				final Builder builder = LatLngBounds.builder();
+	
+				map.clear();
+				for (LatLng point : points) {
+					options.add(point);
+					builder.include(point);
+					map.addMarker(new MarkerOptions().position(point).anchor(0.5f, 0.5f).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_geofence_point)));
+				}
+				options.add(points.get(0));
+				
+				LatLngBounds llb = builder.build();
+				
+				updateRadius(llb);
+				
+				int color = Color.parseColor("#FFFFFF");
+				map.addPolyline(options.color(color).width(8));
+				
+				CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(llb, 150);
+		        map.animateCamera(cameraUpdate);
+		        
+		        tvInstructions.setText("Press and hold anywhere on\nthe map to reset geofence borders");
 			}
-			options.add(points.get(0));
-			
-			LatLngBounds llb = builder.build();
-			
-			updateRadius(llb);
-			
-			int color = Color.parseColor("#FFFFFF");
-			map.addPolyline(options.color(color).width(8));
-			
-			CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(llb, 150);
-	        map.animateCamera(cameraUpdate);
-	        
-	        tvInstructions.setText("Press and hold anywhere on\nthe map to reset geofence borders");
-		}
-		else{
-	        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(vehicle.latitude, vehicle.longitude), 10);
-	        map.animateCamera(cameraUpdate);
-
-			geofencingStarted = true;
-	        tvInstructions.setText("Tap anywhere on the map to begin\nsetting up your geofence borders");
+			else{
+		        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(vehicle.latitude, vehicle.longitude), 10);
+		        map.animateCamera(cameraUpdate);
+	
+				geofencingStarted = true;
+		        tvInstructions.setText("Tap anywhere on the map to begin\nsetting up your geofence borders");
+			}
 		}
 
 		updateSaveBtn("Save");
