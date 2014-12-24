@@ -22,6 +22,7 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
+import android.text.TextUtils;
 
 import com.bugsnag.android.Bugsnag;
 import com.google.android.gms.common.ConnectionResult;
@@ -37,6 +38,7 @@ import com.kontakt.sdk.android.device.Beacon;
 import com.kontakt.sdk.android.device.Region;
 import com.kontakt.sdk.android.factory.Filters;
 import com.kontakt.sdk.android.manager.BeaconManager;
+import com.logentries.android.AndroidLogger;
 import com.modusgo.ubi.Constants;
 import com.modusgo.ubi.InitActivity;
 import com.modusgo.ubi.R;
@@ -66,7 +68,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 
 	private Handler checkLocationUpdatesHandler;
 	private Runnable checkLocationUpdatesRunnable;
-	private int checkLocationUpdatesFrequency = 60*1000;
+	private int checkLocationUpdatesFrequency = 90*1000;
 	
 	PhoneScreenOnOffReceiver phoneScreenOnOffReceiver;
 	//private boolean smsReceiverRegistered = false;
@@ -112,64 +114,73 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		
-		updateServiceMode();
-		updateNotification();
-		
-		setUpLocationClientIfNeeded();
-        if(!mLocationClient.isConnected() || !mLocationClient.isConnecting() && !mInProgress)
-        {
-        	mInProgress = true;
-        	mLocationClient.connect();
-        }
-		
-        if(checkIgnitionHandler==null){
-        	checkIgnitionHandler = new Handler();
-        }
-        
-        if(checkIgnitionRunnable==null){
-			checkIgnitionHandler.removeCallbacks(checkIgnitionRunnable);
-        	checkIgnitionRunnable = new Runnable() {
-    	        @Override
-    	        public void run() {
-    	        	
-    	        	if(!prefs.getString(Constants.PREF_AUTH_KEY, "").equals("")){
-    		        	new GetDeviceInfoRequest(LocationService.this).execute();
-    		        	updateNotification();
-    		            checkIgnitionHandler.postDelayed(this, GET_DEVICE_FREQUENCY);
-    	        	}
-    	        }
-    	    };
-    	    checkIgnitionHandler.postDelayed(checkIgnitionRunnable, 0);
-        }
-        
-        if(checkLocationUpdatesHandler==null){
-			checkLocationUpdatesHandler = new Handler();
-        }
-        
-        if(checkLocationUpdatesRunnable==null){
-        	checkLocationUpdatesHandler.removeCallbacks(checkLocationUpdatesRunnable);
-			checkLocationUpdatesRunnable = new Runnable() {
-    	        @Override
-    	        public void run() {
-    	        	if(System.currentTimeMillis() - lastLocationUpdateTime > MAX_STAY_TIME){
-    	        		Bugsnag.notify(new RuntimeException("Trip stop, no location for 2 minutes"));
-    	        		System.out.println("Trip stop, no location for 2 minutes");
-    	        		savePoint("stop");
-    	        		checkLocationUpdatesHandler.removeCallbacks(checkLocationUpdatesRunnable);
-    	        	}
-    	        	else
-    	        		checkLocationUpdatesHandler.postDelayed(this, checkLocationUpdatesFrequency);
-    	        }
-    	    };
-        }
-	    
-	    if(phoneScreenOnOffReceiver==null){
-		    phoneScreenOnOffReceiver = new PhoneScreenOnOffReceiver();
-		    IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
-		    filter.addAction(Intent.ACTION_SCREEN_OFF);
-		    filter.addAction(Intent.ACTION_SCREEN_OFF);
-		    registerReceiver(phoneScreenOnOffReceiver, filter);
-	    }
+		if(!prefs.getString(Constants.PREF_AUTH_KEY, "").equals("")){
+			updateServiceMode();
+			updateNotification();
+			
+			setUpLocationClientIfNeeded();
+	        if(!mLocationClient.isConnected() || !mLocationClient.isConnecting() && !mInProgress)
+	        {
+	        	mInProgress = true;
+	        	mLocationClient.connect();
+	        }
+			
+	        if(checkIgnitionHandler==null){
+	        	checkIgnitionHandler = new Handler();
+	        }
+	        
+	        if(checkIgnitionRunnable==null){
+				checkIgnitionHandler.removeCallbacks(checkIgnitionRunnable);
+	        	checkIgnitionRunnable = new Runnable() {
+	    	        @Override
+	    	        public void run() {
+	    	        	
+	    	        	if(!prefs.getString(Constants.PREF_AUTH_KEY, "").equals("")){
+	    		        	new GetDeviceInfoRequest(LocationService.this).execute();
+	    		        	updateNotification();
+	    		            checkIgnitionHandler.postDelayed(this, GET_DEVICE_FREQUENCY);
+	    	        	}
+	    	        }
+	    	    };
+	    	    checkIgnitionHandler.postDelayed(checkIgnitionRunnable, 0);
+	        }
+	        
+	        if(checkLocationUpdatesHandler==null){
+				checkLocationUpdatesHandler = new Handler();
+	        }
+	        
+	        if(checkLocationUpdatesRunnable==null){
+	        	checkLocationUpdatesHandler.removeCallbacks(checkLocationUpdatesRunnable);
+				checkLocationUpdatesRunnable = new Runnable() {
+	    	        @Override
+	    	        public void run() {
+	    	        	System.out.println("checkLocationUpdatesRunnable");
+	    	        	if(prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false)){
+		    	        	if(System.currentTimeMillis() - lastLocationUpdateTime > MAX_STAY_TIME){
+		    	        		Bugsnag.notify(new RuntimeException("Trip stop, no location for 2 minutes"));
+		    	        		System.out.println("Trip stop, no location for 2 minutes");
+		    	        		savePoint("stop");
+		    	        		checkLocationUpdatesHandler.removeCallbacks(checkLocationUpdatesRunnable);
+		    	        	}
+		    	        	else{
+			    	        	System.out.println("checkLocationUpdatesRunnable reposted");
+		    	        		checkLocationUpdatesHandler.postDelayed(this, checkLocationUpdatesFrequency);
+		    	        	}
+	    	        	}
+	    	        }
+	    	    };
+	        }
+		    
+		    if(phoneScreenOnOffReceiver==null){
+			    phoneScreenOnOffReceiver = new PhoneScreenOnOffReceiver();
+			    IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+			    filter.addAction(Intent.ACTION_SCREEN_OFF);
+			    filter.addAction(Intent.ACTION_SCREEN_OFF);
+			    registerReceiver(phoneScreenOnOffReceiver, filter);
+		    }
+		}
+		else
+			stopSelf();
 	    
 		return START_STICKY;//super.onStartCommand(intent, flags, startId);
 	}
@@ -412,13 +423,13 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	private void updateLocationUpdatesHandler(){
 		final String deviceType = prefs.getString(Device.PREF_DEVICE_TYPE, "");
 		if(checkLocationUpdatesHandler!=null && checkLocationUpdatesRunnable!=null){
+			checkLocationUpdatesHandler.removeCallbacks(checkLocationUpdatesRunnable);
 			if(prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false) && (deviceType.equals(Device.DEVICE_TYPE_SMARTPHONE) || (deviceType.equals(Device.DEVICE_TYPE_IBEACON) && !beaconConnected))){
-				System.out.println("post check location updates");
+				System.out.println("check location updates posted");
 		    	checkLocationUpdatesHandler.postDelayed(checkLocationUpdatesRunnable, 0);
 			}
 			else{
-				System.out.println("remove check location updates");
-				checkLocationUpdatesHandler.removeCallbacks(checkLocationUpdatesRunnable);
+				System.out.println("check location updates removed");
 			}
 		}
 	}
@@ -469,13 +480,15 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
         e.putString(Constants.PREF_MOBILE_LONGITUDE, ""+location.getLongitude());
         
 		if(event.equals("start")){
-			e.putBoolean(Device.PREF_IN_TRIP_NOW, true);
+			e.putBoolean(Device.PREF_IN_TRIP_NOW, true).commit();
     		stayFromMillis = 0;
     		lastLocationUpdateTime = System.currentTimeMillis();
+        	updateLocationUpdatesHandler(); 
 		}
 		else if(event.equals("stop"))
-			e.putBoolean(Device.PREF_IN_TRIP_NOW, false);
-    	e.commit();
+			e.putBoolean(Device.PREF_IN_TRIP_NOW, false).commit();
+		else
+			e.commit();
     	
 		DbHelper dbhelper = DbHelper.getInstance(this);
     	dbhelper.saveTrackingEvent(new Tracking(
@@ -493,25 +506,26 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
     			""), prefs.getLong(Constants.PREF_DRIVER_ID, 0));
     	dbhelper.close();
     	
-    	updateNotification();
-    	updateLocationUpdatesHandler();    	
+    	if(!TextUtils.isEmpty(event))
+    		updateNotification();
+    	   	
         Device.checkDevice(this);
 	}
 	
 	private void savePoint(String event){
 
-        String msg = "ibeacon point event: "+event;
+        String msg = "point event: "+event;
         System.out.println(msg);
 		
         Editor e = prefs.edit();
 		if(event.equals("start")){
-			e.putBoolean(Device.PREF_IN_TRIP_NOW, true);
+			e.putBoolean(Device.PREF_IN_TRIP_NOW, true).commit();
     		stayFromMillis = 0;
-    		lastLocationUpdateTime = System.currentTimeMillis();			
+    		lastLocationUpdateTime = System.currentTimeMillis();
+        	updateLocationUpdatesHandler(); 			
 		}
 		else if(event.equals("stop"))
-			e.putBoolean(Device.PREF_IN_TRIP_NOW, false);
-    	e.commit();
+			e.putBoolean(Device.PREF_IN_TRIP_NOW, false).commit();
     	
 		DbHelper dbhelper = DbHelper.getInstance(this);
     	dbhelper.saveTrackingEvent(new Tracking(
@@ -530,25 +544,25 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
     	dbhelper.close();
 
 		Bugsnag.notify(new RuntimeException("event: "+event));
-    	updateNotification();
-    	updateLocationUpdatesHandler();    	
+    	updateNotification();  	
         Device.checkDevice(this);
 	}
 	
 	@Override
 	public void onDestroy() {
-		/*if(smsReceiverRegistered){
-			unregisterReceiver(incomingSMSReceiver);
-			smsReceiverRegistered = false;
-		}
-		if(callReceiverRegistered){
-			unregisterReceiver(incomingCallReceiver);
-			callReceiverRegistered = false;
-		}*/
-		
-		unregisterReceiver(phoneScreenOnOffReceiver);
-
 		System.out.println("service destroy ");
+		
+		if(phoneScreenOnOffReceiver!=null)
+			unregisterReceiver(phoneScreenOnOffReceiver);
+		
+		if(checkLocationUpdatesHandler!=null && checkLocationUpdatesRunnable!=null){
+			checkLocationUpdatesHandler.removeCallbacks(checkLocationUpdatesRunnable);
+		}
+		
+		if(checkIgnitionHandler!=null && checkIgnitionRunnable!=null){
+			checkIgnitionHandler.removeCallbacks(checkIgnitionRunnable);
+		}
+		
 		if(beaconManager!=null){
 			System.out.println("ibeacon disconnect ");
 			beaconManager.stopMonitoring();
@@ -563,6 +577,12 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	        // Destroy the current location client
 	        mLocationClient = null;
         }
+        
+        if(prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false)){
+        	Bugsnag.notify(new RuntimeException("Trip stop, service destroyed"));
+        	System.out.println("Trip stop, service destroyed");
+        	savePoint("stop");
+    	}
 		
 		super.onDestroy();
 	}
