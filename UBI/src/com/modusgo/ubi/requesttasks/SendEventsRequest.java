@@ -8,8 +8,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -18,6 +20,7 @@ import com.bugsnag.android.Bugsnag;
 import com.modusgo.ubi.Constants;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.TrackingContract.TrackingEntry;
+import com.modusgo.ubi.utils.Device;
 
 public class SendEventsRequest extends BasePostRequestAsyncTask {
 
@@ -58,6 +61,19 @@ public class SendEventsRequest extends BasePostRequestAsyncTask {
 		
 		try {
 			JSONObject dataJSON = new JSONObject();
+			try {
+				dataJSON.put("script_version", context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName);
+			} catch (NameNotFoundException e) {
+				e.printStackTrace();
+			}
+			dataJSON.put("firmware", "android "+android.os.Build.VERSION.RELEASE);
+			dataJSON.put("device_type", prefs.getString(Device.PREF_DEVICE_TYPE, "n/a"));
+			
+			TelephonyManager manager = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
+			String carrierName = manager.getNetworkOperatorName();
+			if(!TextUtils.isEmpty(carrierName))
+				dataJSON.put("carrier", carrierName);
+			
 			rootJSON.put("data", dataJSON);
 			
 			if(c.moveToFirst()){
