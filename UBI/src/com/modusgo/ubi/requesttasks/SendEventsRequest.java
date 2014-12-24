@@ -10,11 +10,14 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.TextUtils;
 import android.util.Log;
 
+import com.bugsnag.MetaData;
+import com.bugsnag.android.Bugsnag;
 import com.modusgo.ubi.Constants;
-import com.modusgo.ubi.db.TrackingContract.TrackingEntry;
 import com.modusgo.ubi.db.DbHelper;
+import com.modusgo.ubi.db.TrackingContract.TrackingEntry;
 
 public class SendEventsRequest extends BasePostRequestAsyncTask {
 
@@ -62,21 +65,36 @@ public class SendEventsRequest extends BasePostRequestAsyncTask {
 					JSONObject tpJSON = new JSONObject();
 					JSONArray eventsJSON = new JSONArray();
 					tpJSON.put("timestamp", c.getString(1));
-					eventsJSON.put(c.getString(2));
+					
+					String event = c.getString(2);
+					if(!TextUtils.isEmpty(event))
+						eventsJSON.put(event);
 					tpJSON.put("events", eventsJSON);
+					
 					JSONObject tpLocationJSON = new JSONObject();
-					tpLocationJSON.put("latitude", c.getDouble(3));
-					tpLocationJSON.put("longitude", c.getDouble(4));
-					tpLocationJSON.put("altitude", c.getDouble(5));
-					tpLocationJSON.put("satellites", c.getInt(6));
-					tpLocationJSON.put("heading", c.getFloat(7));
-					tpLocationJSON.put("speed", c.getFloat(8) * MPS_TO_KPH);
-					tpLocationJSON.put("fix_status", c.getInt(9));
+					Double latitude = c.getDouble(3);
+					Double longitude = c.getDouble(4);
+					if(latitude!=0 && longitude!=0){
+						tpLocationJSON.put("latitude", latitude);
+						tpLocationJSON.put("longitude", longitude);
+						tpLocationJSON.put("altitude", c.getDouble(5));
+						tpLocationJSON.put("satellites", c.getInt(6));
+						tpLocationJSON.put("heading", c.getFloat(7));
+						tpLocationJSON.put("speed", c.getFloat(8) * MPS_TO_KPH);
+						tpLocationJSON.put("fix_status", c.getInt(9));
+					}
 					tpJSON.put("location", tpLocationJSON);
+					
 					JSONObject tpDataJSON = new JSONObject();
-					tpDataJSON.put("raw_data", c.getString(10));
-					tpDataJSON.put("horizontal_accuracy", c.getFloat(11));
-					tpDataJSON.put("vertical_accuracy", c.getFloat(12));
+					String rawData = c.getString(10);
+					if(!TextUtils.isEmpty(rawData))
+						tpDataJSON.put("raw_data", rawData);
+					float hAccuracy = c.getFloat(11);
+					if(hAccuracy!=0)
+						tpDataJSON.put("horizontal_accuracy", hAccuracy);
+					float vAccuracy = c.getFloat(12);
+					if(vAccuracy!=0)
+						tpDataJSON.put("vertical_accuracy", vAccuracy);
 					tpJSON.put("data", tpDataJSON);
 					
 					timepointsJSON.put(tpJSON);
@@ -104,6 +122,10 @@ public class SendEventsRequest extends BasePostRequestAsyncTask {
 		
 		requestParams.add(new BasicNameValuePair("data",rootJSON.toString()));
 		System.out.println(requestParams);
+		
+		MetaData metaData = new MetaData();
+		metaData.addToTab("Data", "raw_request_params", requestParams);
+		Bugsnag.notify(new Exception("SendEventsRequest"), metaData);
 		
 		return super.doInBackground("device.json");
 	}
