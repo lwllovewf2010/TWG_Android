@@ -86,6 +86,8 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
     
     private BeaconManager beaconManager;
     private boolean beaconConnected = false;
+    
+    AndroidLogger logger;
 	
 	@Override
 	public void onCreate() {
@@ -109,6 +111,8 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
          * handle callbacks.
          */
         mLocationClient = new LocationClient(this, this, this);
+        
+        logger = AndroidLogger.getLogger(getApplicationContext(), "561a64f6-9d58-4ff3-ab25-a932ff2d10c6", false);
 	}
 	
 	@Override
@@ -469,6 +473,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
         String msg ="point " + Double.toString(location.getLatitude()) + "," +
                 Double.toString(location.getLongitude()) + ", accuracy: "+location.getAccuracy() + ", speed: " + (location.getSpeed()*3.6f) + "event: "+event;
         System.out.println(msg);
+        logger.info(msg);
         
         if(event.equals(""))
         	Bugsnag.addToTab("User", "Point data", msg);
@@ -516,6 +521,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 
         String msg = "point event: "+event;
         System.out.println(msg);
+        logger.info(msg);
 		
         Editor e = prefs.edit();
 		if(event.equals("start")){
