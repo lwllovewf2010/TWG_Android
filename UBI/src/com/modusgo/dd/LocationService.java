@@ -113,6 +113,11 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
         mLocationClient = new LocationClient(this, this, this);
         
         logger = AndroidLogger.getLogger(getApplicationContext(), "561a64f6-9d58-4ff3-ab25-a932ff2d10c6", false);
+
+		Bugsnag.addToTab("User", "E-mail", prefs.getString(Constants.PREF_EMAIL, "not specified"));
+		Bugsnag.addToTab("User", "Device Type", prefs.getString(Device.PREF_DEVICE_TYPE, "not specified"));
+		Bugsnag.addToTab("User", "Device MEID", prefs.getString(Device.PREF_DEVICE_MEID, "not specified"));
+		Bugsnag.addToTab("User", "DD Events", prefs.getBoolean(Device.PREF_DEVICE_EVENTS, false));
 	}
 	
 	@Override
