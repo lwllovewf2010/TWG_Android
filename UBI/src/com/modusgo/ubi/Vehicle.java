@@ -108,8 +108,8 @@ public class Vehicle implements Serializable{
 		
 		if(!vehicleJSON.isNull("location")){
 			JSONObject locationJSON = vehicleJSON.getJSONObject("location");
-			d.latitude = locationJSON.optDouble("latitude");
-			d.longitude = locationJSON.optDouble("longitude");
+			d.latitude = locationJSON.optDouble("latitude", 0);
+			d.longitude = locationJSON.optDouble("longitude", 0);
 			d.address = locationJSON.optString("address");
 			if(TextUtils.isEmpty(d.address)){
 				Geocoder geocoder;
