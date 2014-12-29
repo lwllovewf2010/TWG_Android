@@ -50,8 +50,8 @@ import com.modusgo.ubi.utils.Device;
 public class LocationService extends Service implements GooglePlayServicesClient.ConnectionCallbacks,
 GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 
-	private static final float TRIP_START_SPEED = 7f/3.6f;
-	private static final float TRIP_STAY_SPEED = 3f/3.6f;
+	private static final float TRIP_START_SPEED = 15f/3.6f;
+	private static final float TRIP_STAY_SPEED = 10f/3.6f;
 	private static final int MAX_STAY_TIME = 2*60*1000;
 	
 	public static final int GET_DEVICE_FREQUENCY = 60*60*1000;
