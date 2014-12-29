@@ -223,6 +223,7 @@
                         ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
                     <ImageView
+                        android:id="@+id/locationImageArrow"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
@@ -260,7 +261,7 @@
                         ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
                     <ImageView
-                        android:id="@+id/imageArrow"
+                        android:id="@+id/dateImageArrow"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
