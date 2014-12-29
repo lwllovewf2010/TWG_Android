@@ -56,6 +56,8 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	
 	public static final int GET_DEVICE_FREQUENCY = 60*60*1000;
 	
+	public static final int MIN_ACCURACY = 80;
+	
 	private long stayFromMillis = 0;
 	private long lastLocationUpdateTime = 0;
 	
@@ -475,51 +477,58 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	
 	private void savePoint(Location location, String event){
 
-        String msg ="point " + Double.toString(location.getLatitude()) + "," +
-                Double.toString(location.getLongitude()) + ", accuracy: "+location.getAccuracy() + ", speed: " + (location.getSpeed()*3.6f) + "event: "+event;
+        String msg ="point " + Double.toString(location.getLatitude()) + "," + Double.toString(location.getLongitude()) + 
+                ", accuracy: "+location.getAccuracy() + 
+                ", speed: " + (location.getSpeed()*3.6f) + 
+                ", saved: " + (location.getAccuracy() <= MIN_ACCURACY) + 
+                "event: "+event;
+        
         System.out.println(msg);
         logger.info(msg);
         
-        if(event.equals(""))
-        	Bugsnag.addToTab("User", "Point data", msg);
-        else
-        	Bugsnag.notify(new RuntimeException(msg));
-		
-		Editor e = prefs.edit();
-        e.putString(Constants.PREF_MOBILE_LATITUDE, ""+location.getLatitude());
-        e.putString(Constants.PREF_MOBILE_LONGITUDE, ""+location.getLongitude());
-        
-		if(event.equals("start")){
-			e.putBoolean(Device.PREF_IN_TRIP_NOW, true).commit();
-    		stayFromMillis = 0;
-    		lastLocationUpdateTime = System.currentTimeMillis();
-        	updateLocationUpdatesHandler(); 
-		}
-		else if(event.equals("stop"))
-			e.putBoolean(Device.PREF_IN_TRIP_NOW, false).commit();
-		else
-			e.commit();
-    	
-		DbHelper dbhelper = DbHelper.getInstance(this);
-    	dbhelper.saveTrackingEvent(new Tracking(
-    			location.getTime(), 
-    			location.getLatitude(), 
-    			location.getLongitude(), 
-    			location.getAltitude(), 
-    			location.getBearing(), 
-    			location.getAccuracy(), 
-    			0, 
-    			0, 
-    			true, 
-    			location.getSpeed(), 
-    			event, 
-    			""), prefs.getLong(Constants.PREF_DRIVER_ID, 0));
-    	dbhelper.close();
-    	
-    	if(!TextUtils.isEmpty(event))
-    		updateNotification();
-    	   	
-        Device.checkDevice(this);
+        if(location.getAccuracy() <= MIN_ACCURACY){
+	        
+	        if(event.equals(""))
+	        	Bugsnag.addToTab("User", "Point data", msg);
+	        else
+	        	Bugsnag.notify(new RuntimeException(msg));
+			
+			Editor e = prefs.edit();
+	        e.putString(Constants.PREF_MOBILE_LATITUDE, ""+location.getLatitude());
+	        e.putString(Constants.PREF_MOBILE_LONGITUDE, ""+location.getLongitude());
+	        
+			if(event.equals("start")){
+				e.putBoolean(Device.PREF_IN_TRIP_NOW, true).commit();
+	    		stayFromMillis = 0;
+	    		lastLocationUpdateTime = System.currentTimeMillis();
+	        	updateLocationUpdatesHandler(); 
+			}
+			else if(event.equals("stop"))
+				e.putBoolean(Device.PREF_IN_TRIP_NOW, false).commit();
+			else
+				e.commit();
+	    	
+			DbHelper dbhelper = DbHelper.getInstance(this);
+	    	dbhelper.saveTrackingEvent(new Tracking(
+	    			location.getTime(), 
+	    			location.getLatitude(), 
+	    			location.getLongitude(), 
+	    			location.getAltitude(), 
+	    			location.getBearing(), 
+	    			location.getAccuracy(), 
+	    			0, 
+	    			0, 
+	    			true, 
+	    			location.getSpeed(), 
+	    			event, 
+	    			""), prefs.getLong(Constants.PREF_DRIVER_ID, 0));
+	    	dbhelper.close();
+	    	
+	    	if(!TextUtils.isEmpty(event))
+	    		updateNotification();
+	    	   	
+	        Device.checkDevice(this);
+        }
 	}
 	
 	private void savePoint(String event){
