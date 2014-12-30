@@ -71,6 +71,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	
 	View btnDistanceToCar;
 	View rlLastTrip;
+	View rlLocation;
 	View spaceFuel;
 
 	private GoogleMapFragment mMapFragment;
@@ -108,6 +109,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	    tvDiagnostics = (TextView)rootView.findViewById(R.id.tvDiagnosticsCount);
 	    tvAlerts = (TextView)rootView.findViewById(R.id.tvAlertsCount);
 	    btnDistanceToCar = (View)tvDistanceToCar.getParent();
+	    rlLocation = rootView.findViewById(R.id.rlLocation);
 	    rlLastTrip = rootView.findViewById(R.id.rlDate);
 	    spaceFuel = rootView.findViewById(R.id.spaceFuel);
 	    
@@ -146,15 +148,6 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	    	((View)tvDiagnostics.getParent()).setVisibility(View.GONE);
 	    }
 	    
-	    rootView.findViewById(R.id.rlLocation).setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(getActivity(), MapActivity.class);
-				intent.putExtra(VehicleEntry._ID, vehicle.id);
-				startActivity(intent);	
-			}
-		});
-	    
 	    imagePhoto.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -191,10 +184,23 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	private void updateDriverInfo(){
 		tvName.setText(vehicle.name);
 	    tvVehicle.setText(vehicle.getCarFullName());
-	    if(vehicle.address == null || vehicle.address.equals(""))
+	    if(TextUtils.isEmpty(vehicle.address)){
 	    	tvLocation.setText("Unknown location");
-	    else
+	    	rlLocation.findViewById(R.id.locationImageArrow).setVisibility(View.GONE);
+	    	rlLocation.setOnClickListener(null);
+	    }
+	    else{
 	    	tvLocation.setText(vehicle.address);
+	    	rlLocation.findViewById(R.id.locationImageArrow).setVisibility(View.VISIBLE);
+	    	rlLocation.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent(getActivity(), MapActivity.class);
+					intent.putExtra(VehicleEntry._ID, vehicle.id);
+					startActivity(intent);	
+				}
+			});
+	    }
 	    
 	    SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
 		SimpleDateFormat sdfTo = new SimpleDateFormat("MM/dd/yyyy KK:mm aa z", Locale.getDefault());
@@ -276,7 +282,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	    }
 	    
 	    if(vehicle.lastTripId>0){
-	    	rlLastTrip.findViewById(R.id.imageArrow).setVisibility(View.VISIBLE);
+	    	rlLastTrip.findViewById(R.id.dateImageArrow).setVisibility(View.VISIBLE);
 		    rlLastTrip.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -288,7 +294,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 			});
 	    }
 	    else{
-	    	rlLastTrip.findViewById(R.id.imageArrow).setVisibility(View.GONE);	    	
+	    	rlLastTrip.findViewById(R.id.dateImageArrow).setVisibility(View.GONE);	    	
 	    }
 	    
 	    if(TextUtils.isEmpty(vehicle.lastTripDate)){
@@ -312,7 +318,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
     		float density = 1;
     		if(isAdded())
     			density = getResources().getDisplayMetrics().density;
-			mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(vehicle.latitude-0.016f/density, vehicle.longitude), 14.0f));
+			mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(vehicle.latitude-0.008f/density, vehicle.longitude), 14.0f));
     	}
     	
     	mMap.getUiSettings().setZoomControlsEnabled(false);
@@ -332,42 +338,53 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
     
     @Override
     public void onLocationChanged(Location location) {
-		btnDistanceToCar.setEnabled(true);
-		
-		Location.distanceBetween(vehicle.latitude, vehicle.longitude, location.getLatitude(), location.getLongitude(), distanceToCar);
-		float distance = 0;
-		
-		if(prefs.getString(Constants.PREF_UNITS_OF_MEASURE, "mile").equals("mile")){
-			distance = Utils.metersToMiles(distanceToCar[0]);
-			if(distance>=1.1)
-				tvDistanceToCarLabel.setText("Miles to Car");
-			else{
-				if(distance>=0.1)
-					tvDistanceToCarLabel.setText("Mile to Car");
+    	if(vehicle.latitude!=0 && vehicle.longitude!=0){
+			btnDistanceToCar.setEnabled(true);
+			
+			Location.distanceBetween(vehicle.latitude, vehicle.longitude, location.getLatitude(), location.getLongitude(), distanceToCar);
+			float distance = 0;
+			
+			if(prefs.getString(Constants.PREF_UNITS_OF_MEASURE, "mile").equals("mile")){
+				distance = Utils.metersToMiles(distanceToCar[0]);
+				if(distance>=1.1)
+					tvDistanceToCarLabel.setText("Miles to Car");
 				else{
-					distance = Utils.milesToFeet(distance);
-					tvDistanceToCarLabel.setText("Feet to Car");
+					if(distance>=0.1)
+						tvDistanceToCarLabel.setText("Mile to Car");
+					else{
+						distance = Utils.milesToFeet(distance);
+						tvDistanceToCarLabel.setText("Feet to Car");
+					}
 				}
 			}
-		}
-		else{
-			distance = Utils.metersToKm(distanceToCar[0]);
-			tvDistanceToCarLabel.setText("KM to Car");
-		}
-		
-		if(distance>=10000){
-			tvDistanceToCar.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-			tvDistanceToCar.setText(""+Math.round(distance));
-		}
-		else if(distance>=1000){
-			tvDistanceToCar.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-			tvDistanceToCar.setText(""+Math.round(distance));
-		}
-		else if(distance>=100){
-			tvDistanceToCar.setText(""+Math.round(distance));			
-		}
-		else
-			tvDistanceToCar.setText(dsitanceFormat.format(distance));
+			else{
+				distance = Utils.metersToKm(distanceToCar[0]);
+				tvDistanceToCarLabel.setText("KM to Car");
+			}
+			
+			if(distance>=10000){
+				tvDistanceToCar.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+				tvDistanceToCar.setText(""+Math.round(distance));
+			}
+			else if(distance>=1000){
+				tvDistanceToCar.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+				tvDistanceToCar.setText(""+Math.round(distance));
+			}
+			else if(distance>=100){
+				tvDistanceToCar.setText(""+Math.round(distance));			
+			}
+			else
+				tvDistanceToCar.setText(dsitanceFormat.format(distance));
+    	}
+    	else{
+			tvDistanceToCar.setText("N/A");
+    		if(prefs.getString(Constants.PREF_UNITS_OF_MEASURE, "mile").equals("mile")){
+				tvDistanceToCarLabel.setText("Miles to Car");
+    		}
+			else{
+				tvDistanceToCarLabel.setText("KM to Car");
+			}
+    	}
 
         if (mLocationClient != null) {
             mLocationClient.disconnect();

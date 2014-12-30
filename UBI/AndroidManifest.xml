@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.farmers.ubi"
-    android:versionCode="1002"
-    android:versionName="1.0.2" >
+    android:versionCode="1008"
+    android:versionName="1.0.8" >
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -220,6 +220,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.modusgo.ubi.AlertsActivity" />
         </activity>
+        
+        <activity
+            android:name="com.modusgo.ubi.ForgotPasswordActivity"
+            android:parentActivityName="com.modusgo.ubi.SignInActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.modusgo.ubi.SignInActivity" />
+        </activity>
+        
         <activity android:name="net.hockeyapp.android.UpdateActivity" />
         
         <service

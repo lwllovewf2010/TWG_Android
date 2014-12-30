@@ -41,3 +41,7 @@
 
 -keep class com.kbeanie.** { *; }
 -keepnames class com.kbeanie.** { *; }
+
+-keep class com.newrelic.** { *; }
+-dontwarn com.newrelic.**
+-keepattributes Exceptions, Signature, InnerClasses

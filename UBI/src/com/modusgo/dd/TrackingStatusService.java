@@ -76,7 +76,7 @@ GooglePlayServicesClient.OnConnectionFailedListener{
 		        new NotificationCompat.Builder(this)
 		        .setSmallIcon(R.drawable.ic_launcher)
 		        .setContentTitle("ModusGO")
-		        .setContentText("ModusGO tracking is "+(prefs.getBoolean(Device.PREF_DEVICE_IN_TRIP, false) ? "enabled." : "disabled."));
+		        .setContentText("ModusGO tracking is "+(prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false) ? "enabled." : "disabled."));
 
 		Intent resultIntent = new Intent(this, InitActivity.class);
 

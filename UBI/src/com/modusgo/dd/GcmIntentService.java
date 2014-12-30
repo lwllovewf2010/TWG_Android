@@ -90,7 +90,7 @@ public class GcmIntentService extends IntentService {
 					e.putBoolean(Device.PREF_DEVICE_IN_TRIP, !TextUtils.isEmpty(extras.getString("in_trip")));
             	}
             	else{
-					e.putBoolean(Device.PREF_DEVICE_IN_TRIP, false);            		
+            		e.putBoolean(Device.PREF_DEVICE_IN_TRIP, false);
             	}
             	
             	if(extras.containsKey("type")){

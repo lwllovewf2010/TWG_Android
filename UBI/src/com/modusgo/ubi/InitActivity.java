@@ -33,10 +33,10 @@ import com.farmers.ubi.R;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.modusgo.dd.CallSaverService;
 import com.modusgo.ubi.db.DbHelper;
-import com.modusgo.ubi.requesttasks.SendEventsRequest;
 import com.modusgo.ubi.utils.Device;
 import com.modusgo.ubi.utils.RequestGet;
 import com.modusgo.ubi.utils.Utils;
+import com.newrelic.agent.android.NewRelic;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -63,6 +63,8 @@ public class InitActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_init);
 	    getActionBar().hide();
+	    
+	    NewRelic.withApplicationToken(Constants.NEWRELIC_TOKEN).start(this.getApplication());
 	    
 	    if(!ImageLoader.getInstance().isInited()){
 	        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext()).build();
@@ -222,6 +224,8 @@ public class InitActivity extends FragmentActivity {
 							e.putString(Constants.PREF_TIMEZONE, driverJSON.optString(Constants.PREF_TIMEZONE));
 							e.putString(Constants.PREF_TIMEZONE_OFFSET, driverJSON.optString(Constants.PREF_TIMEZONE_OFFSET));
 							e.putString(Constants.PREF_PHOTO, driverJSON.optString(Constants.PREF_PHOTO));
+							
+							prefs.edit().putLong(Constants.PREF_DRIVER_ID, driverJSON.optLong(Constants.PREF_DRIVER_ID)).commit();
 						}
 						
 						if(responseJSON.has("info")){
@@ -280,8 +284,8 @@ public class InitActivity extends FragmentActivity {
 							e.putString(Device.PREF_DEVICE_MEID, deviceJSON.optString("meid"));
 							e.putBoolean(Device.PREF_DEVICE_EVENTS, deviceJSON.optBoolean("events"));
 							e.putBoolean(Device.PREF_DEVICE_IN_TRIP, !TextUtils.isEmpty(deviceJSON.optString("in_trip")));
-							e.putString(Device.PREF_DEVICE_LATITUDE, deviceJSON.optString("latitude"));
-							e.putString(Device.PREF_DEVICE_LONGITUDE, deviceJSON.optString("longitude"));
+							e.putString(Device.PREF_DEVICE_LATITUDE, deviceJSON.optString("latitude", "0"));
+							e.putString(Device.PREF_DEVICE_LONGITUDE, deviceJSON.optString("longitude", "0"));
 							e.putString(Device.PREF_DEVICE_LOCATION_DATE, deviceJSON.optString("location_date"));
 							
 							Device.checkDevice(getApplicationContext());
@@ -307,7 +311,6 @@ public class InitActivity extends FragmentActivity {
 		@Override
 		protected void onPostExecute(Boolean result) {
 			if(result){
-			    new SendEventsRequest(InitActivity.this).execute("");
 			    
 				if(welcomeScreens!=null && welcomeScreens.length()>0){					
 					Intent i = new Intent(InitActivity.this, WelcomeActivity.class);
