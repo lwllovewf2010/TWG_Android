@@ -59,33 +59,20 @@ public class DriversLocationsActivity extends MainActivity {
 
         // Gets to GoogleMap from the MapView and does initialization stuff
         map = mapView.getMap();
-        map.getUiSettings().setMyLocationButtonEnabled(false);
-        map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
-			@Override
-			public void onMapLoaded() {
-				CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(37.8430094,-95.0098992), 1);
-		        map.animateCamera(cameraUpdate);
-		        addVehilesToMap();
-			}
-		});
-//        map.setOnMarkerClickListener(new OnMarkerClickListener() {
-//			@Override
-//			public boolean onMarkerClick(Marker marker) {
-//				for (int i = 0; i < drivers.size(); i++) {
-//					if(drivers.get(i).name.equals(marker.getTitle())){
-//						Intent intent = new Intent(MapActivity.this, DriverActivity.class);
-//						intent.putExtra("id", i);
-//						startActivity(intent);
-//						break;
-//					}
-//				}
-//				
-//				return false;
-//			}
-//		});
         
-        MapsInitializer.initialize(this);     
-
+        if(map!=null){
+	        map.getUiSettings().setMyLocationButtonEnabled(false);
+	        map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
+				@Override
+				public void onMapLoaded() {
+					CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(37.8430094,-95.0098992), 1);
+			        map.animateCamera(cameraUpdate);
+			        addVehilesToMap();
+				}
+			});
+	        
+	        MapsInitializer.initialize(this);     
+        }
 	}
 	
 	private ArrayList<Vehicle> getVehicles(){

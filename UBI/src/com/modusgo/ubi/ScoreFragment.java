@@ -53,8 +53,6 @@ public class ScoreFragment extends Fragment{
 	View llContent;
 	TextView tvScore;
 	TextView tvThisMonthMessage;
-	TextView tvLastMonthMessage;
-	ImageView imageLastMonthArrow;
 	BarGraph graph;
 	
 	MonthStats[] yearStats;
@@ -104,8 +102,6 @@ public class ScoreFragment extends Fragment{
 		llContent = rootView.findViewById(R.id.llContent);
 		tvScore = (TextView) rootView.findViewById(R.id.tvScore);
 		tvThisMonthMessage = (TextView) rootView.findViewById(R.id.tvThisMonthMessage);
-		tvLastMonthMessage = (TextView) rootView.findViewById(R.id.tvLastMonthMessage);
-		imageLastMonthArrow = (ImageView) rootView.findViewById(R.id.imageLastMonthArrow);
 		graph = (BarGraph) rootView.findViewById(R.id.graph);
 		
 		((View)tvScore.getParent()).setOnClickListener(new OnClickListener() {
@@ -200,7 +196,6 @@ public class ScoreFragment extends Fragment{
 		if(!grade.equals("")){
 			tvThisMonthMessage.setGravity(Gravity.LEFT);
 			tvScore.setVisibility(View.VISIBLE);
-			tvLastMonthMessage.setVisibility(View.VISIBLE);
 			
 			String thisMonthMessage = "This month:\n";
 			tvScore.setText(grade);
@@ -237,37 +232,12 @@ public class ScoreFragment extends Fragment{
 			}
 			
 			tvThisMonthMessage.setText(thisMonthMessage);
-			
-			Calendar c = Calendar.getInstance();
-			TimeZone tzTo = TimeZone.getTimeZone(prefs.getString(Constants.PREF_TIMEZONE_OFFSET, Constants.DEFAULT_TIMEZONE));
-			c.setTimeZone(tzTo);
-			int currentMonth = c.get(Calendar.MONTH);
-			String lastMonthGrade = yearStats[currentMonth-1].grade;
-			
-			if(!lastMonthGrade.equals("")){
-				tvLastMonthMessage.setText(lastMonthGrade+" Last Month");
-				if(gradeToNumber(grade)>gradeToNumber(lastMonthGrade)){
-					tvLastMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_green));
-					imageLastMonthArrow.setImageResource(R.drawable.arrow_up_green);
-				}
-				else{
-					tvLastMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_red));
-					imageLastMonthArrow.setImageResource(R.drawable.arrow_down_red);				
-				}
-			}
-			else{
-				tvLastMonthMessage.setText("N/A Last Month");
-				tvLastMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_gray));
-				imageLastMonthArrow.setVisibility(View.INVISIBLE);
-			}
 		}
 		else{
 			tvThisMonthMessage.setText("Scoring will be available soon");
 			tvThisMonthMessage.setGravity(Gravity.CENTER);
 			tvThisMonthMessage.setTextColor(getActivity().getResources().getColor(R.color.ubi_gray));
 			tvScore.setVisibility(View.INVISIBLE);
-			tvLastMonthMessage.setVisibility(View.INVISIBLE);
-			imageLastMonthArrow.setVisibility(View.INVISIBLE);
 		}
 	}
 	
@@ -480,7 +450,7 @@ public class ScoreFragment extends Fragment{
 					loadScoreGraphFromDb();
 			}
 			
-			dHelper.saveScoreInfo(vehicle.id, "", json.optString("startdate"), (float)json.optDouble("summary_distance"), (float)json.optDouble("summary_ead"));
+			dHelper.saveScoreInfo(vehicle.id, json.optString("enddate"), json.optString("startdate"), (float)json.optDouble("summary_distance"), (float)json.optDouble("summary_ead"));
 			
 			LinkedHashMap<String, Integer> percentageData = new LinkedHashMap<String, Integer>();
 			percentageData.put("Use of speed", json.optInt("score_pace"));
@@ -587,12 +557,12 @@ public class ScoreFragment extends Fragment{
 			JSONObject jsonStatsPage = jsonStats.getJSONObject(pageName);
 			
 			ArrayList<CirclesSection> sections = new ArrayList<CirclesSection>();
-			sections.add(new CirclesSection("Use of Speed", getMarksFromJson("pace", jsonMarkPage), getDistancesFromJson("pace", jsonStatsPage)));
-			sections.add(new CirclesSection("Cornering", getMarksFromJson("cornering", jsonMarkPage), getDistancesFromJson("cornering", jsonStatsPage)));
-			sections.add(new CirclesSection("Intersection Acceleration", getMarksFromJson("junctionacceleration", jsonMarkPage), getDistancesFromJson("junctionacceleration", jsonStatsPage)));
-			sections.add(new CirclesSection("Road Acceleration", getMarksFromJson("pace", jsonMarkPage), getDistancesFromJson("roadacceleration", jsonStatsPage)));
-			sections.add(new CirclesSection("Intersection Braking", getMarksFromJson("junctionbrake", jsonMarkPage), getDistancesFromJson("junctionbrake", jsonStatsPage)));
-			sections.add(new CirclesSection("Road Braking", getMarksFromJson("roadbrake", jsonMarkPage), getDistancesFromJson("roadbrake", jsonStatsPage)));
+			sections.add(new CirclesSection("Use of Speed", getMarksFromJson("pace", jsonMarkPage), getDistancesFromJson(jsonStatsPage)));
+			sections.add(new CirclesSection("Cornering", getMarksFromJson("cornering", jsonMarkPage), getDistancesFromJson(jsonStatsPage)));
+			sections.add(new CirclesSection("Intersection Acceleration", getMarksFromJson("junctionacceleration", jsonMarkPage), getDistancesFromJson(jsonStatsPage)));
+			sections.add(new CirclesSection("Road Acceleration", getMarksFromJson("roadacceleration", jsonMarkPage), getDistancesFromJson(jsonStatsPage)));
+			sections.add(new CirclesSection("Intersection Braking", getMarksFromJson("junctionbrake", jsonMarkPage), getDistancesFromJson(jsonStatsPage)));
+			sections.add(new CirclesSection("Road Braking", getMarksFromJson("roadbrake", jsonMarkPage), getDistancesFromJson(jsonStatsPage)));
 			
 			return sections;
 		}
@@ -612,7 +582,7 @@ public class ScoreFragment extends Fragment{
 					};
 		}
 		
-		private double[] getDistancesFromJson(String statName, JSONObject json) throws JSONException{
+		private double[] getDistancesFromJson(JSONObject json) throws JSONException{
 
 			JSONObject jsonUrbanHighway = json.getJSONObject("trunk");
 			JSONObject jsonUrbanMajor = json.getJSONObject("major");
@@ -620,10 +590,10 @@ public class ScoreFragment extends Fragment{
 			JSONObject jsonUrbanLocal = json.getJSONObject("local");
 			
 			return new double[]{
-					jsonUrbanHighway.optDouble(statName),
-					jsonUrbanMajor.optDouble(statName),
-					jsonUrbanMinor.optDouble(statName),
-					jsonUrbanLocal.optDouble(statName),
+					jsonUrbanHighway.optDouble("distance"),
+					jsonUrbanMajor.optDouble("distance"),
+					jsonUrbanMinor.optDouble("distance"),
+					jsonUrbanLocal.optDouble("distance"),
 					};
 		}
 		
@@ -631,10 +601,13 @@ public class ScoreFragment extends Fragment{
 			switch (score) {
 			case "ideal":
 				return 3;
-			case "average":
-				return 2;
+			case "good":
 			case "high":
+				return 2;
+			case "average":
+			case "poor":
 				return 1;
+			case "low":
 			case "unknown":
 				return 0;
 			default:

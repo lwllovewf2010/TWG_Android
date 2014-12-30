@@ -36,6 +36,7 @@ import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.utils.Device;
 import com.modusgo.ubi.utils.RequestGet;
 import com.modusgo.ubi.utils.Utils;
+import com.newrelic.agent.android.NewRelic;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -62,6 +63,8 @@ public class InitActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_init);
 	    getActionBar().hide();
+	    
+	    NewRelic.withApplicationToken(Constants.NEWRELIC_TOKEN).start(this.getApplication());
 	    
 	    if(!ImageLoader.getInstance().isInited()){
 	        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext()).build();

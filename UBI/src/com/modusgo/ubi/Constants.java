@@ -3,6 +3,7 @@ package com.modusgo.ubi;
 public class Constants {
 	
 	public static final String HOCKEY_APP_ID = "7f4c1a1a9c883ac6f127f6d223cf2efe";
+	public static final String NEWRELIC_TOKEN = "AA1bfaccb3fb9ffbb353dbf51008b400412a72842a";
 	public static final String GCM_SENDER_ID = "322787790569";
 	
 	public static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZZZZZ";
