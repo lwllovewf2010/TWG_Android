@@ -7540,6 +7540,8 @@ com.modusgo.ubi.ScoreCirclesActivity:
     public static final java.lang.String SAVED_CIRCLES_BUNDLE
 com.modusgo.ubi.ScoreCirclesActivity$CirclesSection:
     private static final long serialVersionUID
+com.modusgo.ubi.ScoreFragment:
+    335:383:private int gradeToNumber(java.lang.String)
 com.modusgo.ubi.ScoreInfoActivity:
     private static final java.lang.String ATTRIBUTE_NAME_VALUE
     private static final java.lang.String ATTRIBUTE_NAME_TITLE
