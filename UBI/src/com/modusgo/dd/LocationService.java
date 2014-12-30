@@ -409,7 +409,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		    // Device does not support Bluetooth
 			return false;
 		} else {
-		    if (!mBluetoothAdapter.isEnabled())
+		    if (mBluetoothAdapter.isEnabled())
 		    	return true;
 		    else
 		    	return false;
