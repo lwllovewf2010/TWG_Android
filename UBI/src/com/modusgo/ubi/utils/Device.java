@@ -95,17 +95,18 @@ public class Device {
 			}
 		}
 		
-		if(!prefs.getString(PREF_CURRENT_TRACKING_MODE, "").equals(newTrackingMode) || tripStatusUpdated){
-			prefs.edit().putString(PREF_CURRENT_TRACKING_MODE, newTrackingMode).commit();
-			if(newTrackingMode.equals("")){
-				//Stop all tracking services
-				context.stopService(new Intent(context, LocationService.class));
-			}
-			else{
-				System.out.println("check device start service, trip: "+prefs.getBoolean(PREF_IN_TRIP_NOW, false));
-				context.startService(new Intent(context, LocationService.class));				
-			}
-		}
+//		if(!prefs.getString(PREF_CURRENT_TRACKING_MODE, "").equals(newTrackingMode) || tripStatusUpdated){
+//			prefs.edit().putString(PREF_CURRENT_TRACKING_MODE, newTrackingMode).commit();
+//			if(newTrackingMode.equals("")){
+//				//Stop all tracking services
+//				context.stopService(new Intent(context, LocationService.class));
+//			}
+//			else{
+//				System.out.println("check device start service, trip: "+prefs.getBoolean(PREF_IN_TRIP_NOW, false));
+//				context.startService(new Intent(context, LocationService.class));				
+//			}
+//		}
+		context.stopService(new Intent(context, LocationService.class));
 
 		System.out.println("final Tracking mode: "+newTrackingMode);
 	}
