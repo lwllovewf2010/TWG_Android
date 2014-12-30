@@ -317,7 +317,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
     		float density = 1;
     		if(isAdded())
     			density = getResources().getDisplayMetrics().density;
-			mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(vehicle.latitude-0.016f/density, vehicle.longitude), 14.0f));
+			mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(vehicle.latitude-0.008f/density, vehicle.longitude), 14.0f));
     	}
     	
     	mMap.getUiSettings().setZoomControlsEnabled(false);
