@@ -465,20 +465,20 @@ public class ScoreFragment extends Fragment{
 			float[][] pieChartsData = new float[][]{
 					new float[]{
 							(float)json.optDouble("timeofday0"),
-							(float)json.optDouble("timeofday3"),
 							(float)json.optDouble("timeofday1"),
+							(float)json.optDouble("timeofday2"),
+							(float)json.optDouble("timeofday3"),
 							(float)json.optDouble("timeofday4"),
 							(float)json.optDouble("timeofday5"),
-							(float)json.optDouble("timeofday2")
 					},
 					new float[]{
 							(float)json.optDouble("roadsettings_rural"),
 							(float)json.optDouble("roadsettings_suburban"),
 							(float)json.optDouble("roadsettings_urban")
 					},new float[]{
-							(float)json.optDouble("roadtype_local"),
 							(float)json.optDouble("roadtype_major"),
 							(float)json.optDouble("roadtype_minor"),
+							(float)json.optDouble("roadtype_local"),
 							(float)json.optDouble("roadtype_trunk")
 					},};
 			
@@ -492,14 +492,20 @@ public class ScoreFragment extends Fragment{
 							Math.round(pieChartsData[0][4]) + "% WEEKDAY",
 							Math.round(pieChartsData[0][5]) + "% WEEKEND"
 					},
-					new String[]{"6:30 AM - 9:30 AM", "9:30 AM - 4:00 PM", "4:00 PM - 7:00 PM", "7:00 PM - 11:59 PM", "12:00 AM - 6:30 AM", "All day"},
+					new String[]{
+					"12:00 AM - 6:30 AM",
+					"6:30 AM - 9:30 AM",
+					"9:30 AM - 4:00 PM",
+					"4:00 PM - 7:00 PM",
+					"7:00 PM - 11:59 PM",
+					"All day"},
 					new int[] {
 							context.getResources().getColor(R.color.pie_black),
-							context.getResources().getColor(R.color.pie_gray),
 							context.getResources().getColor(R.color.pie_red),
+							context.getResources().getColor(R.color.pie_green),
 							context.getResources().getColor(R.color.pie_orange),
 							context.getResources().getColor(R.color.pie_blue),
-							context.getResources().getColor(R.color.pie_green)
+							context.getResources().getColor(R.color.pie_gray)
 							}
 			));
 			pcTabs.add(new PieChartTab("ROAD SETTING", 
@@ -519,9 +525,9 @@ public class ScoreFragment extends Fragment{
 			pcTabs.add(new PieChartTab("ROAD TYPE", 
 					pieChartsData[2],
 					new String[]{
-	        			Math.round(pieChartsData[2][0])+"%\nLOCAL ROAD",
-						Math.round(pieChartsData[2][1])+"%\nMAJOR ROAD",
-		        		Math.round(pieChartsData[2][2])+"%\nMINOR ROAD",
+						Math.round(pieChartsData[2][0])+"%\nMAJOR ROAD",
+		        		Math.round(pieChartsData[2][1])+"%\nMINOR ROAD",
+	        			Math.round(pieChartsData[2][2])+"%\nLOCAL ROAD",
 		        		Math.round(pieChartsData[2][3])+"%\nHIGHWAY"
 					},
 					null,
@@ -529,7 +535,7 @@ public class ScoreFragment extends Fragment{
 							context.getResources().getColor(R.color.pie_black),
 							context.getResources().getColor(R.color.pie_red),
 							context.getResources().getColor(R.color.pie_green),
-							context.getResources().getColor(R.color.pie_gray)
+							context.getResources().getColor(R.color.pie_orange)
 							}
 			));
 			dHelper.saveScorePieCharts(vehicle.id, pcTabs);
