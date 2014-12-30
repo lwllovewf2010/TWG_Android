@@ -481,7 +481,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
                 ", accuracy: "+location.getAccuracy() + 
                 ", speed: " + (location.getSpeed()*3.6f) + 
                 ", saved: " + (location.getAccuracy() <= MIN_ACCURACY) + 
-                "event: "+event;
+                ", event: "+event;
         
         System.out.println(msg);
         logger.info(msg);
