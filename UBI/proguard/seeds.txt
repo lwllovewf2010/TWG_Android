@@ -23,6 +23,11 @@ android.support.v4.app.FragmentActivity: android.support.v4.app.LoaderManagerImp
 android.support.v4.app.FragmentActivity: FragmentActivity()
 android.support.v4.app.FragmentActivity: void onActivityResult(int,int,android.content.Intent)
 android.support.v4.app.FragmentActivity: void onBackPressed()
+android.support.v4.app.FragmentActivity: void supportFinishAfterTransition()
+android.support.v4.app.FragmentActivity: void setEnterSharedElementCallback(android.support.v4.app.SharedElementCallback)
+android.support.v4.app.FragmentActivity: void setExitSharedElementCallback(android.support.v4.app.SharedElementCallback)
+android.support.v4.app.FragmentActivity: void supportPostponeEnterTransition()
+android.support.v4.app.FragmentActivity: void supportStartPostponedEnterTransition()
 android.support.v4.app.FragmentActivity: void onConfigurationChanged(android.content.res.Configuration)
 android.support.v4.app.FragmentActivity: void onCreate(android.os.Bundle)
 android.support.v4.app.FragmentActivity: boolean onCreatePanelMenu(int,android.view.Menu)
@@ -71,6 +76,14 @@ android.support.v4.app.FragmentTabHost$SavedState: android.os.Parcelable$Creator
 android.support.v4.content.ModernAsyncTask$Status: android.support.v4.content.ModernAsyncTask$Status[] values()
 android.support.v4.content.ModernAsyncTask$Status: android.support.v4.content.ModernAsyncTask$Status valueOf(java.lang.String)
 android.support.v4.content.WakefulBroadcastReceiver: WakefulBroadcastReceiver()
+android.support.v4.media.MediaMetadataCompat
+android.support.v4.media.MediaMetadataCompat: android.os.Parcelable$Creator CREATOR
+android.support.v4.media.RatingCompat
+android.support.v4.media.RatingCompat: android.os.Parcelable$Creator CREATOR
+android.support.v4.media.session.MediaSessionCompat$Token
+android.support.v4.media.session.MediaSessionCompat$Token: android.os.Parcelable$Creator CREATOR
+android.support.v4.media.session.PlaybackStateCompat
+android.support.v4.media.session.PlaybackStateCompat: android.os.Parcelable$Creator CREATOR
 android.support.v4.view.PagerTabStrip
 android.support.v4.view.PagerTabStrip: PagerTabStrip(android.content.Context)
 android.support.v4.view.PagerTabStrip: PagerTabStrip(android.content.Context,android.util.AttributeSet)
@@ -121,6 +134,9 @@ android.support.v4.widget.DrawerLayout: DrawerLayout(android.content.Context,and
 android.support.v4.widget.DrawerLayout: void setScrimColor(int)
 android.support.v4.widget.DrawerLayout: void setDrawerListener(android.support.v4.widget.DrawerLayout$DrawerListener)
 android.support.v4.widget.DrawerLayout: void setDrawerLockMode(int)
+android.support.v4.widget.DrawerLayout: void setStatusBarBackground(android.graphics.drawable.Drawable)
+android.support.v4.widget.DrawerLayout: void setStatusBarBackground(int)
+android.support.v4.widget.DrawerLayout: void setStatusBarBackgroundColor(int)
 android.support.v4.widget.DrawerLayout$SavedState
 android.support.v4.widget.DrawerLayout$SavedState: android.os.Parcelable$Creator CREATOR
 android.support.v4.widget.SlidingPaneLayout: void setParallaxDistance(int)
@@ -139,12 +155,18 @@ android.support.v4.widget.SlidingPaneLayout: void setShadowResourceRight(int)
 android.support.v4.widget.SlidingPaneLayout$SavedState
 android.support.v4.widget.SlidingPaneLayout$SavedState: android.os.Parcelable$Creator CREATOR
 android.support.v4.widget.SwipeRefreshLayout
+android.support.v4.widget.SwipeRefreshLayout: void setColorViewAlpha(int)
+android.support.v4.widget.SwipeRefreshLayout: void setSize(int)
 android.support.v4.widget.SwipeRefreshLayout: SwipeRefreshLayout(android.content.Context)
 android.support.v4.widget.SwipeRefreshLayout: SwipeRefreshLayout(android.content.Context,android.util.AttributeSet)
 android.support.v4.widget.SwipeRefreshLayout: void setOnRefreshListener(android.support.v4.widget.SwipeRefreshLayout$OnRefreshListener)
-android.support.v4.widget.SwipeRefreshLayout: void setTriggerPercentage(float)
 android.support.v4.widget.SwipeRefreshLayout: void setRefreshing(boolean)
-android.support.v4.widget.SwipeRefreshLayout: void setTargetOffsetTopAndBottom(int)
+android.support.v4.widget.SwipeRefreshLayout: void setAnimationProgress(float)
+android.support.v4.widget.SwipeRefreshLayout: void setProgressBackgroundColor(int)
+android.support.v4.widget.SwipeRefreshLayout: void setColorScheme(int[])
+android.support.v4.widget.SwipeRefreshLayout: void setColorSchemeResources(int[])
+android.support.v4.widget.SwipeRefreshLayout: void setColorSchemeColors(int[])
+android.support.v4.widget.SwipeRefreshLayout: void setDistanceToTriggerSync(int)
 android.support.v7.app.ActionBarActivity: void setContentView(android.view.View)
 android.support.v7.appcompat.R$anim: int abc_fade_in
 android.support.v7.appcompat.R$anim: int abc_fade_out
