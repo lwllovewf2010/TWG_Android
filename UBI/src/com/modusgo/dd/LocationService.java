@@ -24,6 +24,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 
+import com.bugsnag.MetaData;
 import com.bugsnag.android.Bugsnag;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
@@ -488,10 +489,12 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
         
         if(location.getAccuracy() <= MIN_ACCURACY){
 	        
-	        if(event.equals(""))
-	        	Bugsnag.addToTab("User", "Point data", msg);
-	        else
+	        if(event.equals("")){
+	        	//Bugsnag.addToTab("User", "Point data", msg);
+	        }
+	        else{
 	        	Bugsnag.notify(new RuntimeException(msg));
+	        }
 			
 			Editor e = prefs.edit();
 	        e.putString(Constants.PREF_MOBILE_LATITUDE, ""+location.getLatitude());

@@ -17,6 +17,7 @@ import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.bugsnag.android.Bugsnag;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.modusgo.ubi.InitActivity;
 import com.modusgo.ubi.R;
@@ -71,6 +72,9 @@ public class GcmIntentService extends IntentService {
 //            	    Log.d(TAG, String.format("%s %s (%s)", key,  
 //            	        value.toString(), value.getClass().getName()));
 //            	}
+            	
+            	Bugsnag.addToTab("User", "Push data", extras.toString());
+            	Bugsnag.notify(new RuntimeException("Push received"));
             	
             	if(extras.containsKey("aps")){
 					String apsJSON = extras.getString("aps");
