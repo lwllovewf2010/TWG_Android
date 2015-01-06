@@ -8117,12 +8117,12 @@ com.modusgo.ubi.FindMyCarActivity$ErrorDialogFragment
 com.modusgo.ubi.ForgotPasswordActivity$RestorePasswordTask:
     int status
 com.modusgo.ubi.LimitsFragment:
-    578:581:private java.lang.String getTime24String(int,int)
+    579:582:private java.lang.String getTime24String(int,int)
 com.modusgo.ubi.MainActivity:
-    501:503:public void showFeedbackActivity()
+    519:521:public void showFeedbackActivity()
 com.modusgo.ubi.MainActivity$MenuItems:
-    74:74:public int toInt()
-    78:78:public java.lang.String[] valuesString()
+    75:75:public int toInt()
+    79:79:public java.lang.String[] valuesString()
 com.modusgo.ubi.Manifest
 com.modusgo.ubi.Manifest$permission
 com.modusgo.ubi.PieChartFragment:
@@ -8157,7 +8157,7 @@ com.modusgo.ubi.ScoreCirclesActivity:
 com.modusgo.ubi.ScoreCirclesActivity$CirclesSection:
     private static final long serialVersionUID
 com.modusgo.ubi.ScoreFragment:
-    334:382:private int gradeToNumber(java.lang.String)
+    329:377:private int gradeToNumber(java.lang.String)
 com.modusgo.ubi.ScoreInfoActivity:
     private static final java.lang.String ATTRIBUTE_NAME_VALUE
     private static final java.lang.String ATTRIBUTE_NAME_TITLE
