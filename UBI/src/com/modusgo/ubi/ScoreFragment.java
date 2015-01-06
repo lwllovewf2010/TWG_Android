@@ -166,17 +166,18 @@ public class ScoreFragment extends Fragment{
 				ScoreGraphEntry.COLUMN_NAME_MONTH,
 				ScoreGraphEntry.COLUMN_NAME_SCORE,
 				ScoreGraphEntry.COLUMN_NAME_GRADE}, 
-				ScoreGraphEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id, null, null, null, ScoreGraphEntry.COLUMN_NAME_MONTH+" ASC");
+				ScoreGraphEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id, null, null, null, ScoreGraphEntry._ID+" ASC");
 		
 		yearStats = new MonthStats[12];
 		for (int i = 0; i < 12; i++) {
-			yearStats[i] = new MonthStats(i, 0, "");
+			yearStats[i] = new MonthStats(i+1, 0, "");
 		}
 		
 		if(c.moveToFirst()){
+			int i = 0;
 			while(!c.isAfterLast()){
-				int month = c.getInt(0);
-				yearStats[month-1] = new MonthStats(month, c.getInt(1), c.getString(2));
+				yearStats[i] = new MonthStats(c.getInt(0), c.getInt(1), c.getString(2));
+				i++;
 				c.moveToNext();
 			}
 		}
@@ -263,25 +264,19 @@ public class ScoreFragment extends Fragment{
 //		}
 		
 		
-		int startIndex = -1;
 		int maxValue = 1;
 		for (int i = 0; i < 12; i++) {
 			if(yearStats[i].score!=0 && !yearStats[i].grade.equals("")){
-				if(startIndex==-1)
-					startIndex = i;
 				if(maxValue<yearStats[i].score)
 					maxValue = yearStats[i].score;
 			}
 		}
-		if(startIndex==-1)
-			startIndex = 0;
 		
-		for (int i = startIndex; i < startIndex+12; i++) {
-			String month;
-			if(i>=12)
-				month = months[i-12];
-			else
-				month = months[i];
+		for (int i = 0; i < 12; i++) {
+			String month = "";
+			if(yearStats[i].month-1 >= 0 && yearStats[i].month-1 < 12){
+				month = months[yearStats[i].month-1];	
+			}
 			
 			Bar b = new Bar();
 			if(i<yearStats.length && yearStats[i].score!=0 && !yearStats[i].grade.equals("")){
