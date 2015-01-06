@@ -325,6 +325,15 @@ public class DbHelper extends SQLiteOpenHelper {
 	    onUpgrade(db, oldVersion, newVersion);
 	}
 	
+	public void resetDatabase(){
+		SQLiteDatabase db = openDatabase();
+		for (int i = 0; i < SQL_CREATE_ENTRIES.length; i++) {
+			db.execSQL(SQL_DELETE_ENTRIES[i]);
+			db.execSQL(SQL_CREATE_ENTRIES[i]);
+		}
+		closeDatabase();
+	}
+	
 	public ArrayList<Vehicle> getVehiclesShort(){
 		System.out.println("Get vehicles short");
 		SQLiteDatabase db = openDatabase();
