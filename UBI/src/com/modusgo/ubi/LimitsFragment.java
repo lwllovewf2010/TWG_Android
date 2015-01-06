@@ -24,6 +24,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -700,7 +701,9 @@ public class LimitsFragment extends Fragment {
 					l.maxValue = lJSON.optString("max_value",lJSON.optString("value_to"));
 					l.step = lJSON.optString("step");
 					l.active = lJSON.optBoolean("active");
-					limits.add(l);
+					
+					if(!TextUtils.isEmpty(l.title))
+						limits.add(l);
 				}
 			}
 			
