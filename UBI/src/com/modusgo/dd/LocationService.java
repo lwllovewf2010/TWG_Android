@@ -24,7 +24,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 
-import com.bugsnag.MetaData;
 import com.bugsnag.android.Bugsnag;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
@@ -157,31 +156,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	    	    checkIgnitionHandler.postDelayed(checkIgnitionRunnable, 0);
 	        }
 	        
-	        if(checkLocationUpdatesHandler==null){
-				checkLocationUpdatesHandler = new Handler();
-	        }
-	        
-	        if(checkLocationUpdatesRunnable==null){
-	        	checkLocationUpdatesHandler.removeCallbacks(checkLocationUpdatesRunnable);
-				checkLocationUpdatesRunnable = new Runnable() {
-	    	        @Override
-	    	        public void run() {
-	    	        	System.out.println("checkLocationUpdatesRunnable");
-	    	        	if(prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false)){
-		    	        	if(System.currentTimeMillis() - lastLocationUpdateTime > MAX_STAY_TIME){
-		    	        		Bugsnag.notify(new RuntimeException("Trip stop, no location for 2 minutes"));
-		    	        		System.out.println("Trip stop, no location for 2 minutes");
-		    	        		savePoint("stop");
-		    	        		checkLocationUpdatesHandler.removeCallbacks(checkLocationUpdatesRunnable);
-		    	        	}
-		    	        	else{
-			    	        	System.out.println("checkLocationUpdatesRunnable reposted");
-		    	        		checkLocationUpdatesHandler.postDelayed(this, checkLocationUpdatesFrequency);
-		    	        	}
-	    	        	}
-	    	        }
-	    	    };
-	        }
+	        updateLocationUpdatesHandler();
 		    
 		    if(phoneScreenOnOffReceiver==null){
 			    phoneScreenOnOffReceiver = new PhoneScreenOnOffReceiver();
@@ -300,10 +275,10 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		switch (mode) {
 		case Device.MODE_LIGHT_TRACKING:
 			mLocationRequest = LocationRequest.create();
-	        mLocationRequest.setPriority(LocationRequest.PRIORITY_NO_POWER);
+	        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 	        mLocationRequest.setSmallestDisplacement(50);
-	        mLocationRequest.setInterval(30*60*1000);
-	        mLocationRequest.setFastestInterval(30*60*1000);
+	        mLocationRequest.setInterval(15*60*1000);
+	        mLocationRequest.setFastestInterval(3*60*1000);
 
 			break;
 		case Device.MODE_SIGNIFICATION_TRACKING:
@@ -379,7 +354,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		        new NotificationCompat.Builder(this)
 		        .setSmallIcon(R.drawable.ic_launcher)
 		        .setContentTitle(getResources().getString(R.string.app_name)) 
-		        .setContentText("Your trip is " + ((prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false) ? "in progress." : "stopped.") + "Mode: " + prefs.getString(Device.PREF_CURRENT_TRACKING_MODE, "none")));
+		        .setContentText("Your trip is " + ((prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false) ? "in progress." : "stopped.") + " Mode: " + prefs.getString(Device.PREF_CURRENT_TRACKING_MODE, "none")));
 
 		Intent resultIntent = new Intent(this, InitActivity.class);
 
@@ -434,14 +409,48 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	
 	private void updateLocationUpdatesHandler(){
 		final String deviceType = prefs.getString(Device.PREF_DEVICE_TYPE, "");
-		if(checkLocationUpdatesHandler!=null && checkLocationUpdatesRunnable!=null){
-			checkLocationUpdatesHandler.removeCallbacks(checkLocationUpdatesRunnable);
-			if(prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false) && (deviceType.equals(Device.DEVICE_TYPE_SMARTPHONE) || (deviceType.equals(Device.DEVICE_TYPE_IBEACON) && !beaconConnected))){
-				System.out.println("check location updates posted");
-		    	checkLocationUpdatesHandler.postDelayed(checkLocationUpdatesRunnable, 0);
+		
+		if(!deviceType.equals(Device.DEVICE_TYPE_OBD)){
+			if(checkLocationUpdatesHandler!=null && checkLocationUpdatesRunnable!=null){
+				checkLocationUpdatesHandler.removeCallbacks(checkLocationUpdatesRunnable);
+				if(prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false) && (deviceType.equals(Device.DEVICE_TYPE_SMARTPHONE) || (deviceType.equals(Device.DEVICE_TYPE_IBEACON) && !beaconConnected))){
+					System.out.println("check location updates posted");
+			    	checkLocationUpdatesHandler.postDelayed(checkLocationUpdatesRunnable, 0);
+				}
+				else{
+					System.out.println("check location updates removed");
+				}
 			}
 			else{
-				System.out.println("check location updates removed");
+				if(checkLocationUpdatesHandler==null){
+					checkLocationUpdatesHandler = new Handler();
+		        }
+				
+	        	checkLocationUpdatesHandler.removeCallbacksAndMessages(null);
+		        
+		        if(checkLocationUpdatesRunnable==null){
+					checkLocationUpdatesRunnable = new Runnable() {
+		    	        @Override
+		    	        public void run() {
+		    	        	System.out.println("checkLocationUpdatesRunnable");
+		    	        	if(prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false)){
+			    	        	if(System.currentTimeMillis() - lastLocationUpdateTime > MAX_STAY_TIME){
+			    	        		Bugsnag.notify(new RuntimeException("Trip stop, no location for 2 minutes"));
+			    	        		System.out.println("Trip stop, no location for 2 minutes");
+			    	        		savePoint("stop");
+			    	        		checkLocationUpdatesHandler.removeCallbacks(checkLocationUpdatesRunnable);
+			    	        	}
+			    	        	else{
+				    	        	System.out.println("checkLocationUpdatesRunnable reposted");
+			    	        		checkLocationUpdatesHandler.postDelayed(this, checkLocationUpdatesFrequency);
+			    	        	}
+		    	        	}
+		    	        }
+		    	    };
+		        }
+		        else{
+	        		checkLocationUpdatesHandler.postDelayed(checkLocationUpdatesRunnable, checkLocationUpdatesFrequency);		        	
+		        }
 			}
 		}
 	}
@@ -473,7 +482,14 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
         }
         
         lastLocationUpdateTime = System.currentTimeMillis();
-        savePoint(location, event);
+        
+        
+        if(deviceType.equals(Device.DEVICE_TYPE_OBD)){
+        	Device.checkDevice(this);
+        }
+        else{
+        	savePoint(location, event);
+        }
     }
 	
 	private void savePoint(Location location, String event){
@@ -601,12 +617,12 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	        mLocationClient = null;
         }
         
-        if(prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false)){
-        	Bugsnag.notify(new RuntimeException("Trip stop, service destroyed"));
+        if(prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false) && !prefs.getString(Device.PREF_DEVICE_TYPE, "").equals(Device.DEVICE_TYPE_OBD)){
+            Bugsnag.notify(new RuntimeException("Trip stop, service destroy"));
         	System.out.println("Trip stop, service destroyed");
         	savePoint("stop");
     	}
-		
+        
 		super.onDestroy();
 	}
 
