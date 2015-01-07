@@ -92,6 +92,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
     private final static String EVENT_BEACON_DISCONNECTED = "disconnected";
     private BeaconManager beaconManager;
     private boolean beaconConnected = false;
+    private long lastBeaconDisconnectMillis;
     
     AndroidLogger logger;
 	
@@ -555,10 +556,19 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	}
 	
 	private void savePoint(String event){
+		
+		if(event.equals(EVENT_BEACON_DISCONNECTED)){
+			lastBeaconDisconnectMillis = System.currentTimeMillis();
+		}
+		else if(event.equals(EVENT_BEACON_CONNECTED)){
+			lastBeaconDisconnectMillis = 0;
+		}
 
         String msg = "point event: "+event;
         System.out.println(msg);
         logger.info(msg);
+        
+        long eventTimeMillis = System.currentTimeMillis();
 		
         Editor e = prefs.edit();
 		if(event.equals(EVENT_TRIP_START)){
@@ -567,12 +577,16 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
     		lastLocationUpdateTime = System.currentTimeMillis();
         	updateLocationUpdatesHandler(); 			
 		}
-		else if(event.equals(EVENT_TRIP_STOP))
+		else if(event.equals(EVENT_TRIP_STOP)){
 			e.putBoolean(Device.PREF_IN_TRIP_NOW, false).commit();
+			
+			if(lastBeaconDisconnectMillis!=0)
+				eventTimeMillis = lastBeaconDisconnectMillis;
+		}
     	
 		DbHelper dbhelper = DbHelper.getInstance(this);
     	dbhelper.saveTrackingEvent(new Tracking(
-    			System.currentTimeMillis(), 
+    			eventTimeMillis, 
     			0, 
     			0, 
     			0, 
