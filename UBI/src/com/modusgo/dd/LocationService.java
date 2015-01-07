@@ -85,7 +85,11 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
     private boolean mInProgress;
 	private LocationClient mLocationClient;
     private LocationRequest mLocationRequest;
-    
+
+    private final static String EVENT_TRIP_START = "start";
+    private final static String EVENT_TRIP_STOP = "stop";
+    private final static String EVENT_BEACON_CONNECTED = "connected";
+    private final static String EVENT_BEACON_DISCONNECTED = "disconnected";
     private BeaconManager beaconManager;
     private boolean beaconConnected = false;
     
@@ -226,10 +230,10 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		    			if(!beaconConnected || !prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false)){
 			    			beaconConnected = true;
 			    			if(prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false)){
-			    				savePoint("connected");
+			    				savePoint(EVENT_BEACON_CONNECTED);
 			    			}
 			    			else{
-			    				savePoint("start");
+			    				savePoint(EVENT_TRIP_START);
 			    			}
 		    			}
 		    		}
@@ -245,10 +249,10 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		    			if(!beaconConnected || !prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false)){
 			    			beaconConnected = true;
 			    			if(prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false)){
-			    				savePoint("connected");
+			    				savePoint(EVENT_BEACON_CONNECTED);
 			    			}
 			    			else{
-			    				savePoint("start");
+			    				savePoint(EVENT_TRIP_START);
 			    			}
 		    			}
 		    		}
@@ -258,7 +262,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		    			System.out.println("ibeacon region abdandoned");
 		    			if(beaconConnected){
 			    			beaconConnected = false;
-			    			savePoint("disconnected");
+			    			savePoint(EVENT_BEACON_DISCONNECTED);
 		    			}
 		    		}
 		    	});
@@ -437,7 +441,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 			    	        	if(System.currentTimeMillis() - lastLocationUpdateTime > MAX_STAY_TIME){
 			    	        		Bugsnag.notify(new RuntimeException("Trip stop, no location for 2 minutes"));
 			    	        		System.out.println("Trip stop, no location for 2 minutes");
-			    	        		savePoint("stop");
+			    	        		savePoint(EVENT_TRIP_STOP);
 			    	        		checkLocationUpdatesHandler.removeCallbacks(checkLocationUpdatesRunnable);
 			    	        	}
 			    	        	else{
@@ -464,7 +468,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
         String event = "";
         
         if(deviceType.equals(Device.DEVICE_TYPE_SMARTPHONE) && !deviceInTrip && location.getSpeed()>TRIP_START_SPEED){
-        	event = "start";
+        	event = EVENT_TRIP_START;
         }
         
         if((deviceType.equals(Device.DEVICE_TYPE_SMARTPHONE) || (deviceType.equals(Device.DEVICE_TYPE_IBEACON) && !beaconConnected)) && deviceInTrip){
@@ -473,7 +477,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
         		if(stayFromMillis==0)
 	    			stayFromMillis = System.currentTimeMillis();
 	    		else if(System.currentTimeMillis() - stayFromMillis > MAX_STAY_TIME){
-	    			event = "stop";
+	    			event = EVENT_TRIP_STOP;
 	    		}
         	}
         	else {
@@ -516,13 +520,13 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	        e.putString(Constants.PREF_MOBILE_LATITUDE, ""+location.getLatitude());
 	        e.putString(Constants.PREF_MOBILE_LONGITUDE, ""+location.getLongitude());
 	        
-			if(event.equals("start")){
+			if(event.equals(EVENT_TRIP_START)){
 				e.putBoolean(Device.PREF_IN_TRIP_NOW, true).commit();
 	    		stayFromMillis = 0;
 	    		lastLocationUpdateTime = System.currentTimeMillis();
 	        	updateLocationUpdatesHandler(); 
 			}
-			else if(event.equals("stop"))
+			else if(event.equals(EVENT_TRIP_STOP))
 				e.putBoolean(Device.PREF_IN_TRIP_NOW, false).commit();
 			else
 				e.commit();
@@ -557,13 +561,13 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
         logger.info(msg);
 		
         Editor e = prefs.edit();
-		if(event.equals("start")){
+		if(event.equals(EVENT_TRIP_START)){
 			e.putBoolean(Device.PREF_IN_TRIP_NOW, true).commit();
     		stayFromMillis = 0;
     		lastLocationUpdateTime = System.currentTimeMillis();
         	updateLocationUpdatesHandler(); 			
 		}
-		else if(event.equals("stop"))
+		else if(event.equals(EVENT_TRIP_STOP))
 			e.putBoolean(Device.PREF_IN_TRIP_NOW, false).commit();
     	
 		DbHelper dbhelper = DbHelper.getInstance(this);
@@ -620,7 +624,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
         if(prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false) && !prefs.getString(Device.PREF_DEVICE_TYPE, "").equals(Device.DEVICE_TYPE_OBD)){
             Bugsnag.notify(new RuntimeException("Trip stop, service destroy"));
         	System.out.println("Trip stop, service destroyed");
-        	savePoint("stop");
+        	savePoint(EVENT_TRIP_STOP);
     	}
         
 		super.onDestroy();
