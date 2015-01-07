@@ -444,6 +444,8 @@ public class SignInActivity extends FragmentActivity {
 				e.putString(Device.PREF_DEVICE_LATITUDE, deviceJSON.optString("latitude", "0"));
 				e.putString(Device.PREF_DEVICE_LONGITUDE, deviceJSON.optString("longitude", "0"));
 				e.putString(Device.PREF_DEVICE_LOCATION_DATE, deviceJSON.optString("location_date"));
+				
+				Device.checkDevice(getApplicationContext());
 			}
 			e.commit();
 			
