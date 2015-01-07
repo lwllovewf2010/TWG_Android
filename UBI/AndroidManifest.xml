@@ -234,10 +234,6 @@
         <activity android:name="net.hockeyapp.android.UpdateActivity" />
         
         <service
-            android:name="com.modusgo.dd.TrackingStatusService"
-            android:exported="false"/>
-        
-        <service
             android:name="com.modusgo.dd.LocationService"
             android:exported="false"/>
         
