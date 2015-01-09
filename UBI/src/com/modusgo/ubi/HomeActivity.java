@@ -29,11 +29,11 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.modusgo.dd.LocationService;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.modusgo.ubi.requesttasks.BaseRequestAsyncTask;
 import com.modusgo.ubi.utils.AnimationUtils;
+import com.modusgo.ubi.utils.Device;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -75,8 +75,7 @@ public class HomeActivity extends MainActivity{
 			}
 		});
 		
-		startService(new Intent(this, LocationService.class));
-		System.out.println("Service starting");
+		Device.checkDevice(this);
 		
 		updateDrivers();
 	}
