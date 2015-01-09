@@ -126,12 +126,14 @@ public class MainActivity extends FragmentActivity {
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         TextView tvVersion = (TextView) findViewById(R.id.tvVersion);
         
-        try {
-			tvVersion.setText("Version: " + getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
-		} catch (NameNotFoundException e) {
-			tvVersion.setText("Version: undefined");
-			e.printStackTrace();
-		}
+        if(tvVersion!=null){
+	        try {
+				tvVersion.setText("Version: " + getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+			} catch (NameNotFoundException e) {
+				tvVersion.setText("Version: undefined");
+				e.printStackTrace();
+			}
+        }
         
         MenuItems[] menuItemsArray = MenuItems.values();
         menuItems = new ArrayList<MenuItems>();

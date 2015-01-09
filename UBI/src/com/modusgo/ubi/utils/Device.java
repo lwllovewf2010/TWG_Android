@@ -119,12 +119,12 @@ public class Device {
 //			return false;
 		
 		if(inTrip){
-			float[] results = new float[1];
-			Location.distanceBetween(deviceLocation.latitude, deviceLocation.longitude, mobileLocation.latitude, mobileLocation.longitude, results);
-			
-			System.out.println("odb device distance = "+results[0]);
-			
-			if(results[0]<500)
+//			float[] results = new float[1];
+//			Location.distanceBetween(deviceLocation.latitude, deviceLocation.longitude, mobileLocation.latitude, mobileLocation.longitude, results);
+//			
+//			System.out.println("odb device distance = "+results[0]);
+//			
+//			if(results[0]<500)
 				return true;
 		}
 		

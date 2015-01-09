@@ -42,6 +42,7 @@ public class Constants {
 	public static final String PREF_MOBILE_LATITUDE = "mobileLatitude";
 	public static final String PREF_MOBILE_LONGITUDE = "mobileLongitude";
 	public static final String PREF_CHARGER_CONNECTED = "chargerConnected";
+	public static final String PREF_JASTEC_UUID = "jastecUUID";
 	
 	public static final String ROLE_CUSTOMER = "customer";
 

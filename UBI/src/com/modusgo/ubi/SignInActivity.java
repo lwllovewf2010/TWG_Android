@@ -42,6 +42,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.modusgo.ubi.db.DbHelper;
+import com.modusgo.ubi.jastec.DevicesListActivity;
 import com.modusgo.ubi.requesttasks.BasePostRequestAsyncTask;
 import com.modusgo.ubi.utils.Device;
 import com.modusgo.ubi.utils.Utils;
@@ -78,7 +79,7 @@ public class SignInActivity extends FragmentActivity {
 	    context = getApplicationContext();
 	    
 	    if(!prefs.getString(Constants.PREF_AUTH_KEY, "").equals("")){
-	    	startActivity(new Intent(SignInActivity.this, HomeActivity.class));
+	    	startHomeActivity();
 			finish();
 	    }
 	    
@@ -157,6 +158,13 @@ public class SignInActivity extends FragmentActivity {
         indicator.setFillColor(0xFF00aded);
         indicator.setStrokeWidth(0);
 
+	}
+	
+	private void startHomeActivity(){
+		if(prefs.getString(Device.PREF_DEVICE_TYPE, "").equals(Device.DEVICE_TYPE_OBDBLE) && prefs.getString(Constants.PREF_JASTEC_UUID, "").equals(""))
+			startActivity(new Intent(SignInActivity.this, DevicesListActivity.class));
+		else
+			startActivity(new Intent(SignInActivity.this, HomeActivity.class));
 	}
 	
 	@Override
@@ -462,7 +470,7 @@ public class SignInActivity extends FragmentActivity {
 				dbHelper.close();
 			}
 			
-			startActivity(new Intent(SignInActivity.this, HomeActivity.class));
+			startHomeActivity();
 			finish();
 			super.onSuccess(responseJSON);
 		}
