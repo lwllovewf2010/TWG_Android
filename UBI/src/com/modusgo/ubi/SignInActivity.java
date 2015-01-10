@@ -15,7 +15,6 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -161,7 +160,7 @@ public class SignInActivity extends FragmentActivity {
 	}
 	
 	private void startHomeActivity(){
-		if(prefs.getString(Device.PREF_DEVICE_TYPE, "").equals(Device.DEVICE_TYPE_OBDBLE) && prefs.getString(Constants.PREF_JASTEC_UUID, "").equals(""))
+		if(prefs.getString(Device.PREF_DEVICE_TYPE, "").equals(Device.DEVICE_TYPE_OBDBLE) && prefs.getString(Constants.PREF_JASTEC_ADDRESS, "").equals(""))
 			startActivity(new Intent(SignInActivity.this, DevicesListActivity.class));
 		else
 			startActivity(new Intent(SignInActivity.this, HomeActivity.class));

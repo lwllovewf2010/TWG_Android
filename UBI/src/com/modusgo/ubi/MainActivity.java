@@ -82,8 +82,8 @@ public class MainActivity extends FragmentActivity {
     
     ArrayList<MenuItems> menuItems;
     
-    SharedPreferences prefs;
-	ActionBar actionBar;
+    protected SharedPreferences prefs;
+    protected ActionBar actionBar;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {

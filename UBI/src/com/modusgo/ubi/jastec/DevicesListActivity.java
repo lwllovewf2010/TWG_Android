@@ -7,20 +7,25 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
-import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.modusgo.ubi.Constants;
 import com.modusgo.ubi.MainActivity;
 import com.modusgo.ubi.R;
+import com.modusgo.ubi.jastec.BluetoothCommunicator.OnConnectionListener;
 import com.modusgo.ubi.utils.AnimationUtils;
 
-public class DevicesListActivity extends MainActivity {
+public class DevicesListActivity extends MainActivity implements OnConnectionListener{
 
 	// VehiclesAdapter driversAdapter;
 	// ArrayList<Vehicle> vehicles = new ArrayList<Vehicle>();
@@ -32,6 +37,10 @@ public class DevicesListActivity extends MainActivity {
 	
     private BluetoothAdapter mBtAdapter;
     private ArrayAdapter<String> mDevicesArrayAdapter;
+    
+    private String mDeviceName;
+    private String mDeviceAddress;
+    
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +66,7 @@ public class DevicesListActivity extends MainActivity {
 		mDevicesArrayAdapter = new ArrayAdapter<String>(this, R.layout.bluetooth_devices_list_item, R.id.tvTitle);
 
 		lvVehicles.setAdapter(mDevicesArrayAdapter);
-//		lvVehicles.setOnItemClickListener(mDeviceClickListener);
+		lvVehicles.setOnItemClickListener(mDeviceClickListener);
 
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         this.registerReceiver(mReceiver, filter);
@@ -138,6 +147,51 @@ public class DevicesListActivity extends MainActivity {
         // Unregister broadcast listeners
         this.unregisterReceiver(mReceiver);
     }
+	
+	private OnItemClickListener mDeviceClickListener = new OnItemClickListener() {
+        public void onItemClick(AdapterView<?> av, View v, int arg2, long arg3) {
+            mBtAdapter.cancelDiscovery();
+
+            String info = ((TextView)v.findViewById(R.id.tvTitle)).getText().toString();
+            String[] devinceInfo = info.split("\r\n"); 
+            mDeviceName = devinceInfo[0]; 
+            mDeviceAddress = devinceInfo[1];
+
+            connect();
+        }
+    };
+
+	protected void connect() 
+	{
+//		showDialog(VariousID.PROGRESS_DIALOG);
+		BluetoothCommunicator btCommunicator = BluetoothCommunicator.getInstance();
+		btCommunicator.setActivity(this);
+		btCommunicator.setOnConnectionListener(this);
+		
+		BluetoothDevice bluetoothDevice = mBtAdapter.getRemoteDevice(mDeviceAddress);
+		btCommunicator.connect(bluetoothDevice);
+	}
+	
+	@Override
+	public void onDisconnected(Exception e) {
+		System.out.println("Bt disconnected");
+		
+	}
+	
+	@Override
+	public void onConnected() {
+		System.out.println("Bt connected");
+		
+		String addressStored = prefs.getString(Constants.PREF_JASTEC_ADDRESS, "");
+		
+		if(!addressStored.equals(mDeviceAddress))
+		{
+			SharedPreferences.Editor editor = prefs.edit();
+			editor.putString(Constants.PREF_JASTEC_ADDRESS, mDeviceAddress);
+			editor.putString(Constants.PREF_JASTEC_NAME, mDeviceName);
+			editor.commit();
+		}
+	}
 	
 	private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
