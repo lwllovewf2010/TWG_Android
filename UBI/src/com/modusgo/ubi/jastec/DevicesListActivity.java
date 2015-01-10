@@ -20,6 +20,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.modusgo.ubi.Constants;
+import com.modusgo.ubi.HomeActivity;
 import com.modusgo.ubi.MainActivity;
 import com.modusgo.ubi.R;
 import com.modusgo.ubi.jastec.BluetoothCommunicator.OnConnectionListener;
@@ -191,6 +192,9 @@ public class DevicesListActivity extends MainActivity implements OnConnectionLis
 			editor.putString(Constants.PREF_JASTEC_NAME, mDeviceName);
 			editor.commit();
 		}
+		
+		startActivity(new Intent(this, HomeActivity.class));
+		finish();
 	}
 	
 	private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
