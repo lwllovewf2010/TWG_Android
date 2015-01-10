@@ -83,6 +83,8 @@ public class Vehicle implements Serializable{
 		Vehicle d = new Vehicle();
 		d.id = vehicleJSON.getLong("id");
 		d.alerts = vehicleJSON.optInt("count_new_alerts");
+		d.limitsBlocked = vehicleJSON.optBoolean("limits_blocked");
+		d.limitsBlockedBy = vehicleJSON.optString("limits_blocked_by");
 		
 		if(!vehicleJSON.isNull("driver")){
 			JSONObject driverJSON = vehicleJSON.getJSONObject("driver");

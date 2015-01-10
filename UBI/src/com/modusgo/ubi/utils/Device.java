@@ -1,5 +1,7 @@
 package com.modusgo.ubi.utils;
 
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -53,7 +55,7 @@ public class Device {
 		
 		String deviceType = prefs.getString(PREF_DEVICE_TYPE, "");
 		boolean eventsTrackingEnabled = prefs.getBoolean(PREF_DEVICE_EVENTS, false);
-		boolean tripStatusUpdated = false;
+		boolean forceServiceUpdate = false;
 		System.out.println("Check device: '"+deviceType+"'");
 		System.out.println("Events enabled: '"+eventsTrackingEnabled+"'");
 		
@@ -67,11 +69,12 @@ public class Device {
 					System.out.println("intrip now = "+inTripNow);
 					
 					if(prefs.getBoolean(PREF_IN_TRIP_NOW, false)!=inTripNow){
-						tripStatusUpdated = true;
+						forceServiceUpdate = true;
 						e.putBoolean(PREF_IN_TRIP_NOW, inTripNow);
 					}
 				}
 				else{
+					forceServiceUpdate = true;
 					newTrackingMode = "";
 					e.putBoolean(PREF_IN_TRIP_NOW, false);
 				}
@@ -91,13 +94,17 @@ public class Device {
 		}
 		e.commit();
 		
+		if(!isMyServiceRunning(context,LocationService.class)){
+			forceServiceUpdate = true;			
+		}
+		
 		if(!deviceType.equals(DEVICE_TYPE_OBD)){
 			if(prefs.getBoolean(PREF_IN_TRIP_NOW, false)){
 				newTrackingMode = prefs.getBoolean(Constants.PREF_CHARGER_CONNECTED, false) ? MODE_SUPER_TRACKING : MODE_NAVIGATION_TRACKING;
 			}
 		}
 		
-		if(!prefs.getString(PREF_CURRENT_TRACKING_MODE, "").equals(newTrackingMode) || tripStatusUpdated){
+		if(!prefs.getString(PREF_CURRENT_TRACKING_MODE, "").equals(newTrackingMode) || forceServiceUpdate){
 			prefs.edit().putString(PREF_CURRENT_TRACKING_MODE, newTrackingMode).commit();
 			if(newTrackingMode.equals("")){
 				//Stop all tracking services
@@ -129,6 +136,16 @@ public class Device {
 		}
 		
 		return false;
+	}
+	
+	private static boolean isMyServiceRunning(Context context, Class<?> serviceClass) {
+	    ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+	    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+	        if (serviceClass.getName().equals(service.service.getClassName())) {
+	            return true;
+	        }
+	    }
+	    return false;
 	}
 
 }

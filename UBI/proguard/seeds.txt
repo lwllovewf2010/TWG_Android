@@ -6743,8 +6743,6 @@ com.modusgo.dd.PhoneUsageSaverService
 com.modusgo.dd.PhoneUsageSaverService: PhoneUsageSaverService()
 com.modusgo.dd.RegisterByCodeActivity
 com.modusgo.dd.RegisterByCodeActivity: RegisterByCodeActivity()
-com.modusgo.dd.TrackingStatusService
-com.modusgo.dd.TrackingStatusService: TrackingStatusService()
 com.modusgo.ubi.AlertMapActivity
 com.modusgo.ubi.AlertMapActivity: AlertMapActivity()
 com.modusgo.ubi.AlertsActivity
