@@ -680,16 +680,20 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
     	
 		updateServiceMode();
     	
-    	Location lastLocation = mLocationClient.getLastLocation();
-    	if(lastLocation!=null){
-	    	Editor e = prefs.edit();
-	        e.putString(Constants.PREF_MOBILE_LATITUDE, ""+lastLocation.getLatitude());
-	        e.putString(Constants.PREF_MOBILE_LONGITUDE, ""+lastLocation.getLongitude());
-	        e.commit();
-    	}
-        lastLocationUpdateTime = System.currentTimeMillis();
-        
-        System.out.println("Location service Connected");
+		if(mLocationClient!=null){
+	    	Location lastLocation = mLocationClient.getLastLocation();
+	    	if(lastLocation!=null){
+		    	Editor e = prefs.edit();
+		        e.putString(Constants.PREF_MOBILE_LATITUDE, ""+lastLocation.getLatitude());
+		        e.putString(Constants.PREF_MOBILE_LONGITUDE, ""+lastLocation.getLongitude());
+		        e.commit();
+	    	}
+	        lastLocationUpdateTime = System.currentTimeMillis();
+	        System.out.println("Location service Connected");
+		}
+		else{
+			Bugsnag.notify(new RuntimeException("Location client null"));
+		}
     }
  
     /*
