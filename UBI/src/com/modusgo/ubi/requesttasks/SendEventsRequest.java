@@ -98,6 +98,8 @@ public class SendEventsRequest extends BasePostRequestAsyncTask {
 						tpLocationJSON.put("heading", c.getFloat(7));
 						tpLocationJSON.put("speed", c.getFloat(8) * MPS_TO_KPH);
 						tpLocationJSON.put("fix_status", c.getInt(9));
+						tpLocationJSON.put("horizontal_accuracy", c.getFloat(11));
+						tpLocationJSON.put("vertical_accuracy", c.getFloat(12));
 					}
 					tpJSON.put("location", tpLocationJSON);
 					
@@ -105,12 +107,6 @@ public class SendEventsRequest extends BasePostRequestAsyncTask {
 					String rawData = c.getString(10);
 					if(!TextUtils.isEmpty(rawData))
 						tpDataJSON.put("raw_data", rawData);
-					float hAccuracy = c.getFloat(11);
-					if(hAccuracy!=0)
-						tpDataJSON.put("horizontal_accuracy", hAccuracy);
-					float vAccuracy = c.getFloat(12);
-					if(vAccuracy!=0)
-						tpDataJSON.put("vertical_accuracy", vAccuracy);
 					tpJSON.put("data", tpDataJSON);
 					
 					timepointsJSON.put(tpJSON);
