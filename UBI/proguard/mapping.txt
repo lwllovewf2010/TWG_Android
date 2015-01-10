@@ -19469,62 +19469,63 @@ com.modusgo.dd.LocationService -> com.modusgo.dd.LocationService:
     com.google.android.gms.location.LocationRequest mLocationRequest -> o
     com.kontakt.sdk.android.manager.BeaconManager beaconManager -> p
     boolean beaconConnected -> q
+    long lastBeaconDisconnectMillis -> r
     com.logentries.android.AndroidLogger logger -> b
-    97:124:void onCreate() -> onCreate
-    129:197:int onStartCommand(android.content.Intent,int,int) -> onStartCommand
-    202:219:void iBeaconConnect() -> b
-    222:343:void updateServiceMode() -> c
-    347:392:void updateNotification() -> d
-    395:403:boolean isLocationServicesEnabled() -> e
-    408:416:boolean isBluetoothServicesEnabled() -> f
-    422:433:void showNotification(java.lang.String,android.content.Intent) -> a
-    436:447:void updateLocationUpdatesHandler() -> g
-    452:477:void onLocationChanged(android.location.Location) -> a
-    481:535:void savePoint(android.location.Location,java.lang.String) -> a
-    539:572:void savePoint(java.lang.String) -> a
-    576:611:void onDestroy() -> onDestroy
-    617:617:android.os.IBinder onBind(android.content.Intent) -> onBind
-    622:629:boolean servicesConnected() -> h
-    635:637:void setUpLocationClientIfNeeded() -> i
-    647:659:void onConnected(android.os.Bundle) -> a
-    668:673:void onDisconnected() -> a
-    681:689:void onConnectionFailed(com.google.android.gms.common.ConnectionResult) -> a
-    82:82:android.content.SharedPreferences access$0(com.modusgo.dd.LocationService) -> a
-    345:345:void access$1(com.modusgo.dd.LocationService) -> b
-    69:69:android.os.Handler access$2(com.modusgo.dd.LocationService) -> c
-    63:63:long access$3(com.modusgo.dd.LocationService) -> d
-    537:537:void access$4(com.modusgo.dd.LocationService,java.lang.String) -> a
-    72:72:android.os.Handler access$5(com.modusgo.dd.LocationService) -> e
-    73:73:java.lang.Runnable access$6(com.modusgo.dd.LocationService) -> f
-    74:74:int access$7(com.modusgo.dd.LocationService) -> g
-    90:90:com.kontakt.sdk.android.manager.BeaconManager access$8(com.modusgo.dd.LocationService) -> h
-    91:91:boolean access$9(com.modusgo.dd.LocationService) -> i
-    91:91:void access$10(com.modusgo.dd.LocationService,boolean) -> a
+    101:128:void onCreate() -> onCreate
+    133:177:int onStartCommand(android.content.Intent,int,int) -> onStartCommand
+    182:199:void iBeaconConnect() -> b
+    202:323:void updateServiceMode() -> c
+    327:372:void updateNotification() -> d
+    375:383:boolean isLocationServicesEnabled() -> e
+    388:396:boolean isBluetoothServicesEnabled() -> f
+    402:413:void showNotification(java.lang.String,android.content.Intent) -> a
+    416:461:void updateLocationUpdatesHandler() -> g
+    466:498:void onLocationChanged(android.location.Location) -> a
+    502:556:void savePoint(android.location.Location,java.lang.String) -> a
+    560:606:void savePoint(java.lang.String) -> a
+    610:645:void onDestroy() -> onDestroy
+    651:651:android.os.IBinder onBind(android.content.Intent) -> onBind
+    656:663:boolean servicesConnected() -> h
+    669:671:void setUpLocationClientIfNeeded() -> i
+    681:697:void onConnected(android.os.Bundle) -> a
+    706:711:void onDisconnected() -> a
+    719:727:void onConnectionFailed(com.google.android.gms.common.ConnectionResult) -> a
+    81:81:android.content.SharedPreferences access$0(com.modusgo.dd.LocationService) -> a
+    325:325:void access$1(com.modusgo.dd.LocationService) -> b
+    68:68:android.os.Handler access$2(com.modusgo.dd.LocationService) -> c
+    93:93:com.kontakt.sdk.android.manager.BeaconManager access$3(com.modusgo.dd.LocationService) -> d
+    94:94:boolean access$4(com.modusgo.dd.LocationService) -> e
+    94:94:void access$5(com.modusgo.dd.LocationService,boolean) -> a
+    558:558:void access$6(com.modusgo.dd.LocationService,java.lang.String) -> a
+    62:62:long access$7(com.modusgo.dd.LocationService) -> f
+    71:71:android.os.Handler access$8(com.modusgo.dd.LocationService) -> g
+    72:72:java.lang.Runnable access$9(com.modusgo.dd.LocationService) -> h
+    73:73:int access$10(com.modusgo.dd.LocationService) -> i
 com.modusgo.dd.LocationService$1 -> com.modusgo.dd.a:
     com.modusgo.dd.LocationService this$0 -> a
-    150:155:void run() -> run
+    154:159:void run() -> run
 com.modusgo.dd.LocationService$2 -> com.modusgo.dd.b:
     com.modusgo.dd.LocationService this$0 -> a
-    169:182:void run() -> run
+    187:193:void onServiceBound() -> onServiceBound
 com.modusgo.dd.LocationService$3 -> com.modusgo.dd.c:
     com.modusgo.dd.LocationService this$0 -> a
-    207:213:void onServiceBound() -> onServiceBound
+    220:221:void onMonitorStart() -> onMonitorStart
+    225:226:void onMonitorStop() -> onMonitorStop
+    230:240:void onBeaconsUpdated(com.kontakt.sdk.android.device.Region,java.util.List) -> onBeaconsUpdated
+    244:245:void onBeaconAppeared(com.kontakt.sdk.android.device.Region,com.kontakt.sdk.android.device.Beacon) -> onBeaconAppeared
+    249:259:void onRegionEntered(com.kontakt.sdk.android.device.Region) -> onRegionEntered
+    263:268:void onRegionAbandoned(com.kontakt.sdk.android.device.Region) -> onRegionAbandoned
 com.modusgo.dd.LocationService$4 -> com.modusgo.dd.d:
     com.modusgo.dd.LocationService this$0 -> a
-    240:241:void onMonitorStart() -> onMonitorStart
-    245:246:void onMonitorStop() -> onMonitorStop
-    250:260:void onBeaconsUpdated(com.kontakt.sdk.android.device.Region,java.util.List) -> onBeaconsUpdated
-    264:265:void onBeaconAppeared(com.kontakt.sdk.android.device.Region,com.kontakt.sdk.android.device.Beacon) -> onBeaconAppeared
-    269:279:void onRegionEntered(com.kontakt.sdk.android.device.Region) -> onRegionEntered
-    283:288:void onRegionAbandoned(com.kontakt.sdk.android.device.Region) -> onRegionAbandoned
+    440:453:void run() -> run
 com.modusgo.dd.PhoneScreenOnOffReceiver -> com.modusgo.dd.PhoneScreenOnOffReceiver:
     15:21:void onReceive(android.content.Context,android.content.Intent) -> onReceive
 com.modusgo.dd.PhoneUsageSaverService -> com.modusgo.dd.PhoneUsageSaverService:
     android.content.SharedPreferences prefs -> a
     26:28:void onHandleIntent(android.content.Intent) -> onHandleIntent
-    31:44:void update(java.lang.String) -> a
-    47:56:void savePhoneUsageStart() -> a
-    59:68:void savePhoneUsageStop() -> b
+    31:48:void update(java.lang.String) -> a
+    51:59:void savePhoneUsageStart() -> a
+    62:70:void savePhoneUsageStop() -> b
 com.modusgo.dd.RegisterByCodeActivity -> com.modusgo.dd.RegisterByCodeActivity:
     android.content.SharedPreferences prefs -> a
     com.google.android.gms.gcm.GoogleCloudMessaging gcm -> b
@@ -19556,31 +19557,6 @@ com.modusgo.dd.RegisterByCodeActivity$1 -> com.modusgo.dd.e:
     1:1:java.lang.Object doInBackground(java.lang.Object[]) -> doInBackground
 com.modusgo.dd.RegisterByCodeActivity$UserRegistrationServerError -> com.modusgo.dd.RegisterByCodeActivity$a:
     com.modusgo.dd.RegisterByCodeActivity this$0 -> a
-com.modusgo.dd.TrackingStatusService -> com.modusgo.dd.TrackingStatusService:
-    android.os.Handler checkIgnitionHandler -> d
-    java.lang.Runnable checkIgnitionRunnable -> e
-    com.modusgo.dd.PhoneScreenOnOffReceiver receiver -> a
-    int notificationId -> f
-    android.app.NotificationManager notificationManager -> g
-    android.content.SharedPreferences prefs -> h
-    java.lang.Boolean servicesAvailable -> i
-    boolean mInProgress -> j
-    com.google.android.gms.location.LocationClient mLocationClient -> b
-    android.location.Location mLastLocation -> c
-    58:69:void onCreate() -> onCreate
-    75:131:int onStartCommand(android.content.Intent,int,int) -> onStartCommand
-    145:157:void onDestroy() -> onDestroy
-    163:163:android.os.IBinder onBind(android.content.Intent) -> onBind
-    168:175:boolean servicesConnected() -> b
-    181:183:void setUpLocationClientIfNeeded() -> c
-    196:196:void onConnected(android.os.Bundle) -> a
-    205:210:void onDisconnected() -> a
-    218:225:void onConnectionFailed(com.google.android.gms.common.ConnectionResult) -> a
-    47:47:android.content.SharedPreferences access$0(com.modusgo.dd.TrackingStatusService) -> a
-    37:37:android.os.Handler access$1(com.modusgo.dd.TrackingStatusService) -> b
-com.modusgo.dd.TrackingStatusService$1 -> com.modusgo.dd.f:
-    com.modusgo.dd.TrackingStatusService this$0 -> a
-    105:118:void run() -> run
 com.modusgo.ubi.Alert -> com.modusgo.ubi.a:
     long id -> a
     long vehicleId -> b
@@ -20064,20 +20040,20 @@ com.modusgo.ubi.DriverSetupActivity -> com.modusgo.ubi.DriverSetupActivity:
     com.modusgo.ubi.DriverSetupActivity$VehiclesAdapter vehiclesAdapter -> a
     java.util.ArrayList vehicles -> b
     android.widget.ListView lvVehicles -> c
-    34:47:void onCreate(android.os.Bundle) -> onCreate
-    50:62:void updateVehicles() -> d
-    141:144:void onResume() -> onResume
+    33:46:void onCreate(android.os.Bundle) -> onCreate
+    49:61:void updateVehicles() -> d
+    140:143:void onResume() -> onResume
 com.modusgo.ubi.DriverSetupActivity$VehiclesAdapter -> com.modusgo.ubi.DriverSetupActivity$a:
     android.content.Context ctx -> a
     android.view.LayoutInflater lInflater -> b
     java.text.SimpleDateFormat sdfFrom -> c
     java.text.SimpleDateFormat sdfTo -> d
     com.modusgo.ubi.DriverSetupActivity this$0 -> e
-    80:80:int getCount() -> getCount
-    85:85:java.lang.Object getItem(int) -> getItem
-    90:90:long getItemId(int) -> getItemId
-    96:130:android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
-    134:134:com.modusgo.ubi.Vehicle getDriver(int) -> a
+    79:79:int getCount() -> getCount
+    84:84:java.lang.Object getItem(int) -> getItem
+    89:89:long getItemId(int) -> getItemId
+    95:129:android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
+    133:133:com.modusgo.ubi.Vehicle getDriver(int) -> a
 com.modusgo.ubi.DriversLocationsActivity -> com.modusgo.ubi.DriversLocationsActivity:
     java.util.ArrayList drivers -> a
     com.google.android.gms.maps.MapView mapView -> b
@@ -20309,43 +20285,43 @@ com.modusgo.ubi.HomeActivity -> com.modusgo.ubi.HomeActivity:
     android.support.v4.widget.SwipeRefreshLayout lRefresh -> c
     android.widget.ListView lvVehicles -> d
     android.widget.TextView tvError -> e
-    52:82:void onCreate(android.os.Bundle) -> onCreate
-    85:97:void updateDrivers() -> d
-    101:102:void up() -> u_
-    241:245:void onResume() -> onResume
-    84:84:void access$0(com.modusgo.ubi.HomeActivity) -> a
+    52:81:void onCreate(android.os.Bundle) -> onCreate
+    84:96:void updateDrivers() -> d
+    100:101:void up() -> u_
+    240:244:void onResume() -> onResume
+    83:83:void access$0(com.modusgo.ubi.HomeActivity) -> a
 com.modusgo.ubi.HomeActivity$1 -> com.modusgo.ubi.bf:
     com.modusgo.ubi.HomeActivity this$0 -> a
     72:75:void onRefresh() -> a
 com.modusgo.ubi.HomeActivity$GetVehiclesTask -> com.modusgo.ubi.HomeActivity$a:
     com.modusgo.ubi.HomeActivity this$0 -> a
-    255:256:void onPreExecute() -> onPreExecute
-    260:262:void onPostExecute(org.json.JSONObject) -> b
-    266:268:org.json.JSONObject doInBackground(java.lang.String[]) -> a
-    273:274:void onError(java.lang.String) -> a
-    279:294:void onSuccess(org.json.JSONObject) -> a
+    254:255:void onPreExecute() -> onPreExecute
+    259:261:void onPostExecute(org.json.JSONObject) -> b
+    265:267:org.json.JSONObject doInBackground(java.lang.String[]) -> a
+    272:273:void onError(java.lang.String) -> a
+    278:293:void onSuccess(org.json.JSONObject) -> a
 com.modusgo.ubi.HomeActivity$VehiclesAdapter -> com.modusgo.ubi.HomeActivity$b:
     android.content.Context ctx -> a
     android.view.LayoutInflater lInflater -> b
     java.text.SimpleDateFormat sdfFrom -> c
     java.text.SimpleDateFormat sdfTo -> d
     com.modusgo.ubi.HomeActivity this$0 -> e
-    122:125:void notifyDataSetChanged() -> notifyDataSetChanged
-    129:129:int getCount() -> getCount
-    134:134:java.lang.Object getItem(int) -> getItem
-    139:139:long getItemId(int) -> getItemId
-    145:230:android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
-    234:234:com.modusgo.ubi.Vehicle getVehicle(int) -> a
-    104:104:com.modusgo.ubi.HomeActivity access$0(com.modusgo.ubi.HomeActivity$VehiclesAdapter) -> a
+    121:124:void notifyDataSetChanged() -> notifyDataSetChanged
+    128:128:int getCount() -> getCount
+    133:133:java.lang.Object getItem(int) -> getItem
+    138:138:long getItemId(int) -> getItemId
+    144:229:android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
+    233:233:com.modusgo.ubi.Vehicle getVehicle(int) -> a
+    103:103:com.modusgo.ubi.HomeActivity access$0(com.modusgo.ubi.HomeActivity$VehiclesAdapter) -> a
 com.modusgo.ubi.HomeActivity$VehiclesAdapter$1 -> com.modusgo.ubi.bg:
     com.modusgo.ubi.HomeActivity$VehiclesAdapter this$1 -> a
     com.modusgo.ubi.Vehicle val$vehicle -> b
-    210:213:void onClick(android.view.View) -> onClick
+    209:212:void onClick(android.view.View) -> onClick
 com.modusgo.ubi.HomeActivity$VehiclesAdapter$2 -> com.modusgo.ubi.bh:
     com.modusgo.ubi.HomeActivity$VehiclesAdapter this$1 -> a
     int val$position -> b
     com.modusgo.ubi.Vehicle val$vehicle -> c
-    220:227:void onClick(android.view.View) -> onClick
+    219:226:void onClick(android.view.View) -> onClick
 com.modusgo.ubi.InitActivity -> com.modusgo.ubi.InitActivity:
     android.view.View layoutProgress -> a
     android.view.View layoutFields -> b
@@ -21230,9 +21206,9 @@ com.modusgo.ubi.SignInActivity$LoginTask -> com.modusgo.ubi.SignInActivity$a:
     397:401:void onPreExecute() -> onPreExecute
     405:406:void onPostExecute(org.json.JSONObject) -> b
     410:417:org.json.JSONObject doInBackground(java.lang.String[]) -> a
-    422:466:void onSuccess(org.json.JSONObject) -> a
-    470:473:void onError(java.lang.String) -> a
-    477:480:void onError401() -> a
+    422:468:void onSuccess(org.json.JSONObject) -> a
+    472:475:void onError(java.lang.String) -> a
+    479:482:void onError401() -> a
 com.modusgo.ubi.SignInActivity$ScreenSlidePageFragment -> com.modusgo.ubi.SignInActivity$b:
     int imageResource -> a
     java.lang.String title -> b
@@ -21493,7 +21469,7 @@ com.modusgo.ubi.Vehicle -> com.modusgo.ubi.dx:
     boolean limitsBlocked -> F
     java.lang.String limitsBlockedBy -> G
     79:79:java.lang.String getCarFullName() -> a
-    83:143:com.modusgo.ubi.Vehicle fromJSON(android.content.Context,org.json.JSONObject) -> a
+    83:145:com.modusgo.ubi.Vehicle fromJSON(android.content.Context,org.json.JSONObject) -> a
 com.modusgo.ubi.WelcomeActivity -> com.modusgo.ubi.WelcomeActivity:
     android.view.View layoutProgress -> a
     android.view.View layoutFields -> b
@@ -21730,8 +21706,9 @@ com.modusgo.ubi.utils.AnimationUtils$MyAnimationListener -> com.modusgo.ubi.c.a$
     30:30:void onAnimationRepeat(android.view.animation.Animation) -> onAnimationRepeat
     32:33:void onAnimationStart(android.view.animation.Animation) -> onAnimationStart
 com.modusgo.ubi.utils.Device -> com.modusgo.ubi.c.d:
-    44:113:void checkDevice(android.content.Context) -> a
-    116:131:boolean checkOBDInTrip(boolean,com.google.android.gms.maps.model.LatLng,com.google.android.gms.maps.model.LatLng) -> a
+    46:120:void checkDevice(android.content.Context) -> a
+    123:138:boolean checkOBDInTrip(boolean,com.google.android.gms.maps.model.LatLng,com.google.android.gms.maps.model.LatLng) -> a
+    142:148:boolean isMyServiceRunning(android.content.Context,java.lang.Class) -> a
 com.modusgo.ubi.utils.RequestGet -> com.modusgo.ubi.c.e:
     java.lang.String url -> a
     java.util.List nameValuePairs -> b
