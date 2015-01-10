@@ -28,9 +28,9 @@ public class PhoneUsageSaverService extends IntentService {
     }
 	
 	private void update(String action){
-		boolean screenOn = prefs.getBoolean(PREF_PHONE_ON, false);
+		boolean screenLocked = prefs.getBoolean(PREF_PHONE_ON, false);
 		
-		if(action.equals(Intent.ACTION_USER_PRESENT) && !screenOn){
+		if(action.equals(Intent.ACTION_USER_PRESENT) && !screenLocked){
 //		   	prefs.edit().putInt(PREF_UNLOCK_COUNT, prefs.getInt(PREF_UNLOCK_COUNT, 0)+1).commit();
 	    	System.out.println("phone unlocked");
 		   	savePhoneUsageStart();
@@ -41,7 +41,7 @@ public class PhoneUsageSaverService extends IntentService {
 //		   	savePhoneUsageStart();
 //	    }
 	    	
-	    if(action.equals(Intent.ACTION_SCREEN_OFF) && screenOn){
+	    if(action.equals(Intent.ACTION_SCREEN_OFF) && screenLocked){
 	    	System.out.println("screen off");
 		   	savePhoneUsageStop();
 	    }
