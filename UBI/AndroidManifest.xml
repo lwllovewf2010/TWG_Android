@@ -231,6 +231,8 @@
                 android:value="com.modusgo.ubi.SignInActivity" />
         </activity>
         
+        <activity android:name="com.modusgo.ubi.TripDeclineActivity" />
+        
         <activity android:name="net.hockeyapp.android.UpdateActivity" />
         
         <service
