@@ -383,6 +383,7 @@ public class SignInActivity extends FragmentActivity {
 		int status;
 		String message = "";
 		
+		JSONArray welcomeScreens = null;
 		
 		public LoginTask(Context context) {
 			super(context);
@@ -462,7 +463,16 @@ public class SignInActivity extends FragmentActivity {
 				dbHelper.close();
 			}
 			
-			startActivity(new Intent(SignInActivity.this, HomeActivity.class));
+			if(responseJSON.has("welcome"))
+				welcomeScreens = responseJSON.getJSONArray("welcome");
+			
+			if(welcomeScreens!=null && welcomeScreens.length()>0){					
+				Intent i = new Intent(SignInActivity.this, WelcomeActivity.class);
+				i.putExtra(WelcomeActivity.SAVED_SCREENS, welcomeScreens.toString());
+				startActivity(i);
+			}
+			else
+				startActivity(new Intent(SignInActivity.this, HomeActivity.class));
 			finish();
 			super.onSuccess(responseJSON);
 		}
