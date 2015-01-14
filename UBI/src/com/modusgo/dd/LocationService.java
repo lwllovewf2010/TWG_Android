@@ -532,7 +532,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
         if(deviceType.equals(Device.DEVICE_TYPE_OBD)){
         	Device.checkDevice(this);
         }
-        else{
+        else if(deviceInTrip){
         	savePoint(location, event);
         }
     }
