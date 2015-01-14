@@ -27,9 +27,15 @@ public class SendEventsRequest extends BasePostRequestAsyncTask {
 	private static final float MPS_TO_KPH = 3.6f;
 	
 	ArrayList<Long> eventIds;
+	int limit = 30;
 	
 	public SendEventsRequest(Context context) {
 		super(context);
+	}
+	
+	public SendEventsRequest(Context context, int limit) {
+		super(context);
+		this.limit = limit;
 	}
 	
 	@Override
@@ -53,7 +59,7 @@ public class SendEventsRequest extends BasePostRequestAsyncTask {
 				TrackingEntry.COLUMN_NAME_VERTICAL_ACCURACY,
 				TrackingEntry.COLUMN_NAME_BLOCKED,
 				TrackingEntry.COLUMN_NAME_DRIVER_ID}, 
-				TrackingEntry.COLUMN_NAME_BLOCKED+ " = ? AND "+TrackingEntry.COLUMN_NAME_DRIVER_ID + " =? ", new String[]{"0", String.valueOf(prefs.getLong(Constants.PREF_DRIVER_ID, 0))}, null, null, null, "30");
+				TrackingEntry.COLUMN_NAME_BLOCKED+ " = ? AND "+TrackingEntry.COLUMN_NAME_DRIVER_ID + " =? ", new String[]{"0", String.valueOf(prefs.getLong(Constants.PREF_DRIVER_ID, 0))}, null, null, null, String.valueOf(limit));
 		
 		JSONObject rootJSON = new JSONObject();
 		JSONArray timepointsJSON = new JSONArray();

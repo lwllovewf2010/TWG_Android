@@ -46,6 +46,7 @@ import com.modusgo.ubi.Tracking;
 import com.modusgo.ubi.TripDeclineActivity;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.requesttasks.GetDeviceInfoRequest;
+import com.modusgo.ubi.requesttasks.SendEventsRequest;
 import com.modusgo.ubi.utils.Device;
 
 public class LocationService extends Service implements GooglePlayServicesClient.ConnectionCallbacks,
@@ -566,8 +567,10 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	    		lastLocationUpdateTime = System.currentTimeMillis();
 	        	updateLocationUpdatesHandler(); 
 			}
-			else if(event.equals(EVENT_TRIP_STOP))
+			else if(event.equals(EVENT_TRIP_STOP)){
 				e.putBoolean(Device.PREF_IN_TRIP_NOW, false).commit();
+				new SendEventsRequest(this, 300).execute();
+			}
 			else
 				e.commit();
 	    	
@@ -615,6 +618,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		}
 		else if(event.equals(EVENT_TRIP_STOP)){
 			e.putBoolean(Device.PREF_IN_TRIP_NOW, false).commit();
+			new SendEventsRequest(this, 300).execute();
 			
 			if(lastBeaconDisconnectMillis!=0)
 				eventTimeMillis = lastBeaconDisconnectMillis;
