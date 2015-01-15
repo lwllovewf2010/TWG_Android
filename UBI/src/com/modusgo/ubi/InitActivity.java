@@ -250,9 +250,6 @@ public class InitActivity extends FragmentActivity {
 								e.putString(Constants.PREF_GA_TRACKING_ID, trackingId);
 							}
 							
-							if(infoJSON.has("welcome"))
-								welcomeScreens = infoJSON.getJSONArray("welcome");
-							
 							if(infoJSON.has("branding")){
 								JSONObject brandingJSON = infoJSON.getJSONObject("branding");
 								e.putString(Constants.PREF_BR_LOGIN_SCREEN_BG_IMAGE, brandingJSON.optString("login_screen_bg_image"));
@@ -267,6 +264,9 @@ public class InitActivity extends FragmentActivity {
 								e.putString(Constants.PREF_BR_LIST_HEADER_LINE_COLOR, brandingJSON.optString("list_header_line_color", Constants.LIST_HEADER_LINE_COLOR));
 							}
 						}
+						
+						if(responseJSON.has("welcome"))
+							welcomeScreens = responseJSON.getJSONArray("welcome");
 						
 						if(responseJSON.has("vehicles")){
 							JSONArray vehiclesJSON = responseJSON.getJSONArray("vehicles");

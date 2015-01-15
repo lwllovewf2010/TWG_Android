@@ -78,7 +78,7 @@ public class SignInActivity extends FragmentActivity {
 	    context = getApplicationContext();
 	    
 	    if(!prefs.getString(Constants.PREF_AUTH_KEY, "").equals("")){
-	    	startHomeActivity();
+	    	startHomeActivity(null);
 			finish();
 	    }
 	    
@@ -159,11 +159,19 @@ public class SignInActivity extends FragmentActivity {
 
 	}
 	
-	private void startHomeActivity(){
-		if(prefs.getString(Device.PREF_DEVICE_TYPE, "").equals(Device.DEVICE_TYPE_OBDBLE) && prefs.getString(Constants.PREF_JASTEC_ADDRESS, "").equals(""))
-			startActivity(new Intent(SignInActivity.this, DevicesListActivity.class));
-		else
-			startActivity(new Intent(SignInActivity.this, HomeActivity.class));
+	private void startHomeActivity(JSONArray welcomeScreens){
+
+		if(welcomeScreens!=null && welcomeScreens.length()>0){					
+			Intent i = new Intent(SignInActivity.this, WelcomeActivity.class);
+			i.putExtra(WelcomeActivity.SAVED_SCREENS, welcomeScreens.toString());
+			startActivity(i);
+		}
+		else{
+			if(prefs.getString(Device.PREF_DEVICE_TYPE, "").equals(Device.DEVICE_TYPE_OBDBLE) && prefs.getString(Constants.PREF_JASTEC_ADDRESS, "").equals(""))
+				startActivity(new Intent(SignInActivity.this, DevicesListActivity.class));
+			else
+				startActivity(new Intent(SignInActivity.this, HomeActivity.class));
+		}
 	}
 	
 	@Override
@@ -390,6 +398,7 @@ public class SignInActivity extends FragmentActivity {
 		int status;
 		String message = "";
 		
+		JSONArray welcomeScreens = null;
 		
 		public LoginTask(Context context) {
 			super(context);
@@ -469,7 +478,10 @@ public class SignInActivity extends FragmentActivity {
 				dbHelper.close();
 			}
 			
-			startHomeActivity();
+			if(responseJSON.has("welcome"))
+				welcomeScreens = responseJSON.getJSONArray("welcome");
+			
+			startHomeActivity(welcomeScreens);
 			finish();
 			super.onSuccess(responseJSON);
 		}

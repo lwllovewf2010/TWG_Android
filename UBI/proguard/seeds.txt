@@ -7798,6 +7798,7 @@ com.modusgo.ubi.R$layout: int activity_score_pie_chart
 com.modusgo.ubi.R$layout: int activity_settings
 com.modusgo.ubi.R$layout: int activity_sign_in
 com.modusgo.ubi.R$layout: int activity_trip
+com.modusgo.ubi.R$layout: int activity_trip_decline
 com.modusgo.ubi.R$layout: int activity_welcome
 com.modusgo.ubi.R$layout: int alerts_item
 com.modusgo.ubi.R$layout: int chart_marker_text
@@ -8351,6 +8352,8 @@ com.modusgo.ubi.Trip$EventType: com.modusgo.ubi.Trip$EventType[] values()
 com.modusgo.ubi.Trip$EventType: com.modusgo.ubi.Trip$EventType valueOf(java.lang.String)
 com.modusgo.ubi.TripActivity
 com.modusgo.ubi.TripActivity: TripActivity()
+com.modusgo.ubi.TripDeclineActivity
+com.modusgo.ubi.TripDeclineActivity: TripDeclineActivity()
 com.modusgo.ubi.WelcomeActivity
 com.modusgo.ubi.WelcomeActivity: WelcomeActivity()
 com.modusgo.ubi.customviews.CheckedRelativeLayout

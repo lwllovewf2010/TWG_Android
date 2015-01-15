@@ -44,6 +44,7 @@ public class Constants {
 	public static final String PREF_CHARGER_CONNECTED = "chargerConnected";
 	public static final String PREF_JASTEC_ADDRESS = "jastecAddress";
 	public static final String PREF_JASTEC_NAME = "jastecName";
+	public static final String PREF_TRIP_DECLINED = "tripDeclined";
 	
 	public static final String ROLE_CUSTOMER = "customer";
 
