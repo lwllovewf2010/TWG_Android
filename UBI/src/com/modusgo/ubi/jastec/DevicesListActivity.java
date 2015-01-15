@@ -33,7 +33,7 @@ public class DevicesListActivity extends MainActivity implements OnConnectionLis
 	private final static int REQUEST_ENABLE_BT = 1;
 
 	SwipeRefreshLayout lRefresh;
-	ListView lvVehicles;
+	ListView lvDevices;
 	TextView tvError;
 	
     private BluetoothAdapter mBtAdapter;
@@ -51,7 +51,7 @@ public class DevicesListActivity extends MainActivity implements OnConnectionLis
 		setActionBarTitle("CHOOSE DEVICE");
 
 		lRefresh = (SwipeRefreshLayout) findViewById(R.id.lRefresh);
-		lvVehicles = (ListView) findViewById(R.id.listViewDrivers);
+		lvDevices = (ListView) findViewById(R.id.listViewDevices);
 		tvError = (TextView) findViewById(R.id.tvError);
 		
 		lRefresh.setColorSchemeResources(R.color.ubi_gray, R.color.ubi_green, R.color.ubi_orange, R.color.ubi_red);
@@ -66,8 +66,8 @@ public class DevicesListActivity extends MainActivity implements OnConnectionLis
 		
 		mDevicesArrayAdapter = new ArrayAdapter<String>(this, R.layout.bluetooth_devices_list_item, R.id.tvTitle);
 
-		lvVehicles.setAdapter(mDevicesArrayAdapter);
-		lvVehicles.setOnItemClickListener(mDeviceClickListener);
+		lvDevices.setAdapter(mDevicesArrayAdapter);
+		lvDevices.setOnItemClickListener(mDeviceClickListener);
 
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         this.registerReceiver(mReceiver, filter);
