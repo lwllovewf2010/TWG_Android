@@ -1,36 +1,45 @@
 package com.modusgo.ubi.jastec;
 
-import android.app.Activity;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.modusgo.ubi.Constants;
-import com.modusgo.ubi.HomeActivity;
 import com.modusgo.ubi.MainActivity;
 import com.modusgo.ubi.R;
 import com.modusgo.ubi.jastec.BluetoothCommunicator.OnConnectionListener;
+import com.modusgo.ubi.jastec.BluetoothCommunicator.OnDataListener;
+import com.modusgo.ubi.jastec.packet.FirmwareVersion;
+import com.modusgo.ubi.jastec.packet.ReadDBSuccess;
+import com.modusgo.ubi.jastec.packet.SerialNumberSuccess;
 import com.modusgo.ubi.utils.AnimationUtils;
 
-public class DevicesListActivity extends MainActivity implements OnConnectionListener{
+public class DevicesListActivity extends MainActivity implements OnConnectionListener, OnDataListener{
 
 	// VehiclesAdapter driversAdapter;
 	// ArrayList<Vehicle> vehicles = new ArrayList<Vehicle>();
 	private final static int REQUEST_ENABLE_BT = 1;
+	private final static String TAG = "Jastec";
 
 	SwipeRefreshLayout lRefresh;
 	ListView lvDevices;
@@ -41,7 +50,9 @@ public class DevicesListActivity extends MainActivity implements OnConnectionLis
     
     private String mDeviceName;
     private String mDeviceAddress;
-    
+    ProgressDialog progressDialog;
+
+	protected Map<Protocol.PacketType, IPacketProcessor> mMapProcessor;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +96,22 @@ public class DevicesListActivity extends MainActivity implements OnConnectionLis
                 doDiscovery();
             }
         }, 1000);
+        
+        mMapProcessor = new HashMap<Protocol.PacketType, IPacketProcessor>();
+        
+        mMapProcessor.put(Protocol.PacketType.READ_SERIAL_NUMBER_SUCCESS, 			new OnReadSerialNumberSuccess());
+		mMapProcessor.put(Protocol.PacketType.READ_SERIAL_NUMBER_INVALID, 			new OnReadSerialNumberInvalid());
+		mMapProcessor.put(Protocol.PacketType.FIRMWARE_VERSION, 					new OnFirmwareVersion());
+		mMapProcessor.put(Protocol.PacketType.READ_DB_SUCCESS,	 					new OnReadDBSuccess());
+		mMapProcessor.put(Protocol.PacketType.READ_DB_ERROR,	 					new OnReadDBError());
+		mMapProcessor.put(Protocol.PacketType.BLUETOOTH_DEVICE_NAME,	 			new OnBluetoothDeviceName());
+		mMapProcessor.put(Protocol.PacketType.BLUETOOTH_PASSWORD,		 			new OnBluetoothPassword());
+		mMapProcessor.put(Protocol.PacketType.SET_VEHICLE_INFO,			 			new OnSetVehicleInfo());
+		mMapProcessor.put(Protocol.PacketType.MONITORING_STOP,			 			new OnMonitoringStop());
+		mMapProcessor.put(Protocol.PacketType.EXTERNAL_BLOCK_ERASE_COMPLETE,	 	new OnExternalBlockEraseComplete());
+		mMapProcessor.put(Protocol.PacketType.EXTERNAL_WRITE_COMPLETE,			 	new OnExternalWriteComplete());
+		mMapProcessor.put(Protocol.PacketType.HW_RESET,			 					new OnHWReset());
+		mMapProcessor.put(Protocol.PacketType.BLUETOOTH_PINCODE, 					new OnBluetoothPinCode());
 	}
 	
 	@Override
@@ -158,6 +185,8 @@ public class DevicesListActivity extends MainActivity implements OnConnectionLis
             mDeviceName = devinceInfo[0]; 
             mDeviceAddress = devinceInfo[1];
 
+    		progressDialog = ProgressDialog.show(DevicesListActivity.this, "Processing", "Please, wait...");
+    		
             connect();
         }
     };
@@ -168,6 +197,7 @@ public class DevicesListActivity extends MainActivity implements OnConnectionLis
 		BluetoothCommunicator btCommunicator = BluetoothCommunicator.getInstance();
 		btCommunicator.setActivity(this);
 		btCommunicator.setOnConnectionListener(this);
+		btCommunicator.setOnDataListener(this);
 		
 		BluetoothDevice bluetoothDevice = mBtAdapter.getRemoteDevice(mDeviceAddress);
 		btCommunicator.connect(bluetoothDevice);
@@ -176,25 +206,58 @@ public class DevicesListActivity extends MainActivity implements OnConnectionLis
 	@Override
 	public void onDisconnected(Exception e) {
 		System.out.println("Bt disconnected");
+		Toast.makeText(this, "Bt disconnected", Toast.LENGTH_SHORT).show();
+		progressDialog.dismiss();
 		
 	}
 	
 	@Override
 	public void onConnected() {
 		System.out.println("Bt connected");
+		Toast.makeText(this, "Bt connected", Toast.LENGTH_SHORT).show();
 		
 		String addressStored = prefs.getString(Constants.PREF_JASTEC_ADDRESS, "");
 		
-		if(!addressStored.equals(mDeviceAddress))
+//		if(!addressStored.equals(mDeviceAddress))
+//		{
+//			SharedPreferences.Editor editor = prefs.edit();
+//			editor.putString(Constants.PREF_JASTEC_ADDRESS, mDeviceAddress);
+//			editor.putString(Constants.PREF_JASTEC_NAME, mDeviceName);
+//			editor.commit();
+//		}
+		progressDialog.dismiss();
+		packets = 0;
+		//startActivity(new Intent(this, HomeActivity.class));
+		//finish();
+	}
+	
+	int packets = 0;
+	
+	public void onReceived(Byte[][] packets)
+	{
+		System.out.println("packet received");
+		for(int i = 0;i < packets.length; i++)
 		{
-			SharedPreferences.Editor editor = prefs.edit();
-			editor.putString(Constants.PREF_JASTEC_ADDRESS, mDeviceAddress);
-			editor.putString(Constants.PREF_JASTEC_NAME, mDeviceName);
-			editor.commit();
+			PacketParser.getInstance().init(packets[i]);
+			Protocol.PacketType type = PacketParser.getInstance().getPacketType();
+
+			Toast.makeText(this, "packet received type = "+type+", count = "+packets.length, Toast.LENGTH_SHORT).show();
+//			Log.e(TAG, "type : " + type);
+//			Log.e(TAG, PacketParser.getInstance().getLog());
+			
+			IPacketProcessor packetProcessor = mMapProcessor.get(type);
+			if(packetProcessor == null)
+			{
+				Toast.makeText(getApplicationContext(), "do not exist the type("+type+")", Toast.LENGTH_LONG).show();
+				continue;
+			}
+			
+			if(!packetProcessor.onTransFunc(packets[i]))
+			{
+				Toast.makeText(getApplicationContext(), "do not proceed the type("+type+")", Toast.LENGTH_LONG).show();
+				continue;
+			}
 		}
-		
-		startActivity(new Intent(this, HomeActivity.class));
-		finish();
 	}
 	
 	private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -222,5 +285,294 @@ public class DevicesListActivity extends MainActivity implements OnConnectionLis
             }
         }
     };
+    
+    private class OnReadSerialNumberSuccess implements IPacketProcessor
+	{
+		private SerialNumberSuccess mSerialNumber;
+		public OnReadSerialNumberSuccess()
+		{
+			mSerialNumber = new SerialNumberSuccess();
+		}
+		@Override
+		public boolean onTransFunc(Byte[] packet) {
+			mSerialNumber.parse(packet);
+			
+//			SharedPreferences.Editor editor = getSharedPreferences(PrefInfo.NAME, Activity.MODE_PRIVATE).edit();
+//			editor.putString(PrefInfo.CONFIG_SERIAL_NUMBER, mSerialNumber.SerialNumber);
+//			editor.commit();
+			
+			PacketBuilder.getInstance().init((short)0);
+			PacketBuilder.getInstance().putTar((byte)0xA0);
+			PacketBuilder.getInstance().putID((byte)0x10);
+			PacketBuilder.getInstance().putSubID((byte)0x10);
+			byte[] firmwarePacket = PacketBuilder.getInstance().buildOnBT();
+			
+			try {
+				BluetoothCommunicator.getInstance().write(firmwarePacket);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			return true;
+		}
+	}
+	
+	private class OnReadSerialNumberInvalid implements IPacketProcessor
+	{
+		@Override
+		public boolean onTransFunc(Byte[] packet) {
+			return true;
+		}
+	}
+	
+	private class OnFirmwareVersion implements IPacketProcessor
+	{
+		private FirmwareVersion mFirmwareVersion;
+		public OnFirmwareVersion()
+		{
+			mFirmwareVersion = new FirmwareVersion();
+		}
+		@Override
+		public boolean onTransFunc(Byte[] packet) {
+			mFirmwareVersion.parse(packet);
+//			SharedPreferences.Editor editor = getSharedPreferences(PrefInfo.NAME, Activity.MODE_PRIVATE).edit();
+//			editor.putString(PrefInfo.CONFIG_FIRMWARE_VERSION, mFirmwareVersion.FirmwareVersion);
+//			editor.putBoolean(PrefInfo.CONFIG_DEVICE_INIT, true);
+//			mDidDeviceInit = true;
+//			editor.commit();
+//			
+//			mDialogInit.dismiss();
+//			removeDialog(VariousID.PROGRESS_INIT_CONFIGURATION);
+			
+			return true;
+		}
+	}
+	
+	private class OnReadDBSuccess implements IPacketProcessor
+	{
+		private ReadDBSuccess mReadDBSuccess;
+		public OnReadDBSuccess()
+		{
+			mReadDBSuccess = new ReadDBSuccess();
+		}
+		@Override
+		public boolean onTransFunc(Byte[] packet) {
+			mReadDBSuccess.parse(packet);
+			
+			
+			return true;
+		}
+	}
+	
+	private class OnReadDBError implements IPacketProcessor
+	{
+		@Override
+		public boolean onTransFunc(Byte[] packet) {
+			return true;
+		}
+	}
+	
+	private class OnBluetoothDeviceName implements IPacketProcessor
+	{
+		@Override
+		public boolean onTransFunc(Byte[] packet) {
+			Log.e(TAG, "OnBluetoothDeviceName");
+//			mFragmentOBD.setEditDialog(mEditDialogType);
+			
+			BluetoothCommunicator.getInstance().disconnect();
+			return true;
+		}
+	}
+	
+	private class OnBluetoothPassword implements IPacketProcessor
+	{
+		@Override
+		public boolean onTransFunc(Byte[] packet) {
+			Log.e(TAG, "OnBluetoothPassword");
+//			mFragmentOBD.setEditDialog(mEditDialogType);
+			BluetoothCommunicator.getInstance().disconnect();
+			return true;
+		}
+	}
+	
+	private class OnSetVehicleInfo implements IPacketProcessor
+	{
+		@Override
+		public boolean onTransFunc(Byte[] packet) {
+			Log.e(TAG, "OnSetVehicleInfo");
+			
+//			setDialog1ButtonContent(	getText(R.string.dialog_text_title_configuration), 
+//										getText(R.string.dialog_text_body_configuration), 
+//										getText(R.string.dialog_button_ok)	);
+//			showDialog(VariousID.ALERT_DIALOG_1BUTTON_NORMAL);
+			
+			return true;
+		}
+	}
+	
+	private class OnMonitoringStop implements IPacketProcessor
+	{
+		@Override
+		public boolean onTransFunc(Byte[] packet) {
+			Log.e(TAG, "OnMonitoringStop");
+			
+//			byte[] packetForBlockErase = mUpdateData.createNextPacketForBlockErase();
+//			
+//			try {
+//				BluetoothCommunicator.getInstance().write(packetForBlockErase);
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+			
+			return true;
+		}
+	}
+	
+	private class OnExternalBlockEraseComplete implements IPacketProcessor
+	{
+		@Override
+		public boolean onTransFunc(Byte[] packet) {
+			Log.e(TAG, "OnExternalBlockEraseComplete");
+//			byte[] packetForExternal = mUpdateData.createNextPacketForBlockErase();
+//			
+//			if(packetForExternal == null)
+//			{
+//				if(mUpdateData instanceof FirmwareData)
+//				{
+//					mExternalWriteQ.add(ExternalWriteType.FW_FILE_SIZE);
+//					packetForExternal = ((FirmwareData)mUpdateData).createPacketForFileSize();
+//				}
+//				else if(mUpdateData instanceof VDBData)
+//				{
+//					mExternalWriteQ.add(ExternalWriteType.VDB_FILE_DATA);
+//					packetForExternal = mUpdateData.createNextPacketForData();
+//				}
+//					
+//			}
+//			
+//			try {
+//				BluetoothCommunicator.getInstance().write(packetForExternal);
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+			
+			return true;
+		}
+		
+	}
+	
+	private class OnExternalWriteComplete implements IPacketProcessor
+	{
+		@Override
+		public boolean onTransFunc(Byte[] packet) {
+			Log.e(TAG, "OnExternalWriteComplete");
+			
+//			ExternalWriteType type = mExternalWriteQ.get(0);
+//			mExternalWriteQ.remove(0);
+//			
+//			byte[] sendPacket = null;
+//			switch(type)
+//			{
+//			case FW_FILE_SIZE:
+//				mDialogUpdateDevice.incrementProgressBy(mUpdateData.getCurrentProgress());
+//				
+//				sendPacket = mUpdateData.createNextPacketForData();
+//				mExternalWriteQ.add(ExternalWriteType.FW_FILE_DATA);
+//				break;
+//			case FW_FILE_DATA:
+//				mDialogUpdateDevice.incrementProgressBy(mUpdateData.getCurrentProgress());
+//				sendPacket = mUpdateData.createNextPacketForData();
+//				if(sendPacket == null)
+//				{
+//					mExternalWriteQ.add(ExternalWriteType.FW_CHECK_SUM);
+//					sendPacket = ((FirmwareData)mUpdateData).createPacketForCheckSum();
+//				}
+//				else
+//				{
+//					mExternalWriteQ.add(ExternalWriteType.FW_FILE_DATA);
+//				}
+//				break;
+//			case FW_CHECK_SUM:
+//				sendPacket = mUpdateData.createPacketForReset();
+//				mDialogUpdateDevice.dismiss();
+//				removeDialog(VariousID.PROGRESS_UPDATE_DEVICE);
+//				
+//				try {
+//					BluetoothCommunicator.getInstance().write(sendPacket);
+//					BluetoothCommunicator.getInstance().disconnect();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//				
+//				return true;
+//			case VDB_FILE_DATA:
+//				mDialogUpdateDevice.incrementProgressBy(mUpdateData.getCurrentProgress());
+//				sendPacket = mUpdateData.createNextPacketForData();
+//				if(sendPacket == null)
+//				{
+//					sendPacket = mUpdateData.createPacketForReset();
+//					mDialogUpdateDevice.dismiss();
+//					removeDialog(VariousID.PROGRESS_UPDATE_DEVICE);
+//					
+//					try {
+//						BluetoothCommunicator.getInstance().write(sendPacket);
+//						BluetoothCommunicator.getInstance().disconnect();
+//					} catch (IOException e) {
+//						e.printStackTrace();
+//					}
+//					
+//					return true;
+//				}
+//				else
+//				{
+//					mExternalWriteQ.add(ExternalWriteType.VDB_FILE_DATA);
+//				} 
+//				break;
+//			}
+//			
+//			try {
+//				BluetoothCommunicator.getInstance().write(sendPacket);
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+			
+			return true;
+		}
+	}
+	
+	private class OnHWReset implements IPacketProcessor
+	{
+		@Override
+		public boolean onTransFunc(Byte[] packet) {
+			Log.e(TAG, "OnHWReset");
+			return true;
+		}
+	}
+	
+	private class OnBluetoothPinCode implements IPacketProcessor
+	{
+		@Override
+		public boolean onTransFunc(Byte[] packet) {
+			Log.e(TAG, "OnBluetoothPinCode");
+			//SharedPreferences pref = getSharedPreferences(PrefInfo.NAME, Activity.MODE_PRIVATE); 
+			String password = "0000";//pref.getString(PrefInfo.CONFIG_BT_PASSWORD, "0000");
+			
+			
+			PacketBuilder.getInstance().init((short)4);
+			PacketBuilder.getInstance().putTar((byte)0xA0);
+			PacketBuilder.getInstance().putID((byte)0x70);
+			PacketBuilder.getInstance().putSubID((byte)0x50);
+			byte[] bPassword = password.getBytes();
+			PacketBuilder.getInstance().putDataBlock(bPassword);
+			byte[] packetForPinCode = PacketBuilder.getInstance().buildOnBT();
+			try {
+				BluetoothCommunicator.getInstance().write(packetForPinCode);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			return true;
+		}
+	}
 
 }
