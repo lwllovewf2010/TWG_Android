@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -68,11 +67,8 @@ public class DevicesListActivity extends MainActivity implements OnConnectionLis
 	private DrivingBroadcastingAfterStart mDrivingBroadcastingAfterStart;
 	private SensorBroadcating mSensorBroadcating;
 	
-	private Dialog mAlertDialog1ButtonNormal;
-	private ProgressDialog mDialogPreviewInit;
-	
 	private Timer mTimer;
-	private long mCurrentTime;
+//	private long mCurrentTime;
 	private int mProtocolNum;
 	
 
@@ -155,6 +151,10 @@ public class DevicesListActivity extends MainActivity implements OnConnectionLis
 				}
 			}
 		});
+        
+        mDrivingBroadcastingCurrent = new DrivingBroadcastingCurrent();
+		mDrivingBroadcastingAfterStart = new DrivingBroadcastingAfterStart();
+		mSensorBroadcating = new SensorBroadcating();
         
         mMapProcessor = new HashMap<Protocol.PacketType, IPacketProcessor>();
         
