@@ -28,10 +28,22 @@
             android:visibility="gone"
             ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
+        <Button 
+            android:id="@+id/btnStart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Start"/>
+        <Button 
+            android:id="@+id/btnStop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Stop"/>
+        
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/lRefresh"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+            android:layout_height="0dp"
+            android:layout_weight="1" >
 
             <ListView
                 android:id="@+id/listViewDevices"

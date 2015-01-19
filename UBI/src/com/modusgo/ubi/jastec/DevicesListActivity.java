@@ -3,7 +3,10 @@ package com.modusgo.ubi.jastec;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -17,6 +20,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -29,8 +33,14 @@ import com.modusgo.ubi.MainActivity;
 import com.modusgo.ubi.R;
 import com.modusgo.ubi.jastec.BluetoothCommunicator.OnConnectionListener;
 import com.modusgo.ubi.jastec.BluetoothCommunicator.OnDataListener;
+import com.modusgo.ubi.jastec.packet.DrivingBroadcastingAfterStart;
+import com.modusgo.ubi.jastec.packet.DrivingBroadcastingCurrent;
+import com.modusgo.ubi.jastec.packet.DrivingSupportWhole;
 import com.modusgo.ubi.jastec.packet.FirmwareVersion;
+import com.modusgo.ubi.jastec.packet.GetProtocol;
 import com.modusgo.ubi.jastec.packet.ReadDBSuccess;
+import com.modusgo.ubi.jastec.packet.SensorBroadcating;
+import com.modusgo.ubi.jastec.packet.SensorSupportWhole;
 import com.modusgo.ubi.jastec.packet.SerialNumberSuccess;
 import com.modusgo.ubi.utils.AnimationUtils;
 
@@ -53,6 +63,18 @@ public class DevicesListActivity extends MainActivity implements OnConnectionLis
     ProgressDialog progressDialog;
 
 	protected Map<Protocol.PacketType, IPacketProcessor> mMapProcessor;
+	
+	private DrivingBroadcastingCurrent mDrivingBroadcastingCurrent;
+	private DrivingBroadcastingAfterStart mDrivingBroadcastingAfterStart;
+	private SensorBroadcating mSensorBroadcating;
+	
+	private Dialog mAlertDialog1ButtonNormal;
+	private ProgressDialog mDialogPreviewInit;
+	
+	private Timer mTimer;
+	private long mCurrentTime;
+	private int mProtocolNum;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +119,43 @@ public class DevicesListActivity extends MainActivity implements OnConnectionLis
             }
         }, 1000);
         
+        findViewById(R.id.btnStart).setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				if(BluetoothCommunicator.getInstance().isConnected())
+				{
+					byte[] getProtocolPacket = createProtocolPacket();
+					try {
+						BluetoothCommunicator.getInstance().write(getProtocolPacket);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+        
+        findViewById(R.id.btnStop).setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				if(mTimer != null)
+					mTimer.cancel();
+				
+				if(!BluetoothCommunicator.getInstance().isConnected())
+					return;
+				
+				byte[] drivingStopPacket = createDrivingStop();
+				byte[] sensorStopPacket = createSensorStop();
+				try {
+					BluetoothCommunicator.getInstance().write(drivingStopPacket);
+					BluetoothCommunicator.getInstance().write(sensorStopPacket);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+        
         mMapProcessor = new HashMap<Protocol.PacketType, IPacketProcessor>();
         
         mMapProcessor.put(Protocol.PacketType.READ_SERIAL_NUMBER_SUCCESS, 			new OnReadSerialNumberSuccess());
@@ -112,7 +171,52 @@ public class DevicesListActivity extends MainActivity implements OnConnectionLis
 		mMapProcessor.put(Protocol.PacketType.EXTERNAL_WRITE_COMPLETE,			 	new OnExternalWriteComplete());
 		mMapProcessor.put(Protocol.PacketType.HW_RESET,			 					new OnHWReset());
 		mMapProcessor.put(Protocol.PacketType.BLUETOOTH_PINCODE, 					new OnBluetoothPinCode());
+		
+		mMapProcessor.put(Protocol.PacketType.GET_PROTOCOL, 					new OnGetProtocol());
+		mMapProcessor.put(Protocol.PacketType.DRIVING_SUPPORT_WHOLE, 			new OnDrivingSupportWhole());
+		mMapProcessor.put(Protocol.PacketType.SENSOR_SUPPORT_WHOLE, 			new OnSensorSupportWhole());
+		
+		mMapProcessor.put(Protocol.PacketType.DRIVING_BROADCASTING_CURRENT, 	new OnDrivingBroadcastingCurrent());
+		mMapProcessor.put(Protocol.PacketType.DRIVING_BROADCASTING_AFTER_START, new OnDrivingBroadcastingAfterStart());
+		mMapProcessor.put(Protocol.PacketType.SENSOR_BROADCASTING, 				new OnSensorBroadcating());
+		
+		mMapProcessor.put(Protocol.PacketType.SENSOR_SINGLE, 					new OnSensorSingle());
+		mMapProcessor.put(Protocol.PacketType.DRIVING_SINGLE, 					new OnDrivingSingle());
+		
 	}
+	
+	private byte[] createProtocolPacket()
+	{
+		PacketBuilder.getInstance().init((short)0);
+		PacketBuilder.getInstance().putTar((byte)0x90);
+		PacketBuilder.getInstance().putID((byte)0x00);
+		PacketBuilder.getInstance().putSubID((byte)0x20);
+		
+		return PacketBuilder.getInstance().buildOnBT();
+	}
+	
+	private byte[] createDrivingStop()
+	{
+		PacketBuilder.getInstance().init((short)0);
+		PacketBuilder.getInstance().putTar((byte)0x90);
+		PacketBuilder.getInstance().putID((byte)0x30);
+		PacketBuilder.getInstance().putSubID((byte)0x30);
+	    
+		return PacketBuilder.getInstance().buildOnBT();
+	}
+	
+	private byte[] createSensorStop()
+	{
+		PacketBuilder.getInstance().init((short)4);
+		PacketBuilder.getInstance().putTar((byte)0x90);
+		PacketBuilder.getInstance().putID((byte)0x20);
+		PacketBuilder.getInstance().putSubID((byte)0x30);
+		byte[] data = new byte[]{ 0x00, 0x0D, 0x00, 0x00 };
+		PacketBuilder.getInstance().putDataBlock(data);
+		
+	    return PacketBuilder.getInstance().buildOnBT();
+	}
+	
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -571,6 +675,237 @@ public class DevicesListActivity extends MainActivity implements OnConnectionLis
 				e.printStackTrace();
 			}
 			
+			return true;
+		}
+	}
+	
+	
+	private byte[] createSupportPacket()
+	{
+		PacketBuilder.getInstance().init((short)0);
+		PacketBuilder.getInstance().putTar((byte)0x90);
+		PacketBuilder.getInstance().putID((byte)0x30);
+		PacketBuilder.getInstance().putSubID((byte)0x10);
+		
+		return PacketBuilder.getInstance().buildOnBT();
+	}
+	
+	private byte[] createSensorPacket()
+	{
+		PacketBuilder.getInstance().init((short)0);
+		PacketBuilder.getInstance().putTar((byte)0x90);
+		PacketBuilder.getInstance().putID((byte)0x20);
+		PacketBuilder.getInstance().putSubID((byte)0x10);
+		
+		return PacketBuilder.getInstance().buildOnBT();
+	}
+	
+	private byte[] createCurrentRepeatPacket(DrivingSupportWhole drivingSupportWhole)
+	{
+		if(!drivingSupportWhole.HasSupport)
+			return null;
+		
+		PacketBuilder.getInstance().init((short)4);
+		PacketBuilder.getInstance().putTar((byte)0x90);
+		PacketBuilder.getInstance().putID((byte)0x30);
+		PacketBuilder.getInstance().putSubID((byte)0x40);
+		byte[] supportData = drivingSupportWhole.buildSupportByte("0011", DrivingSupportWhole.INDEX_IGNITION_ON);
+		PacketBuilder.getInstance().putDataBlock(supportData);
+		
+		return PacketBuilder.getInstance().buildOnBT();
+	}
+	
+	private byte[] createSpeedBroadcastingPacket()
+	{
+		PacketBuilder.getInstance().init((short)4);
+		PacketBuilder.getInstance().putTar((byte)0x90);
+		PacketBuilder.getInstance().putID((byte)0x20);
+		PacketBuilder.getInstance().putSubID((byte)0x31);
+		
+		byte[] supportData = null;
+		if((mProtocolNum == 0x000000A0) || (mProtocolNum == 0x000000A1))
+			supportData = new byte[]{0x00, 0x0D, 0x00, 0x00 };
+		else
+			supportData = new byte[]{0x00, 0x10, 0x01, 0x00 };
+		
+		PacketBuilder.getInstance().putDataBlock(supportData);
+	    
+	    return PacketBuilder.getInstance().buildOnBT();
+	}
+	
+	private class InvalidateWorker extends TimerTask
+	{
+		//private UpdateFragment mUpdateFragment;
+		public InvalidateWorker()
+		{
+			//mUpdateFragment = new UpdateFragment();
+		}
+		@Override
+		public void run() {
+			//runOnUiThread(mUpdateFragment);
+			System.out.println("Update fragment");
+		}
+	}
+	
+	
+	private class OnGetProtocol implements IPacketProcessor
+	{
+		private GetProtocol mGetProtocol;
+		public OnGetProtocol()
+		{
+			mGetProtocol = new GetProtocol();
+		}
+		
+		
+		@Override
+		public boolean onTransFunc(Byte[] packet) {
+			mGetProtocol.parse(packet);
+			mProtocolNum = mGetProtocol.ProtocolNumber;
+			
+			byte[] supportPacket = createSupportPacket();
+			byte[] sensorPacket = createSensorPacket();
+			try {
+				BluetoothCommunicator.getInstance().write(supportPacket);
+				BluetoothCommunicator.getInstance().write(sensorPacket);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return true;
+		}
+	}
+
+	public static final int DIVIDE_SIZE = 5;
+	
+	private class OnDrivingSupportWhole implements IPacketProcessor
+	{
+		private DrivingSupportWhole mDrivingSupportWhole;
+		public OnDrivingSupportWhole()
+		{
+			mDrivingSupportWhole = new DrivingSupportWhole();
+			mDrivingSupportWhole.init();
+		}
+		
+		
+		@Override
+		public boolean onTransFunc(Byte[] packet) {
+			mDrivingSupportWhole.parse(packet);
+			
+			if(!mDrivingSupportWhole.HasSupport)
+				return true;
+			
+			mDrivingBroadcastingCurrent.init(mDrivingSupportWhole.Group[DrivingSupportWhole.INDEX_CURRENT]);
+			mDrivingBroadcastingAfterStart.init(mDrivingSupportWhole.Group[DrivingSupportWhole.INDEX_CURRENT]);
+			
+			byte[] currentRepeat = createCurrentRepeatPacket(mDrivingSupportWhole);
+			byte[] speedBroadCasting = createSpeedBroadcastingPacket();
+			try {
+				BluetoothCommunicator.getInstance().write(currentRepeat);
+				BluetoothCommunicator.getInstance().write(speedBroadCasting);
+				
+				mTimer = new Timer();
+				mTimer.schedule(new InvalidateWorker() , 0, (1000 / DIVIDE_SIZE));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return true;
+		}
+	}
+	
+	private class OnSensorSupportWhole implements IPacketProcessor
+	{
+		private SensorSupportWhole mSensorSupportWhole;
+		
+		public OnSensorSupportWhole()
+		{
+			mSensorSupportWhole = new SensorSupportWhole();
+		}
+		
+		@Override
+		public boolean onTransFunc(Byte[] packet) {
+			mSensorSupportWhole.parse(packet);
+			
+			return true;
+		}
+	}
+	
+	private class OnDrivingBroadcastingCurrent implements IPacketProcessor
+	{
+		@Override
+		public boolean onTransFunc(Byte[] packet) {
+			mDrivingBroadcastingCurrent.parse(packet);
+			mDrivingBroadcastingCurrent.currentRawData.Average = mDrivingBroadcastingAfterStart.AfterStartRawData.AverageFuelEff;
+			mDrivingBroadcastingCurrent.currentRawData.FuelBills = mDrivingBroadcastingAfterStart.AfterStartRawData.FuelConsumptionForBills;
+			mDrivingBroadcastingCurrent.currentRawData.Speed = mSensorBroadcating.Speed;
+			
+//			if( mDrivingBroadcastingCurrent.currentRawData.Coolant > LIMIT_COOLANT &&
+//				(System.currentTimeMillis() - mCurrentTime) > (1000 * 60 * 3))
+//    		{
+//				if(mAlertDialog1ButtonNormal == null)
+//				{
+//					mAlertTitle = getText(R.string.dialog_text_title_trouble);
+//					mAlertBody = getText(R.string.dialog_text_body_trouble);
+//					showDialog(VariousID.ALERT_DIALOG_1BUTTON_NORMAL);
+//					mCurrentTime = System.currentTimeMillis();
+//				}
+//				else
+//				{
+//					if(!mAlertDialog1ButtonNormal.isShowing())
+//					{
+//						mAlertTitle = getText(R.string.dialog_text_title_trouble);
+//						mAlertBody = getText(R.string.dialog_text_body_trouble);
+//						showDialog(VariousID.ALERT_DIALOG_1BUTTON_NORMAL);
+//						mCurrentTime = System.currentTimeMillis();
+//					}
+//				}
+//    		}
+			
+//			if(mEcoIndexFragment != null)
+//			{
+//				mEcoIndexFragment.setEcoRawData(mDrivingBroadcastingCurrent.currentRawData);
+//			}
+			System.out.println("broadcasting current, speed = "+mDrivingBroadcastingCurrent.currentRawData.Speed);
+			return true;
+		}
+	}
+	
+	private class OnDrivingBroadcastingAfterStart implements IPacketProcessor
+	{
+		@Override
+		public boolean onTransFunc(Byte[] packet) {
+			mDrivingBroadcastingAfterStart.parse(packet);
+//			Log.e(TAG, mDrivingBroadcastingAfterStart.AfterStartRawData.getLog());
+			
+//			if(mEcoInfoFragment != null)
+//			{
+//				mEcoInfoFragment.setEcoData(mDrivingBroadcastingAfterStart.AfterStartRawData);
+//			}
+			System.out.println("broadcasting afterstart received");
+			
+			return true;
+		}
+	}
+	
+	private class OnSensorBroadcating implements IPacketProcessor
+	{
+		@Override
+		public boolean onTransFunc(Byte[] packet) {
+			mSensorBroadcating.parse(packet);
+			return true;
+		}
+	}
+	
+	private class OnSensorSingle implements IPacketProcessor
+	{
+		@Override
+		public boolean onTransFunc(Byte[] packet) {
+			return true;
+		}
+	}
+	
+	private class OnDrivingSingle implements IPacketProcessor
+	{
+		@Override
+		public boolean onTransFunc(Byte[] packet) {
 			return true;
 		}
 	}
