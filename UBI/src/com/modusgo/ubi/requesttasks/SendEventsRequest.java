@@ -8,19 +8,34 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.util.Log;
 
-import com.modusgo.ubi.db.TrackingContract.TrackingEntry;
+import com.bugsnag.MetaData;
+import com.bugsnag.android.Bugsnag;
+import com.modusgo.ubi.Constants;
 import com.modusgo.ubi.db.DbHelper;
+import com.modusgo.ubi.db.TrackingContract.TrackingEntry;
+import com.modusgo.ubi.utils.Device;
 
 public class SendEventsRequest extends BasePostRequestAsyncTask {
+
+	private static final float MPS_TO_KPH = 3.6f;
 	
 	ArrayList<Long> eventIds;
+	int limit = 30;
 	
 	public SendEventsRequest(Context context) {
 		super(context);
+	}
+	
+	public SendEventsRequest(Context context, int limit) {
+		super(context);
+		this.limit = limit;
 	}
 	
 	@Override
@@ -42,8 +57,9 @@ public class SendEventsRequest extends BasePostRequestAsyncTask {
 				TrackingEntry.COLUMN_NAME_RAW_DATA,
 				TrackingEntry.COLUMN_NAME_HORIZONTAL_ACCURACY,
 				TrackingEntry.COLUMN_NAME_VERTICAL_ACCURACY,
-				TrackingEntry.COLUMN_NAME_BLOCKED}, 
-				TrackingEntry.COLUMN_NAME_BLOCKED+ " = ?", new String[]{"0"}, null, null, null, "30");
+				TrackingEntry.COLUMN_NAME_BLOCKED,
+				TrackingEntry.COLUMN_NAME_DRIVER_ID}, 
+				TrackingEntry.COLUMN_NAME_BLOCKED+ " = ? AND "+TrackingEntry.COLUMN_NAME_DRIVER_ID + " =? ", new String[]{"0", String.valueOf(prefs.getLong(Constants.PREF_DRIVER_ID, 0))}, null, null, null, String.valueOf(limit));
 		
 		JSONObject rootJSON = new JSONObject();
 		JSONArray timepointsJSON = new JSONArray();
@@ -51,6 +67,19 @@ public class SendEventsRequest extends BasePostRequestAsyncTask {
 		
 		try {
 			JSONObject dataJSON = new JSONObject();
+			try {
+				dataJSON.put("script_version", context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName);
+			} catch (NameNotFoundException e) {
+				e.printStackTrace();
+			}
+			dataJSON.put("firmware", "android "+android.os.Build.VERSION.RELEASE);
+			dataJSON.put("device_type", prefs.getString(Device.PREF_DEVICE_TYPE, "n/a"));
+			
+			TelephonyManager manager = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
+			String carrierName = manager.getNetworkOperatorName();
+			if(!TextUtils.isEmpty(carrierName))
+				dataJSON.put("carrier", carrierName);
+			
 			rootJSON.put("data", dataJSON);
 			
 			if(c.moveToFirst()){
@@ -58,21 +87,32 @@ public class SendEventsRequest extends BasePostRequestAsyncTask {
 					JSONObject tpJSON = new JSONObject();
 					JSONArray eventsJSON = new JSONArray();
 					tpJSON.put("timestamp", c.getString(1));
-					eventsJSON.put(c.getString(2));
+					
+					String event = c.getString(2);
+					if(!TextUtils.isEmpty(event))
+						eventsJSON.put(event);
 					tpJSON.put("events", eventsJSON);
+					
 					JSONObject tpLocationJSON = new JSONObject();
-					tpLocationJSON.put("latitude", c.getDouble(3));
-					tpLocationJSON.put("longitude", c.getDouble(4));
-					tpLocationJSON.put("altitude", c.getDouble(5));
-					tpLocationJSON.put("satellites", c.getInt(6));
-					tpLocationJSON.put("heading", c.getFloat(7));
-					tpLocationJSON.put("speed", c.getFloat(8));
-					tpLocationJSON.put("fix_status", c.getInt(9));
+					Double latitude = c.getDouble(3);
+					Double longitude = c.getDouble(4);
+					if(latitude!=0 && longitude!=0){
+						tpLocationJSON.put("latitude", latitude);
+						tpLocationJSON.put("longitude", longitude);
+						tpLocationJSON.put("altitude", c.getDouble(5));
+						tpLocationJSON.put("satellites", c.getInt(6));
+						tpLocationJSON.put("heading", c.getFloat(7));
+						tpLocationJSON.put("speed", c.getFloat(8) * MPS_TO_KPH);
+						tpLocationJSON.put("fix_status", c.getInt(9));
+						tpLocationJSON.put("horizontal_accuracy", c.getFloat(11));
+						tpLocationJSON.put("vertical_accuracy", c.getFloat(12));
+					}
 					tpJSON.put("location", tpLocationJSON);
+					
 					JSONObject tpDataJSON = new JSONObject();
-					tpDataJSON.put("raw_data", c.getString(10));
-					tpDataJSON.put("horizontal_accuracy", c.getFloat(11));
-					tpDataJSON.put("vertical_accuracy", c.getFloat(12));
+					String rawData = c.getString(10);
+					if(!TextUtils.isEmpty(rawData))
+						tpDataJSON.put("raw_data", rawData);
 					tpJSON.put("data", tpDataJSON);
 					
 					timepointsJSON.put(tpJSON);
@@ -100,6 +140,10 @@ public class SendEventsRequest extends BasePostRequestAsyncTask {
 		
 		requestParams.add(new BasicNameValuePair("data",rootJSON.toString()));
 		System.out.println(requestParams);
+		
+		MetaData metaData = new MetaData();
+		metaData.addToTab("Data", "raw_request_params", requestParams);
+		Bugsnag.notify(new Exception("SendEventsRequest"), metaData);
 		
 		return super.doInBackground("device.json");
 	}

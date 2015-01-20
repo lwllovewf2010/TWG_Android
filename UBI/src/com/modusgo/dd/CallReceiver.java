@@ -14,7 +14,7 @@ public class CallReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
     	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-    	if(prefs.getBoolean(Device.PREF_DEVICE_EVENTS, false) && prefs.getBoolean(Device.PREF_DEVICE_IN_TRIP, false)){
+    	if(prefs.getBoolean(Device.PREF_DEVICE_EVENTS, false) && prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false)){
     		Intent i = new Intent(context, CallSaverService.class);
         	i.putExtra("action", intent.getExtras().getString(TelephonyManager.EXTRA_STATE));
         	context.startService(i);

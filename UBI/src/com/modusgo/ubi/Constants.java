@@ -3,7 +3,9 @@ package com.modusgo.ubi;
 public class Constants {
 	
 	public static final String HOCKEY_APP_ID = "caca040742c8345b8594ac0bd7a71418";
+	public static final String NEWRELIC_TOKEN = "AA1bfaccb3fb9ffbb353dbf51008b400412a72842a";
 	public static final String GCM_SENDER_ID = "322787790569";
+	public static final String BUGSNAG_ID = "2958efd901626a959cd1149956d3be08";
 	
 	public static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZZZZZ";
 	public static final String DATE_TIME_FORMAT_ZULU = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
@@ -40,6 +42,7 @@ public class Constants {
 	public static final String PREF_MOBILE_LATITUDE = "mobileLatitude";
 	public static final String PREF_MOBILE_LONGITUDE = "mobileLongitude";
 	public static final String PREF_CHARGER_CONNECTED = "chargerConnected";
+	public static final String PREF_TRIP_DECLINED = "tripDeclined";
 	
 	public static final String ROLE_CUSTOMER = "customer";
 

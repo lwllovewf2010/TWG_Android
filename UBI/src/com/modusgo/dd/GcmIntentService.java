@@ -17,6 +17,7 @@ import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.bugsnag.android.Bugsnag;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.modusgo.ubi.InitActivity;
 import com.modusgo.ubi.R;
@@ -72,51 +73,62 @@ public class GcmIntentService extends IntentService {
 //            	        value.toString(), value.getClass().getName()));
 //            	}
             	
-            	if(extras.containsKey("aps")){
-					String apsJSON = extras.getString("aps");
-					try {
-						JSONObject jsonObj = new JSONObject(apsJSON);
-						if(jsonObj.optInt("content-available")==0){
-							String message = jsonObj.optString("alert");
-			            	if(!TextUtils.isEmpty(message))
-			            		sendNotification(getResources().getString(R.string.app_name), message);
-						}
-					} catch (JSONException e1) {
-						e1.printStackTrace();
-					}
-            	}
+            	Bugsnag.addToTab("User", "Push data", extras.toString());
             	
-            	if(extras.containsKey("in_trip")){
-					e.putBoolean(Device.PREF_DEVICE_IN_TRIP, !TextUtils.isEmpty(extras.getString("in_trip")));
+            	String deviceType = prefs.getString(Device.PREF_DEVICE_TYPE, "");
+            	
+            	if(deviceType.equals(Device.DEVICE_TYPE_OBD)){
+	            	Bugsnag.notify(new RuntimeException("Push received"));
+	            	
+	            	if(extras.containsKey("aps")){
+						String apsJSON = extras.getString("aps");
+						try {
+							JSONObject jsonObj = new JSONObject(apsJSON);
+							if(jsonObj.optInt("content-available")==0){
+								String message = jsonObj.optString("alert");
+				            	if(!TextUtils.isEmpty(message))
+				            		sendNotification(getResources().getString(R.string.app_name), message);
+							}
+						} catch (JSONException e1) {
+							e1.printStackTrace();
+						}
+	            	}
+	            	
+	            	if(extras.containsKey("in_trip")){
+						e.putBoolean(Device.PREF_DEVICE_IN_TRIP, !TextUtils.isEmpty(extras.getString("in_trip")));
+	            	}
+	            	else{
+	            		e.putBoolean(Device.PREF_DEVICE_IN_TRIP, false);
+	            	}
+	            	
+	            	if(extras.containsKey("type")){
+						e.putString(Device.PREF_DEVICE_TYPE, extras.getString("type"));
+	            	}
+	            	
+	            	if(extras.containsKey("events")){
+	            		try{
+	            			e.putBoolean(Device.PREF_DEVICE_EVENTS, Boolean.parseBoolean(extras.getString("events")));
+	            		}
+	            		catch(Exception ex){
+	            			ex.printStackTrace();
+	            			e.putBoolean(Device.PREF_DEVICE_EVENTS, false);
+	            		}
+	            	}
+	            	if(extras.containsKey("latitude")){
+						e.putString(Device.PREF_DEVICE_LATITUDE, extras.getString("latitude"));
+	            	}
+	            	if(extras.containsKey("longitude")){
+						e.putString(Device.PREF_DEVICE_LONGITUDE, extras.getString("longitude"));
+	            	}
+	            	if(extras.containsKey("location_date")){
+						e.putString(Device.PREF_DEVICE_LOCATION_DATE, extras.getString("location_date"));
+	            	}
+	            	
+	            	e.commit();
             	}
             	else{
-					e.putBoolean(Device.PREF_DEVICE_IN_TRIP, false);            		
+	            	Bugsnag.notify(new RuntimeException("Push received, not proccessed, device is not OBD"));
             	}
-            	
-            	if(extras.containsKey("type")){
-					e.putString(Device.PREF_DEVICE_TYPE, extras.getString("type"));
-            	}
-            	
-            	if(extras.containsKey("events")){
-            		try{
-            			e.putBoolean(Device.PREF_DEVICE_EVENTS, Boolean.parseBoolean(extras.getString("events")));
-            		}
-            		catch(Exception ex){
-            			ex.printStackTrace();
-            			e.putBoolean(Device.PREF_DEVICE_EVENTS, false);
-            		}
-            	}
-            	if(extras.containsKey("latitude")){
-					e.putString(Device.PREF_DEVICE_LATITUDE, extras.getString("latitude"));
-            	}
-            	if(extras.containsKey("longitude")){
-					e.putString(Device.PREF_DEVICE_LONGITUDE, extras.getString("longitude"));
-            	}
-            	if(extras.containsKey("location_date")){
-					e.putString(Device.PREF_DEVICE_LOCATION_DATE, extras.getString("location_date"));
-            	}
-            	
-            	e.commit();
             	
             	new GetDeviceInfoRequest(this).execute();
             }

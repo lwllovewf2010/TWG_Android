@@ -1,6 +1,7 @@
 package com.modusgo.dd;
 
 import com.modusgo.ubi.Constants;
+import com.modusgo.ubi.utils.Device;
 
 import android.content.Context;
 import android.content.Intent;
@@ -24,7 +25,8 @@ public class ChargerConnectionReceiver extends WakefulBroadcastReceiver {
         else if(action.equals(Intent.ACTION_POWER_DISCONNECTED)) {
             e.putBoolean(Constants.PREF_CHARGER_CONNECTED, false);
         }
-        
         e.commit();
+        
+        Device.checkDevice(context);
     }
 }

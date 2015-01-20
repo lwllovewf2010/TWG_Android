@@ -29,13 +29,14 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bugsnag.android.Bugsnag;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.modusgo.dd.CallSaverService;
 import com.modusgo.ubi.db.DbHelper;
-import com.modusgo.ubi.requesttasks.SendEventsRequest;
 import com.modusgo.ubi.utils.Device;
 import com.modusgo.ubi.utils.RequestGet;
 import com.modusgo.ubi.utils.Utils;
+import com.newrelic.agent.android.NewRelic;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -63,10 +64,14 @@ public class InitActivity extends FragmentActivity {
 		setContentView(R.layout.activity_init);
 	    getActionBar().hide();
 	    
+	    NewRelic.withApplicationToken(Constants.NEWRELIC_TOKEN).start(this.getApplication());
+	    
 	    if(!ImageLoader.getInstance().isInited()){
 	        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext()).build();
 			ImageLoader.getInstance().init(config);
 	    }
+	    
+	    Bugsnag.register(this, Constants.BUGSNAG_ID);
 	    
 	    prefs = PreferenceManager.getDefaultSharedPreferences(InitActivity.this);
 	    clientId = prefs.getString(Constants.PREF_CLIENT_ID, "");
@@ -221,6 +226,9 @@ public class InitActivity extends FragmentActivity {
 							e.putString(Constants.PREF_TIMEZONE, driverJSON.optString(Constants.PREF_TIMEZONE));
 							e.putString(Constants.PREF_TIMEZONE_OFFSET, driverJSON.optString(Constants.PREF_TIMEZONE_OFFSET));
 							e.putString(Constants.PREF_PHOTO, driverJSON.optString(Constants.PREF_PHOTO));
+							
+							prefs.edit().putLong(Constants.PREF_DRIVER_ID, driverJSON.optLong(Constants.PREF_DRIVER_ID)).commit();
+							Bugsnag.addToTab("User", "E-mail", driverJSON.optString(Constants.PREF_EMAIL));
 						}
 						
 						if(responseJSON.has("info")){
@@ -242,9 +250,6 @@ public class InitActivity extends FragmentActivity {
 								e.putString(Constants.PREF_GA_TRACKING_ID, trackingId);
 							}
 							
-							if(infoJSON.has("welcome"))
-								welcomeScreens = infoJSON.getJSONArray("welcome");
-							
 							if(infoJSON.has("branding")){
 								JSONObject brandingJSON = infoJSON.getJSONObject("branding");
 								e.putString(Constants.PREF_BR_LOGIN_SCREEN_BG_IMAGE, brandingJSON.optString("login_screen_bg_image"));
@@ -259,6 +264,9 @@ public class InitActivity extends FragmentActivity {
 								e.putString(Constants.PREF_BR_LIST_HEADER_LINE_COLOR, brandingJSON.optString("list_header_line_color", Constants.LIST_HEADER_LINE_COLOR));
 							}
 						}
+						
+						if(responseJSON.has("welcome"))
+							welcomeScreens = responseJSON.getJSONArray("welcome");
 						
 						if(responseJSON.has("vehicles")){
 							JSONArray vehiclesJSON = responseJSON.getJSONArray("vehicles");
@@ -279,9 +287,13 @@ public class InitActivity extends FragmentActivity {
 							e.putString(Device.PREF_DEVICE_MEID, deviceJSON.optString("meid"));
 							e.putBoolean(Device.PREF_DEVICE_EVENTS, deviceJSON.optBoolean("events"));
 							e.putBoolean(Device.PREF_DEVICE_IN_TRIP, !TextUtils.isEmpty(deviceJSON.optString("in_trip")));
-							e.putString(Device.PREF_DEVICE_LATITUDE, deviceJSON.optString("latitude"));
-							e.putString(Device.PREF_DEVICE_LONGITUDE, deviceJSON.optString("longitude"));
+							e.putString(Device.PREF_DEVICE_LATITUDE, deviceJSON.optString("latitude", "0"));
+							e.putString(Device.PREF_DEVICE_LONGITUDE, deviceJSON.optString("longitude", "0"));
 							e.putString(Device.PREF_DEVICE_LOCATION_DATE, deviceJSON.optString("location_date"));
+							
+							Bugsnag.addToTab("User", "Device Type", deviceJSON.optString("type"));
+							Bugsnag.addToTab("User", "Device MEID", deviceJSON.optString("meid"));
+							Bugsnag.addToTab("User", "DD Events", deviceJSON.optString("events"));
 							
 							Device.checkDevice(getApplicationContext());
 						}
@@ -306,7 +318,6 @@ public class InitActivity extends FragmentActivity {
 		@Override
 		protected void onPostExecute(Boolean result) {
 			if(result){
-			    new SendEventsRequest(InitActivity.this).execute("");
 			    
 				if(welcomeScreens!=null && welcomeScreens.length()>0){					
 					Intent i = new Intent(InitActivity.this, WelcomeActivity.class);

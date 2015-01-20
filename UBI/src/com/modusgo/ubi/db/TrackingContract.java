@@ -11,6 +11,7 @@ public class TrackingContract {
 	/* Inner class that defines the table contents */
 	public static abstract class TrackingEntry implements BaseColumns {
 		public static final String TABLE_NAME = "tracking";
+		public static final String COLUMN_NAME_DRIVER_ID = "driver_id";
 		public static final String COLUMN_NAME_TIMESTAMP = "timestamp";
 		public static final String COLUMN_NAME_LATITUDE = "latitude";
 		public static final String COLUMN_NAME_LONGITUDE = "longitude";

@@ -10,6 +10,7 @@ import net.hockeyapp.android.UpdateManager;
 import android.app.ActionBar;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -37,6 +38,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.modusgo.dd.LocationService;
+import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -55,7 +57,7 @@ public class MainActivity extends FragmentActivity {
     public Vehicle vehicle;
     
     public static enum MenuItems {HOME("HOME",0), COMPARE("COMPARE",1), CALLSUPPORT("CONTACT CLAIMS",2), AGENT("CALL MY AGENT",3),
-    	FEEDBACK("FEEDBACK",4), FINDAMECHANIC("FIND A MECHANIC",5), SETTINGS("SETTINGS",6), DRIVERSETUP("DRIVER SETUP",7), LOGOUT("LOGOUT",8); 
+    	FEEDBACK("FEEDBACK",4), FINDAMECHANIC("FIND A MECHANIC",5), SETTINGS("SETTINGS",6), DRIVERSETUP("DRIVER SETUP",7), LOGOUT("LOGOUT",8), RESET("RESET",9); 
 	    private MenuItems(final String text, final int num) {
 	        this.text = text;
 	        this.num = num;
@@ -121,6 +123,14 @@ public class MainActivity extends FragmentActivity {
 	    
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        TextView tvVersion = (TextView) findViewById(R.id.tvVersion);
+        
+        try {
+			tvVersion.setText("Version: " + getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+		} catch (NameNotFoundException e) {
+			tvVersion.setText("Version: undefined");
+			e.printStackTrace();
+		}
         
         MenuItems[] menuItemsArray = MenuItems.values();
         menuItems = new ArrayList<MenuItems>();
@@ -135,6 +145,7 @@ public class MainActivity extends FragmentActivity {
         menuItems.add(MenuItems.SETTINGS);
         //menuItems.add(MenuItems.DRIVERSETUP);
         menuItems.add(MenuItems.LOGOUT);
+        menuItems.add(MenuItems.RESET);
        
         ArrayAdapter<MenuItems> adapter = new ArrayAdapter<MenuItems>(this, R.layout.drawer_list_item, menuItemsArray){
         	
@@ -163,6 +174,9 @@ public class MainActivity extends FragmentActivity {
         		if(menuItems.get(position).equals(MenuItems.LOGOUT))
         			holder.tvTitle.setTextColor(getResources().getColor(R.color.orange));
         		
+        		if(menuItems.get(position).equals(MenuItems.RESET))
+        			holder.tvTitle.setTextColor(getResources().getColor(R.color.red));
+        		
 //        		if(menuItems.get(position).equals(MenuItems.AGENT))
 //        			holder.imageIcon.setImageResource(R.drawable.ic_external_link);
 //        		else
@@ -178,6 +192,7 @@ public class MainActivity extends FragmentActivity {
         };
         
         
+//        mDrawerList.addFooterView(getLayoutInflater().inflate(R.layout.drawer_list_version_item, null, false));
         // set up the drawer's list view with items and click listener
         mDrawerList.setAdapter(adapter);
 
@@ -332,7 +347,7 @@ public class MainActivity extends FragmentActivity {
         	
         	System.out.println();
         	
-        	if(position!=mDrawerSelectedItem){
+        	if(position!=mDrawerSelectedItem && position<menuItems.size()){
         		switch (menuItems.get(position)) {
 		        case HOME:
 		        	//Home
@@ -391,6 +406,19 @@ public class MainActivity extends FragmentActivity {
 		    		Intent intent = new Intent(MainActivity.this, InitActivity.class);
 		    		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
 		    		startActivity(intent);
+		            break;
+		            
+		        case RESET:
+		        	//Clear all app data
+		        	stopService(new Intent(MainActivity.this, LocationService.class));
+		        	prefs.edit().clear().commit();
+		        	DbHelper dbHelper = DbHelper.getInstance(MainActivity.this);
+		        	dbHelper.resetDatabase();
+		        	dbHelper.close();
+		        	
+		    		Intent resetItemIntent = new Intent(MainActivity.this, InitActivity.class);
+		    		resetItemIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+		    		startActivity(resetItemIntent);
 		            break;
 	        	}
         		
