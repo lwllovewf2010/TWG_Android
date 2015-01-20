@@ -112,7 +112,7 @@ public class Device {
 			}
 			else{
 				System.out.println("check device start service, trip: "+prefs.getBoolean(PREF_IN_TRIP_NOW, false));
-				context.startService(new Intent(context, LocationService.class));				
+				context.stopService(new Intent(context, LocationService.class));				
 			}
 		}
 
