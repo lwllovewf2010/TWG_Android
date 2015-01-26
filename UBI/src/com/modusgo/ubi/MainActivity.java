@@ -39,6 +39,7 @@ import android.widget.TextView;
 
 import com.modusgo.dd.LocationService;
 import com.modusgo.ubi.db.DbHelper;
+import com.modusgo.ubi.jastec.DevicesListActivity;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -57,7 +58,8 @@ public class MainActivity extends FragmentActivity {
     public Vehicle vehicle;
     
     public static enum MenuItems {HOME("HOME",0), COMPARE("COMPARE",1), CALLSUPPORT("CONTACT CLAIMS",2), AGENT("CALL MY AGENT",3),
-    	FEEDBACK("FEEDBACK",4), FINDAMECHANIC("FIND A MECHANIC",5), SETTINGS("SETTINGS",6), DRIVERSETUP("DRIVER SETUP",7), LOGOUT("LOGOUT",8), RESET("RESET",9); 
+    	FEEDBACK("FEEDBACK",4), FINDAMECHANIC("FIND A MECHANIC",5), SETTINGS("SETTINGS",6), JASTECSETUP("JASTEC SETUP",7), 
+    	DRIVERSETUP("DRIVER SETUP",8), LOGOUT("LOGOUT",9), RESET("RESET",10); 
 	    private MenuItems(final String text, final int num) {
 	        this.text = text;
 	        this.num = num;
@@ -146,6 +148,7 @@ public class MainActivity extends FragmentActivity {
         if(prefs.getBoolean(Constants.PREF_FIND_MECHANIC_ENABLED, false))
         	menuItems.add(MenuItems.FINDAMECHANIC);
         menuItems.add(MenuItems.SETTINGS);
+        menuItems.add(MenuItems.JASTECSETUP);
         //menuItems.add(MenuItems.DRIVERSETUP);
         menuItems.add(MenuItems.LOGOUT);
         menuItems.add(MenuItems.RESET);
@@ -363,6 +366,10 @@ public class MainActivity extends FragmentActivity {
 		        case SETTINGS:
 		        	//Settings
 		        	startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+		            break;
+		        case JASTECSETUP:
+		        	//Settings
+		        	startActivity(new Intent(MainActivity.this, DevicesListActivity.class));
 		            break;
 		        case DRIVERSETUP:
 		        	//Driver setup

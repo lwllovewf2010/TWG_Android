@@ -45,6 +45,8 @@ import com.modusgo.ubi.R;
 import com.modusgo.ubi.Tracking;
 import com.modusgo.ubi.TripDeclineActivity;
 import com.modusgo.ubi.db.DbHelper;
+import com.modusgo.ubi.jastec.JastecManager;
+import com.modusgo.ubi.jastec.JastecManager.OnSensorListener;
 import com.modusgo.ubi.requesttasks.GetDeviceInfoRequest;
 import com.modusgo.ubi.requesttasks.SendEventsRequest;
 import com.modusgo.ubi.utils.Device;
@@ -80,6 +82,9 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	
 	private Handler cancelNotificationHandler = new Handler();
 	
+	private Handler jastecHandler;
+	private Runnable jastecRunnable;
+	
 	PhoneScreenOnOffReceiver phoneScreenOnOffReceiver;
 	//private boolean smsReceiverRegistered = false;
 	//private boolean callReceiverRegistered = false;
@@ -99,6 +104,9 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
     private BeaconManager beaconManager;
     private boolean beaconConnected = false;
     private long lastBeaconDisconnectMillis;
+    
+    private OnSensorListener jastecTripStateListener;
+    private long lastJastecPing;
     
     AndroidLogger logger;
 	
@@ -271,6 +279,65 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 			prefs.edit().putBoolean(Constants.PREF_TRIP_DECLINED, false).commit();
 		}
 		
+		if(prefs.getString(Device.PREF_DEVICE_TYPE, "").equals(Device.DEVICE_TYPE_OBDBLE)){
+			if(jastecHandler==null){
+				jastecHandler = new Handler();
+	        }
+	        
+	        if(jastecRunnable==null){
+	        	jastecHandler.removeCallbacksAndMessages(null);
+	        	jastecRunnable = new Runnable() {
+	    	        @Override
+	    	        public void run() {
+	    	        	System.out.println("Jastec connection handler");
+	    				JastecManager.getInstance(LocationService.this).connect();
+	    	        	jastecHandler.postDelayed(this, 5000);
+	    	        	
+	    	        	if(lastJastecPing!=0 && System.currentTimeMillis() - lastJastecPing >= 5000){
+	    	        		if(prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false)){
+	    						Bugsnag.notify(new RuntimeException("Jastec trip stop cause of no ping"));
+	    						savePoint(EVENT_TRIP_STOP);
+	    	        		}
+	    	        	}
+	    	        }
+	    	    };
+	    	    jastecHandler.postDelayed(jastecRunnable, 0);
+	        }
+	        
+	        jastecTripStateListener = new OnSensorListener() {
+				
+				@Override
+				public void onTripStop() {
+					System.out.println("Location service on trip Stop");
+					Bugsnag.notify(new RuntimeException("Jastec trip stop"));
+	        		if(prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false))
+						savePoint(EVENT_TRIP_STOP);
+				}
+				
+				@Override
+				public void onTripStart() {
+					System.out.println("Location service on trip Start");
+					Bugsnag.notify(new RuntimeException("Jastec trip start"));
+					if(!prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false))
+						savePoint(EVENT_TRIP_START);
+				}
+				
+				@Override
+				public void onPing() {
+					lastJastecPing = System.currentTimeMillis();
+				}
+			};
+		}
+		else{
+			if(jastecHandler!=null){
+				jastecHandler.removeCallbacksAndMessages(null);
+				jastecHandler = null;
+				jastecRunnable = null;
+			}
+				
+		}
+		
+		
 		switch (mode) {
 		case Device.MODE_LIGHT_TRACKING:
 			mLocationRequest = LocationRequest.create();
@@ -393,7 +460,8 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		        new NotificationCompat.Builder(this)
 		        .setSmallIcon(R.drawable.ic_launcher)
 		        .setContentTitle(getResources().getString(R.string.app_name)) 
-		        .setContentText("Your trip is " + ((prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false) ? "in progress." : "stopped.") + " Mode: " + prefs.getString(Device.PREF_CURRENT_TRACKING_MODE, "none")));
+		        .setContentText("Your trip is " + ((prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false) ? "in progress." : "stopped.") + 
+		        		" Mode: " + prefs.getString(Device.PREF_CURRENT_TRACKING_MODE, "none")));
 
 		Intent resultIntent = new Intent(this, InitActivity.class);
 
@@ -537,6 +605,16 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
         }
     }
 	
+	private String getRawData(){
+		String deviceType = prefs.getString(Device.PREF_DEVICE_TYPE, "");
+		if(deviceType.equals(Device.DEVICE_TYPE_OBDBLE)){
+			JastecManager jm = JastecManager.getInstance(this);
+			return "speed: " + jm.getLastSpeed() + ", rpm: " + jm.getLastRPM();
+		}
+		else
+			return "";
+	}
+	
 	private void savePoint(Location location, String event){
 
         String msg ="point " + Double.toString(location.getLatitude()) + "," + Double.toString(location.getLongitude()) + 
@@ -587,7 +665,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	    			true, 
 	    			location.getSpeed(), 
 	    			event, 
-	    			""), prefs.getLong(Constants.PREF_DRIVER_ID, 0));
+	    			getRawData()), prefs.getLong(Constants.PREF_DRIVER_ID, 0));
 	    	dbhelper.close();
 	    	
 	    	if(!TextUtils.isEmpty(event))
@@ -637,7 +715,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 				true, 
 				0, 
 				event, 
-				""), prefs.getLong(Constants.PREF_DRIVER_ID, 0));
+				getRawData()), prefs.getLong(Constants.PREF_DRIVER_ID, 0));
 		dbhelper.close();
 		
 		Bugsnag.notify(new RuntimeException("event: "+event));

@@ -28,16 +28,17 @@
             android:visibility="gone"
             ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
-        <Button 
-            android:id="@+id/btnStart"
+        <com.modusgo.ubi.customviews.TypefacedTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Start"/>
-        <Button 
-            android:id="@+id/btnStop"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Stop"/>
+            android:background="#D9FFFFFF"
+            android:gravity="center|bottom"
+            android:paddingBottom="8dp"
+            android:paddingTop="5dp"
+            android:text="Swipe down to update devices list"
+            android:textColor="@color/menu_text_gray"
+            android:textSize="12sp"
+            ubi:typeface="EncodeSansNormal-300-Light.ttf" />
         
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/lRefresh"

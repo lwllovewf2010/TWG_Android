@@ -232,7 +232,8 @@
         </activity>
         
         <activity
-            android:name="com.modusgo.ubi.jastec.DevicesListActivity">
+            android:name="com.modusgo.ubi.jastec.DevicesListActivity"
+            android:launchMode="singleTask">
         </activity>
 
         <activity android:name="com.modusgo.ubi.TripDeclineActivity" />

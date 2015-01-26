@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.UUID;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.util.Log;
@@ -15,7 +14,7 @@ public class BluetoothCommunicator {
 	private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 //	private static final UUID MY_UUID = UUID.fromString("fa87c0d0-afac-11de-8a39-0800200c9a66");
 	
-	private Activity mActivity;
+//	private Activity mActivity;
 	private BluetoothWorker mBluetoothDataWorker;
 	private boolean mIsConnected;
 	
@@ -30,6 +29,7 @@ public class BluetoothCommunicator {
 	{
 		mBluetoothDataWorker = new BluetoothWorker(bluetoothDevice);
 		mBluetoothDataWorker.start();
+		System.out.println("Start connection bluetooth worker");
 	}
 	
 	public void disconnect()
@@ -42,10 +42,10 @@ public class BluetoothCommunicator {
 		mBluetoothDataWorker.write(packet);
 	}
 	
-	public void setActivity(Activity activity)
-	{
-		mActivity = activity;
-	}
+//	public void setActivity(Activity activity)
+//	{
+//		mActivity = activity;
+//	}
 	
 	public void setOnDataListener(OnDataListener onDataListener)
 	{
@@ -151,6 +151,7 @@ public class BluetoothCommunicator {
 		
 		public void write(byte[] packet) throws IOException
 		{
+			System.out.println("mmOutputStream write = "+(mmOutputStream==null));
 			mmOutputStream.write(packet);
 			String temp = "";
 			for(int i = 0;i < packet.length;i++)
@@ -166,6 +167,7 @@ public class BluetoothCommunicator {
 		{
 			try
 			{
+				System.out.println("worker disconnect");
 				setRunning(false);
 				mmInputStream.close();
 				mmOutputStream.close();
@@ -190,13 +192,16 @@ public class BluetoothCommunicator {
 		public void run() {
 			try
 			{
+				System.out.println("RUNNING!!!!!");
+				System.out.println("mmOutputStream = "+(mmOutputStream==null));
 				mmBluetoothSocket = mmBluetoothDevice.createRfcommSocketToServiceRecord(MY_UUID);
 				mmBluetoothSocket.connect();
 				mmInputStream = mmBluetoothSocket.getInputStream();
 				mmOutputStream = mmBluetoothSocket.getOutputStream();
-				synchronized (mActivity) {
-					mActivity.runOnUiThread(new ConnectionTransferer(true, null));
-				}
+//				synchronized (mActivity) {
+//					mActivity.runOnUiThread(new ConnectionTransferer(true, null));
+//				}
+				new ConnectionTransferer(true, null).run();
 				
 				byte[] buff = new byte[1024];
 				byte[] receivedThisPacket;
@@ -204,11 +209,13 @@ public class BluetoothCommunicator {
 				while(mmIsRunning)
 				{
 					size = mmInputStream.read(buff);
+					System.out.println("is running, size = "+size);
 					if( size == 0)
 					{
-						synchronized (mActivity) {
-							mActivity.runOnUiThread(new ConnectionTransferer(false, new Exception("data readed count is 0")));
-						}
+//						synchronized (mActivity) {
+//							mActivity.runOnUiThread(new ConnectionTransferer(false, new Exception("data readed count is 0")));
+//						}
+						new ConnectionTransferer(false, new Exception("data readed count is 0")).run();
 						continue;
 					}
 						
@@ -225,24 +232,28 @@ public class BluetoothCommunicator {
 					
 					mmJasatecPacketBuilder.add(receivedThisPacket);
 					Byte[][] packets = mmJasatecPacketBuilder.build();
-					synchronized (mActivity) {
-						mActivity.runOnUiThread(new PacketTransferer(packets));
-					}	
+//					synchronized (mActivity) {
+//						mActivity.runOnUiThread(new PacketTransferer(packets));
+//					}	
+					new PacketTransferer(packets).run();
 					
 					Thread.sleep(5);
-				}	 
+				}
+				System.out.println("out of while, running = "+mmIsRunning);
 			} catch(IOException e)
 			{
 				e.printStackTrace();
-				synchronized (mActivity) {
-					mActivity.runOnUiThread(new ConnectionTransferer(false, e));
-				}
+//				synchronized (mActivity) {
+//					mActivity.runOnUiThread(new ConnectionTransferer(false, e));
+//				}
+				new ConnectionTransferer(false, e).run();
 			} catch(InterruptedException e)
 			{
 				e.printStackTrace();
-				synchronized (mActivity) {
-					mActivity.runOnUiThread(new ConnectionTransferer(false, e));
-				}
+//				synchronized (mActivity) {
+//					mActivity.runOnUiThread(new ConnectionTransferer(false, e));
+//				}
+				new ConnectionTransferer(false, e).run();
 			}
 			
 		}

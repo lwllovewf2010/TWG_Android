@@ -2,9 +2,9 @@ package com.modusgo.ubi.jastec;
 
 import java.util.Calendar;
 
-import com.modusgo.ubi.Constants;
-
 import android.content.SharedPreferences;
+
+import com.modusgo.ubi.Constants;
 
 public class Utils {
 	
@@ -263,6 +263,15 @@ public class Utils {
 		return code;
 	}
 	
+	public static Calendar convertRTCToCalendar(Calenda_RTC rtc)
+	{
+		Calendar calendar = Calendar.getInstance();
+		calendar.clear();
+		
+		calendar.set(rtc.Year, rtc.Month - 1, rtc.Day, rtc.Hour, rtc.Min, rtc.Sec);
+		return calendar;
+	}
+	
 	public static byte[] createReadDataBlock(int address, short size)
 	{
 		byte[] readDataBlock = new byte[6];
@@ -278,11 +287,11 @@ public class Utils {
 	
 	public static byte convertFuelTypeToCode(String fuelType)
 	{
-		if(fuelType.equals("°¡¼Ö¸°") || fuelType.toLowerCase().equals("gasoline"))
+		if(fuelType.equals("ï¿½ï¿½ï¿½Ö¸ï¿½") || fuelType.toLowerCase().equals("gasoline"))
 		{
 			return 0x01;
 		}
-		else if(fuelType.equals("µðÁ©") || fuelType.toLowerCase().equals("diesel"))
+		else if(fuelType.equals("ï¿½ï¿½ï¿½ï¿½") || fuelType.toLowerCase().equals("diesel"))
 		{
 			return 0x02;
 		}

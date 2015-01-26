@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.R.raw;
 import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
@@ -75,6 +76,14 @@ public class SendEventsRequest extends BasePostRequestAsyncTask {
 			dataJSON.put("firmware", "android "+android.os.Build.VERSION.RELEASE);
 			dataJSON.put("device_type", prefs.getString(Device.PREF_DEVICE_TYPE, "n/a"));
 			
+			String vin = prefs.getString(Constants.PREF_JASTEC_VEHICLE_VIN, "");
+			if(!TextUtils.isEmpty(vin))
+				dataJSON.put("vin", vin);
+			
+			String dtcCodes = prefs.getString(Constants.PREF_JASTEC_DTCS, "");
+			if(!TextUtils.isEmpty(dtcCodes))
+				dataJSON.put("dtc_codes", dtcCodes);
+			
 			TelephonyManager manager = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
 			String carrierName = manager.getNetworkOperatorName();
 			if(!TextUtils.isEmpty(carrierName))
@@ -111,9 +120,9 @@ public class SendEventsRequest extends BasePostRequestAsyncTask {
 					
 					JSONObject tpDataJSON = new JSONObject();
 					String rawData = c.getString(10);
-					if(!TextUtils.isEmpty(rawData))
-						tpDataJSON.put("raw_data", rawData);
-					tpJSON.put("data", tpDataJSON);
+//					if(!TextUtils.isEmpty(rawData))
+//						tpDataJSON.put("raw_data", rawData);
+					tpJSON.put("data", rawData);
 					
 					timepointsJSON.put(tpJSON);
 					
