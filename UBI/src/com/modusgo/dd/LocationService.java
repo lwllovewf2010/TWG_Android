@@ -283,6 +283,28 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 			if(jastecHandler==null){
 				jastecHandler = new Handler();
 	        }
+			
+			jastecTripStateListener = new OnSensorListener() {
+				
+				@Override
+				public void onTripStop() {
+					if(prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false))
+						savePoint(EVENT_TRIP_STOP);
+				}
+				
+				@Override
+				public void onTripStart() {
+					if(!prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false))
+						savePoint(EVENT_TRIP_START);
+				}
+				
+				@Override
+				public void onPing() {
+					lastJastecPing = System.currentTimeMillis();
+				}
+			};
+			
+			JastecManager.getInstance(LocationService.this).setOnSensorListener(jastecTripStateListener);
 	        
 	        if(jastecRunnable==null){
 	        	jastecHandler.removeCallbacksAndMessages(null);
@@ -295,38 +317,13 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	    	        	
 	    	        	if(lastJastecPing!=0 && System.currentTimeMillis() - lastJastecPing >= 5000){
 	    	        		if(prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false)){
-	    						Bugsnag.notify(new RuntimeException("Jastec trip stop cause of no ping"));
 	    						savePoint(EVENT_TRIP_STOP);
 	    	        		}
 	    	        	}
 	    	        }
 	    	    };
 	    	    jastecHandler.postDelayed(jastecRunnable, 0);
-	        }
-	        
-	        jastecTripStateListener = new OnSensorListener() {
-				
-				@Override
-				public void onTripStop() {
-					System.out.println("Location service on trip Stop");
-					Bugsnag.notify(new RuntimeException("Jastec trip stop"));
-	        		if(prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false))
-						savePoint(EVENT_TRIP_STOP);
-				}
-				
-				@Override
-				public void onTripStart() {
-					System.out.println("Location service on trip Start");
-					Bugsnag.notify(new RuntimeException("Jastec trip start"));
-					if(!prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false))
-						savePoint(EVENT_TRIP_START);
-				}
-				
-				@Override
-				public void onPing() {
-					lastJastecPing = System.currentTimeMillis();
-				}
-			};
+	        }			
 		}
 		else{
 			if(jastecHandler!=null){

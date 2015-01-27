@@ -113,15 +113,13 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 	public void connect(String deviceAddress, String deviceName){
 		mDeviceAddress = deviceAddress;
 		mDeviceName = deviceName;
-//		showDialog(VariousID.PROGRESS_DIALOG);
 		BluetoothCommunicator btCommunicator = BluetoothCommunicator.getInstance();
 		
 		if(!mConnectionStarted){
 			if(btCommunicator.isConnected()){
 				btCommunicator.disconnect();
 			}
-	
-			//btCommunicator.setActivity(this);
+			
 			btCommunicator.setOnConnectionListener(this);
 			btCommunicator.setOnDataListener(this);
 			
@@ -134,27 +132,22 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 	
 	public void connect(){
 		BluetoothCommunicator btCommunicator = BluetoothCommunicator.getInstance();
-		System.out.println("BT COMMUNICATOR "+btCommunicator.isConnected());
 		
 		if(!mConnectionStarted){
 			if(!TextUtils.isEmpty(mDeviceAddress)){
 				if(!btCommunicator.isConnected()){
-					//btCommunicator.setActivity(this);
 					btCommunicator.setOnConnectionListener(this);
 					btCommunicator.setOnDataListener(this);
 				
 					BluetoothDevice bluetoothDevice = mBtAdapter.getRemoteDevice(mDeviceAddress);
 					btCommunicator.connect(bluetoothDevice);
-					System.out.println("CONNECT END "+mDeviceAddress);
 	
 					mConnectionStarted = true;
 				}
 				else{
 					byte[] getProtocolPacket = createProtocolPacket();
 					try {
-						System.out.println("bt communicator = " + BluetoothCommunicator.getInstance().isConnected());
 						BluetoothCommunicator.getInstance().write(getProtocolPacket);
-						System.out.println("get protocol write");
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -169,8 +162,6 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 		mConnectionStarted = false;
 		if(mOnConnectionListener!=null)
 			mOnConnectionListener.onDisconnected(e);
-//		Toast.makeText(this, "Bt disconnected", Toast.LENGTH_SHORT).show();
-//		progressDialog.dismiss();
 		
 	}
 	
@@ -194,9 +185,7 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 		
 		byte[] getProtocolPacket = createProtocolPacket();
 		try {
-			System.out.println("bt communicator = " + BluetoothCommunicator.getInstance().isConnected());
 			BluetoothCommunicator.getInstance().write(getProtocolPacket);
-			System.out.println("get protocol write");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -404,9 +393,7 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 			byte[] packetForPinCode = PacketBuilder.getInstance().buildOnBT();
 			byte[] getProtocolPacket = createProtocolPacket();
 			byte[] vinPacket = createVINPacket();
-			try {
-				System.out.println("PIN bytes, length"+packetForPinCode.length);
-				
+			try {				
 				BluetoothCommunicator.getInstance().write(packetForPinCode);
 				BluetoothCommunicator.getInstance().write(getProtocolPacket);
 				BluetoothCommunicator.getInstance().write(vinPacket);
@@ -415,22 +402,7 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 			}
 			return true;
 		}
-	}
-	
-	private class InvalidateWorker extends TimerTask
-	{
-		//private UpdateFragment mUpdateFragment;
-		public InvalidateWorker()
-		{
-			//mUpdateFragment = new UpdateFragment();
-		}
-		@Override
-		public void run() {
-			//runOnUiThread(mUpdateFragment);
-			System.out.println("Update fragment");
-		}
-	}
-	
+	}	
 	
 	private class OnGetProtocol implements IPacketProcessor
 	{
@@ -493,9 +465,6 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 				BluetoothCommunicator.getInstance().write(currentRepeat);
 				BluetoothCommunicator.getInstance().write(speedBroadCasting);
 				BluetoothCommunicator.getInstance().write(realTimeDTC);
-				
-//					mTimer = new Timer();
-//					mTimer.schedule(new InvalidateWorker() , 0, (1000 / DIVIDE_SIZE));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -513,7 +482,7 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 		@Override
 		public boolean onTransFunc(Byte[] packet) {
 			mSensorBroadcating.parse(packet);
-
+			
 			if(mOnSensorListener!=null)
 				mOnSensorListener.onPing();
 			
@@ -525,9 +494,9 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 			
 			if(mSensorBroadcating.Speed>0){
 				firstZeroSpeedTimeMillis = 0;
-				if(mOnSensorListener!=null)
+				if(mOnSensorListener!=null){
 					mOnSensorListener.onTripStart();
-				//TODO trip start
+				}
 			}
 			
 			if(mSensorBroadcating.Speed == 0 && lastPRM == mSensorBroadcating.RPM){
@@ -536,9 +505,9 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 					firstZeroSpeedTimeMillis = System.currentTimeMillis();
 				
 				if(System.currentTimeMillis() - firstZeroSpeedTimeMillis >= 5000){
-					if(mOnSensorListener!=null)
+					if(mOnSensorListener!=null){
 						mOnSensorListener.onTripStop();
-					//TODO trip stop
+					}
 				}
 			}
 			
@@ -590,6 +559,9 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 						dtcCodes += ", " + code;
 				}
 			}
+			prefs.edit().putString(Constants.PREF_JASTEC_DTCS, dtcCodes).commit();
+			
+			System.out.println("DTCs : "+dtcCodes);
 			
 			if(mRealTimeReadDTCConfirm.DataDb.DTCType == 0x0020)
 			{

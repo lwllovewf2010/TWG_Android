@@ -228,7 +228,7 @@ public class BluetoothCommunicator {
 						log += String.format(" %02X", receivedThisPacket[i]);
 					}
 					
-					Log.e(TAG, log);
+//					Log.e(TAG, log);
 					
 					mmJasatecPacketBuilder.add(receivedThisPacket);
 					Byte[][] packets = mmJasatecPacketBuilder.build();
