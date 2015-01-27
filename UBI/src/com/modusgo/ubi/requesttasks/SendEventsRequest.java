@@ -122,7 +122,13 @@ public class SendEventsRequest extends BasePostRequestAsyncTask {
 					String rawData = c.getString(10);
 //					if(!TextUtils.isEmpty(rawData))
 //						tpDataJSON.put("raw_data", rawData);
-					tpJSON.put("data", rawData);
+					String[] rawDataArray = rawData.split(", ");
+					for (String string : rawDataArray) {
+						String item[] = string.split(": ");
+						tpDataJSON.put(item[0], item[1]);
+					}
+							
+					tpJSON.put("data", tpDataJSON);
 					
 					timepointsJSON.put(tpJSON);
 					
