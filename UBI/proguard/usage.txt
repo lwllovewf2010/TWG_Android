@@ -8124,10 +8124,10 @@ com.modusgo.ubi.ForgotPasswordActivity$RestorePasswordTask:
 com.modusgo.ubi.LimitsFragment:
     579:582:private java.lang.String getTime24String(int,int)
 com.modusgo.ubi.MainActivity:
-    519:521:public void showFeedbackActivity()
+    528:530:public void showFeedbackActivity()
 com.modusgo.ubi.MainActivity$MenuItems:
-    75:75:public int toInt()
-    79:79:public java.lang.String[] valuesString()
+    77:77:public int toInt()
+    81:81:public java.lang.String[] valuesString()
 com.modusgo.ubi.Manifest
 com.modusgo.ubi.Manifest$permission
 com.modusgo.ubi.PieChartFragment:
@@ -8151,7 +8151,7 @@ com.modusgo.ubi.R$layout
 com.modusgo.ubi.R$string
 com.modusgo.ubi.R$style
 com.modusgo.ubi.R$styleable:
-    3194:3194:public R$styleable()
+    3197:3197:public R$styleable()
 com.modusgo.ubi.R$xml
 com.modusgo.ubi.Recall:
     private static final long serialVersionUID
@@ -8247,6 +8247,139 @@ com.modusgo.ubi.db.VehicleContract
 com.modusgo.ubi.db.VehicleContract$VehicleEntry
 com.modusgo.ubi.db.WarrantyInfoContract
 com.modusgo.ubi.db.WarrantyInfoContract$WarrantyInfoEntry
+com.modusgo.ubi.jastec.BluetoothCommunicator:
+    private static final java.lang.String TAG
+com.modusgo.ubi.jastec.Calenda_RTC:
+    public static final int SIZE
+com.modusgo.ubi.jastec.DevicesListActivity:
+    private static final int REQUEST_ENABLE_BT
+    private java.util.Timer mTimer
+com.modusgo.ubi.jastec.DriveRecodePerTrip
+com.modusgo.ubi.jastec.DriveRecodePerTrip$Accelation
+com.modusgo.ubi.jastec.DriveRecodePerTrip$AverageSpeed
+com.modusgo.ubi.jastec.DriveRecodePerTrip$AverageStruct
+com.modusgo.ubi.jastec.DriveRecodePerTrip$Co2Struct
+com.modusgo.ubi.jastec.DriveRecodePerTrip$DriveTime
+com.modusgo.ubi.jastec.DriveRecodePerTrip$DriveTrait
+com.modusgo.ubi.jastec.DriveRecodePerTrip$FuelConsum
+com.modusgo.ubi.jastec.DriveRecodePerTrip$SpeedDivid
+com.modusgo.ubi.jastec.IPacket
+com.modusgo.ubi.jastec.IParser
+com.modusgo.ubi.jastec.JastecManager:
+    private static final java.lang.String TAG
+    public static final int DIVIDE_SIZE
+    263:268:private byte[] createDrivingStop()
+    273:280:private byte[] createSensorStop()
+com.modusgo.ubi.jastec.PacketBuilder:
+    private static final int SIZE
+    32:33:public void putSrc(byte)
+com.modusgo.ubi.jastec.PacketParser:
+    23:23:public byte getTar()
+    64:64:public byte getCS()
+    80:87:public java.lang.String getLog()
+com.modusgo.ubi.jastec.Protocol:
+    public static final byte STX
+    public static final byte ETX
+    public static final byte CR
+    public static final byte SRC_BT
+    public static final byte ESCAPE
+    public static final byte ECV
+    public static final short TRIP_SIZE
+    public static final int SECTOR_SIZE
+    public static final int TRIP_ONLY_SECTOR1_START
+    4:4:public Protocol()
+com.modusgo.ubi.jastec.Protocol$PacketType:
+    66:72:public static com.modusgo.ubi.jastec.Protocol$PacketType fromOrdinal(int)
+com.modusgo.ubi.jastec.Utils:
+    9:9:public Utils()
+    13:20:public static byte[] toBytes(java.lang.Byte[])
+    25:26:public static boolean storedDevice(android.content.SharedPreferences)
+    31:32:public static short toLittleEndian(short)
+    37:38:public static short toBigEndian(short)
+    43:48:public static byte reverse4Bit(byte)
+    95:110:public static int toUShort(java.lang.Byte[],int)
+    115:129:public static long toUInt(java.lang.Byte[],int)
+    159:173:public static long toLong4Byte(java.lang.Byte[],int)
+    178:193:public static double toDouble(byte[],int)
+    219:229:public static java.lang.String convertMSToTime(long)
+    277:285:public static byte[] createReadDataBlock(int,short)
+    290:303:public static byte convertFuelTypeToCode(java.lang.String)
+    308:314:public static byte[] toReverseByte(int)
+    319:325:public static byte[] toByte(int)
+    330:334:public static byte[] toReverseByte(short)
+    339:343:public static byte[] toByte(short)
+com.modusgo.ubi.jastec.dtc.DTC01_04:
+    38:38:public boolean isThisMakerType(com.modusgo.ubi.jastec.dtc.IDTCDescriptor$MakerType)
+    75:75:public int DTCCodeCount()
+    80:80:public boolean hasPending()
+com.modusgo.ubi.jastec.dtc.DTC02_60:
+    38:38:public boolean isThisMakerType(com.modusgo.ubi.jastec.dtc.IDTCDescriptor$MakerType)
+    75:75:public int DTCCodeCount()
+    80:80:public boolean hasPending()
+com.modusgo.ubi.jastec.dtc.DTC03_20_61:
+    38:38:public boolean isThisMakerType(com.modusgo.ubi.jastec.dtc.IDTCDescriptor$MakerType)
+    71:71:public int DTCCodeCount()
+    76:76:public boolean hasPending()
+com.modusgo.ubi.jastec.dtc.DTC06_2F:
+    38:38:public boolean isThisMakerType(com.modusgo.ubi.jastec.dtc.IDTCDescriptor$MakerType)
+    75:75:public int DTCCodeCount()
+    80:80:public boolean hasPending()
+com.modusgo.ubi.jastec.dtc.DTC40:
+    38:38:public boolean isThisMakerType(com.modusgo.ubi.jastec.dtc.IDTCDescriptor$MakerType)
+    75:75:public int DTCCodeCount()
+    80:80:public boolean hasPending()
+com.modusgo.ubi.jastec.dtc.DTCDataDb:
+    public static final int SIZE
+    public byte STX
+    public byte ETX
+com.modusgo.ubi.jastec.dtc.IDTCDescriptor:
+    public abstract boolean isThisMakerType(com.modusgo.ubi.jastec.dtc.IDTCDescriptor$MakerType)
+    public abstract int DTCCodeCount()
+    public abstract boolean hasPending()
+com.modusgo.ubi.jastec.packet.AbstractExternalRead:
+    8:8:public AbstractExternalRead()
+    public abstract void parse(java.lang.Byte[])
+    15:15:public com.modusgo.ubi.jastec.Protocol$PacketType getPacketType()
+com.modusgo.ubi.jastec.packet.AbstractExternalRead$MEMORY_SPEC
+com.modusgo.ubi.jastec.packet.AbstractRealTimeReadDTC:
+    public abstract com.modusgo.ubi.jastec.Protocol$PacketType getPacketType()
+com.modusgo.ubi.jastec.packet.DTCRead:
+    public boolean HasDTC
+    public com.modusgo.ubi.jastec.dtc.IDTCDescriptor DTCDescriptor
+    18:18:public DTCRead()
+    24:94:public void parse(java.lang.Byte[])
+com.modusgo.ubi.jastec.packet.DTCRead$DTCItem:
+    137:137:public java.lang.String getDateTime()
+    138:138:public java.lang.String getOtherDateTimeFormats()
+com.modusgo.ubi.jastec.packet.DrivingBroadcastingAfterStart:
+    34:146:public void parse(java.lang.Byte[])
+    150:150:public com.modusgo.ubi.jastec.Protocol$PacketType getPacketType()
+com.modusgo.ubi.jastec.packet.DrivingBroadcastingAfterStart$AfterStartRawData:
+    188:188:public com.modusgo.ubi.jastec.Protocol$PacketType getPacketType()
+com.modusgo.ubi.jastec.packet.DrivingBroadcastingCurrent:
+    37:114:public void parse(java.lang.Byte[])
+    118:118:public com.modusgo.ubi.jastec.Protocol$PacketType getPacketType()
+com.modusgo.ubi.jastec.packet.DrivingBroadcastingCurrent$CurrentRawData:
+    144:154:public java.lang.String getLog()
+    158:158:public com.modusgo.ubi.jastec.Protocol$PacketType getPacketType()
+com.modusgo.ubi.jastec.packet.DrivingSupportWhole:
+    public static final int DRIVING_GROUP_SIZE
+    public static final int INDEX_TODAY
+    public static final int INDEX_IGNITION_ON
+    public static final int INDEX_CURRENT
+    122:122:public com.modusgo.ubi.jastec.Protocol$PacketType getPacketType()
+com.modusgo.ubi.jastec.packet.FirmwareVersion
+com.modusgo.ubi.jastec.packet.GetProtocol:
+    21:21:public com.modusgo.ubi.jastec.Protocol$PacketType getPacketType()
+com.modusgo.ubi.jastec.packet.ReadDBSuccess
+com.modusgo.ubi.jastec.packet.ReadVIN:
+    28:28:public com.modusgo.ubi.jastec.Protocol$PacketType getPacketType()
+com.modusgo.ubi.jastec.packet.RealTimeReadDTCConfirm:
+    10:10:public com.modusgo.ubi.jastec.Protocol$PacketType getPacketType()
+com.modusgo.ubi.jastec.packet.SensorBroadcating:
+    34:34:public com.modusgo.ubi.jastec.Protocol$PacketType getPacketType()
+com.modusgo.ubi.jastec.packet.SensorSupportWhole
+com.modusgo.ubi.jastec.packet.SerialNumberSuccess
 com.modusgo.ubi.requesttasks.BaseRequestAsyncTask:
     35:36:public BaseRequestAsyncTask()
 com.modusgo.ubi.requesttasks.GetDeviceInfoRequest:
