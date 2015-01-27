@@ -7,8 +7,6 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -16,7 +14,6 @@ import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -24,6 +21,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.modusgo.ubi.HomeActivity;
 import com.modusgo.ubi.MainActivity;
 import com.modusgo.ubi.R;
 import com.modusgo.ubi.jastec.BluetoothCommunicator.OnConnectionListener;
@@ -90,9 +88,19 @@ public class DevicesListActivity extends MainActivity implements OnConnectionLis
                 doDiscovery();
             }
         }, 1000);
-        
+	}
+	
+	@Override
+	protected void onResume() {
 		JastecManager.getInstance(getApplicationContext()).setOnConnectionListener(this);
-	}	
+		super.onResume();
+	}
+	
+	@Override
+	protected void onPause() {
+		JastecManager.getInstance(getApplicationContext()).setOnConnectionListener(null);
+		super.onPause();
+	}
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -175,13 +183,17 @@ public class DevicesListActivity extends MainActivity implements OnConnectionLis
 		System.out.println("connected");
 		if(progressDialog!=null)
 			progressDialog.dismiss();
+
+		JastecManager.getInstance(getApplicationContext()).setOnConnectionListener(null);
+		startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+		finish();
 	}
 
 	@Override
 	public void onDisconnected(Exception e) {
 		System.out.println("disconnected");
 		if(progressDialog!=null)
-			progressDialog.dismiss();		
+			progressDialog.dismiss();
 	}	
 	
 	private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
