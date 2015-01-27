@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ubi="http://schemas.android.com/apk/res-auto"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:background="@color/btn_transparent_orange_light"
+    android:clickable="true"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingTop="7dp" >
+
+    <View
+        android:id="@+id/circle"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginBottom="3dp"
+        android:background="@drawable/circle_gray" />
+
+    <com.modusgo.ubi.customviews.TypefacedTextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center|top"
+        android:minHeight="25dp"
+        android:text="Use of speed"
+        android:textColor="#697078"
+        android:textSize="10sp"
+        ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+
+</LinearLayout>

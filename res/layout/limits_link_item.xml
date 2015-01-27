@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ubi="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="55dp"
+    android:background="@drawable/limits_subitem_bg"
+    android:orientation="horizontal" >
+
+    <LinearLayout
+        android:id="@+id/llContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/btn_transparent_orange"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="22dp"
+        android:paddingRight="22dp" >
+
+        <com.modusgo.ubi.customviews.TypefacedTextView
+            android:id="@+id/tvTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:text="TEXT"
+            android:textAllCaps="true"
+            android:textColor="#3C454F"
+            android:textSize="12.5sp"
+            ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
+
+        <ImageView
+            android:id="@+id/editText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/arrow_small_right" />
+    </LinearLayout>
+
+</LinearLayout>

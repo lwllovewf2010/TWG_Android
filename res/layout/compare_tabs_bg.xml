@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.modusgo.ubi.customviews.TypefacedTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ubi="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/tabsText"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/compare_tab_bg_selector"
+    android:gravity="center"
+    android:textAllCaps="true"
+    android:textColor="@drawable/compare_tab_text_selector"
+    android:textSize="10sp"
+    ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />

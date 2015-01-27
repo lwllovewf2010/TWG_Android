@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.modusgo.ubi"
+    android:versionCode="1002"
+    android:versionName="1.0.2" >
+
+    <uses-sdk
+        android:minSdkVersion="14"
+        android:targetSdkVersion="20" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+	<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
+	<uses-permission android:name="com.modusgo.ubi.permission.C2D_MESSAGE"/>
+	<permission android:name="com.modusgo.ubi.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+
+    <!-- Maps API needs OpenGL ES 2.0. -->
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
+
+    <application
+        android:allowBackup="true"
+        android:hardwareAccelerated="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyCqz182pgmqf4o8xzVW5ZuX_xKRWwcremI" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <activity
+            android:name="com.modusgo.ubi.InitActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.modusgo.ubi.SignInActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.modusgo.ubi.WelcomeActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.modusgo.dd.RegisterByCodeActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+            
+            <intent-filter>
+	        	<action android:name="android.intent.action.VIEW" />
+	          	<category android:name="android.intent.category.DEFAULT" />
+	          	<category android:name="android.intent.category.BROWSABLE" />
+	          	<data android:scheme="https" android:host="api.modusgo.com"
+	                android:path="/mobile_register" />
+	        </intent-filter>
+        </activity>
+        <activity
+            android:name="com.modusgo.ubi.HomeActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTask" >
+        </activity>
+        <activity
+            android:name="com.modusgo.ubi.DriverSetupActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:parentActivityName="com.modusgo.ubi.HomeActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.modusgo.ubi.HomeActivity" />
+        </activity>
+        <activity
+            android:name="com.modusgo.ubi.CompareActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:parentActivityName="com.modusgo.ubi.HomeActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.modusgo.ubi.HomeActivity" />
+        </activity>
+        <activity
+            android:name="com.modusgo.ubi.DriverActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:parentActivityName="com.modusgo.ubi.HomeActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.modusgo.ubi.HomeActivity" />
+        </activity>
+        <activity
+            android:name="com.modusgo.ubi.MainActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name="com.modusgo.ubi.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:parentActivityName="com.modusgo.ubi.HomeActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.modusgo.ubi.HomeActivity" />
+        </activity>
+        <activity
+            android:name="com.modusgo.ubi.AlertsActivity"
+            android:label="@string/title_activity_settings"
+            android:launchMode="singleTask"
+            android:parentActivityName="com.modusgo.ubi.DriverActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.modusgo.ubi.DriverActivity" />
+        </activity>
+        <activity
+            android:name="com.modusgo.ubi.TripActivity"
+            android:label="@string/title_activity_settings"
+            android:launchMode="singleTask"
+            android:parentActivityName="com.modusgo.ubi.DriverActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.modusgo.ubi.DriverActivity" />
+        </activity>
+        <activity
+            android:name="com.modusgo.ubi.GeofenceActivity"
+            android:parentActivityName="com.modusgo.ubi.DriverActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.modusgo.ubi.DriverActivity" />
+        </activity>
+        <activity
+            android:name="com.modusgo.ubi.FindMyCarActivity"
+            android:parentActivityName="com.modusgo.ubi.DriverActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.modusgo.ubi.DriverActivity" />
+        </activity>
+        <activity
+            android:name="com.modusgo.ubi.EducationActivity"
+            android:parentActivityName="com.modusgo.ubi.TripActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.modusgo.ubi.TripActivity" />
+        </activity>
+        <activity
+            android:name="com.modusgo.ubi.FindMechanicActivity"
+            android:parentActivityName="com.modusgo.ubi.DriverActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.modusgo.ubi.DriverActivity" />
+        </activity>
+        <activity
+            android:name="com.modusgo.ubi.DiagnosticDetailActivity"
+            android:parentActivityName="com.modusgo.ubi.DriverActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.modusgo.ubi.DriverActivity" />
+        </activity>
+        <activity
+            android:name="com.modusgo.ubi.RecallActivity"
+            android:parentActivityName="com.modusgo.ubi.DriverActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.modusgo.ubi.DriverActivity" />
+        </activity>
+        <activity
+            android:name="com.modusgo.ubi.DriversLocationsActivity"
+            android:parentActivityName="com.modusgo.ubi.HomeActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.modusgo.ubi.HomeActivity" />
+        </activity>
+        <activity
+            android:name="com.modusgo.ubi.MapActivity"
+            android:parentActivityName="com.modusgo.ubi.DriverActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.modusgo.ubi.DriverActivity" />
+        </activity>
+        <activity
+            android:name="com.modusgo.ubi.ScoreInfoActivity"
+            android:parentActivityName="com.modusgo.ubi.DriverActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.modusgo.ubi.DriverActivity" />
+        </activity>
+        <activity
+            android:name="com.modusgo.ubi.ScorePieChartActivity"
+            android:parentActivityName="com.modusgo.ubi.DriverActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.modusgo.ubi.DriverActivity" />
+        </activity>
+        <activity
+            android:name="com.modusgo.ubi.ScoreCirclesActivity"
+            android:parentActivityName="com.modusgo.ubi.DriverActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.modusgo.ubi.DriverActivity" />
+        </activity>
+        
+        <activity
+            android:name="com.modusgo.ubi.AlertMapActivity"
+            android:parentActivityName="com.modusgo.ubi.AlertsActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.modusgo.ubi.AlertsActivity" />
+        </activity>
+        <activity android:name="net.hockeyapp.android.UpdateActivity" />
+        
+        <service
+            android:name="com.modusgo.dd.TrackingStatusService"
+            android:exported="false"/>
+        
+        <service
+            android:name="com.modusgo.dd.LocationService"
+            android:exported="false"/>
+        
+        <service
+            android:name="com.modusgo.dd.CallSaverService"
+            android:exported="false"/>
+        
+        <service
+            android:name="com.modusgo.dd.PhoneUsageSaverService"
+            android:exported="false"/>
+        
+        <service android:name="com.modusgo.dd.GcmIntentService" />
+
+        <receiver android:name="com.modusgo.dd.PhoneScreenOnOffReceiver" >
+            <intent-filter android:priority="1000" >
+                <action android:name="android.intent.action.USER_PRESENT" />
+            </intent-filter>
+        </receiver>
+        
+        <receiver android:name="com.modusgo.dd.CallReceiver">
+            <intent-filter android:priority="1000">                                  
+                <action android:name="android.intent.action.PHONE_STATE" />
+            </intent-filter>
+        </receiver>
+        
+        <receiver android:name="com.modusgo.dd.GcmBroadcastReceiver">
+            <intent-filter>                                  
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <category android:name="com.modusgo.ubi" />
+            </intent-filter>
+        </receiver>
+            <receiver android:name="com.modusgo.dd.ChargerConnectionReceiver" >
+        <intent-filter>
+            <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
+            <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
+        </intent-filter>
+    </receiver>
+        
+    </application>
+
+</manifest>

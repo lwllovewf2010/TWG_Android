@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ubi="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <com.daimajia.swipe.SwipeLayout
+        android:id="@+id/lSwipe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:id="@+id/bottom_wrapper"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="#ef463b"
+            android:tag="Bottom1" >
+
+            <Button
+                android:id="@+id/btnDelete"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@color/btn_transparent_orange_light"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="Completed"
+                android:textColor="#FFF" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/lContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/btn_transparent_orange_light"
+            android:paddingTop="15dp" >
+
+            <com.modusgo.ubi.customviews.TypefacedTextView
+                android:id="@+id/tvCode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="20dp"
+                android:text="P10455"
+                android:textAllCaps="true"
+                android:textColor="#697078"
+                android:textSize="12.5sp"
+                ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+
+            <com.modusgo.ubi.customviews.TypefacedTextView
+                android:id="@+id/tvDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/tvCode"
+                android:layout_below="@+id/tvCode"
+                android:layout_toLeftOf="@+id/imageArrow"
+                android:ellipsize="end"
+                android:maxLines="4"
+                android:paddingBottom="10dp"
+                android:paddingTop="2dp"
+                android:text="Random Misﬁre Detected"
+                android:textColor="#697078"
+                android:textSize="10sp"
+                ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+
+            <com.modusgo.ubi.customviews.TypefacedTextView
+                android:id="@+id/tvImportance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="35dp"
+                android:text="Low"
+                android:textColor="#00AEEF"
+                android:textSize="12.5sp"
+                ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+
+            <ImageView
+                android:id="@+id/imageArrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="3dp"
+                android:src="@drawable/arrow_small_right" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:background="#FFFFFF" />
+        </RelativeLayout>
+    </com.daimajia.swipe.SwipeLayout>
+
+</LinearLayout>

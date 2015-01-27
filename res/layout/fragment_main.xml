@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+ xmlns:android="http://schemas.android.com/apk/res/android"
+ xmlns:tools="http://schemas.android.com/tools"
+ android:id="@+id/root_layout"
+ android:layout_width="match_parent"
+ android:layout_height="match_parent"
+ android:orientation="vertical"
+ android:background="@color/appBg">
+
+    <RelativeLayout
+	    android:orientation="vertical"
+	    android:layout_width="fill_parent"
+	    android:layout_height="0dp"
+	    android:layout_weight=".4">
+	    
+		<com.modusgo.ubi.customviews.ViewPager
+			android:id="@+id/pager_drivers"
+			android:layout_width="match_parent"
+	        android:layout_height="match_parent"/>
+	
+		<com.viewpagerindicator.CirclePageIndicator
+		    android:id="@+id/indicator"
+	        android:padding="6dip"
+		    android:layout_height="wrap_content"
+		    android:layout_width="fill_parent"
+		    android:layout_alignParentBottom="true" />	
+	</RelativeLayout>
+    
+	<RelativeLayout
+		 android:layout_width="match_parent"
+	     android:layout_height="0dp"
+		 android:layout_weight=".6"
+		 android:orientation="vertical">
+		<com.modusgo.ubi.customviews.ViewPager
+		    xmlns:android="http://schemas.android.com/apk/res/android"
+		    android:id="@+id/pager"
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent">
+	    
+		    <android.support.v4.view.PagerTabStrip
+		        android:id="@+id/pager_title_strip"
+		        android:layout_width="match_parent"
+		        android:layout_height="54dp"
+		        android:layout_gravity="top"
+		        android:gravity="center"
+		        android:background="@color/pagerTabStripBg"
+		        android:textColor="#fff"
+		    	android:textSize="17.67dp"
+		        android:paddingLeft="33dp"
+		        android:paddingRight="33dp" />
+		    
+	    </com.modusgo.ubi.customviews.ViewPager>
+	    <ImageView
+		    android:id="@+id/arrowPrev"
+		    android:layout_width="wrap_content"
+		    android:layout_height="54dp"
+		    android:layout_alignTop="@+id/pager"
+		    android:layout_alignLeft="@+id/pager"
+		    android:src="@drawable/ic_action_previous_item" />
+	    <ImageView
+		    android:id="@+id/arrowNext"
+		    android:layout_width="wrap_content"
+		    android:layout_height="54dp"
+		    android:layout_alignTop="@+id/pager"
+		    android:layout_alignRight="@+id/pager"
+		    android:src="@drawable/ic_action_next_item" />
+	</RelativeLayout>
+</LinearLayout>

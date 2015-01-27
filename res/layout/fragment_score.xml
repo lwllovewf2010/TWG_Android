@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:ubi="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/driver_header" />
+
+    <LinearLayout
+        android:id="@+id/llProgress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/btn_transparent_orange_light"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:gravity="center"
+            android:background="@color/btn_transparent_orange_light" >
+
+            <com.modusgo.ubi.customviews.TypefacedTextView
+                android:id="@+id/tvThisMonthMessage"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".5"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:text="This month\nAverage Score\nYou can do better!"
+                android:textColor="@color/ubi_orange"
+                android:textSize="12sp"
+                ubi:typeface="arialbd.ttf" />
+
+            <com.modusgo.ubi.customviews.TypefacedTextView
+                android:id="@+id/tvScore"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@drawable/circle_score_orange"
+                android:gravity="center"
+                android:text="C+"
+                android:textColor="#FFF"
+                android:textSize="35sp"
+                ubi:typeface="arialbd.ttf" />
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".5"
+                android:gravity="bottom|right"
+                android:layout_marginRight="10dp"
+                android:paddingBottom="8dp"
+                android:orientation="vertical" >
+
+                <ImageView
+                    android:id="@+id/imageLastMonthArrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/tvLastMonthMessage"
+                    android:layout_alignRight="@+id/tvLastMonthMessage"
+                    android:src="@drawable/arrow_down_red" />
+
+                <com.modusgo.ubi.customviews.TypefacedTextView
+                    android:id="@+id/tvLastMonthMessage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/imageLastMonthArrow"
+                    android:text="B+ Last Month"
+                    android:textColor="@color/ubi_red"
+                    android:textSize="12sp"
+                    ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        <com.echo.holographlibrary.BarGraph
+            android:id="@+id/graph"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            ubi:barShowPopup="false" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp"
+            android:weightSum="3.2" >
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" >
+
+                <ImageButton
+                    android:id="@+id/btnScoreInfo"
+                    android:layout_width="81dp"
+                    android:layout_height="59dp"
+                    android:layout_centerHorizontal="true"
+                    android:background="@color/btn_border_orange_light"
+                    android:src="@drawable/ic_score_info" />
+
+                <com.modusgo.ubi.customviews.TypefacedTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/btnScoreInfo"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="3dp"
+                    android:text="Score Stats"
+                    android:textColor="#697078"
+                    android:textSize="11sp"
+                    ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" >
+
+                <ImageButton
+                    android:id="@+id/btnScorePieChart"
+                    android:layout_width="81dp"
+                    android:layout_height="59dp"
+                    android:layout_centerHorizontal="true"
+                    android:background="@color/btn_border_orange_light"
+                    android:src="@drawable/ic_score_circles" />
+
+                <com.modusgo.ubi.customviews.TypefacedTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/btnScorePieChart"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="3dp"
+                    android:text="Time/Road Charts"
+                    android:textColor="#697078"
+                    android:textSize="11sp"
+                    ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" >
+
+                <ImageButton
+                    android:id="@+id/btnScoreCircles"
+                    android:layout_width="81dp"
+                    android:layout_height="59dp"
+                    android:layout_centerHorizontal="true"
+                    android:background="@color/btn_border_orange_light"
+                    android:src="@drawable/ic_score_piechart" />
+
+                <com.modusgo.ubi.customviews.TypefacedTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/btnScoreCircles"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="3dp"
+                    android:text="Behaviors"
+                    android:textColor="#697078"
+                    android:textSize="11sp"
+                    ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+            </RelativeLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+     <color name="pagerTabStripBg">#1a243c</color>
+     <color name="appBg">#253456</color>
+     
+     <color name="driver_stats_block_header">#2493d0</color>
+     <color name="driver_stats_block_header_red">#fe4c4c</color>
+     <color name="home_item_pressed">#83acff</color>
+     
+     <color name="transparent">#00000000</color>
+     <color name="red">#ef4136</color>
+     <color name="green">#a8cf49</color>
+     <color name="orange">#f15b2a</color>
+     <color name="blue">#00aeef</color>
+     <color name="yellow">#FEEB51</color>
+     <color name="white">#fff</color>
+     <color name="gray">#a1a6ad</color>
+    
+     <color name="light_orange">#fff9f1</color>
+     <color name="light_orange_2">#fde0b4</color>
+     
+     <color name="dark_green">#81a033</color>
+     <color name="dark_orange">#bc4721</color>
+     
+     <color name="circular_progress_default_progress">#bada55</color>
+	 <color name="circular_progress_default_background">#787878</color>
+	 <color name="circular_progress_default_title">#bada55</color>
+	 <color name="circular_progress_default_subtitle">#D1D1D1</color>
+	 
+	 <color name="forgot_password_press">#f15b2a</color>
+     <color name="menu_blue">#1e7dc2</color>
+     <color name="menu_text_gray">#697078</color>
+     
+     <color name="trip_gray">#9f9f9f</color>
+     <color name="trip_light_gray">#e7e7e7</color>
+     <color name="trip_blue">#2493d0</color>
+     
+     <color name="pie_black">#132d4e</color>
+     <color name="pie_green">#488a3f</color>
+     <color name="pie_red">#ba1804</color>
+     <color name="pie_gray">#5e656d</color>
+     <color name="pie_orange">#ef5026</color>
+     <color name="pie_blue">#07a5ed</color>
+     
+     <color name="ubi_green">#519548</color>
+     <color name="ubi_red">#C21A01</color>
+     <color name="ubi_yellow">#ECBE13</color>
+     <color name="ubi_orange">#F38630</color>
+     <color name="ubi_gray">#e6e9ed</color>
+     
+     <color name="score_green_light">#2bce2c</color>
+     <color name="score_green_dark">#22a523</color>
+     <color name="score_orange">#ecbe13</color>
+     <color name="score_red">#e6451b</color>
+     
+     <color name="list_header_line">#00aeef</color>
+</resources>

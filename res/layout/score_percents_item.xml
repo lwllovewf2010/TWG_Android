@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ubi="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginBottom="-2dp" >
+
+        <com.modusgo.ubi.customviews.TypefacedTextView
+            android:id="@+id/tvPercentValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="76"
+            android:textColor="#00ADEF"
+            android:lineSpacingExtra="0dp"
+            android:lineSpacingMultiplier="1"
+            android:textSize="24sp"
+            ubi:typeface="arialbd.ttf" />
+
+        <com.modusgo.ubi.customviews.TypefacedTextView
+            android:id="@+id/tvPercentSign"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/tvPercentValue"
+            android:layout_marginTop="4dp"
+            android:layout_toRightOf="@+id/tvPercentValue"
+            android:text="%"
+            android:textColor="#00ADEF"
+            android:lineSpacingExtra="0dp"
+            android:lineSpacingMultiplier="1"
+            android:textSize="12sp"
+            ubi:typeface="arialbd.ttf" />
+    </RelativeLayout>
+
+    <com.modusgo.ubi.customviews.TypefacedTextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minHeight="25dp"
+        android:gravity="center|top"
+        android:text="Use of speed"
+        android:textColor="#697078"
+        android:textSize="12.5sp"
+        ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+
+</LinearLayout>

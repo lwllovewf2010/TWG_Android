@@ -1,0 +1,62 @@
+{
+  "status": "success",
+  "vehicle_id": 20,
+  "limits": [
+    {
+      "key": "max_speed",
+      "title":"Max speed limit, mph",
+      "value": 30,
+      "type": "number_picker",
+      "min_value": 55,
+      "max_value": 120,
+      "step": "5",
+      "active": false
+    },
+    {
+      "key": "daily_mileage",
+      "title":"Daily mileage limit, mi",
+      "value": 50,
+      "type": "number_input",
+      "active": false
+    },
+    {
+      "key": "harsh_events",
+      "title":"Harsh event alerts",
+      "type": "flag",
+      "active": true
+    },
+    {
+      "key": "driving_time",
+      "title":"Time of day limits",
+      "type": "time_between_picker",
+      "value_from": "11:00:00",
+      "value_to": "18:00:00",
+      "active": false
+    },
+    {
+      "key": "geofence",
+      "title":"Geofence",
+      "type": "geofence",
+      "value": [],
+      "active": true
+    },
+    {
+      "key": "low_fuel",
+      "title":"Low fuel",
+      "type": "flag",
+      "active": true
+    },
+    {
+      "key": "safe_driving",
+      "title":"Distracted driving events",
+      "type": "flag",
+      "active": true
+    },
+    {
+      "key": "tow_alerts",
+      "title":"Tow alerts",
+      "type": "flag",
+      "active": true
+    }
+  ]
+}
