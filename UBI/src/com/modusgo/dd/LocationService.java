@@ -330,8 +330,8 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 				jastecHandler.removeCallbacksAndMessages(null);
 				jastecHandler = null;
 				jastecRunnable = null;
+				JastecManager.getInstance(this).disconnect();
 			}
-				
 		}
 		
 		
@@ -747,6 +747,13 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 			beaconManager.disconnect();
 	        beaconManager = null;
 		}
+		
+		if(jastecHandler!=null){
+			jastecHandler.removeCallbacksAndMessages(null);
+			jastecHandler = null;
+			jastecRunnable = null;
+		}
+		JastecManager.getInstance(this).disconnect();
 		
 		mInProgress = false;
         if(servicesAvailable && mLocationClient != null) {

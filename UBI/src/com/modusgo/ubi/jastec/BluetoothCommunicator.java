@@ -192,7 +192,7 @@ public class BluetoothCommunicator {
 		public void run() {
 			try
 			{
-				System.out.println("RUNNING!!!!!");
+				System.out.println("RUNNING!!!!! "+mmIsRunning);
 				System.out.println("mmOutputStream = "+(mmOutputStream==null));
 				mmBluetoothSocket = mmBluetoothDevice.createRfcommSocketToServiceRecord(MY_UUID);
 				mmBluetoothSocket.connect();

@@ -156,6 +156,15 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 		}
 	}
 	
+	public void disconnect(){
+		try{
+			BluetoothCommunicator.getInstance().disconnect();
+		}
+		catch(NullPointerException e){
+			e.printStackTrace();
+		}
+	}
+	
 	@Override
 	public void onDisconnected(Exception e) {
 		System.out.println("Bt disconnected");
