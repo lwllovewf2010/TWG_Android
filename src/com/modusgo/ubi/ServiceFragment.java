@@ -39,35 +39,36 @@ public class ServiceFragment extends Fragment
 	View rootView = null;
 	ListView infoList = null;
 
-
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		LinearLayout rootView = (LinearLayout)inflater.inflate(R.layout.fragment_diagnostics, container, false);
-		
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+	{
+
+		LinearLayout rootView = (LinearLayout) inflater.inflate(R.layout.fragment_diagnostics, container, false);
+
 		main = (MainActivity) getActivity();
-		rootView = (LinearLayout) inflater.inflate(R.layout.alerts_fragment, container, false);
+		rootView = (LinearLayout) inflater.inflate(R.layout.service_fragment, container, false);
 		main.setActionBarTitle("Alerts");
 		prefs = PreferenceManager.getDefaultSharedPreferences(main);
 		vehicle = ((DriverActivity) getActivity()).vehicle;
 
 		main.setActionBarTitle(main.getResources().getString(R.string.Service));
-		
-	    prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-		
-		vehicle = ((DriverActivity)getActivity()).vehicle;
-		
+
+		prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+		vehicle = ((DriverActivity) getActivity()).vehicle;
+
 		dbHelper = DbHelper.getInstance(getActivity());
 		db = dbHelper.openDatabase();
-		
-		infoList = (ListView) rootView.findViewById(R.id.alerts_info_list);
-//		main.showBusyDialog(R.string.GatheringDiagnosticInformation);
 
-//		new GetMaintenanceTask(getActivity()).execute("vehicles/" + vehicle.id
-//				+ "/diagnostics.json");
+		infoList = (ListView) rootView.findViewById(R.id.alerts_info_list);
+		// main.showBusyDialog(R.string.GatheringDiagnosticInformation);
+
+		// new GetMaintenanceTask(getActivity()).execute("vehicles/" +
+		// vehicle.id
+		// + "/diagnostics.json");
 
 		updateInfo();
-		
+
 		return rootView;
 
 	}
@@ -75,37 +76,42 @@ public class ServiceFragment extends Fragment
 	protected void updateInfo()
 	{
 
-	//--------------------------------------------- Maintenances ------------------------------------
-	c = db.query(MaintenanceEntry.TABLE_NAME, 
-			new String[]{
-			MaintenanceEntry._ID,
-			MaintenanceEntry.COLUMN_NAME_CREATED_AT,
-			MaintenanceEntry.COLUMN_NAME_DESCRIPTION,
-			MaintenanceEntry.COLUMN_NAME_IMPORTANCE,
-			MaintenanceEntry.COLUMN_NAME_MILEAGE,
-			MaintenanceEntry.COLUMN_NAME_PRICE
-			}, 
-			MaintenanceEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id, null, null, null, MaintenanceEntry.COLUMN_NAME_MILEAGE + " DESC");
-	
-	final ArrayList<TWGListItem> info_list = new ArrayList<TWGListItem>();
+		// --------------------------------------------- Maintenances
+		// ------------------------------------
+		c = db.query(MaintenanceEntry.TABLE_NAME, new String[]
+		{ MaintenanceEntry._ID, MaintenanceEntry.COLUMN_NAME_CREATED_AT, MaintenanceEntry.COLUMN_NAME_DESCRIPTION,
+				MaintenanceEntry.COLUMN_NAME_IMPORTANCE, MaintenanceEntry.COLUMN_NAME_MILEAGE,
+				MaintenanceEntry.COLUMN_NAME_PRICE }, MaintenanceEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id,
+				null, null, null, MaintenanceEntry.COLUMN_NAME_MILEAGE + " DESC");
 
-	if(c.moveToFirst())
-	{
-		while(!c.isAfterLast()){
-			final Maintenance maintenance = new Maintenance(c.getLong(c.getColumnIndex(MaintenanceEntry._ID)),
-					c.getString(c.getColumnIndex(MaintenanceEntry.COLUMN_NAME_CREATED_AT)), 
-					c.getString(c.getColumnIndex(MaintenanceEntry.COLUMN_NAME_DESCRIPTION)), 
-					c.getString(c.getColumnIndex(MaintenanceEntry.COLUMN_NAME_IMPORTANCE)), 
-					c.getString(c.getColumnIndex(MaintenanceEntry.COLUMN_NAME_MILEAGE)), 
-					c.getFloat(c.getColumnIndex(MaintenanceEntry.COLUMN_NAME_PRICE)));
-			info_list.add(new TWGListItem(twg_list_item_type.li_service_log_item,	maintenance));
-			c.moveToNext();
+		final ArrayList<TWGListItem> info_list = new ArrayList<TWGListItem>();
+
+		if(c.moveToFirst())
+		{
+			while(!c.isAfterLast())
+			{
+				final Maintenance maintenance = new Maintenance(c.getLong(c.getColumnIndex(MaintenanceEntry._ID)),
+						c.getString(c.getColumnIndex(MaintenanceEntry.COLUMN_NAME_CREATED_AT)), c.getString(c
+								.getColumnIndex(MaintenanceEntry.COLUMN_NAME_DESCRIPTION)), c.getString(c
+								.getColumnIndex(MaintenanceEntry.COLUMN_NAME_IMPORTANCE)), c.getString(c
+								.getColumnIndex(MaintenanceEntry.COLUMN_NAME_MILEAGE)), c.getFloat(c
+								.getColumnIndex(MaintenanceEntry.COLUMN_NAME_PRICE)));
+				/************************** DEBUGGING ONLY ***************************/
+				// for(int i = 0; i < catagory.length; i++)
+				// {
+				// info_list.add(new
+				// TWGListItem(twg_list_item_type.li_service_item,
+				// catagory[i]));
+				// }
+				/************************** DEBUGGING ONLY ***************************/
+				info_list.add(new TWGListItem(twg_list_item_type.li_service_item, maintenance));
+				c.moveToNext();
+			}
+			final TWGInfoArrayAdapter info_adapter = new TWGInfoArrayAdapter(getActivity(),
+					R.layout.twg_info_list_item, info_list);
+			infoList.setAdapter(info_adapter);
 		}
-		final TWGInfoArrayAdapter info_adapter = new TWGInfoArrayAdapter(
-				getActivity(), R.layout.twg_info_list_item, info_list);
-		infoList.setAdapter(info_adapter);
-	}
-	c.close();
-	
+		c.close();
+
 	}
 }

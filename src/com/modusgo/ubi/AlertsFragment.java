@@ -56,8 +56,7 @@ public class AlertsFragment extends Fragment
 	ListView infoList = null;
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState)
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 
 		main = (MainActivity) getActivity();
@@ -74,8 +73,7 @@ public class AlertsFragment extends Fragment
 
 		main.showBusyDialog(R.string.GatheringDiagnosticInformation);
 
-		new GetDiagnosticsTask(getActivity()).execute("vehicles/" + vehicle.id
-				+ "/diagnostics.json");
+		new GetDiagnosticsTask(getActivity()).execute("vehicles/" + vehicle.id + "/diagnostics.json");
 
 		return rootView;
 
@@ -102,87 +100,71 @@ public class AlertsFragment extends Fragment
 
 		main.hideBusyDialog();
 
-		// --------------------------------------------- DTC ------------------------------------
+		// ------------------------------------------DTC---------------------------------
 		Cursor c = db.query(DTCEntry.TABLE_NAME, new String[]
-		{ DTCEntry.COLUMN_NAME_CODE, DTCEntry.COLUMN_NAME_CONDITIONS,
-				DTCEntry.COLUMN_NAME_CREATED_AT,
-				DTCEntry.COLUMN_NAME_DESCRIPTION, DTCEntry.COLUMN_NAME_DETAILS,
-				DTCEntry.COLUMN_NAME_FULL_DESCRIPTION,
-				DTCEntry.COLUMN_NAME_IMPORTANCE,
-				DTCEntry.COLUMN_NAME_LABOR_COST,
-				DTCEntry.COLUMN_NAME_LABOR_HOURS, DTCEntry.COLUMN_NAME_PARTS,
-				DTCEntry.COLUMN_NAME_PARTS_COST,
-				DTCEntry.COLUMN_NAME_TOTAL_COST },
-				ScoreGraphEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id,
-				null, null, null, null);
+		{ DTCEntry.COLUMN_NAME_CODE, DTCEntry.COLUMN_NAME_CONDITIONS, DTCEntry.COLUMN_NAME_CREATED_AT,
+				DTCEntry.COLUMN_NAME_DESCRIPTION, DTCEntry.COLUMN_NAME_DETAILS, DTCEntry.COLUMN_NAME_FULL_DESCRIPTION,
+				DTCEntry.COLUMN_NAME_IMPORTANCE, DTCEntry.COLUMN_NAME_LABOR_COST, DTCEntry.COLUMN_NAME_LABOR_HOURS,
+				DTCEntry.COLUMN_NAME_PARTS, DTCEntry.COLUMN_NAME_PARTS_COST, DTCEntry.COLUMN_NAME_TOTAL_COST },
+				ScoreGraphEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id, null, null, null, null);
 
 		final ArrayList<TWGListItem> info_list = new ArrayList<TWGListItem>();
 
 		if(c.moveToFirst())
 		{
-			info_list
-					.add(new TWGListItem(twg_list_item_type.li_alert_hdr, null));
+			info_list.add(new TWGListItem(twg_list_item_type.li_alert_hdr, null));
 
 			while(!c.isAfterLast())
 			{
-				final DiagnosticsTroubleCode dtc = new DiagnosticsTroubleCode(
-						c.getString(c.getColumnIndex(DTCEntry.COLUMN_NAME_CODE)),
-						c.getString(c.getColumnIndex(DTCEntry.COLUMN_NAME_CONDITIONS)),
-						c.getString(c.getColumnIndex(DTCEntry.COLUMN_NAME_CREATED_AT)),
-						c.getString(c.getColumnIndex(DTCEntry.COLUMN_NAME_DESCRIPTION)),
-						c.getString(c.getColumnIndex(DTCEntry.COLUMN_NAME_DETAILS)),
-						c.getString(c.getColumnIndex(DTCEntry.COLUMN_NAME_FULL_DESCRIPTION)),
-						c.getString(c.getColumnIndex(DTCEntry.COLUMN_NAME_IMPORTANCE)),
-						c.getString(c.getColumnIndex(DTCEntry.COLUMN_NAME_LABOR_COST)),
-						c.getString(c.getColumnIndex(DTCEntry.COLUMN_NAME_LABOR_HOURS)),
-						c.getString(c.getColumnIndex(DTCEntry.COLUMN_NAME_PARTS)),
-						c.getString(c.getColumnIndex(DTCEntry.COLUMN_NAME_PARTS_COST)),
-						c.getString(c.getColumnIndex(DTCEntry.COLUMN_NAME_TOTAL_COST)));
+				final DiagnosticsTroubleCode dtc = new DiagnosticsTroubleCode(c.getString(c
+						.getColumnIndex(DTCEntry.COLUMN_NAME_CODE)), c.getString(c
+						.getColumnIndex(DTCEntry.COLUMN_NAME_CONDITIONS)), c.getString(c
+						.getColumnIndex(DTCEntry.COLUMN_NAME_CREATED_AT)), c.getString(c
+						.getColumnIndex(DTCEntry.COLUMN_NAME_DESCRIPTION)), c.getString(c
+						.getColumnIndex(DTCEntry.COLUMN_NAME_DETAILS)), c.getString(c
+						.getColumnIndex(DTCEntry.COLUMN_NAME_FULL_DESCRIPTION)), c.getString(c
+						.getColumnIndex(DTCEntry.COLUMN_NAME_IMPORTANCE)), c.getString(c
+						.getColumnIndex(DTCEntry.COLUMN_NAME_LABOR_COST)), c.getString(c
+						.getColumnIndex(DTCEntry.COLUMN_NAME_LABOR_HOURS)), c.getString(c
+						.getColumnIndex(DTCEntry.COLUMN_NAME_PARTS)), c.getString(c
+						.getColumnIndex(DTCEntry.COLUMN_NAME_PARTS_COST)), c.getString(c
+						.getColumnIndex(DTCEntry.COLUMN_NAME_TOTAL_COST)));
 
-				info_list.add(new TWGListItem(twg_list_item_type.li_alert_info,	dtc));
+				info_list.add(new TWGListItem(twg_list_item_type.li_alert_info, dtc));
 				c.moveToNext();
 			}
 		}
 		c.close();
-		// --------------------------------------------- Recall Entry
-		// ------------------------------------
+		// ------------------------------------------ Recall Entry--------------------------------
 		c = db.query(RecallEntry.TABLE_NAME, new String[]
-		{ RecallEntry._ID, RecallEntry.COLUMN_NAME_CONSEQUENCE,
-				RecallEntry.COLUMN_NAME_CORRECTIVE_ACTION,
-				RecallEntry.COLUMN_NAME_CREATED_AT,
-				RecallEntry.COLUMN_NAME_DEFECT_DESCRIPTION,
-				RecallEntry.COLUMN_NAME_DESCRIPTION,
-				RecallEntry.COLUMN_NAME_RECALL_ID },
-				RecallEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id, null,
-				null, null, null);
+		{ RecallEntry._ID, RecallEntry.COLUMN_NAME_CONSEQUENCE, RecallEntry.COLUMN_NAME_CORRECTIVE_ACTION,
+				RecallEntry.COLUMN_NAME_CREATED_AT, RecallEntry.COLUMN_NAME_DEFECT_DESCRIPTION,
+				RecallEntry.COLUMN_NAME_DESCRIPTION, RecallEntry.COLUMN_NAME_RECALL_ID },
+				RecallEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id, null, null, null, null);
 
 		if(c.moveToFirst())
 		{
-			TWGListItem item = new TWGListItem(
-					twg_list_item_type.li_recall_hdr, null);
+			TWGListItem item = new TWGListItem(twg_list_item_type.li_recall_hdr, null);
 			info_list.add(item);
 			while(!c.isAfterLast())
 			{
-				final Recall recall = new Recall(c.getLong(0), c.getString(1),
-						c.getString(2), c.getString(3), c.getString(4),
-						c.getString(5), c.getString(6));
-				info_list.add(new TWGListItem(
-						twg_list_item_type.li_recall_info, recall));
+				final Recall recall = new Recall(c.getLong(0), c.getString(1), c.getString(2), c.getString(3),
+						c.getString(4), c.getString(5), c.getString(6));
+				info_list.add(new TWGListItem(twg_list_item_type.li_recall_info, recall));
 				c.moveToNext();
 			}
 		}
 		c.close();
 
-		final TWGInfoArrayAdapter info_adapter = new TWGInfoArrayAdapter(
-				getActivity(), R.layout.twg_info_list_item, info_list);
+		final TWGInfoArrayAdapter info_adapter = new TWGInfoArrayAdapter(getActivity(), R.layout.twg_info_list_item,
+				info_list);
 		infoList.setAdapter(info_adapter);
 
 		infoList.setOnItemClickListener(new OnItemClickListener()
 		{
 
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id)
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id)
 			{
 				TWGListItem item = (TWGListItem) view.getTag();
 				switch (item.type)
@@ -232,10 +214,8 @@ public class AlertsFragment extends Fragment
 		@Override
 		protected JSONObject doInBackground(String... params)
 		{
-			requestParams.add(new BasicNameValuePair("vehicle_id", ""
-					+ vehicle.id));
-			requestParams.add(new BasicNameValuePair("mileage", ""
-					+ vehicle.odometer));
+			requestParams.add(new BasicNameValuePair("vehicle_id", "" + vehicle.id));
+			requestParams.add(new BasicNameValuePair("mileage", "" + vehicle.odometer));
 			return super.doInBackground(params);
 		}
 
@@ -253,8 +233,7 @@ public class AlertsFragment extends Fragment
 
 			if(responseJSON.has("diagnostics"))
 			{
-				JSONObject diagnosticsJSON = responseJSON
-						.getJSONObject("diagnostics");
+				JSONObject diagnosticsJSON = responseJSON.getJSONObject("diagnostics");
 
 				// Editor e = prefs.edit();
 				// e.putString(Constants.PREF_DIAGNOSTICS_CHECKUP_DATE+vehicle.id,
@@ -266,8 +245,7 @@ public class AlertsFragment extends Fragment
 
 				if(diagnosticsJSON.has("diagnostics_trouble_codes"))
 				{
-					Object dtcsObject = diagnosticsJSON
-							.get("diagnostics_trouble_codes");
+					Object dtcsObject = diagnosticsJSON.get("diagnostics_trouble_codes");
 					if(dtcsObject instanceof JSONArray)
 					{
 						JSONArray dtcsJSON = (JSONArray) dtcsObject;
@@ -277,19 +255,12 @@ public class AlertsFragment extends Fragment
 
 							JSONObject dtc = dtcsJSON.getJSONObject(i);
 
-							dtcs.add(new DiagnosticsTroubleCode(dtc
-									.optString("code"), dtc
-									.optString("conditions"), Utils
-									.fixTimezoneZ(dtc.optString("created_at")),
-									dtc.optString("description"), dtc
-											.optString("details"), dtc
-											.optString("full_description"), dtc
-											.optString("importance_text"), dtc
-											.optString("labor_cost"), dtc
-											.optString("labor_hours"), dtc
-											.optString("parts"), dtc
-											.optString("parts_cost"), dtc
-											.optString("total_cost")));
+							dtcs.add(new DiagnosticsTroubleCode(dtc.optString("code"), dtc.optString("conditions"),
+									Utils.fixTimezoneZ(dtc.optString("created_at")), dtc.optString("description"), dtc
+											.optString("details"), dtc.optString("full_description"), dtc
+											.optString("importance_text"), dtc.optString("labor_cost"), dtc
+											.optString("labor_hours"), dtc.optString("parts"), dtc
+											.optString("parts_cost"), dtc.optString("total_cost")));
 						}
 						vehicle.carDTCCount = dtcs.size();
 
@@ -299,8 +270,7 @@ public class AlertsFragment extends Fragment
 
 				if(diagnosticsJSON.has("recall_updates"))
 				{
-					Object recallsObject = diagnosticsJSON
-							.get("recall_updates");
+					Object recallsObject = diagnosticsJSON.get("recall_updates");
 					if(recallsObject instanceof JSONArray)
 					{
 						JSONArray recallsJSON = (JSONArray) recallsObject;
@@ -310,14 +280,11 @@ public class AlertsFragment extends Fragment
 
 							JSONObject recall = recallsJSON.getJSONObject(i);
 
-							recalls.add(new Recall(recall.optLong("id"), recall
-									.optString("consequence"), recall
-									.optString("corrective_action"), Utils
-									.fixTimezoneZ(recall
-											.optString("recall_date")), recall
-									.optString("defect_description"), recall
-									.optString("description"), recall
-									.optString("recall_id")));
+							recalls.add(new Recall(recall.optLong("id"), recall.optString("consequence"), recall
+									.optString("corrective_action"),
+									Utils.fixTimezoneZ(recall.optString("recall_date")), recall
+											.optString("defect_description"), recall.optString("description"), recall
+											.optString("recall_id")));
 						}
 						dbHelper.saveRecalls(vehicle.id, recalls);
 					}
@@ -325,8 +292,7 @@ public class AlertsFragment extends Fragment
 
 				if(diagnosticsJSON.has("vehicle_maintenances"))
 				{
-					Object maintenancesObject = diagnosticsJSON
-							.get("vehicle_maintenances");
+					Object maintenancesObject = diagnosticsJSON.get("vehicle_maintenances");
 					if(maintenancesObject instanceof JSONArray)
 					{
 						JSONArray maintenancesJSON = (JSONArray) maintenancesObject;
@@ -334,17 +300,11 @@ public class AlertsFragment extends Fragment
 						for(int i = 0; i < maintenancesJSON.length(); i++)
 						{
 
-							JSONObject maintenance = maintenancesJSON
-									.getJSONObject(i);
+							JSONObject maintenance = maintenancesJSON.getJSONObject(i);
 
-							maintenances.add(new Maintenance(maintenance
-									.optLong("id"), Utils
-									.fixTimezoneZ(maintenance
-											.optString("created_at")),
-									maintenance.optString("description"),
-									maintenance.optString("importance"),
-									Integer.toString(maintenance
-											.optInt("mileage")),
+							maintenances.add(new Maintenance(maintenance.optLong("id"), Utils.fixTimezoneZ(maintenance
+									.optString("created_at")), maintenance.optString("description"), maintenance
+									.optString("importance"), Integer.toString(maintenance.optInt("mileage")),
 									(float) maintenance.optDouble("price")));
 						}
 						dbHelper.saveMaintenances(vehicle.id, maintenances);
@@ -374,10 +334,8 @@ public class AlertsFragment extends Fragment
 				// }
 				// }
 
-				vehicle.carCheckupStatus = diagnosticsJSON
-						.optString("checkup_status");
-				vehicle.carLastCheckup = diagnosticsJSON
-						.optString("last_checkup");
+				vehicle.carCheckupStatus = diagnosticsJSON.optString("checkup_status");
+				vehicle.carLastCheckup = diagnosticsJSON.optString("last_checkup");
 				dbHelper.saveVehicle(vehicle);
 
 				updateInfo();

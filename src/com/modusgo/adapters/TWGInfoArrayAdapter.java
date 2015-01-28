@@ -59,7 +59,7 @@ public class TWGInfoArrayAdapter extends ArrayAdapter<TWGListItem>
 				.findViewById(R.id.dtc_info_view);
 		RelativeLayout alert_info_view = (RelativeLayout) rowView
 				.findViewById(R.id.alert_info_view);
-		LinearLayout service_log_info_view = (LinearLayout) rowView.findViewById(R.id.service_log_info_view);
+		LinearLayout service_log_info_view = (LinearLayout) rowView.findViewById(R.id.service_info_view);
 
 		hdr_view.setVisibility(View.GONE);
 		vehicle_info_view.setVisibility(View.GONE);
@@ -149,13 +149,15 @@ public class TWGInfoArrayAdapter extends ArrayAdapter<TWGListItem>
 					R.drawable.ic_alerts_red_big, 0, 0, 0);
 			alertDate.setText(dtc.created_at);
 			break;
-		case li_service_log_item:
+		case li_service_item:
 			maintenance = (Maintenance)item.value;
-			TextView interval = (TextView) rowView.findViewById(R.id.service_log_replace_interval);
-			TextView remaining = (TextView) rowView.findViewById(R.id.service_log_remaining);
-			TextView description = (TextView) rowView.findViewById(R.id.service_log_description);
+			TextView interval = (TextView) rowView.findViewById(R.id.service_replace_interval);
+			TextView remaining = (TextView) rowView.findViewById(R.id.service_remaining);
+			TextView description = (TextView) rowView.findViewById(R.id.service_description);
 			service_log_info_view.setVisibility(View.VISIBLE);
 			description.setText(maintenance.description);
+			interval.setText("Every " + maintenance.mileage + " miles");
+			remaining.setText("0 miles");
 		}
 
 		rowView.setTag(item);
