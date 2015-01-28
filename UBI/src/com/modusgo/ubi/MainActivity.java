@@ -40,6 +40,7 @@ import android.widget.TextView;
 import com.modusgo.dd.LocationService;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.jastec.DevicesListActivity;
+import com.modusgo.ubi.utils.Device;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -148,7 +149,8 @@ public class MainActivity extends FragmentActivity {
         if(prefs.getBoolean(Constants.PREF_FIND_MECHANIC_ENABLED, false))
         	menuItems.add(MenuItems.FINDAMECHANIC);
         menuItems.add(MenuItems.SETTINGS);
-        menuItems.add(MenuItems.JASTECSETUP);
+        if(prefs.getString(Device.PREF_DEVICE_TYPE, "").equals(Device.DEVICE_TYPE_OBDBLE))
+        	menuItems.add(MenuItems.JASTECSETUP);
         //menuItems.add(MenuItems.DRIVERSETUP);
         menuItems.add(MenuItems.LOGOUT);
         menuItems.add(MenuItems.RESET);
