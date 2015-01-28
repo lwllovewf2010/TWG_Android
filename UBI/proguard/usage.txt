@@ -8071,6 +8071,7 @@ com.modusgo.dd.LocationService:
     private static final int PERMANENT_NOTIFICATION_ID
     private static final int SERVICES_DISABLED_NOTIFICATION_ID
     private static final int IBEACON_DECLINE_NOTIFICATION_ID
+    private static final int PLUGIN_YOUR_PHONE_NOTIFICATION_ID
     private static final float TRIP_START_SPEED
     private static final float TRIP_STAY_SPEED
     private static final int MAX_STAY_TIME
@@ -8124,10 +8125,10 @@ com.modusgo.ubi.ForgotPasswordActivity$RestorePasswordTask:
 com.modusgo.ubi.LimitsFragment:
     579:582:private java.lang.String getTime24String(int,int)
 com.modusgo.ubi.MainActivity:
-    528:530:public void showFeedbackActivity()
+    530:532:public void showFeedbackActivity()
 com.modusgo.ubi.MainActivity$MenuItems:
-    77:77:public int toInt()
-    81:81:public java.lang.String[] valuesString()
+    78:78:public int toInt()
+    82:82:public java.lang.String[] valuesString()
 com.modusgo.ubi.Manifest
 com.modusgo.ubi.Manifest$permission
 com.modusgo.ubi.PieChartFragment:
@@ -8268,8 +8269,8 @@ com.modusgo.ubi.jastec.IParser
 com.modusgo.ubi.jastec.JastecManager:
     private static final java.lang.String TAG
     public static final int DIVIDE_SIZE
-    263:268:private byte[] createDrivingStop()
-    273:280:private byte[] createSensorStop()
+    272:277:private byte[] createDrivingStop()
+    282:289:private byte[] createSensorStop()
 com.modusgo.ubi.jastec.PacketBuilder:
     private static final int SIZE
     32:33:public void putSrc(byte)
