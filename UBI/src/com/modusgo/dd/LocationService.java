@@ -56,7 +56,8 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 
 	private static final int PERMANENT_NOTIFICATION_ID = 30;
 	private static final int SERVICES_DISABLED_NOTIFICATION_ID = 29;
-	private static final int IBEACON_DECLINE_NOTIFICATION_ID = 28;	
+	private static final int IBEACON_DECLINE_NOTIFICATION_ID = 28;
+	private static final int PLUGIN_YOUR_PHONE_NOTIFICATION_ID = 27;
 
 	private static final float TRIP_START_SPEED = 15f/3.6f;
 	private static final float TRIP_STAY_SPEED = 10f/3.6f;
@@ -516,6 +517,12 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		mNotificationManager.notify(id, n);
 	}
 	
+	private void showPluginYourPhoneNotificationIfNeeded(){
+		String deviceType = prefs.getString(Device.PREF_DEVICE_TYPE, "");
+    	if(!deviceType.equals(Device.DEVICE_TYPE_OBD))
+    		showNotification(PLUGIN_YOUR_PHONE_NOTIFICATION_ID, "Don't forget to plugin your phone. Your battery will thank you!", new Intent(this, InitActivity.class));
+	}
+	
 	private void updateLocationUpdatesHandler(){
 		final String deviceType = prefs.getString(Device.PREF_DEVICE_TYPE, "");
 		
@@ -640,7 +647,8 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 				e.putBoolean(Device.PREF_IN_TRIP_NOW, true).commit();
 	    		stayFromMillis = 0;
 	    		lastLocationUpdateTime = System.currentTimeMillis();
-	        	updateLocationUpdatesHandler(); 
+	        	updateLocationUpdatesHandler();
+	        	showPluginYourPhoneNotificationIfNeeded();	        	
 			}
 			else if(event.equals(EVENT_TRIP_STOP)){
 				e.putBoolean(Device.PREF_IN_TRIP_NOW, false).commit();
@@ -689,7 +697,8 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		if(event.equals(EVENT_TRIP_START)){
 			e.putBoolean(Device.PREF_IN_TRIP_NOW, true).commit();
 			stayFromMillis = 0;
-			lastLocationUpdateTime = System.currentTimeMillis();		
+			lastLocationUpdateTime = System.currentTimeMillis();
+        	showPluginYourPhoneNotificationIfNeeded();		
 		}
 		else if(event.equals(EVENT_TRIP_STOP)){
 			e.putBoolean(Device.PREF_IN_TRIP_NOW, false).commit();
