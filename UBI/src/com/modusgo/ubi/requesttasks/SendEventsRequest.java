@@ -7,7 +7,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.R.raw;
 import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
@@ -27,16 +26,17 @@ public class SendEventsRequest extends BasePostRequestAsyncTask {
 
 	private static final float MPS_TO_KPH = 3.6f;
 	
-	ArrayList<Long> eventIds;
-	int limit = 30;
+	private ArrayList<Long> eventIds;
+	private int limit = 30;
+	private boolean loop;
 	
 	public SendEventsRequest(Context context) {
 		super(context);
 	}
 	
-	public SendEventsRequest(Context context, int limit) {
+	public SendEventsRequest(Context context, boolean loop) {
 		super(context);
-		this.limit = limit;
+		this.loop = loop;
 	}
 	
 	@Override
@@ -176,6 +176,11 @@ public class SendEventsRequest extends BasePostRequestAsyncTask {
 		DbHelper dbHelper = DbHelper.getInstance(context);
 		dbHelper.deleteTrackingEvents(eventIds);
 		dbHelper.close();
+		
+		if(eventIds!=null && eventIds.size()>0 && loop){
+			new SendEventsRequest(context, true).execute();
+		}
+		
 		super.onSuccess(responseJSON);
 	}
 }

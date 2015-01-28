@@ -32,6 +32,7 @@ import android.widget.TextView;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.modusgo.ubi.requesttasks.BaseRequestAsyncTask;
+import com.modusgo.ubi.requesttasks.SendEventsRequest;
 import com.modusgo.ubi.utils.AnimationUtils;
 import com.modusgo.ubi.utils.Device;
 import com.modusgo.ubi.utils.Utils;
@@ -76,6 +77,7 @@ public class HomeActivity extends MainActivity{
 		});
 		
 		Device.checkDevice(this);
+		new SendEventsRequest(getApplicationContext(), true).execute();
 		
 		updateDrivers();
 	}

@@ -644,7 +644,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 			}
 			else if(event.equals(EVENT_TRIP_STOP)){
 				e.putBoolean(Device.PREF_IN_TRIP_NOW, false).commit();
-				new SendEventsRequest(this, 300).execute();
+				new SendEventsRequest(this, true).execute();
 			}
 			else
 				e.commit();
@@ -693,7 +693,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		}
 		else if(event.equals(EVENT_TRIP_STOP)){
 			e.putBoolean(Device.PREF_IN_TRIP_NOW, false).commit();
-			new SendEventsRequest(this, 300).execute();
+			new SendEventsRequest(this, true).execute();
 			
 			if(lastBeaconDisconnectMillis!=0)
 				eventTimeMillis = lastBeaconDisconnectMillis;
