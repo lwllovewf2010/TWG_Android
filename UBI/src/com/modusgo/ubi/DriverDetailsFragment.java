@@ -47,6 +47,7 @@ import com.modusgo.ubi.customviews.GoogleMapFragment.OnMapReadyListener;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.modusgo.ubi.requesttasks.BaseRequestAsyncTask;
+import com.modusgo.ubi.requesttasks.GetVehicleRequest;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -413,9 +414,22 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
     	//Do nothing
     }
     
+    private long lastVehicleUpdateTimeMillis = 0;
+    
     @Override
 	public void onResume() {
-    	new GetVehiclesTask(getActivity()).execute("vehicles/"+vehicle.id+".json");
+    	if(lastVehicleUpdateTimeMillis == 0 || System.currentTimeMillis() - lastVehicleUpdateTimeMillis > 60000){
+    		lastVehicleUpdateTimeMillis = System.currentTimeMillis();
+	    	new GetVehicleRequest(getActivity().getApplicationContext()).execute("vehicles/"+vehicle.id+".json");
+    	}
+    	
+    	if(isAdded()){
+	    	DbHelper dbHelper = DbHelper.getInstance(getActivity());
+			vehicle = dbHelper.getVehicle(vehicle.id);
+			dbHelper.close();
+			updateFragment();
+    	}
+    	
 		Utils.gaTrackScreen(getActivity(), "Driver Details Screen");
 	    super.onResume();
     }
@@ -427,41 +441,6 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
             mLocationClient.disconnect();
         }
     }
-    
-    class GetVehiclesTask extends BaseRequestAsyncTask{
-
-		public GetVehiclesTask(Context context) {
-			super(context);
-		}
-		
-		@Override
-		protected void onError(String message) {
-			//Do nothing
-		}
-
-		@Override
-		protected JSONObject doInBackground(String... params) {			
-			return super.doInBackground(params);
-		}
-		
-		@Override
-		protected void onSuccess(JSONObject responseJSON) throws JSONException {
-			System.out.println(responseJSON);
-			
-			JSONObject vehicleJSON = responseJSON.getJSONObject("vehicle");
-			if(isAdded()){
-				vehicle = Vehicle.fromJSON(getActivity().getApplicationContext(), vehicleJSON);
-				DbHelper dbHelper = DbHelper.getInstance(getActivity());
-				dbHelper.saveVehicle(vehicle);
-				dbHelper.close();
-				
-				updateFragment();
-			}
-//			new GetTripsTask(context).execute("vehicles/"+vehicle.id+"/trips.json");
-			
-			super.onSuccess(responseJSON);
-		}
-	}
     
 //    class GetTripsTask extends BaseRequestAsyncTask{
 //		

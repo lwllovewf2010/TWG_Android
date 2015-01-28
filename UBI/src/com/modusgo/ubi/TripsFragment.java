@@ -36,11 +36,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.TripContract.TripEntry;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.modusgo.ubi.requesttasks.BaseRequestAsyncTask;
+import com.modusgo.ubi.requesttasks.GetVehicleRequest;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -113,6 +115,7 @@ public class TripsFragment extends Fragment{
 			@Override
 			public void onRefresh() {
 				new GetTripsTask(getActivity(), true).execute("vehicles/"+vehicle.id+"/trips.json");
+				new GetVehicleRequest(getActivity().getApplicationContext()).execute("vehicles/"+vehicle.id+".json");
 			}
 		});
 		
