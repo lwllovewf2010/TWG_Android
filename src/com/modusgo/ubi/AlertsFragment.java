@@ -81,23 +81,6 @@ public class AlertsFragment extends Fragment
 
 	protected void updateInfo()
 	{
-		/******** DEBUGGING ONLY ********/
-		// String[][] alert_values = new String[][] {
-		// { "Code P0420", "Catalyst System Low Efficiency", "07/18/04" },
-		// { "Code P0128", "Coolent Themostat", "07/18/14" },
-		// { "Code P0304", "Cylinder 4 Misfire Detected", "07/19/14" } };
-		// String[][] recall_values = new String[][] { {
-		// "14V002000",
-		// "Ford Motor Company (Ford) is recalling certain model year 2012-2013 "
-		// +
-		// "Edge vehicles manufactured from September 2, 2010, through April 25, 2013, and equipped with 2.0L engines."
-		// +
-		// "The fuel line pulse damper metal housing may crack as a result of an improper manufacturing process. "
-		// +
-		// "A cracked fuel line pulse damper housing may result in a combination of fuel odor, weepage, or a continuous leak while the fuel system is pressurized."
-		// } };
-		/******** DEBUGGING ONLY ********/
-
 		main.hideBusyDialog();
 
 		// ------------------------------------------DTC---------------------------------

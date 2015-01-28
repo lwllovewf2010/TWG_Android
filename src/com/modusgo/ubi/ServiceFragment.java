@@ -7,11 +7,13 @@ import com.modusgo.adapters.TWGInfoArrayAdapter;
 import com.modusgo.ubi.AlertsFragment.GetDiagnosticsTask;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.MaintenanceContract.MaintenanceEntry;
+import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.modusgo.ubi.utils.Maintenance;
 import com.modusgo.ubi.utils.TWGListItem;
 import com.modusgo.ubi.utils.Utils;
 import com.modusgo.ubi.utils.TWGListItem.twg_list_item_type;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -22,9 +24,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class ServiceFragment extends Fragment
@@ -36,18 +41,14 @@ public class ServiceFragment extends Fragment
 	private SQLiteDatabase db = null;
 	private Cursor c = null;
 	private MainActivity main = null;
-	View rootView = null;
 	ListView infoList = null;
+	RelativeLayout rootView = null;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-
-		LinearLayout rootView = (LinearLayout) inflater.inflate(R.layout.fragment_diagnostics, container, false);
-
 		main = (MainActivity) getActivity();
-		rootView = (LinearLayout) inflater.inflate(R.layout.service_fragment, container, false);
-		main.setActionBarTitle("Alerts");
+		rootView = (RelativeLayout) inflater.inflate(R.layout.service_fragment, container, false);
 		prefs = PreferenceManager.getDefaultSharedPreferences(main);
 		vehicle = ((DriverActivity) getActivity()).vehicle;
 
@@ -60,7 +61,7 @@ public class ServiceFragment extends Fragment
 		dbHelper = DbHelper.getInstance(getActivity());
 		db = dbHelper.openDatabase();
 
-		infoList = (ListView) rootView.findViewById(R.id.alerts_info_list);
+		infoList = (ListView) rootView.findViewById(R.id.service_info_list);
 		// main.showBusyDialog(R.string.GatheringDiagnosticInformation);
 
 		// new GetMaintenanceTask(getActivity()).execute("vehicles/" +
@@ -112,6 +113,20 @@ public class ServiceFragment extends Fragment
 			infoList.setAdapter(info_adapter);
 		}
 		c.close();
+
+		Button serviceLogBtn = (Button)rootView.findViewById(R.id.service_view_log_button);
+		
+		serviceLogBtn.setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				Intent intent = new Intent(getActivity(), ServiceLogActivity.class);
+//				intent.putExtra(ServiceLogActivity.EXTRA_SERVICE_INFO, info_list);
+				startActivity(intent);
+			}
+		});
+		
 
 	}
 }

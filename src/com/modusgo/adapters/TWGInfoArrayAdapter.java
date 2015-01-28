@@ -9,6 +9,7 @@ import com.modusgo.ubi.DiagnosticsTroubleCode;
 import com.modusgo.ubi.R;
 import com.modusgo.ubi.Recall;
 import com.modusgo.ubi.utils.Maintenance;
+import com.modusgo.ubi.utils.ServiceEntry;
 import com.modusgo.ubi.utils.TWGListItem;
 import com.modusgo.ubi.utils.TWGListItem.twg_list_item_type;
 
@@ -32,8 +33,7 @@ public class TWGInfoArrayAdapter extends ArrayAdapter<TWGListItem>
 	private Context context = null;
 	private ArrayList<TWGListItem> objects = null;
 
-	public TWGInfoArrayAdapter(Context context, int textViewResourceId,
-			ArrayList<TWGListItem> objects)
+	public TWGInfoArrayAdapter(Context context, int textViewResourceId, ArrayList<TWGListItem> objects)
 	{
 		super(context, textViewResourceId, objects);
 		this.context = context;
@@ -43,35 +43,30 @@ public class TWGInfoArrayAdapter extends ArrayAdapter<TWGListItem>
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent)
 	{
-		LayoutInflater inflater = (LayoutInflater) context
-				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View rowView = inflater.inflate(R.layout.twg_info_list_item, parent,
-				false);
+		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View rowView = inflater.inflate(R.layout.twg_info_list_item, parent, false);
 		Resources resources = context.getResources();
 		TWGListItem item = objects.get(position);
-		RelativeLayout hdr_view = (RelativeLayout) rowView
-				.findViewById(R.id.hdr_view);
-		RelativeLayout vehicle_info_view = (RelativeLayout) rowView
-				.findViewById(R.id.vehicle_info_view);
-		RelativeLayout recall_info_view = (RelativeLayout) rowView
-				.findViewById(R.id.recall_info_view);
-		LinearLayout dtc_info_view = (LinearLayout) rowView
-				.findViewById(R.id.dtc_info_view);
-		RelativeLayout alert_info_view = (RelativeLayout) rowView
-				.findViewById(R.id.alert_info_view);
-		LinearLayout service_log_info_view = (LinearLayout) rowView.findViewById(R.id.service_info_view);
+		RelativeLayout hdr_view = (RelativeLayout) rowView.findViewById(R.id.hdr_view);
+		RelativeLayout vehicle_info_view = (RelativeLayout) rowView.findViewById(R.id.vehicle_info_view);
+		RelativeLayout recall_info_view = (RelativeLayout) rowView.findViewById(R.id.recall_info_view);
+		LinearLayout dtc_info_view = (LinearLayout) rowView.findViewById(R.id.dtc_info_view);
+		RelativeLayout alert_info_view = (RelativeLayout) rowView.findViewById(R.id.alert_info_view);
+		LinearLayout service_info_view = (LinearLayout) rowView.findViewById(R.id.service_info_view);
+		LinearLayout service_log_info_view = (LinearLayout) rowView.findViewById(R.id.service_log_info_view);
 
 		hdr_view.setVisibility(View.GONE);
 		vehicle_info_view.setVisibility(View.GONE);
 		recall_info_view.setVisibility(View.GONE);
 		dtc_info_view.setVisibility(View.GONE);
 		alert_info_view.setVisibility(View.GONE);
+		service_info_view.setVisibility(View.GONE);
 		service_log_info_view.setVisibility(View.GONE);
-		
 
 		Recall recall = null;
 		DiagnosticsTroubleCode dtc = null;
 		Maintenance maintenance = null;
+		ServiceEntry serviceEntry = null;
 
 		switch (item.type)
 		{
@@ -79,6 +74,7 @@ public class TWGInfoArrayAdapter extends ArrayAdapter<TWGListItem>
 		case li_recall_hdr:
 		case li_dtc_hdr:
 		case li_alert_hdr:
+		case li_service_log_hdr:
 			hdr_view.setVisibility(View.VISIBLE);
 			TextView hdr = (TextView) rowView.findViewById(R.id.hdr);
 
@@ -92,11 +88,14 @@ public class TWGInfoArrayAdapter extends ArrayAdapter<TWGListItem>
 				hdr.setBackgroundColor(resources.getColor(R.color.red));
 			} else if(item.type == twg_list_item_type.li_dtc_hdr)
 			{
-				hdr.setText(resources
-						.getString(R.string.DiagnosticsTroubleCodeDetails));
+				hdr.setText(resources.getString(R.string.DiagnosticsTroubleCodeDetails));
 			} else if(item.type == twg_list_item_type.li_alert_hdr)
 			{
 				hdr.setText(resources.getString(R.string.Alerts));
+			} else if(item.type == twg_list_item_type.li_service_log_hdr)
+			{
+				hdr.setText("LOG FOR: " + (String)item.value);
+				hdr.setTextColor(0x000000);
 			}
 			break;
 		case li_vehicle_info:
@@ -111,10 +110,8 @@ public class TWGInfoArrayAdapter extends ArrayAdapter<TWGListItem>
 			break;
 		case li_recall_info:
 			recall = (Recall) item.value;
-			TextView recall_name = (TextView) rowView
-					.findViewById(R.id.recall_name);
-			TextView recall_value = (TextView) rowView
-					.findViewById(R.id.recall_value);
+			TextView recall_name = (TextView) rowView.findViewById(R.id.recall_name);
+			TextView recall_value = (TextView) rowView.findViewById(R.id.recall_value);
 
 			recall_info_view.setVisibility(View.VISIBLE);
 			recall_name.setText(recall.recall_id);
@@ -123,10 +120,8 @@ public class TWGInfoArrayAdapter extends ArrayAdapter<TWGListItem>
 		case li_dtc_info:
 			dtc = (DiagnosticsTroubleCode) item.value;
 			TextView dtc_name = (TextView) rowView.findViewById(R.id.dtc_name);
-			TextView dtc_description = (TextView) rowView
-					.findViewById(R.id.dtc_description);
-			TextView dtc_priority = (TextView) rowView
-					.findViewById(R.id.dtc_priority);
+			TextView dtc_description = (TextView) rowView.findViewById(R.id.dtc_description);
+			TextView dtc_priority = (TextView) rowView.findViewById(R.id.dtc_priority);
 
 			dtc_info_view.setVisibility(View.VISIBLE);
 			dtc_name.setText(dtc.code);
@@ -137,27 +132,35 @@ public class TWGInfoArrayAdapter extends ArrayAdapter<TWGListItem>
 		// TODO - if there are no alerts show a green triangle
 		case li_alert_info:
 			dtc = (DiagnosticsTroubleCode) item.value;
-			TextView alertInfo = (TextView) rowView
-					.findViewById(R.id.alert_info);
-			TextView alertDate = (TextView) rowView
-					.findViewById(R.id.alert_date);
+			TextView alertInfo = (TextView) rowView.findViewById(R.id.alert_info);
+			TextView alertDate = (TextView) rowView.findViewById(R.id.alert_date);
 
 			alert_info_view.setVisibility(View.VISIBLE);
 			String info = dtc.code + " - " + dtc.description;
 			alertInfo.setText(info);
-			alertInfo.setCompoundDrawablesWithIntrinsicBounds(
-					R.drawable.ic_alerts_red_big, 0, 0, 0);
+			alertInfo.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_alerts_red_big, 0, 0, 0);
 			alertDate.setText(dtc.created_at);
 			break;
 		case li_service_item:
-			maintenance = (Maintenance)item.value;
+			maintenance = (Maintenance) item.value;
 			TextView interval = (TextView) rowView.findViewById(R.id.service_replace_interval);
 			TextView remaining = (TextView) rowView.findViewById(R.id.service_remaining);
 			TextView description = (TextView) rowView.findViewById(R.id.service_description);
-			service_log_info_view.setVisibility(View.VISIBLE);
+			service_info_view.setVisibility(View.VISIBLE);
 			description.setText(maintenance.description);
 			interval.setText("Every " + maintenance.mileage + " miles");
 			remaining.setText("0 miles");
+			break;
+		case li_service_log_item:
+			serviceEntry = (ServiceEntry) item.value;
+			TextView milage = (TextView) rowView.findViewById(R.id.service_log_milage_at_service);
+			TextView type = (TextView) rowView.findViewById(R.id.service_log_service_type);
+			TextView location = (TextView) rowView.findViewById(R.id.service_log_service_location);
+			service_log_info_view.setVisibility(View.VISIBLE);
+			milage.setText("" + serviceEntry.milage_when_performed);
+			type.setText(serviceEntry.description);
+			location.setText(serviceEntry.location_performed);
+			break;
 		}
 
 		rowView.setTag(item);
