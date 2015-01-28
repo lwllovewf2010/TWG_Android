@@ -6,12 +6,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.location.Location;
 import android.preference.PreferenceManager;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.modusgo.dd.LocationService;
 import com.modusgo.ubi.Constants;
+import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.requesttasks.SendEventsRequest;
 
 public class Device {
@@ -117,6 +117,18 @@ public class Device {
 		}
 
 		System.out.println("final Tracking mode: "+newTrackingMode);
+	}
+	
+	public static void cleanDeviceSpecificData(Context context){
+		DbHelper dbHelper = DbHelper.getInstance(context);
+    	dbHelper.deleteTrackingEvents();
+    	dbHelper.close();
+    	
+    	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+    	Editor e = prefs.edit();
+    	e.putString(Constants.PREF_JASTEC_VEHICLE_VIN, "");
+    	e.putString(Constants.PREF_JASTEC_DTCS, "");
+    	e.commit();
 	}
 	
 	public static boolean checkOBDInTrip(boolean inTrip, LatLng deviceLocation, LatLng mobileLocation){

@@ -1508,6 +1508,23 @@ public class DbHelper extends SQLiteOpenHelper {
 		closeDatabase();
 	}
 	
+	public void deleteTrackingEvents(){
+		SQLiteDatabase database = openDatabase();
+		
+		if(database!=null){
+			
+		    SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+TrackingEntry.TABLE_NAME);
+		    database.beginTransaction();
+		    removeStatement.clearBindings();
+	        removeStatement.execute();
+	        database.setTransactionSuccessful();
+		    database.endTransaction();
+		    removeStatement.close();
+		    
+		}
+		closeDatabase();
+	}
+	
 	private String buildSQLStatementString(String start, String tableName, String[] fields){
 		StringBuilder sql = new StringBuilder(start + " INTO " + tableName +" (");
 		

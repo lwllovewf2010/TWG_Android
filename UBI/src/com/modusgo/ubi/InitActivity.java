@@ -283,7 +283,12 @@ public class InitActivity extends FragmentActivity {
 						
 						if(responseJSON.has("device")){
 							JSONObject deviceJSON = responseJSON.getJSONObject("device");
-							e.putString(Device.PREF_DEVICE_TYPE, deviceJSON.optString("type"));
+							
+							String newDeviceType = deviceJSON.optString("type");
+							if(!newDeviceType.equals(prefs.getString(Device.PREF_DEVICE_TYPE, "")))
+								Device.cleanDeviceSpecificData(getApplicationContext());
+							e.putString(Device.PREF_DEVICE_TYPE, newDeviceType);
+							
 							e.putString(Device.PREF_DEVICE_MEID, deviceJSON.optString("meid"));
 							e.putBoolean(Device.PREF_DEVICE_EVENTS, deviceJSON.optBoolean("events"));
 							e.putBoolean(Device.PREF_DEVICE_IN_TRIP, !TextUtils.isEmpty(deviceJSON.optString("in_trip")));
