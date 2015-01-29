@@ -15,6 +15,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -57,7 +58,6 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	private static final int PERMANENT_NOTIFICATION_ID = 30;
 	private static final int SERVICES_DISABLED_NOTIFICATION_ID = 29;
 	private static final int IBEACON_DECLINE_NOTIFICATION_ID = 28;
-	private static final int PLUGIN_YOUR_PHONE_NOTIFICATION_ID = 27;
 
 	private static final float TRIP_START_SPEED = 15f/3.6f;
 	private static final float TRIP_STAY_SPEED = 10f/3.6f;
@@ -147,7 +147,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		
 		if(!prefs.getString(Constants.PREF_AUTH_KEY, "").equals("")){
 			updateServiceMode();
-			updateNotification();
+			updateNotification(false);
 			
 			setUpLocationClientIfNeeded();
 	        if(!mLocationClient.isConnected() || !mLocationClient.isConnecting() && !mInProgress)
@@ -168,7 +168,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	    	        	
 	    	        	if(!prefs.getString(Constants.PREF_AUTH_KEY, "").equals("")){
 	    		        	new GetDeviceInfoRequest(LocationService.this).execute();
-	    		        	updateNotification();
+	    		        	updateNotification(false);
 	    		            checkIgnitionHandler.postDelayed(this, GET_DEVICE_FREQUENCY);
 	    	        	}
 	    	        }
@@ -407,7 +407,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 
 		Intent resultIntent = new Intent(this, TripDeclineActivity.class);
 		
-		showNotification(IBEACON_DECLINE_NOTIFICATION_ID, "Trip Tracking Started! If you are not driving please tap here.", resultIntent);
+		showNotification(IBEACON_DECLINE_NOTIFICATION_ID, "Trip Tracking Started! If you are not driving please tap here.", resultIntent, false);
 		
     	Runnable cancelNotificationRunnable = new Runnable() {
 	        @Override
@@ -421,7 +421,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
     	cancelNotificationHandler.postDelayed(cancelNotificationRunnable, 10*1000);
 	}
 	
-	private void updateNotification(){
+	private void updateNotification(boolean sonundAndVibration){
 		
 		String servicesToEnable = "";
 		int servicesToEnableCount = 0;
@@ -450,18 +450,40 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		}
 
 		if(servicesToEnableCount>0){
-	    	showNotification(SERVICES_DISABLED_NOTIFICATION_ID, "Please, enable next service" + (servicesToEnableCount > 1 ? "s" : "") + " for better experience: "+servicesToEnable, new Intent(android.provider.Settings.ACTION_SETTINGS));
+	    	showNotification(SERVICES_DISABLED_NOTIFICATION_ID,
+	    			"Please, enable next service" + (servicesToEnableCount > 1 ? "s" : "") + " for better experience: "+servicesToEnable,
+	    			new Intent(android.provider.Settings.ACTION_SETTINGS),
+	    			!sonundAndVibration);
 		}
 		
+		boolean inTrip = prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false);
+		String deviceType = prefs.getString(Device.PREF_DEVICE_TYPE, "");
+    	
+		String notificationText = "Trip Tracking " + (inTrip ? "Started" : "Stopped.") /*+ " Mode: " + prefs.getString(Device.PREF_CURRENT_TRACKING_MODE, "none") + "."*/;
+		
+		if(inTrip){
+			if(!prefs.getBoolean(Constants.PREF_CHARGER_CONNECTED, false) && !deviceType.equals(Device.DEVICE_TYPE_OBD)){
+				notificationText += ": Don't forget to plugin your phone. Your battery will thank you!";
+			}
+			notificationText += " Drive Safe!";
+		}
 		
 		NotificationCompat.Builder mBuilder =
 		        new NotificationCompat.Builder(this)
 		        .setSmallIcon(R.drawable.ic_launcher)
-		        .setContentTitle(getResources().getString(R.string.app_name)) 
-		        .setContentText("Your trip is " + ((prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false) ? "in progress." : "stopped.") + 
-		        		" Mode: " + prefs.getString(Device.PREF_CURRENT_TRACKING_MODE, "none")));
+		        .setContentTitle(getResources().getString(R.string.app_name))
+		        .setContentText(notificationText);
+		
+		if(sonundAndVibration && !deviceType.equals(Device.DEVICE_TYPE_OBD)){
+			mBuilder
+	        .setVibrate(inTrip ? new long[]{0, 1000} : new long[]{0, 400, 200, 400})
+	        .setSound(Uri.parse("android.resource://" + getPackageName() + "/" + (inTrip ? R.raw.beep_sound : R.raw.double_beep_sound)));
+		}
 
 		Intent resultIntent = new Intent(this, InitActivity.class);
+		
+		mBuilder.setStyle(new NotificationCompat.BigTextStyle()
+        .bigText(notificationText));
 
 		PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_CANCEL_CURRENT);//stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 		mBuilder.setContentIntent(resultPendingIntent);
@@ -469,6 +491,28 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		n.flags |= Notification.FLAG_ONGOING_EVENT;
 		
 		startForeground(PERMANENT_NOTIFICATION_ID, n);
+	}
+	
+	private void showNotification(int id, String message, Intent resultIntent, boolean soundAndVibration){
+		NotificationCompat.Builder mBuilder =
+		        new NotificationCompat.Builder(this)
+		        .setSmallIcon(R.drawable.ic_launcher)
+		        .setContentTitle(getString(R.string.app_name))
+		        .setContentText(message)
+		        .setAutoCancel(true);
+		
+
+		Notification n = mBuilder.build();
+		if(soundAndVibration){
+			n.defaults |= Notification.DEFAULT_SOUND;
+			n.defaults |= Notification.DEFAULT_VIBRATE;
+		}
+		
+		PendingIntent resultPendingIntent = PendingIntent.getActivity(this,id,resultIntent,Intent.FLAG_ACTIVITY_NEW_TASK);
+		mBuilder.setContentIntent(resultPendingIntent);
+		
+		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		mNotificationManager.notify(id, n);
 	}
 	
 	private boolean isLocationServicesEnabled(){
@@ -495,32 +539,6 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		    else
 		    	return false;
 		}
-	}
-	
-	private void showNotification(int id, String message, Intent resultIntent){
-		NotificationCompat.Builder mBuilder =
-		        new NotificationCompat.Builder(this)
-		        .setSmallIcon(R.drawable.ic_launcher)
-		        .setContentTitle(getString(R.string.app_name))
-		        .setContentText(message)
-		        .setAutoCancel(true);
-		
-
-		Notification n = mBuilder.build();
-		n.defaults |= Notification.DEFAULT_SOUND;
-		n.defaults |= Notification.DEFAULT_VIBRATE;
-		
-		PendingIntent resultPendingIntent = PendingIntent.getActivity(this,id,resultIntent,Intent.FLAG_ACTIVITY_NEW_TASK);
-		mBuilder.setContentIntent(resultPendingIntent);
-		
-		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		mNotificationManager.notify(id, n);
-	}
-	
-	private void showPluginYourPhoneNotificationIfNeeded(){
-		String deviceType = prefs.getString(Device.PREF_DEVICE_TYPE, "");
-    	if(!deviceType.equals(Device.DEVICE_TYPE_OBD))
-    		showNotification(PLUGIN_YOUR_PHONE_NOTIFICATION_ID, "Don't forget to plugin your phone. Your battery will thank you!", new Intent(this, InitActivity.class));
 	}
 	
 	private void updateLocationUpdatesHandler(){
@@ -648,11 +666,12 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	    		stayFromMillis = 0;
 	    		lastLocationUpdateTime = System.currentTimeMillis();
 	        	updateLocationUpdatesHandler();
-	        	showPluginYourPhoneNotificationIfNeeded();	        	
+	    		updateNotification(true); 	
 			}
 			else if(event.equals(EVENT_TRIP_STOP)){
 				e.putBoolean(Device.PREF_IN_TRIP_NOW, false).commit();
-				new SendEventsRequest(this, true).execute();
+				new SendEventsRequest(this, true).execute();    
+	    		updateNotification(true);
 			}
 			else
 				e.commit();
@@ -674,7 +693,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	    	dbhelper.close();
 	    	
 	    	if(!TextUtils.isEmpty(event))
-	    		updateNotification();
+	    		updateNotification(false);
         }
 	   	
         Device.checkDevice(this);
@@ -698,11 +717,12 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 			e.putBoolean(Device.PREF_IN_TRIP_NOW, true).commit();
 			stayFromMillis = 0;
 			lastLocationUpdateTime = System.currentTimeMillis();
-        	showPluginYourPhoneNotificationIfNeeded();		
+    		updateNotification(true);
 		}
 		else if(event.equals(EVENT_TRIP_STOP)){
 			e.putBoolean(Device.PREF_IN_TRIP_NOW, false).commit();
-			new SendEventsRequest(this, true).execute();
+			new SendEventsRequest(this, true).execute();    
+    		updateNotification(true);
 			
 			if(lastBeaconDisconnectMillis!=0)
 				eventTimeMillis = lastBeaconDisconnectMillis;
@@ -726,7 +746,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		
 		Bugsnag.notify(new RuntimeException("event: "+event));
 		updateLocationUpdatesHandler();
-		updateNotification();
+		updateNotification(false);
         Device.checkDevice(this);
         
 	}
