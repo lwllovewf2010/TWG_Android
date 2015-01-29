@@ -62,6 +62,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	private static final float TRIP_START_SPEED = 15f/3.6f;
 	private static final float TRIP_STAY_SPEED = 10f/3.6f;
 	private static final int MAX_STAY_TIME = 2*60*1000;
+	private static final int MAX_BEACON_NO_CONNECTION_STAY_TIME = 10*1000;
 	
 	public static final int GET_DEVICE_FREQUENCY = 60*60*1000;
 	
@@ -569,7 +570,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		    	        	System.out.println("checkLocationUpdatesRunnable");
 		    	        	if(prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false)){
 			    	        	if(System.currentTimeMillis() - lastLocationUpdateTime > MAX_STAY_TIME ||
-			    	        			(deviceType.equals(Device.DEVICE_TYPE_IBEACON) && !beaconConnected && System.currentTimeMillis() - lastBeaconDisconnectMillis > MAX_STAY_TIME)){
+			    	        			(deviceType.equals(Device.DEVICE_TYPE_IBEACON) && !beaconConnected && System.currentTimeMillis() - lastBeaconDisconnectMillis > MAX_BEACON_NO_CONNECTION_STAY_TIME)){
 			    	        		Bugsnag.notify(new RuntimeException("Trip stop, no location for 2 minutes"));
 			    	        		System.out.println("Trip stop, no location for 2 minutes");
 			    	        		savePoint(EVENT_TRIP_STOP);
