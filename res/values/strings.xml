@@ -9,6 +9,7 @@
 	<string name="ServiceLocation">Service Location:</string>
 	<string name="ServiceType">Service Type:</string>
     <string name="VehicleInformation"><b>VEHICLE INFORMATION</b></string>
+    <string name="VehicleConditionAsOf">VEHICLE CONDITION AS OF</string>
 	<string name="WhenToReplace">When To Replace</string>
 	
     <string name="app_name">TWG</string>

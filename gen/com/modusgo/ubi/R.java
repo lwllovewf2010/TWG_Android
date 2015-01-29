@@ -2768,22 +2768,23 @@ containing a value of this type.
     }
     public static final class string {
         public static final int Alerts=0x7f060031;
-        public static final int CallScheduleService=0x7f060054;
-        public static final int CallService=0x7f060056;
-        public static final int Diagnostics=0x7f060058;
+        public static final int CallScheduleService=0x7f060055;
+        public static final int CallService=0x7f060057;
+        public static final int Diagnostics=0x7f060059;
         public static final int DiagnosticsTroubleCodeDetails=0x7f060032;
         public static final int GatheringDiagnosticInformation=0x7f060033;
-        public static final int LogFor=0x7f060057;
+        public static final int LogFor=0x7f060058;
         public static final int MilageAtService=0x7f060034;
         public static final int RecallUpdate=0x7f060035;
         public static final int ReplaceIn=0x7f060036;
-        public static final int Service=0x7f060059;
+        public static final int Service=0x7f06005a;
         public static final int ServiceLocation=0x7f060037;
-        public static final int ServiceLog=0x7f06005a;
+        public static final int ServiceLog=0x7f06005b;
         public static final int ServiceType=0x7f060038;
+        public static final int VehicleConditionAsOf=0x7f06003a;
         public static final int VehicleInformation=0x7f060039;
-        public static final int ViewServiceLog=0x7f060055;
-        public static final int WhenToReplace=0x7f06003a;
+        public static final int ViewServiceLog=0x7f060056;
+        public static final int WhenToReplace=0x7f06003b;
         /**  Content description for the action bar "home" affordance. [CHAR LIMIT=NONE] 
          */
         public static final int abc_action_bar_home_description=0x7f060025;
@@ -2825,13 +2826,13 @@ containing a value of this type.
          */
         public static final int abc_shareactionprovider_share_with_application=0x7f06002f;
         public static final int accept=0x7f060003;
-        public static final int action_settings=0x7f06003b;
-        public static final int add=0x7f06003f;
-        public static final int aggression=0x7f06004f;
-        public static final int anticipation=0x7f06004e;
+        public static final int action_settings=0x7f06003c;
+        public static final int add=0x7f060040;
+        public static final int aggression=0x7f060050;
+        public static final int anticipation=0x7f06004f;
         public static final int app_name=0x7f060000;
-        public static final int checkbox1_summary=0x7f060044;
-        public static final int checkbox1_title=0x7f060043;
+        public static final int checkbox1_summary=0x7f060045;
+        public static final int checkbox1_title=0x7f060044;
         /**   Text for notification shown when the Android Wear apps needs to be updated. Only shown on the wearable. [CHAR LIMIT=NONE] 
          */
         public static final int common_android_wear_notification_needs_update_text=0x7f06000a;
@@ -2931,56 +2932,56 @@ containing a value of this type.
         /**  Long form sign-in button text [CHAR LIMIT=30] 
          */
         public static final int common_signin_button_text_long=0x7f060021;
-        public static final int completeness=0x7f060051;
-        public static final int consistency=0x7f060052;
+        public static final int completeness=0x7f060052;
+        public static final int consistency=0x7f060053;
         public static final int create_calendar_message=0x7f060006;
         public static final int create_calendar_title=0x7f060005;
         public static final int decline=0x7f060004;
-        public static final int distracted_driving=0x7f06004a;
-        public static final int edittext1_summary=0x7f060046;
-        public static final int edittext1_title=0x7f060045;
-        public static final int frag1_text=0x7f06003d;
-        public static final int frag2_text=0x7f06003e;
-        public static final int harsh_accel=0x7f060049;
-        public static final int harsh_braking=0x7f06004c;
-        public static final int hello_world=0x7f06003c;
-        public static final int list1_summary=0x7f060048;
-        public static final int list1_title=0x7f060047;
-        public static final int pref_default_display_name=0x7f060060;
-        public static final int pref_description_social_recommendations=0x7f06005e;
+        public static final int distracted_driving=0x7f06004b;
+        public static final int edittext1_summary=0x7f060047;
+        public static final int edittext1_title=0x7f060046;
+        public static final int frag1_text=0x7f06003e;
+        public static final int frag2_text=0x7f06003f;
+        public static final int harsh_accel=0x7f06004a;
+        public static final int harsh_braking=0x7f06004d;
+        public static final int hello_world=0x7f06003d;
+        public static final int list1_summary=0x7f060049;
+        public static final int list1_title=0x7f060048;
+        public static final int pref_default_display_name=0x7f060061;
+        public static final int pref_description_social_recommendations=0x7f06005f;
         /**  Example settings for Data & Sync 
          */
-        public static final int pref_header_data_sync=0x7f060062;
+        public static final int pref_header_data_sync=0x7f060063;
         /**  Strings related to Settings 
  Example General settings 
          */
-        public static final int pref_header_general=0x7f06005c;
+        public static final int pref_header_general=0x7f06005d;
         /**  Example settings for Notifications 
          */
-        public static final int pref_header_notifications=0x7f060065;
-        public static final int pref_ringtone_silent=0x7f060068;
-        public static final int pref_title_add_friends_to_messages=0x7f060061;
-        public static final int pref_title_display_name=0x7f06005f;
-        public static final int pref_title_new_message_notifications=0x7f060066;
-        public static final int pref_title_ringtone=0x7f060067;
-        public static final int pref_title_social_recommendations=0x7f06005d;
-        public static final int pref_title_sync_frequency=0x7f060063;
-        public static final int pref_title_system_sync_settings=0x7f060064;
-        public static final int pref_title_vibrate=0x7f060069;
-        public static final int remove=0x7f060040;
-        public static final int replace=0x7f060041;
-        public static final int smoothness=0x7f060050;
-        public static final int speeding=0x7f06004b;
-        public static final int stack=0x7f060042;
+        public static final int pref_header_notifications=0x7f060066;
+        public static final int pref_ringtone_silent=0x7f060069;
+        public static final int pref_title_add_friends_to_messages=0x7f060062;
+        public static final int pref_title_display_name=0x7f060060;
+        public static final int pref_title_new_message_notifications=0x7f060067;
+        public static final int pref_title_ringtone=0x7f060068;
+        public static final int pref_title_social_recommendations=0x7f06005e;
+        public static final int pref_title_sync_frequency=0x7f060064;
+        public static final int pref_title_system_sync_settings=0x7f060065;
+        public static final int pref_title_vibrate=0x7f06006a;
+        public static final int remove=0x7f060041;
+        public static final int replace=0x7f060042;
+        public static final int smoothness=0x7f060051;
+        public static final int speeding=0x7f06004c;
+        public static final int stack=0x7f060043;
         public static final int store_picture_message=0x7f060002;
         public static final int store_picture_title=0x7f060001;
-        public static final int title_activity_settings=0x7f06005b;
-        public static final int use_of_speed=0x7f06004d;
+        public static final int title_activity_settings=0x7f06005c;
+        public static final int use_of_speed=0x7f06004e;
         /**  Text on a placeholder buy button when Google Play services is not
          available or up-to-date 
          */
         public static final int wallet_buy_button_place_holder=0x7f060023;
-        public static final int your_score=0x7f060053;
+        public static final int your_score=0x7f060054;
     }
     public static final class style {
         /** 

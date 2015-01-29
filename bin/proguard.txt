@@ -104,97 +104,97 @@
 # view res/layout/slidingmenumain.xml #generated:2
 -keep class com.jeremyfeinstein.slidingmenu.lib.SlidingMenu { <init>(...); }
 
-# view AndroidManifest.xml #generated:256
+# view AndroidManifest.xml #generated:257
 -keep class com.modusgo.dd.CallReceiver { <init>(...); }
 
-# view AndroidManifest.xml #generated:240
+# view AndroidManifest.xml #generated:241
 -keep class com.modusgo.dd.CallSaverService { <init>(...); }
 
-# view AndroidManifest.xml #generated:268
+# view AndroidManifest.xml #generated:269
 -keep class com.modusgo.dd.ChargerConnectionReceiver { <init>(...); }
 
-# view AndroidManifest.xml #generated:262
+# view AndroidManifest.xml #generated:263
 -keep class com.modusgo.dd.GcmBroadcastReceiver { <init>(...); }
 
-# view AndroidManifest.xml #generated:248
+# view AndroidManifest.xml #generated:249
 -keep class com.modusgo.dd.GcmIntentService { <init>(...); }
 
-# view AndroidManifest.xml #generated:236
+# view AndroidManifest.xml #generated:237
 -keep class com.modusgo.dd.LocationService { <init>(...); }
 
-# view AndroidManifest.xml #generated:250
+# view AndroidManifest.xml #generated:251
 -keep class com.modusgo.dd.PhoneScreenOnOffReceiver { <init>(...); }
 
-# view AndroidManifest.xml #generated:244
+# view AndroidManifest.xml #generated:245
 -keep class com.modusgo.dd.PhoneUsageSaverService { <init>(...); }
 
-# view AndroidManifest.xml #generated:61
+# view AndroidManifest.xml #generated:62
 -keep class com.modusgo.dd.RegisterByCodeActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:232
+# view AndroidManifest.xml #generated:233
 -keep class com.modusgo.dd.TrackingStatusService { <init>(...); }
 
-# view AndroidManifest.xml #generated:223
+# view AndroidManifest.xml #generated:224
 -keep class com.modusgo.ubi.AlertMapActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:120
+# view AndroidManifest.xml #generated:121
 -keep class com.modusgo.ubi.AlertsActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:88
+# view AndroidManifest.xml #generated:89
 -keep class com.modusgo.ubi.CompareActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:166
+# view AndroidManifest.xml #generated:167
 -keep class com.modusgo.ubi.DiagnosticDetailActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:97
+# view AndroidManifest.xml #generated:98
 -keep class com.modusgo.ubi.DriverActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:79
+# view AndroidManifest.xml #generated:80
 -keep class com.modusgo.ubi.DriverSetupActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:187
+# view AndroidManifest.xml #generated:188
 -keep class com.modusgo.ubi.DriversLocationsActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:152
+# view AndroidManifest.xml #generated:153
 -keep class com.modusgo.ubi.EducationActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:159
+# view AndroidManifest.xml #generated:160
 -keep class com.modusgo.ubi.FindMechanicActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:145
+# view AndroidManifest.xml #generated:146
 -keep class com.modusgo.ubi.FindMyCarActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:138
+# view AndroidManifest.xml #generated:139
 -keep class com.modusgo.ubi.GeofenceActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:74
+# view AndroidManifest.xml #generated:75
 -keep class com.modusgo.ubi.HomeActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:41
+# view AndroidManifest.xml #generated:42
 -keep class com.modusgo.ubi.InitActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:106
+# view AndroidManifest.xml #generated:107
 -keep class com.modusgo.ubi.MainActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:194
+# view AndroidManifest.xml #generated:195
 -keep class com.modusgo.ubi.MapActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:173
+# view AndroidManifest.xml #generated:174
 -keep class com.modusgo.ubi.RecallActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:215
+# view AndroidManifest.xml #generated:216
 -keep class com.modusgo.ubi.ScoreCirclesActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:201
+# view AndroidManifest.xml #generated:202
 -keep class com.modusgo.ubi.ScoreInfoActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:208
+# view AndroidManifest.xml #generated:209
 -keep class com.modusgo.ubi.ScorePieChartActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:180
+# view AndroidManifest.xml #generated:181
 -keep class com.modusgo.ubi.ServiceLogActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:110
+# view AndroidManifest.xml #generated:111
 -keep class com.modusgo.ubi.SettingsActivity { <init>(...); }
 
 # view res/xml/pref_headers.xml #generated:11
@@ -208,13 +208,13 @@
 # view v14/res/xml-v14/pref_headers.xml #generated:8
 -keep class com.modusgo.ubi.SettingsActivity$NotificationPreferenceFragment { <init>(...); }
 
-# view AndroidManifest.xml #generated:51
+# view AndroidManifest.xml #generated:52
 -keep class com.modusgo.ubi.SignInActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:129
+# view AndroidManifest.xml #generated:130
 -keep class com.modusgo.ubi.TripActivity { <init>(...); }
 
-# view AndroidManifest.xml #generated:56
+# view AndroidManifest.xml #generated:57
 -keep class com.modusgo.ubi.WelcomeActivity { <init>(...); }
 
 # view res/layout/drawer_list_item.xml #generated:1
@@ -436,6 +436,6 @@
 # view res/layout/fragment_main.xml #generated:22
 -keep class com.viewpagerindicator.CirclePageIndicator { <init>(...); }
 
-# view AndroidManifest.xml #generated:230
+# view AndroidManifest.xml #generated:231
 -keep class net.hockeyapp.android.UpdateActivity { <init>(...); }
 

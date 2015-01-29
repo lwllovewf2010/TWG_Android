@@ -248,7 +248,7 @@
                         android:id="@+id/tvDateLabel"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="LAST TRIP"
+                        android:text="@string/VehicleConditionAsOf"
                         android:textColor="#3c454f"
                         android:textSize="10sp"
                         ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
