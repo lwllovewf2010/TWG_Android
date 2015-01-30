@@ -60,62 +60,63 @@ public class InitActivity extends FragmentActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_init);
+//		setContentView(R.layout.activity_init);
 	    getActionBar().hide();
-	    
+//	    
 	    if(!ImageLoader.getInstance().isInited()){
 	        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext()).build();
 			ImageLoader.getInstance().init(config);
 	    }
 	    
 	    prefs = PreferenceManager.getDefaultSharedPreferences(InitActivity.this);
-	    clientId = prefs.getString(Constants.PREF_CLIENT_ID, "");
-	    
-	    ImageView imageBg = (ImageView) findViewById(R.id.imageBg);
-        DisplayImageOptions options = new DisplayImageOptions.Builder()
-        .cacheInMemory(true)
-        .cacheOnDisk(true)
-        .build();
-    	
-    	ImageLoader.getInstance().displayImage(prefs.getString(Constants.PREF_BR_LOGIN_SCREEN_BG_IMAGE, ""), imageBg, options);
-	    
-	    layoutFields = findViewById(R.id.llFields);
-	    layoutProgress = findViewById(R.id.rlProgress);
-	    tvError = (TextView) findViewById(R.id.tvError);
-	    tvProgress = (TextView) findViewById(R.id.tvProgress);
-	    editClientId = (EditText)findViewById(R.id.editClientId);
-	    
-	    fadeInProgress = getFadeInAnmation(layoutProgress);
-		fadeOutProgress = getFadeOutAnmation(layoutProgress);
-		fadeInFields = getFadeInAnmation(layoutFields);
-		fadeOutFields = getFadeOutAnmation(layoutFields);
-	    
-	    editClientId.setText(clientId);
-	    
-
+//	    clientId = prefs.getString(Constants.PREF_CLIENT_ID, "");
+	    clientId = "";
+//	    
+//	    ImageView imageBg = (ImageView) findViewById(R.id.imageBg);
+//        DisplayImageOptions options = new DisplayImageOptions.Builder()
+//        .cacheInMemory(true)
+//        .cacheOnDisk(true)
+//        .build();
+//    	
+//    	ImageLoader.getInstance().displayImage(prefs.getString(Constants.PREF_BR_LOGIN_SCREEN_BG_IMAGE, ""), imageBg, options);
+//	    
+//	    layoutFields = findViewById(R.id.llFields);
+//	    layoutProgress = findViewById(R.id.rlProgress);
+//	    tvError = (TextView) findViewById(R.id.tvError);
+//	    tvProgress = (TextView) findViewById(R.id.tvProgress);
+//	    editClientId = (EditText)findViewById(R.id.editClientId);
+//	    
+//	    fadeInProgress = getFadeInAnmation(layoutProgress);
+//		fadeOutProgress = getFadeOutAnmation(layoutProgress);
+//		fadeInFields = getFadeInAnmation(layoutFields);
+//		fadeOutFields = getFadeOutAnmation(layoutFields);
+//	    
+//	    editClientId.setText(clientId);
+//	    
+//
     	Intent i = new Intent(this, CallSaverService.class);
     	i.putExtra("action", TelephonyManager.EXTRA_STATE_IDLE);
     	startService(i);
-	    
-	    
-	    if(!clientId.equals("")){
-		    layoutFields.setVisibility(View.GONE);
-	    	new ServerCheckTask().execute();
-	    }
-	    
-	    Button btnSubmit = (Button)findViewById(R.id.btnSubmit);
-	    
-	    ProgressBar pb = (ProgressBar)findViewById(R.id.progressLogging);
-	    Animation a = AnimationUtils.loadAnimation(this, R.anim.rotate);
-	    a.setDuration(1000);
-	    pb.startAnimation(a);
-	    
-	    btnSubmit.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
+//	    
+//	    
+//	    if(!clientId.equals("")){
+//		    layoutFields.setVisibility(View.GONE);
+//	    	new ServerCheckTask().execute();
+//	    }
+//	    
+//	    Button btnSubmit = (Button)findViewById(R.id.btnSubmit);
+//	    
+//	    ProgressBar pb = (ProgressBar)findViewById(R.id.progressLogging);
+//	    Animation a = AnimationUtils.loadAnimation(this, R.anim.rotate);
+//	    a.setDuration(1000);
+//	    pb.startAnimation(a);
+//	    
+//	    btnSubmit.setOnClickListener(new OnClickListener() {
+//			@Override
+//			public void onClick(View v) {
 				new ServerCheckTask().execute();
-			}
-		});
+//			}
+//		});
 	}
 	
 	public class MyAnimationListener implements AnimationListener {
@@ -163,23 +164,24 @@ public class InitActivity extends FragmentActivity {
 		
 		@Override
 		protected void onPreExecute() {
-			if(layoutProgress.getVisibility()==View.GONE){
-				layoutProgress.setVisibility(View.VISIBLE);
-				layoutProgress.startAnimation(fadeInProgress);
-				layoutFields.startAnimation(fadeOutFields);
-			}
+//			if(layoutProgress.getVisibility()==View.GONE){
+//				layoutProgress.setVisibility(View.VISIBLE);
+//				layoutProgress.startAnimation(fadeInProgress);
+//				layoutFields.startAnimation(fadeOutFields);
+//			}
 			super.onPreExecute();
 		}
 		
 		@Override
 		protected Boolean doInBackground(Void... params) {
 			
-			String clientId = editClientId.getText().toString();
+//			String clientId = editClientId.getText().toString();
+			clientId = "";
 
 	        requestParams.add(new BasicNameValuePair("auth_key", prefs.getString(Constants.PREF_AUTH_KEY, "")));
 	        System.out.println(requestParams);
 			
-			HttpResponse result = new RequestGet(Constants.API_BASE_URL_PREFIX/*+clientId*/+Constants.API_BASE_URL_POSTFIX+"info.json", requestParams).execute();
+			HttpResponse result = new RequestGet(Constants.API_BASE_URL_PREFIX+clientId+Constants.API_BASE_URL_POSTFIX+"info.json", requestParams).execute();
 			if(result==null){
 				status = 0;
 				//message = "Connection error";

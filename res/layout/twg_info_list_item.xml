@@ -150,47 +150,18 @@
             android:orientation="vertical" >
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="3dip"
-                android:layout_marginTop="3dip"
-                android:text="@string/WhenToReplace"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/service_replace_interval"
+                android:id="@+id/service_detail_replace_every"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="3dip"
                 android:layout_marginTop="3dip" />
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/service_detail_next_service"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="2dip"
-                android:layout_marginTop="2dip"
-                android:orientation="horizontal"
-                android:weightSum="2" >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:layout_marginBottom="2dip"
-                    android:layout_marginTop="2dip"
-                    android:layout_weight="1"
-                    android:text="@string/ReplaceIn"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/service_remaining"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:layout_marginBottom="2dip"
-                    android:layout_marginTop="2dip"
-                    android:layout_weight="1" />
-            </LinearLayout>
+                android:layout_marginBottom="3dip"
+                android:layout_marginTop="3dip" />
         </LinearLayout>
     </LinearLayout>
 
@@ -202,84 +173,25 @@
         android:layout_height="match_parent"
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
+        android:paddingBottom="5dp"
         android:background="#D0D0D0"
         android:orientation="vertical" >
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/service_log_info_line1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:orientation="horizontal"
-            android:weightSum="2" >
+            android:layout_gravity="left"
+            android:layout_weight="1"
+            android:textColor="#000000" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:layout_weight="1"
-                android:text="@string/MilageAtService"
-                android:textColor="#000000"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/service_log_milage_at_service"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:layout_weight="1"
-                android:gravity="right"
-                android:textColor="#000000" />
-        </LinearLayout>
-
-        <LinearLayout
+        <TextView
+            android:id="@+id/service_log_info_line2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="2" >
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:layout_weight="1"
-                android:text="@string/ServiceType"
-                android:textColor="#000000"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/service_log_service_type"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:layout_weight="1"
-                android:gravity="right"
-                android:textColor="#000000" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="2" >
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:layout_weight="1"
-                android:text="@string/ServiceLocation"
-                android:textColor="#000000"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/service_log_service_location"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:layout_weight="1"
-                android:gravity="right"
-                android:textColor="#000000" />
-        </LinearLayout>
+            android:layout_gravity="left"
+            android:layout_weight="1"
+            android:textColor="#000000" />
     </LinearLayout>
 
 </FrameLayout>

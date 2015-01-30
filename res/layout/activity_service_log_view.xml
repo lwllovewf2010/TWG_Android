@@ -10,18 +10,48 @@
 
     <!-- The main content view -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
-
-    <ListView
-        android:id="@+id/service_log_info_list"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
-    </ListView>
 
-</LinearLayout>
+        <LinearLayout
+            android:id="@+id/service_log_buttons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="3dip"
+            android:layout_marginTop="3dip"
+            android:orientation="horizontal"
+            android:weightSum="2" >
+
+            <Button
+                android:id="@+id/service_log_add_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginBottom="3dip"
+                android:layout_marginTop="3dip"
+                android:layout_weight="1"
+                android:text="@string/Add" />
+
+            <Button
+                android:id="@+id/service_log_export_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginBottom="3dip"
+                android:layout_marginTop="3dip"
+                android:layout_weight="1"
+                android:text="@string/Export" />
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/service_log_info_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/service_log_buttons" >
+        </ListView>
+    </RelativeLayout>
 
     <!-- The navigation drawer -->
 
@@ -37,6 +67,5 @@
         android:divider="@android:color/transparent"
         android:dividerHeight="0dp"
         android:listSelector="@android:color/transparent" />
-
 
 </android.support.v4.widget.DrawerLayout>

@@ -58,7 +58,7 @@ public class WelcomeActivity extends FragmentActivity {
     	ImageLoader.getInstance().displayImage(prefs.getString(Constants.PREF_BR_LOGIN_SCREEN_BG_IMAGE, ""), imageBg, options);
 	    
 	    
-	    layoutFields = findViewById(R.id.llFields);
+//	    layoutFields = findViewById(R.id.llFields);
 	    layoutProgress = findViewById(R.id.rlProgress);
 	    tvTitle = (TextView) findViewById(R.id.tvTitle);
 	    webView = (WebView) findViewById(R.id.webView);

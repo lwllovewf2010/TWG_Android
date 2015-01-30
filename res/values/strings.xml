@@ -1,17 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="Add">Add</string>
+    <string name="Export">Export</string>
     <string name="Alerts">ALERTS</string>
     <string name="DiagnosticsTroubleCodeDetails">DIAGNOSTICS TROUBLE CODE DETAILS></string>
     <string name="GatheringDiagnosticInformation">Gathering diagnostic information...</string>
 	<string name="MilageAtService">Milage At Service:</string>
     <string name="RecallUpdate">RECALL UPDATE!</string>
-    <string name="ReplaceIn">Replace In:</string>
+    <string name="NextServiceIn">Next Service In: </string>
 	<string name="ServiceLocation">Service Location:</string>
 	<string name="ServiceType">Service Type:</string>
     <string name="VehicleInformation"><b>VEHICLE INFORMATION</b></string>
     <string name="VehicleConditionAsOf">VEHICLE CONDITION AS OF</string>
-	<string name="WhenToReplace">When To Replace</string>
-	
+	<string name="ReplaceEvery">Replace Every</string>
+	<string name="CallScheduleService">Call to Schedule Service</string>
+    <string name="ViewServiceLog">View Service Log</string>
+    <string name="CallService">Call Service</string>
+    <string name="LogFor">LOG FOR:</string>
+    <string name="Diagnostics">Diagnostics</string>
+    <string name="Service">Service</string>
+    <string name="ServiceLog">Service Log</string>
+    <string name="Updated">Updated</string>
+    <string name="YourVehicleHealthCheck">YOUR VEHICLE HEALTH CHECK</string>
+    <string name="DTCStatus">DTC Status</string>
+    <string name="BatteryStatus">Battery Status</string>
+    <string name="EngineTemp">Engine Temp</string>
+	<string name="DTCsReported">DTC\'s Reported</string>
+    <string name="NoIssues">No Issues</string>
+    <string name="UrgentIssues">Urgent Issues</string>
+    
+    
+    
+    
     <string name="app_name">TWG</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
@@ -160,18 +180,5 @@ across all road types and surroundings.<p></font>
 	      ]]>
     </string>
     
-    <string name="CallScheduleService">Call to Schedule Service</string>
-    
-    <string name="ViewServiceLog">View Service Log</string>
-    
-    <string name="CallService">Call Service</string>
-    
-    <string name="LogFor">LOG FOR:</string>
-    
-    <string name="Diagnostics">Diagnostics</string>
-    
-    <string name="Service">Service</string>
-    
-    <string name="ServiceLog">Service Log</string>
     
 </resources>

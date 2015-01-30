@@ -180,8 +180,7 @@ public class MainActivity extends FragmentActivity {
 				holder.tvTitle.setText(menuItems.get(position).text);
 
 				if (menuItems.get(position).equals(MenuItems.LOGOUT))
-					holder.tvTitle.setTextColor(getResources().getColor(
-							R.color.orange));
+					holder.tvTitle.setTextColor(getResources().getColor(R.color.orange));
 
 				// if(menuItems.get(position).equals(MenuItems.AGENT))
 				// holder.imageIcon.setImageResource(R.drawable.ic_external_link);
@@ -496,10 +495,8 @@ public class MainActivity extends FragmentActivity {
 							.commit();
 					stopService(new Intent(MainActivity.this,
 							LocationService.class));
-					Intent intent = new Intent(MainActivity.this,
-							InitActivity.class);
-					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
-							| Intent.FLAG_ACTIVITY_NEW_TASK);
+					Intent intent = new Intent(MainActivity.this, InitActivity.class);
+					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK	| Intent.FLAG_ACTIVITY_NEW_TASK);
 					startActivity(intent);
 					break;
 				}

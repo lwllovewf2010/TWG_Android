@@ -3,18 +3,23 @@
  */
 package com.modusgo.adapters;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import com.modusgo.ubi.DiagnosticsTroubleCode;
 import com.modusgo.ubi.R;
 import com.modusgo.ubi.Recall;
 import com.modusgo.ubi.utils.Maintenance;
-import com.modusgo.ubi.utils.ServiceEntry;
+import com.modusgo.ubi.utils.ServicePerformed;
 import com.modusgo.ubi.utils.TWGListItem;
 import com.modusgo.ubi.utils.TWGListItem.twg_list_item_type;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,7 +71,10 @@ public class TWGInfoArrayAdapter extends ArrayAdapter<TWGListItem>
 		Recall recall = null;
 		DiagnosticsTroubleCode dtc = null;
 		Maintenance maintenance = null;
-		ServiceEntry serviceEntry = null;
+		ServicePerformed serviceEntry = null;
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+		String text = null;
 
 		switch (item.type)
 		{
@@ -94,8 +102,8 @@ public class TWGInfoArrayAdapter extends ArrayAdapter<TWGListItem>
 				hdr.setText(resources.getString(R.string.Alerts));
 			} else if(item.type == twg_list_item_type.li_service_log_hdr)
 			{
-				hdr.setText("LOG FOR: " + (String)item.value);
-				hdr.setTextColor(0x000000);
+				hdr.setText((String)item.value);
+				hdr.setTextColor(0xFF000000);
 			}
 			break;
 		case li_vehicle_info:
@@ -143,23 +151,24 @@ public class TWGInfoArrayAdapter extends ArrayAdapter<TWGListItem>
 			break;
 		case li_service_item:
 			maintenance = (Maintenance) item.value;
-			TextView interval = (TextView) rowView.findViewById(R.id.service_replace_interval);
-			TextView remaining = (TextView) rowView.findViewById(R.id.service_remaining);
+			TextView interval = (TextView) rowView.findViewById(R.id.service_detail_replace_every);
+			TextView remaining = (TextView) rowView.findViewById(R.id.service_detail_next_service);
 			TextView description = (TextView) rowView.findViewById(R.id.service_description);
 			service_info_view.setVisibility(View.VISIBLE);
 			description.setText(maintenance.description);
-			interval.setText("Every " + maintenance.mileage + " miles");
-			remaining.setText("0 miles");
+			text = context.getResources().getString(R.string.ReplaceEvery) + " " + maintenance.mileage + " miles";
+			interval.setText(text);
+			text = context.getResources().getString(R.string.NextServiceIn) + " 0 miles";
+			remaining.setText(text);
 			break;
 		case li_service_log_item:
-			serviceEntry = (ServiceEntry) item.value;
-			TextView milage = (TextView) rowView.findViewById(R.id.service_log_milage_at_service);
-			TextView type = (TextView) rowView.findViewById(R.id.service_log_service_type);
-			TextView location = (TextView) rowView.findViewById(R.id.service_log_service_location);
+			serviceEntry = (ServicePerformed) item.value;
+			TextView line1 = (TextView) rowView.findViewById(R.id.service_log_info_line1);
+			TextView line2 = (TextView) rowView.findViewById(R.id.service_log_info_line2);
 			service_log_info_view.setVisibility(View.VISIBLE);
-			milage.setText("" + serviceEntry.milage_when_performed);
-			type.setText(serviceEntry.description);
-			location.setText(serviceEntry.location_performed);
+			String dateString = sdf.format(serviceEntry.date_performed.getTime());
+			line1.setText("Replaced on " + dateString + " at " + serviceEntry.location_performed);
+			line2.setText("Milage was " + serviceEntry.milage_when_performed);
 			break;
 		}
 
