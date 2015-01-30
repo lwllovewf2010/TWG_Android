@@ -426,6 +426,8 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		
 		String servicesToEnable = "";
 		int servicesToEnableCount = 0;
+		boolean inTrip = prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false);
+		String deviceType = prefs.getString(Device.PREF_DEVICE_TYPE, "");
 		
 		if(prefs.getString(Device.PREF_DEVICE_TYPE, "").equals(Device.DEVICE_TYPE_OBD)){
 			if(prefs.getBoolean(Device.PREF_DEVICE_EVENTS, false)){
@@ -451,15 +453,19 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		}
 
 		if(servicesToEnableCount>0){
-	    	showNotification(SERVICES_DISABLED_NOTIFICATION_ID,
+			if(deviceType.equals(Device.DEVICE_TYPE_IBEACON) && android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN_MR2){
+				showNotification(SERVICES_DISABLED_NOTIFICATION_ID,
+		    		"Your phone does not support iBeacons",
+		    		new Intent(this, InitActivity.class),
+		    		!sonundAndVibration);
+			}
+			else
+				showNotification(SERVICES_DISABLED_NOTIFICATION_ID,
 	    			"Please, enable next service" + (servicesToEnableCount > 1 ? "s" : "") + " for better experience: "+servicesToEnable,
 	    			new Intent(android.provider.Settings.ACTION_SETTINGS),
 	    			!sonundAndVibration);
 		}
 		
-		boolean inTrip = prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false);
-		String deviceType = prefs.getString(Device.PREF_DEVICE_TYPE, "");
-    	
 		String notificationText = "Trip Tracking " + (inTrip ? "Started" : "Stopped.") /*+ " Mode: " + prefs.getString(Device.PREF_CURRENT_TRACKING_MODE, "none") + "."*/;
 		
 		if(inTrip){
@@ -502,15 +508,16 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		        .setContentText(message)
 		        .setAutoCancel(true);
 		
+		PendingIntent resultPendingIntent = PendingIntent.getActivity(this,id,resultIntent,Intent.FLAG_ACTIVITY_NEW_TASK);
+		mBuilder.setContentIntent(resultPendingIntent);
+		mBuilder.setStyle(new NotificationCompat.BigTextStyle()
+        .bigText(message));
 
 		Notification n = mBuilder.build();
 		if(soundAndVibration){
 			n.defaults |= Notification.DEFAULT_SOUND;
 			n.defaults |= Notification.DEFAULT_VIBRATE;
 		}
-		
-		PendingIntent resultPendingIntent = PendingIntent.getActivity(this,id,resultIntent,Intent.FLAG_ACTIVITY_NEW_TASK);
-		mBuilder.setContentIntent(resultPendingIntent);
 		
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		mNotificationManager.notify(id, n);
