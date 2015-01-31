@@ -166,7 +166,7 @@ public class TWGInfoArrayAdapter extends ArrayAdapter<TWGListItem>
 			TextView line1 = (TextView) rowView.findViewById(R.id.service_log_info_line1);
 			TextView line2 = (TextView) rowView.findViewById(R.id.service_log_info_line2);
 			service_log_info_view.setVisibility(View.VISIBLE);
-			String dateString = sdf.format(serviceEntry.date_performed.getTime());
+			String dateString = serviceEntry.date_performed;
 			line1.setText("Replaced on " + dateString + " at " + serviceEntry.location_performed);
 			line2.setText("Milage was " + serviceEntry.milage_when_performed);
 			break;

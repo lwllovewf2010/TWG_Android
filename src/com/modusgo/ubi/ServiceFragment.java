@@ -77,8 +77,7 @@ public class ServiceFragment extends Fragment
 	protected void updateInfo()
 	{
 
-		// --------------------------------------------- Maintenances
-		// ------------------------------------
+		// --------------------------------Maintenances----------------------------
 		c = db.query(MaintenanceEntry.TABLE_NAME, new String[]
 		{ MaintenanceEntry._ID, MaintenanceEntry.COLUMN_NAME_CREATED_AT, MaintenanceEntry.COLUMN_NAME_DESCRIPTION,
 				MaintenanceEntry.COLUMN_NAME_IMPORTANCE, MaintenanceEntry.COLUMN_NAME_MILEAGE,
@@ -122,7 +121,7 @@ public class ServiceFragment extends Fragment
 			public void onClick(View v)
 			{
 				Intent intent = new Intent(getActivity(), ServiceLogActivity.class);
-//				intent.putExtra(ServiceLogActivity.EXTRA_SERVICE_INFO, info_list);
+				intent.putExtra(ServiceLogActivity.VEHICLE_ID, vehicle.id);
 				startActivity(intent);
 			}
 		});

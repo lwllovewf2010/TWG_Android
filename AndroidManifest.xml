@@ -186,6 +186,13 @@
                 android:value="com.modusgo.ubi.DriverActivity" />
         </activity>
         <activity
+            android:name="com.modusgo.ubi.CompleteServiceDialog"
+            android:parentActivityName="com.modusgo.ubi.DriverActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.modusgo.ubi.DriverActivity" />
+        </activity>
+        <activity
             android:name="com.modusgo.ubi.DriversLocationsActivity"
             android:parentActivityName="com.modusgo.ubi.HomeActivity" >
             <meta-data

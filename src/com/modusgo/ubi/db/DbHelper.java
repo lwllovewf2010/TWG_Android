@@ -1,5 +1,6 @@
 package com.modusgo.ubi.db;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
@@ -23,6 +24,7 @@ import com.modusgo.ubi.Trip.Point;
 import com.modusgo.ubi.Vehicle;
 import com.modusgo.ubi.db.AlertContract.AlertEntry;
 import com.modusgo.ubi.db.ScoreInfoContract.ScoreInfoEntry;
+import com.modusgo.ubi.db.ServicePerformedContract.ServicePerformedEntry;
 import com.modusgo.ubi.db.TrackingContract.TrackingEntry;
 import com.modusgo.ubi.db.DTCContract.DTCEntry;
 import com.modusgo.ubi.db.LimitsContract.LimitsEntry;
@@ -39,6 +41,7 @@ import com.modusgo.ubi.db.TripContract.TripEntry;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.modusgo.ubi.db.WarrantyInfoContract.WarrantyInfoEntry;
 import com.modusgo.ubi.utils.Maintenance;
+import com.modusgo.ubi.utils.ServicePerformed;
 import com.modusgo.ubi.utils.WarrantyInformation;
 
 public class DbHelper extends SQLiteOpenHelper {
@@ -244,7 +247,14 @@ public class DbHelper extends SQLiteOpenHelper {
 		    TrackingEntry.COLUMN_NAME_SPEED + FLOAT_TYPE + COMMA_SEP +
 		    TrackingEntry.COLUMN_NAME_EVENT + TEXT_TYPE + COMMA_SEP +
 		    TrackingEntry.COLUMN_NAME_RAW_DATA + TEXT_TYPE + COMMA_SEP +
-			TrackingEntry.COLUMN_NAME_BLOCKED + INT_TYPE + " )"};
+			TrackingEntry.COLUMN_NAME_BLOCKED + INT_TYPE + " ); ",
+			
+		    "CREATE TABLE " + ServicePerformedEntry.TABLE_NAME + " (" +
+		    ServicePerformedEntry._ID + " INTEGER PRIMARY KEY," +
+		    ServicePerformedEntry.COLUMN_NAME_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
+		    ServicePerformedEntry.COLUMN_NAME_DATE + TEXT_TYPE + COMMA_SEP +
+		    ServicePerformedEntry.COLUMN_NAME_LOCATION + TEXT_TYPE + COMMA_SEP +
+			ServicePerformedEntry.COLUMN_NAME_MILAGE + INT_TYPE + " )"};
 
 	private static final String[] SQL_DELETE_ENTRIES = new String[]{
 	"DROP TABLE IF EXISTS " + VehicleEntry.TABLE_NAME,
@@ -263,7 +273,8 @@ public class DbHelper extends SQLiteOpenHelper {
 	"DROP TABLE IF EXISTS " + WarrantyInfoEntry.TABLE_NAME,
 	"DROP TABLE IF EXISTS " + LimitsEntry.TABLE_NAME,
 	"DROP TABLE IF EXISTS " + AlertEntry.TABLE_NAME,
-	"DROP TABLE IF EXISTS " + TrackingEntry.TABLE_NAME};
+	"DROP TABLE IF EXISTS " + TrackingEntry.TABLE_NAME,
+	"DROP TABLE IF EXISTS " + ServicePerformedEntry.TABLE_NAME};
 	
 	// If you change the database schema, you must increment the database version.
 	public static final int DATABASE_VERSION = 49;
@@ -1517,5 +1528,106 @@ public class DbHelper extends SQLiteOpenHelper {
 		
 		return sql.toString();
 	}
+
+	public void saveServicePerformedEvent(ServicePerformed timepoint){
+		SQLiteDatabase database = openDatabase();
+		
+		if(database!=null){
+			
+			String sql = "INSERT INTO "+ ServicePerformedEntry.TABLE_NAME +" ("
+					+ ServicePerformedEntry.COLUMN_NAME_DESCRIPTION + ","
+					+ ServicePerformedEntry.COLUMN_NAME_DATE + ","
+					+ ServicePerformedEntry.COLUMN_NAME_LOCATION + ","
+					+ ServicePerformedEntry.COLUMN_NAME_MILAGE 
+					+ ") VALUES (?,?,?,?);";
+			
+			SQLiteStatement statement = database.compileStatement(sql);
+		    database.beginTransaction();
+		    
+		    statement.clearBindings();
+		    statement.bindString(1, timepoint.description);
+		    statement.bindString(2, timepoint.date_performed);
+		    statement.bindString(3, timepoint.location_performed);
+		    statement.bindLong(  4, timepoint.milage_when_performed);
+		    statement.execute();
+		    
+		    database.setTransactionSuccessful();	
+		    database.endTransaction();
+		    statement.close();
+		}
+		closeDatabase();
+	}
 	
+//	public void setServicePerformedEventsBlock(ArrayList<Long> ids, boolean blocked){
+//		SQLiteDatabase database = openDatabase();
+//		
+//		if(database!=null && ids!=null && ids.size()>0){
+//			
+//			String sIds = "";
+//			int idsSize = ids.size();
+//		    for (int i = 0; i < idsSize; i++) {
+//		    	sIds+= i!=idsSize-1 ? ids.get(i)+"," : ids.get(i);
+//		    }
+//			
+//		    String blockStr = blocked ? "1" : "0";
+//		    
+//		    SQLiteStatement removeStatement = database.compileStatement("UPDATE "+ServicePerformedEntry.TABLE_NAME+"SET " + ServicePerformedEntry.COLUMN_NAME_BLOCKED + 
+//		    		"= '"+blockStr+"' WHERE "+ServicePerformedEntry._ID+" IN (" + sIds + ")");
+//		    database.beginTransaction();
+//		    removeStatement.clearBindings();
+//	        removeStatement.execute();
+//	        database.setTransactionSuccessful();
+//		    database.endTransaction();
+//		    removeStatement.close();
+//		    
+//		}
+//		closeDatabase();
+//	}
+	
+	public void deleteServicePerformedEvents(ArrayList<Long> ids){
+		SQLiteDatabase database = openDatabase();
+		
+		if(database!=null && ids!=null && ids.size()>0){
+			
+			String sIds = "";
+			int idsSize = ids.size();
+		    for (int i = 0; i < idsSize; i++) {
+		    	sIds+= i!=idsSize-1 ? ids.get(i)+"," : ids.get(i);
+		    }
+			
+		    SQLiteStatement removeStatement = database.compileStatement("DELETE FROM "+ServicePerformedEntry.TABLE_NAME+" WHERE "+ServicePerformedEntry._ID +
+		    		" IN (" + sIds + ")");
+		    database.beginTransaction();
+		    removeStatement.clearBindings();
+	        removeStatement.execute();
+	        database.setTransactionSuccessful();
+		    database.endTransaction();
+		    removeStatement.close();
+		    
+		}
+		closeDatabase();
+	}
+	
+//	private String buildSQLStatementString(String start, String tableName, String[] fields)
+//	{
+//		StringBuilder sql = new StringBuilder(start + " INTO " + tableName +" (");
+//		
+//		int fieldsCount = fields.length;
+//		for (int i = 0; i < fieldsCount; i++) {
+//			sql.append(fields[i]);
+//			if(i<fieldsCount-1){
+//				sql.append(",");
+//			}
+//		}
+//		sql.append(") VALUES (");
+//		for (int i = 0; i < fieldsCount; i++) {
+//			sql.append("?");
+//			if(i<fieldsCount-1){
+//				sql.append(", ");
+//			}
+//		}
+//		sql.append(");");
+//		
+//		return sql.toString();
+//	}
 }

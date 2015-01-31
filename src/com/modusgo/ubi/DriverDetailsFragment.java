@@ -277,11 +277,6 @@ public class DriverDetailsFragment extends Fragment implements ConnectionCallbac
 		/*-------------------------Fuel Level------------------------*/
 		View fuelBlock = (View) tvFuelLevel.getParent();
 
-		/***************************** DEBUGGING ONLY ***********************/
-		vehicle.carFuelLevel = 55;
-		vehicle.carFuelUnit = "Galllons";
-		/***************************** DEBUGGING ONLY ***********************/
-
 		if(vehicle.carFuelLevel >= 0 && !TextUtils.isEmpty(vehicle.carFuelUnit))
 		{
 			String fuelLeftString = vehicle.carFuelLevel + vehicle.carFuelUnit;
@@ -320,10 +315,6 @@ public class DriverDetailsFragment extends Fragment implements ConnectionCallbac
 				});
 			} else
 			{
-				// tvFuelLevel.setText("N/A");
-				// tvFuelLevel.setCompoundDrawablesWithIntrinsicBounds(
-				// R.drawable.ic_fuel_green, 0, 0, 0);
-				// fuelBlock.setOnClickListener(null);
 				spaceFuel.setVisibility(View.GONE);
 				fuelBlock.setVisibility(View.GONE);
 			}
@@ -360,17 +351,16 @@ public class DriverDetailsFragment extends Fragment implements ConnectionCallbac
 			d.setColorFilter(filter);
 
 			tvOilLife.setCompoundDrawablesWithIntrinsicBounds(d, null, null, null);
-			// fuelBlock.setOnClickListener(new OnClickListener()
-			// {
-			// @Override
-			// public void onClick(View v)
-			// {
-			// Toast.makeText(
-			// getActivity(),
-			// "The percentage shown is the last known oil level reported from your vehicle.",
-			// Toast.LENGTH_SHORT).show();
-			// }
-			// });
+			fuelBlock.setOnClickListener(new OnClickListener()
+			{
+				@Override
+				public void onClick(View v)
+				{
+					Toast.makeText(getActivity(),
+							"The percentage shown is the last known oil level reported from your vehicle.",
+							Toast.LENGTH_SHORT).show();
+				}
+			});
 		} else
 		{
 			if(!TextUtils.isEmpty(vehiclecarOilStatus))

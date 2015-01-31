@@ -28,8 +28,10 @@
 	<string name="DTCsReported">DTC\'s Reported</string>
     <string name="NoIssues">No Issues</string>
     <string name="UrgentIssues">Urgent Issues</string>
-    
-    
+    <string name="EnterServiceCompletion">Enter Service Completion Info</string>
+    <string name="Done">Done</string>
+    <string name="Cancel">Cancel</string>
+    <string name="Other">Other</string>
     
     
     <string name="app_name">TWG</string>
@@ -179,6 +181,14 @@ across all road types and surroundings.<p></font>
 
 	      ]]>
     </string>
+    
+    <string name="Date">Date</string>
+    
+    <string name="Select">Select</string>
+    
+    <string name="Location">Location</string>
+    
+    <string name="Milage">Milage</string>
     
     
 </resources>

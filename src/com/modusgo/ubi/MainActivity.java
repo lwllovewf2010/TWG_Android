@@ -66,7 +66,8 @@ public class MainActivity extends FragmentActivity {
 		FINDAMECHANIC("FIND MECHANIC", 5), 
 		SETTINGS("SETTINGS", 6), 
 		DRIVERSETUP("DRIVER SETUP", 7), 
-		LOGOUT("LOGOUT", 8);
+		LOGOUT("LOGOUT", 8),
+		EXIT("EXIT", 9);
 		
 		private MenuItems(final String text, final int num) {
 			this.text = text;
@@ -151,6 +152,7 @@ public class MainActivity extends FragmentActivity {
 		menuItems.add(MenuItems.AGENT);
 		// menuItems.add(MenuItems.DRIVERSETUP);
 		menuItems.add(MenuItems.LOGOUT);
+		menuItems.add(MenuItems.EXIT);
 
 		ArrayAdapter<MenuItems> adapter = new ArrayAdapter<MenuItems>(this,
 				R.layout.drawer_list_item, menuItemsArray) {
@@ -499,6 +501,9 @@ public class MainActivity extends FragmentActivity {
 					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK	| Intent.FLAG_ACTIVITY_NEW_TASK);
 					startActivity(intent);
 					break;
+				case EXIT:
+					// EXIT
+					finish();
 				}
 
 				mDrawerLayout.closeDrawers();
