@@ -327,8 +327,10 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 				
 				@Override
 				public void onTripStart() {
-					if(!prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false))
+					if(!prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false)){
+    	        		lastJastecPing = 0;
 						savePoint(EVENT_TRIP_START);
+					}
 				}
 				
 				@Override
@@ -350,6 +352,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	    	        	
 	    	        	if(lastJastecPing!=0 && System.currentTimeMillis() - lastJastecPing >= 5000){
 	    	        		if(prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false)){
+	    	        			Bugsnag.notify(new RuntimeException("Trip stop, no Jastec ping for 5 seconds"));
 	    						savePoint(EVENT_TRIP_STOP);
 	    	        		}
 	    	        	}
