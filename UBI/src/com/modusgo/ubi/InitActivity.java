@@ -241,7 +241,7 @@ public class InitActivity extends FragmentActivity {
 							e.putBoolean(Constants.PREF_DTC_PRICES_ENABLED, infoJSON.optBoolean("dtc_prices_enabled"));
 							e.putBoolean(Constants.PREF_MAINTENANCE_PRICES_ENABLED, infoJSON.optBoolean("maintenance_prices"));
 							
-							String trackingId = infoJSON.optString("");
+							String trackingId = infoJSON.optString("ga_tracking");
 							if(trackingId.equals("") || trackingId.equals("false")){
 								GoogleAnalytics.getInstance(InitActivity.this).setAppOptOut(true);
 							}
