@@ -40,6 +40,7 @@ import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.modusgo.dd.LocationService;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.jastec.DevicesListActivity;
 import com.modusgo.ubi.requesttasks.BasePostRequestAsyncTask;
@@ -77,9 +78,12 @@ public class SignInActivity extends FragmentActivity {
 	    prefs = PreferenceManager.getDefaultSharedPreferences(SignInActivity.this);
 	    context = getApplicationContext();
 	    
-	    if(!prefs.getString(Constants.PREF_AUTH_KEY, "").equals("")){
+	    if(!TextUtils.isEmpty(prefs.getString(Constants.PREF_AUTH_KEY, ""))){
 	    	startHomeActivity(null);
 			finish();
+	    }
+	    else{
+	    	stopService(new Intent(this, LocationService.class));
 	    }
 	    
 	    ImageView imageBg = (ImageView) findViewById(R.id.imageBg);
