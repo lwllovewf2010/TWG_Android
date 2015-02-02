@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 
+import com.modusgo.ubi.Constants;
 import com.modusgo.ubi.utils.Device;
 
 public class CallReceiver extends BroadcastReceiver {
@@ -14,7 +15,7 @@ public class CallReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
     	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-    	if(prefs.getBoolean(Device.PREF_DEVICE_EVENTS, false) && prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false)){
+    	if(prefs.getBoolean(Device.PREF_DEVICE_EVENTS, false) && prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false) && !prefs.getBoolean(Constants.PREF_TRIP_DECLINED, false)){
     		Intent i = new Intent(context, CallSaverService.class);
         	i.putExtra("action", intent.getExtras().getString(TelephonyManager.EXTRA_STATE));
         	context.startService(i);
