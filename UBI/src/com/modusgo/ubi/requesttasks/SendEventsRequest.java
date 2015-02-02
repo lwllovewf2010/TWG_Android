@@ -74,7 +74,13 @@ public class SendEventsRequest extends BasePostRequestAsyncTask {
 				e.printStackTrace();
 			}
 			dataJSON.put("firmware", "android "+android.os.Build.VERSION.RELEASE);
-			dataJSON.put("device_type", prefs.getString(Device.PREF_DEVICE_TYPE, "n/a"));
+			try{
+				dataJSON.put("device_type", prefs.getString(Device.PREF_DEVICE_TYPE, "n/a"));
+			}
+			catch(ClassCastException e){
+				Bugsnag.notify(new Exception("ClassCastException deviceTypeWrong"), e.getMessage());				
+				dataJSON.put("device_type", "n/a");
+			}
 			
 			String vin = prefs.getString(Constants.PREF_JASTEC_VEHICLE_VIN, "");
 			if(!TextUtils.isEmpty(vin))
