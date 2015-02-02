@@ -1,8 +1,6 @@
 package com.modusgo.dd;
 
-import java.io.Serializable;
 import java.util.List;
-import java.util.UUID;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -33,13 +31,14 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
+import com.kontakt.sdk.android.configuration.BeaconActivityCheckConfiguration;
 import com.kontakt.sdk.android.configuration.ForceScanConfiguration;
-import com.kontakt.sdk.android.configuration.MonitorPeriod;
 import com.kontakt.sdk.android.connection.OnServiceBoundListener;
-import com.kontakt.sdk.android.device.Beacon;
-import com.kontakt.sdk.android.device.Region;
-import com.kontakt.sdk.android.factory.Filters;
+import com.kontakt.sdk.android.device.BeaconDevice;
+import com.kontakt.sdk.android.factory.AdvertisingPackage;
+import com.kontakt.sdk.android.factory.Filters.CustomFilter;
 import com.kontakt.sdk.android.manager.BeaconManager;
+import com.kontakt.sdk.android.manager.BeaconManager.MonitoringListener;
 import com.logentries.android.AndroidLogger;
 import com.modusgo.ubi.Constants;
 import com.modusgo.ubi.InitActivity;
@@ -108,6 +107,8 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
     private final static String EVENT_BEACON_CONNECTED = "connected";
     private final static String EVENT_BEACON_DISCONNECTED = "disconnected";
     public final static String EVENT_TRIP_DECLINED = "declined";
+
+    private static final double ACCEPT_DISTANCE = 4;//[m]
     private BeaconManager beaconManager;
     private boolean beaconConnected = false;
     private long lastBeaconDisconnectMillis;
@@ -213,21 +214,18 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		return START_STICKY;//super.onStartCommand(intent, flags, startId);
 	}
 	
-	private void iBeaconConnect() {
+	private void iBeaconStartMonitoring() {
         try {
         	System.out.println("ibeacon connect");
-            beaconManager.connect(new OnServiceBoundListener() {
-                @Override
-                public void onServiceBound() {
-                    try {
-                    	System.out.println("ibeacon start monitoring");
-                        beaconManager.startMonitoring();
-                    	
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
+        	if(!beaconManager.isConnected()){
+	            beaconManager.connect(new OnServiceBoundListener() {
+	                @Override
+	                public void onServiceBound() throws RemoteException {
+	                	System.out.println("ibeacon start monitoring");
+	                    beaconManager.startMonitoring();
+	                }
+	            });
+        	}
         } catch (RemoteException e) {
 //        	throw new IllegalStateException(e);
         	e.printStackTrace();
@@ -243,55 +241,68 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		
 		if(prefs.getString(Device.PREF_DEVICE_TYPE, "").equals(Device.DEVICE_TYPE_IBEACON)){
 			if(beaconManager==null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2){
-		    	beaconManager = BeaconManager.newInstance(this);
-		    	beaconManager.setMonitorPeriod(MonitorPeriod.MINIMAL);
-		    	beaconManager.setForceScanConfiguration(ForceScanConfiguration.DEFAULT);
+
 		    	System.out.println("ubi ibeacon init");
-	        	System.out.println("ibeacon set filter : "+prefs.getString(Device.PREF_DEVICE_MEID, ""));
-	        	String beaconId = prefs.getString(Device.PREF_DEVICE_MEID, "");
-	        	if(beaconId.length()>4)
-	        		beaconManager.addFilter(Filters.newProximityUUIDFilter(UUID.fromString(beaconId)));
-	        	else
-	        		beaconManager.addFilter(Filters.newBeaconUniqueIdFilter(beaconId));
-		    	beaconManager.registerMonitoringListener(new BeaconManager.MonitoringListener() {
-		    		@Override
-		    		public void onMonitorStart() {
-		    			System.out.println("ibeacon monitor start");
-		    		}
-		    		
-		    		@Override
-		    		public void onMonitorStop() {
-		    			System.out.println("ibeacon monitor stop");
-		    		}
-		    		
-		    		@Override
-		    		public void onBeaconsUpdated(final Region region, final List<Beacon> beacons) {
-		    			System.out.println("ibeacons updated, "+beacons.size()+" beacon connected: "+beaconConnected+" trip in process: "+prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false));
-		    			System.out.println("trip declined: "+prefs.getBoolean(Constants.PREF_TRIP_DECLINED, false));
-		    			iBeaconConnectedSaveEvent();
-		    		}
-		    		
-		    		@Override
-		    		public void onBeaconAppeared(final Region region, final Beacon beacon) {
-		    			System.out.println("ibeacon appeared, "+beacon.getBeaconUniqueId());
-		    		}
-		    		
-		    		@Override
-		    		public void onRegionEntered(final Region region) {
+				beaconManager = BeaconManager.newInstance(this);
+		        beaconManager.setScanMode(BeaconManager.SCAN_MODE_BALANCED);
+		        beaconManager.setBeaconActivityCheckConfiguration(BeaconActivityCheckConfiguration.DEFAULT);
+		        beaconManager.setForceScanConfiguration(ForceScanConfiguration.DEFAULT);
+		        beaconManager.registerMonitoringListener(new MonitoringListener() {
+					
+					@Override
+					public void onRegionEntered(com.kontakt.sdk.android.device.Region arg0) {
 		    			System.out.println("ibeacon region entered, bc: "+beaconConnected);
-		    			iBeaconConnectedSaveEvent();
-		    		}
-		    		
-		    		@Override
-		    		public void onRegionAbandoned(final Region region) {
+		    			iBeaconConnectedSaveEvent();					
+					}
+					
+					@Override
+					public void onRegionAbandoned(com.kontakt.sdk.android.device.Region arg0) {
 		    			System.out.println("ibeacon region abandoned");
 		    			if(beaconConnected){
 			    			beaconConnected = false;
 			    			savePoint(EVENT_BEACON_DISCONNECTED);
-		    			}
-		    		}
-		    	});
-		    	iBeaconConnect();
+		    			}					
+					}
+					
+					@Override
+					public void onMonitorStop() {
+		    			System.out.println("ibeacon monitor stop");
+					}
+					
+					@Override
+					public void onMonitorStart() {
+		    			System.out.println("ibeacon monitor start");
+					}
+					
+					@Override
+					public void onBeaconsUpdated(com.kontakt.sdk.android.device.Region arg0, List<BeaconDevice> beacons) {
+		    			System.out.println("ibeacons updated, "+beacons.size()+" beacon connected: "+beaconConnected+" trip in process: "+prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false));
+		    			System.out.println("trip declined: "+prefs.getBoolean(Constants.PREF_TRIP_DECLINED, false));
+		    			iBeaconConnectedSaveEvent();					
+					}
+					
+					@Override
+					public void onBeaconAppeared(com.kontakt.sdk.android.device.Region arg0, BeaconDevice arg1) {
+		    			System.out.println("ibeacon appeared");
+						
+					}
+				});
+
+		        final String beaconUniqueId = prefs.getString(Device.PREF_DEVICE_MEID, "");
+		        
+	        	System.out.println("ibeacon set filter : "+beaconUniqueId);
+		        
+		        beaconManager.addFilter(new CustomFilter() {
+		            @Override
+		            public Boolean apply(AdvertisingPackage object) {
+		                //final UUID proximityUUID = object.getProximityUUID();
+		                final double distance = object.getAccuracy();
+		                final String uniuqeId = object.getBeaconUniqueId();
+
+		                return uniuqeId.equals(beaconUniqueId) && distance <= ACCEPT_DISTANCE;
+		            }
+		        });
+		    	iBeaconStartMonitoring();
 			}
 	    }
 		else{
