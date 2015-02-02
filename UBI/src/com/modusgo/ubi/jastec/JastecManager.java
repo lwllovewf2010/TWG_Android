@@ -3,7 +3,6 @@ package com.modusgo.ubi.jastec;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TimerTask;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -13,6 +12,7 @@ import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.bugsnag.android.Bugsnag;
 import com.modusgo.ubi.Constants;
 import com.modusgo.ubi.jastec.BluetoothCommunicator.OnConnectionListener;
 import com.modusgo.ubi.jastec.BluetoothCommunicator.OnDataListener;
@@ -482,12 +482,11 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 		}
 	}
 	
+	static float lastPRM;
+	static long firstZeroSpeedTimeMillis;
+	
 	private class OnSensorBroadcating implements IPacketProcessor
 	{
-		
-		float lastPRM;
-		long firstZeroSpeedTimeMillis;
-		
 		@Override
 		public boolean onTransFunc(Byte[] packet) {
 			mSensorBroadcating.parse(packet);
@@ -518,6 +517,14 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 						mOnSensorListener.onTripStop();
 					}
 				}
+
+				Bugsnag.addToTab("Jastec", "Protocal", protocolType);
+				Bugsnag.addToTab("Jastec", "Speed", mSensorBroadcating.Speed);
+				Bugsnag.addToTab("Jastec", "RPM", mSensorBroadcating.RPM);
+				Bugsnag.addToTab("Jastec", "prev RPM", lastPRM);
+				Bugsnag.addToTab("Jastec", "Voltage", mSensorBroadcating.voltage);
+				Bugsnag.addToTab("Jastec", "VIN", prefs.getString(Constants.PREF_JASTEC_VEHICLE_VIN, "n/a"));
+				Bugsnag.notify(new RuntimeException("Jastec sensor broadcasting, speed = 0 for " + (System.currentTimeMillis() - firstZeroSpeedTimeMillis) + "seconds, RPM: "+lastPRM));
 			}
 			
 			lastPRM = mSensorBroadcating.RPM;
