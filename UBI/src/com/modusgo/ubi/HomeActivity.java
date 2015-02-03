@@ -153,14 +153,24 @@ public class HomeActivity extends MainActivity{
 		    ((TextView) view.findViewById(R.id.tvName)).setText(vehicle.name);
 		    ((TextView) view.findViewById(R.id.tvVehicle)).setText(vehicle.getCarFullName());
 		    
-		    if(TextUtils.isEmpty(vehicle.lastTripDate)){
-		    	view.findViewById(R.id.tvDateLabel).setVisibility(View.INVISIBLE);
-		    	view.findViewById(R.id.tvDate).setVisibility(View.INVISIBLE);
+		    View tvDateLabel = view.findViewById(R.id.tvDateLabel);
+		    TextView tvDate = (TextView) view.findViewById(R.id.tvDate);
+		    View tvInTrip = view.findViewById(R.id.tvInTrip);
+		    
+		    if(vehicle.inTrip){
+		    	tvDateLabel.setVisibility(View.GONE);
+		    	tvDate.setVisibility(View.GONE);
+		    	tvInTrip.setVisibility(View.VISIBLE);
+		    }
+		    else if(TextUtils.isEmpty(vehicle.lastTripDate)){
+		    	tvDateLabel.setVisibility(View.INVISIBLE);
+		    	tvDate.setVisibility(View.INVISIBLE);
+		    	tvInTrip.setVisibility(View.GONE);
 		    }
 		    else{
-		    	view.findViewById(R.id.tvDateLabel).setVisibility(View.VISIBLE);
-		    	TextView tvDate = (TextView) view.findViewById(R.id.tvDate);
+		    	tvDateLabel.setVisibility(View.VISIBLE);
 		    	tvDate.setVisibility(View.VISIBLE);
+		    	tvInTrip.setVisibility(View.GONE);
 		    	try {
 		    		tvDate.setText(sdfTo.format(sdfFrom.parse(vehicle.lastTripDate)));
 				} catch (ParseException e) {

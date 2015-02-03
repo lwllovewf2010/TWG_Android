@@ -68,6 +68,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	    VehicleEntry.COLUMN_NAME_ADDRESS + TEXT_TYPE + COMMA_SEP +
 	    VehicleEntry.COLUMN_NAME_LAST_TRIP_DATE + TEXT_TYPE + COMMA_SEP +
 	    VehicleEntry.COLUMN_NAME_LAST_TRIP_ID + INT_TYPE + COMMA_SEP +
+	    VehicleEntry.COLUMN_NAME_IN_TRIP + INT_TYPE + COMMA_SEP +
 	    VehicleEntry.COLUMN_NAME_SCORE + INT_TYPE + COMMA_SEP +
 	    VehicleEntry.COLUMN_NAME_GRADE + TEXT_TYPE + COMMA_SEP +
 	    VehicleEntry.COLUMN_NAME_TOTAL_TRIPS_COUNT + INT_TYPE + COMMA_SEP +
@@ -267,7 +268,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	"DROP TABLE IF EXISTS " + TrackingEntry.TABLE_NAME};
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 50;
+	public static final int DATABASE_VERSION = 51;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;
@@ -347,7 +348,8 @@ public class DbHelper extends SQLiteOpenHelper {
 				VehicleEntry.COLUMN_NAME_CAR_DTC_COUNT,
 				VehicleEntry.COLUMN_NAME_LAST_TRIP_DATE,
 				VehicleEntry.COLUMN_NAME_ALERTS,
-				VehicleEntry.COLUMN_NAME_DRIVER_PHOTO}, 
+				VehicleEntry.COLUMN_NAME_DRIVER_PHOTO,
+				VehicleEntry.COLUMN_NAME_IN_TRIP}, 
 				null, null, null, null, null);
 		
 		ArrayList<Vehicle> drivers = new ArrayList<Vehicle>();
@@ -364,6 +366,7 @@ public class DbHelper extends SQLiteOpenHelper {
 				d.lastTripDate = c.getString(6);
 				d.alerts = c.getInt(7);
 				d.photo = c.getString(8);
+				d.inTrip = c.getInt(9) == 1;
 				drivers.add(d);
 				
 				c.moveToNext();
@@ -383,7 +386,8 @@ public class DbHelper extends SQLiteOpenHelper {
 				VehicleEntry.COLUMN_NAME_DRIVER_NAME,
 				VehicleEntry.COLUMN_NAME_DRIVER_PHOTO,
 				VehicleEntry.COLUMN_NAME_LATITUDE,
-				VehicleEntry.COLUMN_NAME_LONGITUDE}, 
+				VehicleEntry.COLUMN_NAME_LONGITUDE,
+				VehicleEntry.COLUMN_NAME_IN_TRIP}, 
 				VehicleEntry._ID+" = ?", new String[]{Long.toString(id)}, null, null, null);
 		
 		Vehicle d = new Vehicle();
@@ -394,6 +398,7 @@ public class DbHelper extends SQLiteOpenHelper {
 			d.photo = c.getString(2);
 			d.latitude = c.getDouble(3);
 			d.longitude = c.getDouble(4);
+			d.inTrip = c.getInt(5) == 1;
 		}
 		c.close();
 		closeDatabase();
@@ -419,6 +424,7 @@ public class DbHelper extends SQLiteOpenHelper {
 				VehicleEntry.COLUMN_NAME_CAR_DTC_COUNT,
 				VehicleEntry.COLUMN_NAME_LAST_TRIP_DATE,
 				VehicleEntry.COLUMN_NAME_LAST_TRIP_ID,
+				VehicleEntry.COLUMN_NAME_IN_TRIP,
 				VehicleEntry.COLUMN_NAME_ALERTS,
 				VehicleEntry.COLUMN_NAME_LATITUDE,
 				VehicleEntry.COLUMN_NAME_LONGITUDE,
@@ -456,24 +462,25 @@ public class DbHelper extends SQLiteOpenHelper {
 			v.carDTCCount = c.getInt(11);
 			v.lastTripDate = c.getString(12);
 			v.lastTripId = c.getLong(13);
-			v.alerts = c.getInt(14);
-			v.latitude = c.getDouble(15);
-			v.longitude = c.getDouble(16);
-			v.address = c.getString(17);
-			v.grade = c.getString(18);
-			v.score = c.getInt(19);
-			v.totalTripsCount = c.getInt(20);
-			v.totalDrivingTime = c.getInt(21);
-			v.totalDistance = c.getDouble(22);
-			v.totalBraking = c.getInt(23);
-			v.totalAcceleration = c.getInt(24);
-			v.totalSpeeding = c.getInt(25);
-			v.totalSpeedingDistance = c.getDouble(26);
-			v.odometer = c.getInt(27);
-			v.carLastCheckup = c.getString(28);
-			v.carCheckupStatus = c.getString(29);
-			v.limitsBlocked = c.getInt(30) == 1;
-			v.limitsBlockedBy = c.getString(31);
+			v.inTrip = c.getInt(14) == 1;
+			v.alerts = c.getInt(15);
+			v.latitude = c.getDouble(16);
+			v.longitude = c.getDouble(17);
+			v.address = c.getString(18);
+			v.grade = c.getString(19);
+			v.score = c.getInt(20);
+			v.totalTripsCount = c.getInt(21);
+			v.totalDrivingTime = c.getInt(22);
+			v.totalDistance = c.getDouble(23);
+			v.totalBraking = c.getInt(24);
+			v.totalAcceleration = c.getInt(25);
+			v.totalSpeeding = c.getInt(26);
+			v.totalSpeedingDistance = c.getDouble(27);
+			v.odometer = c.getInt(28);
+			v.carLastCheckup = c.getString(29);
+			v.carCheckupStatus = c.getString(30);
+			v.limitsBlocked = c.getInt(31) == 1;
+			v.limitsBlockedBy = c.getString(32);
 				
 		}
 		c.close();
@@ -509,6 +516,7 @@ public class DbHelper extends SQLiteOpenHelper {
 				VehicleEntry.COLUMN_NAME_ADDRESS,
 				VehicleEntry.COLUMN_NAME_LAST_TRIP_DATE,
 				VehicleEntry.COLUMN_NAME_LAST_TRIP_ID,
+				VehicleEntry.COLUMN_NAME_IN_TRIP,
 				VehicleEntry.COLUMN_NAME_SCORE,
 				VehicleEntry.COLUMN_NAME_GRADE,
 				VehicleEntry.COLUMN_NAME_TOTAL_TRIPS_COUNT,
@@ -554,21 +562,22 @@ public class DbHelper extends SQLiteOpenHelper {
 		    	statement.bindString(15, vehicle.address);
 		    	statement.bindString(16, vehicle.lastTripDate);
 		    	statement.bindLong(17, vehicle.lastTripId);
-		    	statement.bindLong(18, vehicle.score);
-		    	statement.bindString(19, vehicle.grade);
-		    	statement.bindLong(20, vehicle.totalTripsCount);
-		    	statement.bindLong(21, vehicle.totalDrivingTime);
-		    	statement.bindDouble(22, vehicle.totalDistance);
-		    	statement.bindLong(23, vehicle.totalBraking);
-		    	statement.bindLong(24, vehicle.totalAcceleration);
-		    	statement.bindLong(25, vehicle.totalSpeeding);
-		    	statement.bindDouble(26, vehicle.totalSpeedingDistance);
-		    	statement.bindLong(27, vehicle.alerts);
-		    	statement.bindLong(28, vehicle.odometer);
-		    	statement.bindString(29, vehicle.carLastCheckup);
-		    	statement.bindString(30, vehicle.carCheckupStatus);
-		    	statement.bindLong(31, vehicle.limitsBlocked ? 1 : 0);
-		    	statement.bindString(32, vehicle.limitsBlockedBy);
+		    	statement.bindLong(18, vehicle.inTrip ? 1 : 0);
+		    	statement.bindLong(19, vehicle.score);
+		    	statement.bindString(20, vehicle.grade);
+		    	statement.bindLong(21, vehicle.totalTripsCount);
+		    	statement.bindLong(22, vehicle.totalDrivingTime);
+		    	statement.bindDouble(23, vehicle.totalDistance);
+		    	statement.bindLong(24, vehicle.totalBraking);
+		    	statement.bindLong(25, vehicle.totalAcceleration);
+		    	statement.bindLong(26, vehicle.totalSpeeding);
+		    	statement.bindDouble(27, vehicle.totalSpeedingDistance);
+		    	statement.bindLong(28, vehicle.alerts);
+		    	statement.bindLong(29, vehicle.odometer);
+		    	statement.bindString(30, vehicle.carLastCheckup);
+		    	statement.bindString(31, vehicle.carCheckupStatus);
+		    	statement.bindLong(32, vehicle.limitsBlocked ? 1 : 0);
+		    	statement.bindString(33, vehicle.limitsBlockedBy);
 		    	statement.execute();
 		    	
 			}

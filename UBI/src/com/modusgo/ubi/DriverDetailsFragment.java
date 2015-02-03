@@ -71,6 +71,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	
 	View btnDistanceToCar;
 	View rlLastTrip;
+	View tvInTrip;
 	View rlLocation;
 	View spaceFuel;
 
@@ -111,6 +112,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	    btnDistanceToCar = (View)tvDistanceToCar.getParent();
 	    rlLocation = rootView.findViewById(R.id.rlLocation);
 	    rlLastTrip = rootView.findViewById(R.id.rlDate);
+	    tvInTrip = rootView.findViewById(R.id.tvInTrip);
 	    spaceFuel = rootView.findViewById(R.id.spaceFuel);
 	    
 	    updateFragment();
@@ -297,8 +299,17 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	    	rlLastTrip.findViewById(R.id.dateImageArrow).setVisibility(View.GONE);	    	
 	    }
 	    
-	    if(TextUtils.isEmpty(vehicle.lastTripDate)){
+	    if(vehicle.inTrip){
+	    	tvInTrip.setVisibility(View.VISIBLE);
 	    	rlLastTrip.setVisibility(View.GONE);
+	    }
+	    else if(TextUtils.isEmpty(vehicle.lastTripDate)){
+	    	tvInTrip.setVisibility(View.GONE);
+	    	rlLastTrip.setVisibility(View.GONE);
+	    }
+	    else{
+	    	tvInTrip.setVisibility(View.GONE);
+	    	rlLastTrip.setVisibility(View.VISIBLE);
 	    }
 	    
         setUpMapIfNeeded();
