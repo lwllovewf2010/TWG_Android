@@ -608,32 +608,39 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 		@Override
 		public boolean onTransFunc(Byte[] packet) {
 			Log.e(TAG, "OnRealTimeReadDTCConfirm");
-			Bugsnag.notify(new RuntimeException("On realtype DTC confirm, packet length: "+packet.length));
     		
 			if(packet.length > 7){
-				mRealTimeReadDTCConfirm.parse(packet);
-				Log.e(TAG, "mRealTimeReadDTCConfirm.DataDb.DTCType : " + String.format("%02X", mRealTimeReadDTCConfirm.DataDb.DTCType));
-				String dtcCodes = prefs.getString(Constants.PREF_JASTEC_DTCS, "");
-				
-				DTCItem[] dtcItmes = mRealTimeReadDTCConfirm.DTCDescriptor.makeDTCItem();
-				for (int i = 0; i < dtcItmes.length; i++) {
-					String code = dtcItmes[i].getCode();
+				try{
+					mRealTimeReadDTCConfirm.parse(packet);
+					Log.e(TAG, "mRealTimeReadDTCConfirm.DataDb.DTCType : " + String.format("%02X", mRealTimeReadDTCConfirm.DataDb.DTCType));
+					String dtcCodes = prefs.getString(Constants.PREF_JASTEC_DTCS, "");
 					
-					if(!dtcCodes.contains(""+code)){
-						if(dtcCodes.isEmpty())
-							dtcCodes += code;
-						else
-							dtcCodes += ", " + code;
+					DTCItem[] dtcItmes = mRealTimeReadDTCConfirm.DTCDescriptor.makeDTCItem();
+					for (int i = 0; i < dtcItmes.length; i++) {
+						String code = dtcItmes[i].getCode();
+						
+						if(!dtcCodes.contains(""+code)){
+							if(dtcCodes.isEmpty())
+								dtcCodes += code;
+							else
+								dtcCodes += ", " + code;
+						}
+					}
+					prefs.edit().putString(Constants.PREF_JASTEC_DTCS, dtcCodes).commit();
+					
+					System.out.println("DTCs : "+dtcCodes);
+					
+					if(mRealTimeReadDTCConfirm.DataDb.DTCType == 0x0020)
+					{
+						Log.e(TAG, "mRealTimeReadDTCConfirm.DataDb.DTCType : " + String.format("%02X", mRealTimeReadDTCConfirm.DataDb.DTCType));
+						//mListConfirmation.add(mRealTimeReadDTCConfirm.DTCDescriptor);
 					}
 				}
-				prefs.edit().putString(Constants.PREF_JASTEC_DTCS, dtcCodes).commit();
-				
-				System.out.println("DTCs : "+dtcCodes);
-				
-				if(mRealTimeReadDTCConfirm.DataDb.DTCType == 0x0020)
-				{
-					Log.e(TAG, "mRealTimeReadDTCConfirm.DataDb.DTCType : " + String.format("%02X", mRealTimeReadDTCConfirm.DataDb.DTCType));
-					//mListConfirmation.add(mRealTimeReadDTCConfirm.DTCDescriptor);
+				catch(ArrayIndexOutOfBoundsException e){
+
+					Bugsnag.addToTab("Exception", "Message", e.getMessage());
+					Bugsnag.addToTab("Exception", "Info", "packet length: "+packet.length);
+					Bugsnag.notify(new RuntimeException("Jastec realtime DTC confirm ArrayIndexOutOfBoundsException"));
 				}
 			}
 			return true;
