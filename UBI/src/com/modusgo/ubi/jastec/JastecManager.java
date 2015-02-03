@@ -8,6 +8,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -515,8 +516,7 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 		}
 	}
 	
-	static float lastPRM;
-	static long firstZeroSpeedTimeMillis;
+	private float lastPRM;
 	
 	private class OnSensorBroadcating implements IPacketProcessor
 	{
@@ -533,37 +533,71 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 			System.out.println("RPM = "+mSensorBroadcating.RPM);
 			System.out.println("Voltage = "+mSensorBroadcating.voltage);
 			
-			if(mSensorBroadcating.Speed>0){
+			if(mSensorBroadcating.Speed > 0 && mSensorBroadcating.RPM > 0){
 				firstZeroSpeedTimeMillis = 0;
 				if(mOnSensorListener!=null){
 					mOnSensorListener.onTripStart();
 				}
 			}
-			
-			if(mSensorBroadcating.Speed == 0 && lastPRM == mSensorBroadcating.RPM){
+			else if(mSensorBroadcating.Speed == 0){
 				
-				if(firstZeroSpeedTimeMillis==0)
-					firstZeroSpeedTimeMillis = System.currentTimeMillis();
-				
-				if(System.currentTimeMillis() - firstZeroSpeedTimeMillis >= 5000){
-					if(mOnSensorListener!=null){
-						mOnSensorListener.onTripStop();
-					}
+				if(mSensorBroadcating.RPM == lastPRM){
+					startStopTimerIfNeeded();
 				}
-
-				Bugsnag.addToTab("Jastec", "Protocal", protocolType);
-				Bugsnag.addToTab("Jastec", "Speed", mSensorBroadcating.Speed);
-				Bugsnag.addToTab("Jastec", "RPM", mSensorBroadcating.RPM);
-				Bugsnag.addToTab("Jastec", "prev RPM", lastPRM);
-				Bugsnag.addToTab("Jastec", "Voltage", mSensorBroadcating.voltage);
-				Bugsnag.addToTab("Jastec", "VIN", prefs.getString(Constants.PREF_JASTEC_VEHICLE_VIN, "n/a"));
-				Bugsnag.notify(new RuntimeException("Jastec sensor broadcasting, speed = 0 for " + (System.currentTimeMillis() - firstZeroSpeedTimeMillis) + "seconds, RPM: "+lastPRM));
+				else{
+					Bugsnag.notify(new RuntimeException("Jastec stopTimer canceled"));
+					stopStopTimer();
+				}
 			}
+			
+			Bugsnag.addToTab("Jastec", "Protocal", protocolType);
+			Bugsnag.addToTab("Jastec", "Speed", mSensorBroadcating.Speed);
+			Bugsnag.addToTab("Jastec", "RPM", mSensorBroadcating.RPM);
+			Bugsnag.addToTab("Jastec", "prev RPM", lastPRM);
+			Bugsnag.addToTab("Jastec", "Voltage", mSensorBroadcating.voltage);
+			Bugsnag.addToTab("Jastec", "VIN", prefs.getString(Constants.PREF_JASTEC_VEHICLE_VIN, "n/a"));
 			
 			lastPRM = mSensorBroadcating.RPM;
 			
 			return true;
 		}
+	}
+	
+	private Handler stopTimerHandler;
+	private Runnable stopTimerRunnable;
+	private long firstZeroSpeedTimeMillis;
+	
+	private void startStopTimerIfNeeded(){
+		if(stopTimerHandler == null){
+			firstZeroSpeedTimeMillis = System.currentTimeMillis();
+			stopTimerHandler = new Handler();
+		    stopTimerRunnable = new Runnable() {
+	
+		        @Override
+		        public void run() {
+		        	long millisSinceTimerStart = System.currentTimeMillis() - firstZeroSpeedTimeMillis;
+		        	
+		        	if(firstZeroSpeedTimeMillis != 0 && millisSinceTimerStart >= 5000){
+			        	if(mOnSensorListener!=null){
+							mOnSensorListener.onTripStop();
+						}
+						Bugsnag.addToTab("Jastec", "Millis since Stop Timer Start", millisSinceTimerStart);
+						Bugsnag.notify(new RuntimeException("Jastec stopTimerStop"));
+			        	stopStopTimer();
+		        	}
+		        	else
+		        		stopTimerHandler.postDelayed(this, 500);
+		        }
+		    };
+		    stopTimerHandler.postDelayed(stopTimerRunnable, 0);
+		}
+	}
+	
+	private void stopStopTimer(){
+		stopTimerHandler.removeCallbacksAndMessages(null);
+		firstZeroSpeedTimeMillis = 0;
+		stopTimerRunnable = null;
+		stopTimerHandler = null;
 	}
 
 	private class OnSensorSingle implements IPacketProcessor
