@@ -19,10 +19,13 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.text.method.DateTimeKeyListener;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -30,6 +33,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class CompleteServiceDialog extends DialogFragment implements DatePickerDialog.OnDateSetListener
 {
@@ -63,7 +67,7 @@ public class CompleteServiceDialog extends DialogFragment implements DatePickerD
 		getDialog().setTitle(R.string.EnterServiceCompletion);
 
 		main = ((ServiceLogActivity) getActivity());
-		main.setActionBarTitle("DIAGNOSTICS");
+		main.setActionBarTitle(getResources().getString(R.string.ServiceLog));
 
 		prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
@@ -107,6 +111,29 @@ public class CompleteServiceDialog extends DialogFragment implements DatePickerD
 		Calendar now = Calendar.getInstance();
 		final DatePickerDialog picker = new DatePickerDialog(main, this, now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH));
 		
+		typeSpinner.setOnItemSelectedListener(new OnItemSelectedListener()
+		{
+
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+			{
+				if(position > 0)
+				{
+					String choice = (String) parent.getItemAtPosition(position);
+					if(choice.equals(getResources().getString(R.string.Other)))
+					{
+						
+					}
+				}
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent)
+			{
+				// TODO Auto-generated method stub
+				
+			}
+		});		
 		dateBtn.setOnClickListener(new OnClickListener()
 		{
 			
@@ -135,10 +162,25 @@ public class CompleteServiceDialog extends DialogFragment implements DatePickerD
 			{
 				String type = typeSpinner.getSelectedItem().toString();
 				String location = locationSpinner.getSelectedItem().toString();
-				Long milage = Long.parseLong(milageText.getEditableText().toString());
-				ServicePerformed sp = new ServicePerformed(type, dateSelectedString, "Self-Performed", milage);
-				dbHelper.saveServicePerformedEvent(sp);
-				dismiss();
+				Long milage = -1L;
+				if(!milageText.getEditableText().toString().equals(""))
+				{
+					milage = Long.parseLong(milageText.getEditableText().toString());
+				}
+				if(type.length() == 0 || location.length() == 0 || 
+						dateSelectedString == null || dateSelectedString.length() == 0 || 
+						milage < 0 )
+				{
+					Toast rye = Toast.makeText(main, main.getResources().getString(R.string.MissingFieldsErrorMsg), Toast.LENGTH_LONG);
+					rye.show();
+				}
+				else
+				{
+					ServicePerformed sp = new ServicePerformed(type, dateSelectedString, "Self-Performed", milage);
+					dbHelper.saveServicePerformedEvent(sp);
+					main.updateInfo();
+					dismiss();
+				}
 			}
 		});
 		

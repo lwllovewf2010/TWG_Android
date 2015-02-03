@@ -18,6 +18,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -125,7 +126,22 @@ public class ServiceFragment extends Fragment
 				startActivity(intent);
 			}
 		});
-		
+
+		Button callServiceBtn = (Button) rootView.findViewById(R.id.call_service_button); 
+
+		callServiceBtn.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public void onClick(View v)
+			{
+				String uri = "tel: 18005551212";
+				Intent intent = new Intent(Intent.ACTION_DIAL);
+				intent.setData(Uri.parse(uri));
+				startActivity(intent);
+			}
+		});
+
 
 	}
 }

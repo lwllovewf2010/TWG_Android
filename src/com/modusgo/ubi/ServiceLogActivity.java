@@ -75,7 +75,7 @@ public class ServiceLogActivity extends MainActivity
 				ServicePerformedEntry.COLUMN_NAME_LOCATION,  
 				ServicePerformedEntry.COLUMN_NAME_MILAGE,  
 				},
-				null, null, groupBy, null, orderBy);
+				null, null, null, null, orderBy);
 
 
 		final ArrayList<TWGListItem> info_list = new ArrayList<TWGListItem>();
@@ -98,9 +98,11 @@ public class ServiceLogActivity extends MainActivity
 
 			while(!c.isAfterLast())
 			{
-
+				String descr = c.getString(c.getColumnIndex(ServicePerformedEntry.COLUMN_NAME_DESCRIPTION));
+				info_list.add(new TWGListItem(twg_list_item_type.li_alert_subhdr, descr));
+				
 				ServicePerformed serviceEntry = new ServicePerformed(
-						c.getString(c.getColumnIndex(ServicePerformedEntry.COLUMN_NAME_DESCRIPTION)),
+						descr,
 						c.getString(c.getColumnIndex(ServicePerformedEntry.COLUMN_NAME_DATE)),
 						c.getString(c.getColumnIndex(ServicePerformedEntry.COLUMN_NAME_LOCATION)),
 						c.getLong(c.getColumnIndex(ServicePerformedEntry.COLUMN_NAME_MILAGE)));

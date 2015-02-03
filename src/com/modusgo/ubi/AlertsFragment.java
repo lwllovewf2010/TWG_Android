@@ -18,6 +18,7 @@ import com.modusgo.ubi.db.RecallContract.RecallEntry;
 import com.modusgo.ubi.db.ScoreGraphContract.ScoreGraphEntry;
 import com.modusgo.ubi.requesttasks.BaseRequestAsyncTask;
 import com.modusgo.ubi.utils.Maintenance;
+import com.modusgo.ubi.utils.Recall;
 import com.modusgo.ubi.utils.TWGListItem;
 import com.modusgo.ubi.utils.Utils;
 import com.modusgo.ubi.utils.TWGListItem.twg_list_item_type;

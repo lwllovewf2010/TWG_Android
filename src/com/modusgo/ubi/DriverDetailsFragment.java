@@ -102,7 +102,7 @@ public class DriverDetailsFragment extends Fragment implements ConnectionCallbac
 
 		View rootView = inflater.inflate(R.layout.driver_details_fragment, container, false);
 
-		((MainActivity) getActivity()).setActionBarTitle("DRIVER DETAIL");
+		((MainActivity) getActivity()).setActionBarTitle(getResources().getString(R.string.app_name));
 
 		prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
@@ -351,7 +351,7 @@ public class DriverDetailsFragment extends Fragment implements ConnectionCallbac
 			d.setColorFilter(filter);
 
 			tvOilLife.setCompoundDrawablesWithIntrinsicBounds(d, null, null, null);
-			fuelBlock.setOnClickListener(new OnClickListener()
+			tvOilLife.setOnClickListener(new OnClickListener()
 			{
 				@Override
 				public void onClick(View v)
@@ -368,7 +368,7 @@ public class DriverDetailsFragment extends Fragment implements ConnectionCallbac
 				tvOilLife.setText("");
 				tvOilLife.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_oil, 0, R.drawable.ic_fuel_arrow_down,
 						0);
-				fuelBlock.setOnClickListener(new OnClickListener()
+				tvOilLife.setOnClickListener(new OnClickListener()
 				{
 					@Override
 					public void onClick(View v)
@@ -388,6 +388,16 @@ public class DriverDetailsFragment extends Fragment implements ConnectionCallbac
 		filter = new LightingColorFilter(Color.BLACK, Color.RED);
 		d.setColorFilter(filter);
 		tvEngineTemperature.setCompoundDrawablesWithIntrinsicBounds(d, null, null, null);
+		
+		tvEngineTemperature.setOnClickListener(new OnClickListener()
+		{
+			
+			@Override
+			public void onClick(View v)
+			{
+				
+			}
+		});
 
 		/*-------------------------Battery Output---------------------------*/
 		d = getResources().getDrawable(R.drawable.ic_battery);

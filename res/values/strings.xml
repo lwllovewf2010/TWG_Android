@@ -32,7 +32,7 @@
     <string name="Done">Done</string>
     <string name="Cancel">Cancel</string>
     <string name="Other">Other</string>
-    
+    <string name="MissingFieldsErrorMsg">Missing data, please enter data for all fields</string>
     
     <string name="app_name">TWG</string>
     <string name="action_settings">Settings</string>
@@ -189,6 +189,20 @@ across all road types and surroundings.<p></font>
     <string name="Location">Location</string>
     
     <string name="Milage">Milage</string>
+    
+    <string name="FuelLevel">Fuel Level</string>
+    
+    <string name="Battery">Battery</string>
+    
+    <string name="FuelCapacity">Fuel Capacity</string>
+    
+    <string name="FuelPercentage">Fuel Percentage</string>
+    
+    <string name="LastTripFuelEconomy">Last Trip Fuel Economy</string>
+    
+    <string name="FuelEconomyLast30Days">Fuel Economy Last 30 Days</string>
+    
+    <string name="FuelUsedLast30Days">Fuel Used Last 30 Days</string>
     
     
 </resources>

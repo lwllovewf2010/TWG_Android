@@ -14,7 +14,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.modusgo.ubi.Alert;
 import com.modusgo.ubi.DiagnosticsTroubleCode;
 import com.modusgo.ubi.LimitsFragment.Limit;
-import com.modusgo.ubi.Recall;
 import com.modusgo.ubi.ScoreCirclesActivity.CirclesSection;
 import com.modusgo.ubi.ScoreFragment.MonthStats;
 import com.modusgo.ubi.ScorePieChartActivity.PieChartTab;
@@ -41,6 +40,7 @@ import com.modusgo.ubi.db.TripContract.TripEntry;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.modusgo.ubi.db.WarrantyInfoContract.WarrantyInfoEntry;
 import com.modusgo.ubi.utils.Maintenance;
+import com.modusgo.ubi.utils.Recall;
 import com.modusgo.ubi.utils.ServicePerformed;
 import com.modusgo.ubi.utils.WarrantyInformation;
 

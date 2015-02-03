@@ -8,8 +8,8 @@ import java.util.ArrayList;
 
 import com.modusgo.ubi.DiagnosticsTroubleCode;
 import com.modusgo.ubi.R;
-import com.modusgo.ubi.Recall;
 import com.modusgo.ubi.utils.Maintenance;
+import com.modusgo.ubi.utils.Recall;
 import com.modusgo.ubi.utils.ServicePerformed;
 import com.modusgo.ubi.utils.TWGListItem;
 import com.modusgo.ubi.utils.TWGListItem.twg_list_item_type;
@@ -54,7 +54,7 @@ public class TWGInfoArrayAdapter extends ArrayAdapter<TWGListItem>
 		TWGListItem item = objects.get(position);
 		RelativeLayout hdr_view = (RelativeLayout) rowView.findViewById(R.id.hdr_view);
 		RelativeLayout vehicle_info_view = (RelativeLayout) rowView.findViewById(R.id.vehicle_info_view);
-		RelativeLayout recall_info_view = (RelativeLayout) rowView.findViewById(R.id.recall_info_view);
+		LinearLayout recall_info_view = (LinearLayout) rowView.findViewById(R.id.recall_info_view);
 		LinearLayout dtc_info_view = (LinearLayout) rowView.findViewById(R.id.dtc_info_view);
 		RelativeLayout alert_info_view = (RelativeLayout) rowView.findViewById(R.id.alert_info_view);
 		LinearLayout service_info_view = (LinearLayout) rowView.findViewById(R.id.service_info_view);
@@ -83,6 +83,7 @@ public class TWGInfoArrayAdapter extends ArrayAdapter<TWGListItem>
 		case li_dtc_hdr:
 		case li_alert_hdr:
 		case li_service_log_hdr:
+		case li_alert_subhdr:
 			hdr_view.setVisibility(View.VISIBLE);
 			TextView hdr = (TextView) rowView.findViewById(R.id.hdr);
 
@@ -104,6 +105,11 @@ public class TWGInfoArrayAdapter extends ArrayAdapter<TWGListItem>
 			{
 				hdr.setText((String)item.value);
 				hdr.setTextColor(0xFF000000);
+			} else if(item.type == twg_list_item_type.li_alert_subhdr)
+			{
+				hdr.setText((String)item.value);
+				hdr.setTextColor(0xFF000000);
+				
 			}
 			break;
 		case li_vehicle_info:
@@ -120,8 +126,14 @@ public class TWGInfoArrayAdapter extends ArrayAdapter<TWGListItem>
 			recall = (Recall) item.value;
 			TextView recall_name = (TextView) rowView.findViewById(R.id.recall_name);
 			TextView recall_value = (TextView) rowView.findViewById(R.id.recall_value);
+			TextView recall_date = (TextView) rowView.findViewById(R.id.recall_date);
 
 			recall_info_view.setVisibility(View.VISIBLE);
+			//UGLY!!!!
+			//The date is in the format 2014-01-04T00:00:00-00:00, delete the time
+			String temp = recall.created_at;
+			temp = temp.replace("T00:00:00-00:00", "");
+			recall_date.setText(temp);
 			recall_name.setText(recall.recall_id);
 			recall_value.setText(recall.description);
 			break;

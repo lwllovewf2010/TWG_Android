@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
+import com.modusgo.ubi.utils.Recall;
 import com.modusgo.ubi.utils.Utils;
 
 public class RecallActivity extends MainActivity {

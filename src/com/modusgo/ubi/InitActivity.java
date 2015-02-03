@@ -18,6 +18,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
@@ -174,14 +175,17 @@ public class InitActivity extends FragmentActivity {
 		
 		@Override
 		protected Boolean doInBackground(Void... params) {
+			final String TAG = "InitActivity.doInBackground";
 			
 //			String clientId = editClientId.getText().toString();
 			clientId = "";
-
-	        requestParams.add(new BasicNameValuePair("auth_key", prefs.getString(Constants.PREF_AUTH_KEY, "")));
-	        System.out.println(requestParams);
+			String url = Constants.API_BASE_URL_PREFIX+clientId+Constants.API_BASE_URL_POSTFIX+"info.json";
 			
-			HttpResponse result = new RequestGet(Constants.API_BASE_URL_PREFIX+clientId+Constants.API_BASE_URL_POSTFIX+"info.json", requestParams).execute();
+	        requestParams.add(new BasicNameValuePair("auth_key", prefs.getString(Constants.PREF_AUTH_KEY, "")));
+	        Log.d(TAG, url);
+	        Log.d(TAG, requestParams.toString());
+			
+			HttpResponse result = new RequestGet(url, requestParams).execute();
 			if(result==null){
 				status = 0;
 				//message = "Connection error";
@@ -326,10 +330,10 @@ public class InitActivity extends FragmentActivity {
 					new ServerCheckTask().execute();
 				}
 				else{
-					layoutFields.setVisibility(View.VISIBLE);
-					layoutProgress.startAnimation(fadeOutProgress);
-					layoutFields.startAnimation(fadeInFields);
-					tvError.setText(message);
+//					layoutFields.setVisibility(View.VISIBLE);
+//					layoutProgress.startAnimation(fadeOutProgress);
+//					layoutFields.startAnimation(fadeInFields);
+//					tvError.setText(message);
 				}
 			}
 			
