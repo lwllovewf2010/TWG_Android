@@ -893,8 +893,10 @@ android.support.v4.app.NotificationCompat$Builder -> android.support.v4.app.ap$d
     1099:1100:android.support.v4.app.NotificationCompat$Builder setTicker(java.lang.CharSequence) -> c
     1131:1133:android.support.v4.app.NotificationCompat$Builder setSound(android.net.Uri) -> a
     1165:1166:android.support.v4.app.NotificationCompat$Builder setVibrate(long[]) -> a
-    1216:1217:android.support.v4.app.NotificationCompat$Builder setAutoCancel(boolean) -> a
+    1196:1197:android.support.v4.app.NotificationCompat$Builder setOngoing(boolean) -> a
+    1216:1217:android.support.v4.app.NotificationCompat$Builder setAutoCancel(boolean) -> b
     1262:1267:void setFlag(int,boolean) -> a
+    1287:1288:android.support.v4.app.NotificationCompat$Builder setPriority(int) -> b
     1464:1470:android.support.v4.app.NotificationCompat$Builder setStyle(android.support.v4.app.NotificationCompat$Style) -> a
     1532:1532:android.app.Notification build() -> a
     1536:1540:java.lang.CharSequence limitCharSequenceLength(java.lang.CharSequence) -> d
@@ -19708,8 +19710,8 @@ com.modusgo.dd.LocationService -> com.modusgo.dd.LocationService:
     236:417:void updateServiceMode() -> d
     420:432:void iBeaconConnectedSaveEvent() -> e
     436:450:void showTripDeclineNotification() -> f
-    454:528:void updateNotification(boolean) -> a
-    532:551:void showNotification(int,java.lang.String,android.content.Intent,boolean) -> a
+    454:527:void updateNotification(boolean) -> a
+    531:551:void showNotification(int,java.lang.String,android.content.Intent,boolean) -> a
     554:562:boolean isLocationServicesEnabled() -> g
     567:575:boolean isBluetoothServicesEnabled() -> h
     580:626:void updateLocationUpdatesHandler() -> i
@@ -21639,7 +21641,7 @@ com.modusgo.ubi.TripsFragment -> com.modusgo.ubi.dt:
     71:130:android.view.View onCreateView(android.view.LayoutInflater,android.view.ViewGroup,android.os.Bundle) -> a
     135:138:void onResume() -> q
     141:208:java.util.ArrayList getTripsFromDb(java.util.Date,int) -> a
-    213:271:void updateTripsListView() -> a
+    213:274:void updateTripsListView() -> a
     65:65:boolean access$0(com.modusgo.ubi.TripsFragment) -> a
     65:65:void access$1(com.modusgo.ubi.TripsFragment,boolean) -> a
     66:66:void access$2(com.modusgo.ubi.TripsFragment,boolean) -> b
@@ -21656,30 +21658,30 @@ com.modusgo.ubi.TripsFragment$GetTripsTask -> com.modusgo.ubi.dt$a:
     boolean getNewTrips -> a
     java.util.Calendar cEndTime -> c
     com.modusgo.ubi.TripsFragment this$0 -> b
-    289:291:void onPreExecute() -> onPreExecute
-    295:300:org.json.JSONObject doInBackground(java.lang.String[]) -> a
-    305:307:void onPostExecute(org.json.JSONObject) -> b
-    311:374:void onSuccess(org.json.JSONObject) -> a
-    378:387:void onError(java.lang.String) -> a
+    292:294:void onPreExecute() -> onPreExecute
+    298:303:org.json.JSONObject doInBackground(java.lang.String[]) -> a
+    308:310:void onPostExecute(org.json.JSONObject) -> b
+    314:377:void onSuccess(org.json.JSONObject) -> a
+    381:390:void onError(java.lang.String) -> a
 com.modusgo.ubi.TripsFragment$TripsAdapter -> com.modusgo.ubi.dt$b:
     int TRIP_ITEM -> a
     int HEADER_ITEM -> b
     java.lang.String units -> c
     android.view.LayoutInflater lInflater -> d
     com.modusgo.ubi.TripsFragment this$0 -> e
-    431:431:int getCount() -> getCount
-    436:436:java.lang.Object getItem(int) -> getItem
-    441:441:long getItemId(int) -> getItemId
-    446:446:int getViewTypeCount() -> getViewTypeCount
-    451:454:int getItemViewType(int) -> getItemViewType
-    459:465:android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
-    479:498:android.view.View getHeaderView(int,android.view.View,android.view.ViewGroup) -> a
-    503:622:android.view.View getTripView(int,android.view.View,android.view.ViewGroup) -> b
-    410:410:com.modusgo.ubi.TripsFragment access$0(com.modusgo.ubi.TripsFragment$TripsAdapter) -> a
+    434:434:int getCount() -> getCount
+    439:439:java.lang.Object getItem(int) -> getItem
+    444:444:long getItemId(int) -> getItemId
+    449:449:int getViewTypeCount() -> getViewTypeCount
+    454:457:int getItemViewType(int) -> getItemViewType
+    462:468:android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
+    482:501:android.view.View getHeaderView(int,android.view.View,android.view.ViewGroup) -> a
+    506:625:android.view.View getTripView(int,android.view.View,android.view.ViewGroup) -> b
+    413:413:com.modusgo.ubi.TripsFragment access$0(com.modusgo.ubi.TripsFragment$TripsAdapter) -> a
 com.modusgo.ubi.TripsFragment$TripsAdapter$1 -> com.modusgo.ubi.dw:
     com.modusgo.ubi.TripsFragment$TripsAdapter this$1 -> a
     com.modusgo.ubi.Trip val$t -> b
-    607:619:void onClick(android.view.View) -> onClick
+    610:622:void onClick(android.view.View) -> onClick
 com.modusgo.ubi.TripsFragment$ViewHolderHeader -> com.modusgo.ubi.dt$c:
     android.widget.TextView tvDate -> a
     android.widget.TextView tvTotals -> b
@@ -22021,87 +22023,117 @@ com.modusgo.ubi.jastec.DevicesListActivity$4 -> com.modusgo.ubi.jastec.f:
 com.modusgo.ubi.jastec.IPacketProcessor -> com.modusgo.ubi.jastec.g:
     boolean onTransFunc(java.lang.Byte[]) -> a
 com.modusgo.ubi.jastec.JastecManager -> com.modusgo.ubi.jastec.h:
-    com.modusgo.ubi.jastec.JastecManager sInstance -> e
-    android.bluetooth.BluetoothAdapter mBtAdapter -> f
+    com.modusgo.ubi.jastec.JastecManager sInstance -> c
+    android.bluetooth.BluetoothAdapter mBtAdapter -> d
     java.util.Map mMapProcessor -> a
-    com.modusgo.ubi.jastec.packet.DrivingBroadcastingCurrent mDrivingBroadcastingCurrent -> g
-    com.modusgo.ubi.jastec.packet.DrivingBroadcastingAfterStart mDrivingBroadcastingAfterStart -> h
-    com.modusgo.ubi.jastec.packet.SensorBroadcating mSensorBroadcating -> i
-    com.modusgo.ubi.jastec.JastecManager$OnSensorListener mOnSensorListener -> j
+    com.modusgo.ubi.jastec.packet.DrivingBroadcastingCurrent mDrivingBroadcastingCurrent -> e
+    com.modusgo.ubi.jastec.packet.DrivingBroadcastingAfterStart mDrivingBroadcastingAfterStart -> f
+    com.modusgo.ubi.jastec.packet.SensorBroadcating mSensorBroadcating -> g
+    com.modusgo.ubi.jastec.JastecManager$OnSensorListener mOnSensorListener -> h
     android.content.SharedPreferences prefs -> b
-    int mProtocolNum -> k
-    java.lang.String mDeviceName -> l
-    java.lang.String mDeviceAddress -> m
-    com.modusgo.ubi.jastec.BluetoothCommunicator$OnConnectionListener mOnConnectionListener -> n
-    boolean mConnectionStarted -> o
-    java.lang.String protocolType -> p
-    float lastPRM -> c
-    long firstZeroSpeedTimeMillis -> d
-    55:58:com.modusgo.ubi.jastec.JastecManager getInstance(android.content.Context) -> a
-    92:95:float getLastRPM() -> b
-    99:102:float getLastSpeed() -> c
-    106:107:void setOnConnectionListener(com.modusgo.ubi.jastec.BluetoothCommunicator$OnConnectionListener) -> a
-    110:111:void setOnSensorListener(com.modusgo.ubi.jastec.JastecManager$OnSensorListener) -> a
-    114:131:void connect(java.lang.String,java.lang.String) -> a
-    134:157:void connect() -> d
-    161:166:void disconnect() -> e
-    170:175:void onDisconnected(java.lang.Exception) -> a
-    179:201:void onConnected() -> a
-    205:229:void onReceived(java.lang.Byte[][]) -> a
-    240:245:byte[] createProtocolPacket() -> h
-    250:255:byte[] createVINPacket() -> i
-    260:267:byte[] createRealTimeDTCPacket() -> f
-    294:299:byte[] createSupportPacket() -> j
-    304:314:byte[] createCurrentRepeatPacket(com.modusgo.ubi.jastec.packet.DrivingSupportWhole) -> a
-    321:343:byte[] createSpeedAndRPMBroadcastingPacket() -> k
-    238:238:byte[] access$0(com.modusgo.ubi.jastec.JastecManager) -> a
-    248:248:byte[] access$1(com.modusgo.ubi.jastec.JastecManager) -> b
-    46:46:void access$2(com.modusgo.ubi.jastec.JastecManager,int) -> a
-    46:46:int access$3(com.modusgo.ubi.jastec.JastecManager) -> c
-    292:292:byte[] access$4(com.modusgo.ubi.jastec.JastecManager) -> d
-    38:38:com.modusgo.ubi.jastec.packet.DrivingBroadcastingCurrent access$5(com.modusgo.ubi.jastec.JastecManager) -> e
-    39:39:com.modusgo.ubi.jastec.packet.DrivingBroadcastingAfterStart access$6(com.modusgo.ubi.jastec.JastecManager) -> f
-    302:302:byte[] access$7(com.modusgo.ubi.jastec.JastecManager,com.modusgo.ubi.jastec.packet.DrivingSupportWhole) -> a
-    319:319:byte[] access$8(com.modusgo.ubi.jastec.JastecManager) -> g
-    40:40:com.modusgo.ubi.jastec.packet.SensorBroadcating access$9(com.modusgo.ubi.jastec.JastecManager) -> h
-    42:42:com.modusgo.ubi.jastec.JastecManager$OnSensorListener access$10(com.modusgo.ubi.jastec.JastecManager) -> i
-    317:317:java.lang.String access$11() -> g
+    int mProtocolNum -> i
+    java.lang.String mDeviceName -> j
+    java.lang.String mDeviceAddress -> k
+    com.modusgo.ubi.jastec.BluetoothCommunicator$OnConnectionListener mOnConnectionListener -> l
+    boolean mConnectionStarted -> m
+    java.lang.String protocolType -> n
+    float lastPRM -> o
+    android.os.Handler stopTimerHandler -> p
+    java.lang.Runnable stopTimerRunnable -> q
+    long firstZeroSpeedTimeMillis -> r
+    58:61:com.modusgo.ubi.jastec.JastecManager getInstance(android.content.Context) -> a
+    98:101:float getLastRPM() -> b
+    105:108:float getLastSpeed() -> c
+    112:113:void setOnConnectionListener(com.modusgo.ubi.jastec.BluetoothCommunicator$OnConnectionListener) -> a
+    116:117:void setOnSensorListener(com.modusgo.ubi.jastec.JastecManager$OnSensorListener) -> a
+    120:137:void connect(java.lang.String,java.lang.String) -> a
+    140:163:void connect() -> d
+    167:172:void disconnect() -> e
+    176:181:void onDisconnected(java.lang.Exception) -> a
+    185:207:void onConnected() -> a
+    211:235:void onReceived(java.lang.Byte[][]) -> a
+    246:251:byte[] createProtocolPacket() -> h
+    256:261:byte[] createVINPacket() -> i
+    266:271:byte[] createSerialNumberPacket() -> j
+    276:283:byte[] createRealTimeDTCPacket() -> f
+    288:293:byte[] createDrivingStop() -> k
+    298:305:byte[] createSensorStop() -> l
+    310:315:byte[] createSupportPacket() -> m
+    320:330:byte[] createCurrentRepeatPacket(com.modusgo.ubi.jastec.packet.DrivingSupportWhole) -> a
+    337:359:byte[] createSpeedAndRPMBroadcastingPacket() -> n
+    571:594:void startStopTimerIfNeeded() -> o
+    597:601:void stopStopTimer() -> p
+    244:244:byte[] access$0(com.modusgo.ubi.jastec.JastecManager) -> a
+    254:254:byte[] access$1(com.modusgo.ubi.jastec.JastecManager) -> b
+    264:264:byte[] access$2(com.modusgo.ubi.jastec.JastecManager) -> c
+    49:49:void access$3(com.modusgo.ubi.jastec.JastecManager,int) -> a
+    49:49:int access$4(com.modusgo.ubi.jastec.JastecManager) -> d
+    308:308:byte[] access$5(com.modusgo.ubi.jastec.JastecManager) -> e
+    286:286:byte[] access$6(com.modusgo.ubi.jastec.JastecManager) -> f
+    296:296:byte[] access$7(com.modusgo.ubi.jastec.JastecManager) -> g
+    41:41:com.modusgo.ubi.jastec.packet.DrivingBroadcastingCurrent access$8(com.modusgo.ubi.jastec.JastecManager) -> h
+    42:42:com.modusgo.ubi.jastec.packet.DrivingBroadcastingAfterStart access$9(com.modusgo.ubi.jastec.JastecManager) -> i
+    318:318:byte[] access$10(com.modusgo.ubi.jastec.JastecManager,com.modusgo.ubi.jastec.packet.DrivingSupportWhole) -> a
+    335:335:byte[] access$11(com.modusgo.ubi.jastec.JastecManager) -> j
+    43:43:com.modusgo.ubi.jastec.packet.SensorBroadcating access$12(com.modusgo.ubi.jastec.JastecManager) -> k
+    45:45:com.modusgo.ubi.jastec.JastecManager$OnSensorListener access$13(com.modusgo.ubi.jastec.JastecManager) -> l
+    333:333:java.lang.String access$14() -> g
+    568:568:void access$15(com.modusgo.ubi.jastec.JastecManager,long) -> a
+    519:519:float access$16(com.modusgo.ubi.jastec.JastecManager) -> m
+    570:570:void access$17(com.modusgo.ubi.jastec.JastecManager) -> n
+    596:596:void access$18(com.modusgo.ubi.jastec.JastecManager) -> o
+    519:519:void access$19(com.modusgo.ubi.jastec.JastecManager,float) -> a
+    568:568:long access$20(com.modusgo.ubi.jastec.JastecManager) -> p
+    566:566:android.os.Handler access$21(com.modusgo.ubi.jastec.JastecManager) -> q
+com.modusgo.ubi.jastec.JastecManager$1 -> com.modusgo.ubi.jastec.i:
+    com.modusgo.ubi.jastec.JastecManager this$0 -> a
+    578:590:void run() -> run
 com.modusgo.ubi.jastec.JastecManager$OnBluetoothDeviceName -> com.modusgo.ubi.jastec.h$a:
     com.modusgo.ubi.jastec.JastecManager this$0 -> a
-    350:354:boolean onTransFunc(java.lang.Byte[]) -> a
+    366:370:boolean onTransFunc(java.lang.Byte[]) -> a
 com.modusgo.ubi.jastec.JastecManager$OnBluetoothPassword -> com.modusgo.ubi.jastec.h$b:
     com.modusgo.ubi.jastec.JastecManager this$0 -> a
-    362:365:boolean onTransFunc(java.lang.Byte[]) -> a
+    378:381:boolean onTransFunc(java.lang.Byte[]) -> a
 com.modusgo.ubi.jastec.JastecManager$OnBluetoothPinCode -> com.modusgo.ubi.jastec.h$c:
     com.modusgo.ubi.jastec.JastecManager this$0 -> a
-    391:412:boolean onTransFunc(java.lang.Byte[]) -> a
-com.modusgo.ubi.jastec.JastecManager$OnDrivingSupportWhole -> com.modusgo.ubi.jastec.h$d:
+    407:430:boolean onTransFunc(java.lang.Byte[]) -> a
+com.modusgo.ubi.jastec.JastecManager$OnDrivingSingle -> com.modusgo.ubi.jastec.h$d:
+    com.modusgo.ubi.jastec.JastecManager this$0 -> a
+    615:615:boolean onTransFunc(java.lang.Byte[]) -> a
+com.modusgo.ubi.jastec.JastecManager$OnDrivingSupportWhole -> com.modusgo.ubi.jastec.h$e:
     com.modusgo.ubi.jastec.packet.DrivingSupportWhole mDrivingSupportWhole -> b
     com.modusgo.ubi.jastec.JastecManager this$0 -> a
-    460:481:boolean onTransFunc(java.lang.Byte[]) -> a
-com.modusgo.ubi.jastec.JastecManager$OnGetProtocol -> com.modusgo.ubi.jastec.h$e:
+    494:515:boolean onTransFunc(java.lang.Byte[]) -> a
+com.modusgo.ubi.jastec.JastecManager$OnGetProtocol -> com.modusgo.ubi.jastec.h$f:
     com.modusgo.ubi.jastec.packet.GetProtocol mGetProtocol -> b
     com.modusgo.ubi.jastec.JastecManager this$0 -> a
-    427:442:boolean onTransFunc(java.lang.Byte[]) -> a
-com.modusgo.ubi.jastec.JastecManager$OnMonitoringStop -> com.modusgo.ubi.jastec.h$f:
+    446:476:boolean onTransFunc(java.lang.Byte[]) -> a
+com.modusgo.ubi.jastec.JastecManager$OnMonitoringStop -> com.modusgo.ubi.jastec.h$g:
     com.modusgo.ubi.jastec.JastecManager this$0 -> a
-    373:383:boolean onTransFunc(java.lang.Byte[]) -> a
-com.modusgo.ubi.jastec.JastecManager$OnReadVIN -> com.modusgo.ubi.jastec.h$g:
+    389:399:boolean onTransFunc(java.lang.Byte[]) -> a
+com.modusgo.ubi.jastec.JastecManager$OnReadSerialNumberSuccess -> com.modusgo.ubi.jastec.h$h:
+    com.modusgo.ubi.jastec.packet.SerialNumberSuccess mSerialNumber -> b
+    com.modusgo.ubi.jastec.JastecManager this$0 -> a
+    693:698:boolean onTransFunc(java.lang.Byte[]) -> a
+com.modusgo.ubi.jastec.JastecManager$OnReadVIN -> com.modusgo.ubi.jastec.h$i:
     com.modusgo.ubi.jastec.packet.ReadVIN mReadVIN -> b
     com.modusgo.ubi.jastec.JastecManager this$0 -> a
-    546:548:boolean onTransFunc(java.lang.Byte[]) -> a
-com.modusgo.ubi.jastec.JastecManager$OnRealTimeReadDTCConfirm -> com.modusgo.ubi.jastec.h$h:
+    629:631:boolean onTransFunc(java.lang.Byte[]) -> a
+com.modusgo.ubi.jastec.JastecManager$OnRealTimeReadDTCConfirm -> com.modusgo.ubi.jastec.h$j:
     com.modusgo.ubi.jastec.packet.AbstractRealTimeReadDTC mRealTimeReadDTCConfirm -> b
     com.modusgo.ubi.jastec.JastecManager this$0 -> a
-    561:590:boolean onTransFunc(java.lang.Byte[]) -> a
-com.modusgo.ubi.jastec.JastecManager$OnSensorBroadcating -> com.modusgo.ubi.jastec.h$i:
+    644:680:boolean onTransFunc(java.lang.Byte[]) -> a
+com.modusgo.ubi.jastec.JastecManager$OnSensorBroadcating -> com.modusgo.ubi.jastec.h$k:
     com.modusgo.ubi.jastec.JastecManager this$0 -> a
-    492:532:boolean onTransFunc(java.lang.Byte[]) -> a
-com.modusgo.ubi.jastec.JastecManager$OnSensorListener -> com.modusgo.ubi.jastec.h$j:
+    525:562:boolean onTransFunc(java.lang.Byte[]) -> a
+com.modusgo.ubi.jastec.JastecManager$OnSensorListener -> com.modusgo.ubi.jastec.h$l:
     void onTripStart() -> b
     void onTripStop() -> a
     void onPing() -> c
-com.modusgo.ubi.jastec.PacketBuilder -> com.modusgo.ubi.jastec.i:
+com.modusgo.ubi.jastec.JastecManager$OnSensorSingle -> com.modusgo.ubi.jastec.h$m:
+    com.modusgo.ubi.jastec.JastecManager this$0 -> a
+    607:607:boolean onTransFunc(java.lang.Byte[]) -> a
+com.modusgo.ubi.jastec.PacketBuilder -> com.modusgo.ubi.jastec.j:
     byte[] mPacket -> a
     com.modusgo.ubi.jastec.PacketBuilder mInstance -> b
     15:15:com.modusgo.ubi.jastec.PacketBuilder getInstance() -> a
@@ -22116,7 +22148,7 @@ com.modusgo.ubi.jastec.PacketBuilder -> com.modusgo.ubi.jastec.i:
     84:109:byte[] encode(byte[]) -> b
     114:124:int getEncodingCount(byte[]) -> c
     129:132:boolean encodeRequired(byte) -> d
-com.modusgo.ubi.jastec.PacketParser -> com.modusgo.ubi.jastec.j:
+com.modusgo.ubi.jastec.PacketParser -> com.modusgo.ubi.jastec.k:
     java.lang.Byte[] mPacket -> a
     com.modusgo.ubi.jastec.PacketParser mInstance -> b
     13:13:com.modusgo.ubi.jastec.PacketParser getInstance() -> a
@@ -22130,8 +22162,8 @@ com.modusgo.ubi.jastec.PacketParser -> com.modusgo.ubi.jastec.j:
     92:111:java.lang.Byte[] decode(java.lang.Byte[]) -> b
     116:123:int getDecodingCount(java.lang.Byte[]) -> c
     128:128:boolean decodeRequired(byte) -> a
-com.modusgo.ubi.jastec.Protocol -> com.modusgo.ubi.jastec.k:
-com.modusgo.ubi.jastec.Protocol$PacketType -> com.modusgo.ubi.jastec.k$a:
+com.modusgo.ubi.jastec.Protocol -> com.modusgo.ubi.jastec.l:
+com.modusgo.ubi.jastec.Protocol$PacketType -> com.modusgo.ubi.jastec.l$a:
     com.modusgo.ubi.jastec.Protocol$PacketType GET_PROTOCOL -> a
     com.modusgo.ubi.jastec.Protocol$PacketType DRIVING_SUPPORT_WHOLE -> b
     com.modusgo.ubi.jastec.Protocol$PacketType SENSOR_SUPPORT_WHOLE -> c
@@ -22162,19 +22194,18 @@ com.modusgo.ubi.jastec.Protocol$PacketType -> com.modusgo.ubi.jastec.k$a:
     com.modusgo.ubi.jastec.Protocol$PacketType EXTERNAL_WRITE_COMPLETE -> B
     com.modusgo.ubi.jastec.Protocol$PacketType HW_RESET -> C
     com.modusgo.ubi.jastec.Protocol$PacketType READ_VIN -> D
-    com.modusgo.ubi.jastec.Protocol$PacketType READ_MEID -> E
-    int mValue -> F
-    com.modusgo.ubi.jastec.Protocol$PacketType[] ENUM$VALUES -> G
-    77:82:com.modusgo.ubi.jastec.Protocol$PacketType fromValue(int) -> a
-    87:87:int value() -> a
+    int mValue -> E
+    com.modusgo.ubi.jastec.Protocol$PacketType[] ENUM$VALUES -> F
+    76:81:com.modusgo.ubi.jastec.Protocol$PacketType fromValue(int) -> a
+    86:86:int value() -> a
     1:1:com.modusgo.ubi.jastec.Protocol$PacketType[] values() -> values
     1:1:com.modusgo.ubi.jastec.Protocol$PacketType valueOf(java.lang.String) -> valueOf
-com.modusgo.ubi.jastec.RawDataBuilder -> com.modusgo.ubi.jastec.l:
+com.modusgo.ubi.jastec.RawDataBuilder -> com.modusgo.ubi.jastec.m:
     java.util.ArrayList mList -> a
     11:12:void init() -> a
     16:20:void add(byte[]) -> a
     24:36:java.lang.Byte[][] build() -> b
-com.modusgo.ubi.jastec.Utils -> com.modusgo.ubi.jastec.m:
+com.modusgo.ubi.jastec.Utils -> com.modusgo.ubi.jastec.n:
     53:65:java.lang.String toBinaryString(byte) -> a
     70:78:void reverse(java.lang.Byte[]) -> a
     82:90:short toShort(java.lang.Byte[],int) -> a
@@ -22301,6 +22332,9 @@ com.modusgo.ubi.jastec.packet.SensorBroadcating -> com.modusgo.ubi.jastec.packet
     float RPM -> b
     float voltage -> c
     17:30:void parse(java.lang.Byte[]) -> a
+com.modusgo.ubi.jastec.packet.SerialNumberSuccess -> com.modusgo.ubi.jastec.packet.k:
+    java.lang.String serialNumber -> a
+    14:25:void parse(java.lang.Byte[]) -> a
 com.modusgo.ubi.requesttasks.BasePostRequestAsyncTask -> com.modusgo.ubi.b.a:
     20:37:org.json.JSONObject doInBackground(java.lang.String[]) -> a
 com.modusgo.ubi.requesttasks.BaseRequestAsyncTask -> com.modusgo.ubi.b.b:

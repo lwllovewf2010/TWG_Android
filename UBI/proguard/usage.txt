@@ -422,12 +422,10 @@ android.support.v4.app.NotificationCompat$Builder:
     1118:1119:public android.support.v4.app.NotificationCompat$Builder setLargeIcon(android.graphics.Bitmap)
     1148:1150:public android.support.v4.app.NotificationCompat$Builder setSound(android.net.Uri,int)
     1175:1181:public android.support.v4.app.NotificationCompat$Builder setLights(int,int,int)
-    1196:1197:public android.support.v4.app.NotificationCompat$Builder setOngoing(boolean)
     1205:1206:public android.support.v4.app.NotificationCompat$Builder setOnlyAlertOnce(boolean)
     1227:1228:public android.support.v4.app.NotificationCompat$Builder setLocalOnly(boolean)
     1239:1240:public android.support.v4.app.NotificationCompat$Builder setCategory(java.lang.String)
     1254:1258:public android.support.v4.app.NotificationCompat$Builder setDefaults(int)
-    1287:1288:public android.support.v4.app.NotificationCompat$Builder setPriority(int)
     1314:1315:public android.support.v4.app.NotificationCompat$Builder addPerson(java.lang.String)
     1330:1331:public android.support.v4.app.NotificationCompat$Builder setGroup(java.lang.String)
     1342:1343:public android.support.v4.app.NotificationCompat$Builder setGroupSummary(boolean)
@@ -8271,8 +8269,6 @@ com.modusgo.ubi.jastec.IParser
 com.modusgo.ubi.jastec.JastecManager:
     private static final java.lang.String TAG
     public static final int DIVIDE_SIZE
-    272:277:private byte[] createDrivingStop()
-    282:289:private byte[] createSensorStop()
 com.modusgo.ubi.jastec.PacketBuilder:
     private static final int SIZE
     32:33:public void putSrc(byte)
@@ -8292,7 +8288,7 @@ com.modusgo.ubi.jastec.Protocol:
     public static final int TRIP_ONLY_SECTOR1_START
     4:4:public Protocol()
 com.modusgo.ubi.jastec.Protocol$PacketType:
-    66:72:public static com.modusgo.ubi.jastec.Protocol$PacketType fromOrdinal(int)
+    65:71:public static com.modusgo.ubi.jastec.Protocol$PacketType fromOrdinal(int)
 com.modusgo.ubi.jastec.Utils:
     9:9:public Utils()
     13:20:public static byte[] toBytes(java.lang.Byte[])
@@ -8382,7 +8378,8 @@ com.modusgo.ubi.jastec.packet.RealTimeReadDTCConfirm:
 com.modusgo.ubi.jastec.packet.SensorBroadcating:
     34:34:public com.modusgo.ubi.jastec.Protocol$PacketType getPacketType()
 com.modusgo.ubi.jastec.packet.SensorSupportWhole
-com.modusgo.ubi.jastec.packet.SerialNumberSuccess
+com.modusgo.ubi.jastec.packet.SerialNumberSuccess:
+    29:29:public com.modusgo.ubi.jastec.Protocol$PacketType getPacketType()
 com.modusgo.ubi.requesttasks.BaseRequestAsyncTask:
     35:36:public BaseRequestAsyncTask()
 com.modusgo.ubi.requesttasks.GetDeviceInfoRequest:
