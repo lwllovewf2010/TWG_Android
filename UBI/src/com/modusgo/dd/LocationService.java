@@ -154,7 +154,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		
 		if(!prefs.getString(Constants.PREF_AUTH_KEY, "").equals("")){
 			
-			Action action = (Action) intent.getSerializableExtra(EXTRA_ACTION);
+			Action action = intent != null ? (Action) intent.getSerializableExtra(EXTRA_ACTION) : null;
 			
 			if(action!=null){
 				switch (action) {
