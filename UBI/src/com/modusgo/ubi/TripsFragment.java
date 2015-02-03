@@ -258,6 +258,9 @@ public class TripsFragment extends Fragment{
 				//System.out.println(i);
 			}
 			else{
+				tripsDurationInMinutes += Utils.durationInMinutes(t.getStartDate(), t.getEndDate());
+				currentHeader.date = sdfDate.format(t.getStartDate());
+				currentHeader.total = "Totals: "+(int)Math.floor(tripsDurationInMinutes/60)+" hr " + tripsDurationInMinutes%60 + " min "+distanceFormat.format(tripsDistance)+" MI";
 				tripListItems.add(currentHeader);
 			}
 
