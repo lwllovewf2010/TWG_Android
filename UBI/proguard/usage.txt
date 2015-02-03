@@ -420,9 +420,7 @@ android.support.v4.app.NotificationCompat$Builder:
     1089:1091:public android.support.v4.app.NotificationCompat$Builder setFullScreenIntent(android.app.PendingIntent,boolean)
     1109:1111:public android.support.v4.app.NotificationCompat$Builder setTicker(java.lang.CharSequence,android.widget.RemoteViews)
     1118:1119:public android.support.v4.app.NotificationCompat$Builder setLargeIcon(android.graphics.Bitmap)
-    1131:1133:public android.support.v4.app.NotificationCompat$Builder setSound(android.net.Uri)
     1148:1150:public android.support.v4.app.NotificationCompat$Builder setSound(android.net.Uri,int)
-    1165:1166:public android.support.v4.app.NotificationCompat$Builder setVibrate(long[])
     1175:1181:public android.support.v4.app.NotificationCompat$Builder setLights(int,int,int)
     1196:1197:public android.support.v4.app.NotificationCompat$Builder setOngoing(boolean)
     1205:1206:public android.support.v4.app.NotificationCompat$Builder setOnlyAlertOnce(boolean)
@@ -8070,17 +8068,20 @@ com.modusgo.dd.GcmIntentService:
 com.modusgo.dd.LocationService:
     private static final int PERMANENT_NOTIFICATION_ID
     private static final int SERVICES_DISABLED_NOTIFICATION_ID
-    private static final int IBEACON_DECLINE_NOTIFICATION_ID
-    private static final int PLUGIN_YOUR_PHONE_NOTIFICATION_ID
+    private static final int TRIP_DECLINE_NOTIFICATION_ID
     private static final float TRIP_START_SPEED
     private static final float TRIP_STAY_SPEED
     private static final int MAX_STAY_TIME
+    private static final int MAX_BEACON_NO_CONNECTION_STAY_TIME
     public static final int GET_DEVICE_FREQUENCY
     public static final int MIN_ACCURACY
-    private static final java.lang.String EVENT_TRIP_START
-    private static final java.lang.String EVENT_TRIP_STOP
+    public static final java.lang.String EXTRA_ACTION
+    public static final java.lang.String EVENT_TRIP_START
+    public static final java.lang.String EVENT_TRIP_STOP
     private static final java.lang.String EVENT_BEACON_CONNECTED
     private static final java.lang.String EVENT_BEACON_DISCONNECTED
+    public static final java.lang.String EVENT_TRIP_DECLINED
+    private static final double ACCEPT_DISTANCE
 com.modusgo.dd.PhoneUsageSaverService:
     public static final java.lang.String PREF_UNLOCK_COUNT
     private static final java.lang.String PREF_PHONE_ON
@@ -8149,10 +8150,11 @@ com.modusgo.ubi.R$drawable
 com.modusgo.ubi.R$id
 com.modusgo.ubi.R$integer
 com.modusgo.ubi.R$layout
+com.modusgo.ubi.R$raw
 com.modusgo.ubi.R$string
 com.modusgo.ubi.R$style
 com.modusgo.ubi.R$styleable:
-    3197:3197:public R$styleable()
+    3201:3201:public R$styleable()
 com.modusgo.ubi.R$xml
 com.modusgo.ubi.Recall:
     private static final long serialVersionUID
