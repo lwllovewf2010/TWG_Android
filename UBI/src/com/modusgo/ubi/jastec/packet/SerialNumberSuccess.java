@@ -7,20 +7,20 @@ import com.modusgo.ubi.jastec.Protocol;
 import com.modusgo.ubi.jastec.Protocol.PacketType;
 
 public class SerialNumberSuccess implements IPacket, IParser{
-	public String SerialNumber;
+	public String serialNumber;
 	
 	@Override
 	public void parse(Byte[] packet) {
 		PacketParser.getInstance().init(packet);
 		Byte[] dataBlock = PacketParser.getInstance().getDataBlock();
-		SerialNumber = "";
+		serialNumber = "";
 		
 		if(dataBlock.length == 0)
 			return;
 		
 		for(int i = 0; i < 17; i++)
 		{
-			SerialNumber += (char)dataBlock[i].byteValue();
+			serialNumber += (char)dataBlock[i].byteValue();
 		}
 	}
 

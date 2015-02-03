@@ -25,6 +25,8 @@ import com.modusgo.ubi.jastec.packet.GetProtocol;
 import com.modusgo.ubi.jastec.packet.ReadVIN;
 import com.modusgo.ubi.jastec.packet.RealTimeReadDTCConfirm;
 import com.modusgo.ubi.jastec.packet.SensorBroadcating;
+import com.modusgo.ubi.jastec.packet.SerialNumberSuccess;
+import com.modusgo.ubi.utils.Device;
 
 public class JastecManager implements OnConnectionListener, OnDataListener{
 
@@ -62,18 +64,21 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 
         mMapProcessor = new HashMap<Protocol.PacketType, IPacketProcessor>();
         
-        mMapProcessor.put(Protocol.PacketType.BLUETOOTH_DEVICE_NAME,	 			new OnBluetoothDeviceName());
-		mMapProcessor.put(Protocol.PacketType.BLUETOOTH_PASSWORD,		 			new OnBluetoothPassword());
-		mMapProcessor.put(Protocol.PacketType.MONITORING_STOP,			 			new OnMonitoringStop());
-		mMapProcessor.put(Protocol.PacketType.BLUETOOTH_PINCODE, 					new OnBluetoothPinCode());
+        mMapProcessor.put(Protocol.PacketType.BLUETOOTH_DEVICE_NAME,	 		new OnBluetoothDeviceName());
+		mMapProcessor.put(Protocol.PacketType.BLUETOOTH_PASSWORD,		 		new OnBluetoothPassword());
+		mMapProcessor.put(Protocol.PacketType.MONITORING_STOP,			 		new OnMonitoringStop());
+		mMapProcessor.put(Protocol.PacketType.BLUETOOTH_PINCODE, 				new OnBluetoothPinCode());
 		
 		mMapProcessor.put(Protocol.PacketType.GET_PROTOCOL, 					new OnGetProtocol());
 		mMapProcessor.put(Protocol.PacketType.DRIVING_SUPPORT_WHOLE, 			new OnDrivingSupportWhole());
 		mMapProcessor.put(Protocol.PacketType.SENSOR_BROADCASTING, 				new OnSensorBroadcating());
 
-		mMapProcessor.put(Protocol.PacketType.READ_VIN, 					new OnReadVIN());
-		mMapProcessor.put(Protocol.PacketType.REALTIME_READ_DTC_CONFIRM, 	new OnRealTimeReadDTCConfirm());
-		
+		mMapProcessor.put(Protocol.PacketType.READ_VIN, 						new OnReadVIN());
+		mMapProcessor.put(Protocol.PacketType.REALTIME_READ_DTC_CONFIRM, 		new OnRealTimeReadDTCConfirm());
+		mMapProcessor.put(Protocol.PacketType.READ_SERIAL_NUMBER_SUCCESS, 		new OnReadSerialNumberSuccess());
+
+		mMapProcessor.put(Protocol.PacketType.SENSOR_SINGLE, 					new OnSensorSingle());
+		mMapProcessor.put(Protocol.PacketType.DRIVING_SINGLE, 					new OnDrivingSingle());
 
         mDrivingBroadcastingCurrent = new DrivingBroadcastingCurrent();
 		mDrivingBroadcastingAfterStart = new DrivingBroadcastingAfterStart();
@@ -255,6 +260,16 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 		return PacketBuilder.getInstance().buildOnBT();
 	}
 	
+	private byte[] createSerialNumberPacket()
+	{
+		PacketBuilder.getInstance().init((short)0);
+		PacketBuilder.getInstance().putTar((byte)0xA0);
+		PacketBuilder.getInstance().putID((byte)0x50);
+		PacketBuilder.getInstance().putSubID((byte)0x10);
+		
+		return PacketBuilder.getInstance().buildOnBT();
+	}
+	
 	public byte[] createRealTimeDTCPacket()
 	{
 		PacketBuilder.getInstance().init((short)0);
@@ -402,10 +417,12 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 			byte[] packetForPinCode = PacketBuilder.getInstance().buildOnBT();
 			byte[] getProtocolPacket = createProtocolPacket();
 			byte[] vinPacket = createVINPacket();
+			byte[] serialNumberPacket = createSerialNumberPacket();
 			try {				
 				BluetoothCommunicator.getInstance().write(packetForPinCode);
 				BluetoothCommunicator.getInstance().write(getProtocolPacket);
 				BluetoothCommunicator.getInstance().write(vinPacket);
+				BluetoothCommunicator.getInstance().write(serialNumberPacket);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -424,20 +441,36 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 		
 		@Override
 		public boolean onTransFunc(Byte[] packet) {
-			mGetProtocol.parse(packet);
-			mProtocolNum = mGetProtocol.ProtocolNumber;
 			
-			System.out.println("Protocol received: "+mProtocolNum);
-			
-			byte[] supportPacket = createSupportPacket();
-//			byte[] sensorPacket = createSensorPacket();
-//			byte[] speedBroadCasting = createSpeedAndRPMBroadcastingPacket();
-			try {
-				BluetoothCommunicator.getInstance().write(supportPacket);
-//				BluetoothCommunicator.getInstance().write(sensorPacket);
-//				BluetoothCommunicator.getInstance().write(speedBroadCasting);
-			} catch (IOException e) {
-				e.printStackTrace();
+			if(prefs.getString(Device.PREF_DEVICE_MEID, "-").equals(prefs.getString(Constants.PREF_JASTEC_MEID, "+"))){
+				mGetProtocol.parse(packet);
+				mProtocolNum = mGetProtocol.ProtocolNumber;
+				
+				System.out.println("Protocol received: "+mProtocolNum);
+				
+				byte[] supportPacket = createSupportPacket();
+	//			byte[] sensorPacket = createSensorPacket();
+	//			byte[] speedBroadCasting = createSpeedAndRPMBroadcastingPacket();
+				try {
+					BluetoothCommunicator.getInstance().write(supportPacket);
+	//				BluetoothCommunicator.getInstance().write(sensorPacket);
+	//				BluetoothCommunicator.getInstance().write(speedBroadCasting);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			else{
+				byte[] drivingStopPacket = createDrivingStop();
+				byte[] sensorStopPacket = createSensorStop();
+				byte[] serialNumberPacket = createSerialNumberPacket();
+				
+				try {
+					BluetoothCommunicator.getInstance().write(serialNumberPacket);
+					BluetoothCommunicator.getInstance().write(drivingStopPacket);
+					BluetoothCommunicator.getInstance().write(sensorStopPacket);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 			return true;
 		}
@@ -532,6 +565,22 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 			return true;
 		}
 	}
+
+	private class OnSensorSingle implements IPacketProcessor
+	{
+		@Override
+		public boolean onTransFunc(Byte[] packet) {
+			return true;
+		}
+	}
+	
+	private class OnDrivingSingle implements IPacketProcessor
+	{
+		@Override
+		public boolean onTransFunc(Byte[] packet) {
+			return true;
+		}
+	}
 	
 	private class OnReadVIN implements IPacketProcessor
 	{
@@ -587,6 +636,24 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 					//mListConfirmation.add(mRealTimeReadDTCConfirm.DTCDescriptor);
 				}
 			}
+			return true;
+		}
+	}
+	
+	private class OnReadSerialNumberSuccess implements IPacketProcessor
+	{
+		private SerialNumberSuccess mSerialNumber;
+		public OnReadSerialNumberSuccess()
+		{
+			mSerialNumber = new SerialNumberSuccess();
+		}
+		@Override
+		public boolean onTransFunc(Byte[] packet) {
+			mSerialNumber.parse(packet);
+
+			System.out.println("MEID : " + mSerialNumber.serialNumber);
+			prefs.edit().putString(Constants.PREF_JASTEC_MEID, mSerialNumber.serialNumber).commit();
+			
 			return true;
 		}
 	}

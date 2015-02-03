@@ -47,6 +47,7 @@ public class Constants {
 	public static final String PREF_TRIP_DECLINED = "tripDeclined";
 	public static final String PREF_JASTEC_VEHICLE_VIN = "jastecVIN";
 	public static final String PREF_JASTEC_DTCS = "jastecDTCs";
+	public static final String PREF_JASTEC_MEID = "jastecMEID";
 	
 	public static final String ROLE_CUSTOMER = "customer";
 

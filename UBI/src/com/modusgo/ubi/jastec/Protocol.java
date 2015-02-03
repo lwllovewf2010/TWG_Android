@@ -52,8 +52,7 @@ public class Protocol {
 		EXTERNAL_WRITE_COMPLETE(0X00812014),
 		HW_RESET(0x00A0F000),
 		
-		READ_VIN(0x00904010),
-		READ_MEID(0x00A05010);
+		READ_VIN(0x00904010);
 		
 		private int mValue;
 		private PacketType(int value)
