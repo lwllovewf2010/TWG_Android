@@ -502,27 +502,26 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 			notificationText += " Drive Safe!";
 		}
 		
+		Intent resultIntent = new Intent(this, InitActivity.class);
+		PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_CANCEL_CURRENT);//stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+		
 		NotificationCompat.Builder mBuilder =
 		        new NotificationCompat.Builder(this)
 		        .setSmallIcon(R.drawable.ic_launcher)
 		        .setContentTitle(getResources().getString(R.string.app_name))
-		        .setContentText(notificationText);
+		        .setContentText(notificationText)
+		        .setStyle(new NotificationCompat.BigTextStyle().bigText(notificationText))
+		        .setContentIntent(resultPendingIntent)
+				.setPriority(NotificationCompat.PRIORITY_HIGH)
+				.setOngoing(true);
 		
 		if(sonundAndVibration && !deviceType.equals(Device.DEVICE_TYPE_OBD)){
 			mBuilder
 	        .setVibrate(inTrip ? new long[]{0, 1000} : new long[]{0, 400, 200, 400})
 	        .setSound(Uri.parse("android.resource://" + getPackageName() + "/" + (inTrip ? R.raw.beep_sound : R.raw.double_beep_sound)));
 		}
-
-		Intent resultIntent = new Intent(this, InitActivity.class);
 		
-		mBuilder.setStyle(new NotificationCompat.BigTextStyle()
-        .bigText(notificationText));
-
-		PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_CANCEL_CURRENT);//stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-		mBuilder.setContentIntent(resultPendingIntent);
 		Notification n = mBuilder.build();
-		n.flags |= Notification.FLAG_ONGOING_EVENT;
 		
 		startForeground(PERMANENT_NOTIFICATION_ID, n);
 	}
@@ -533,6 +532,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		        .setSmallIcon(R.drawable.ic_launcher)
 		        .setContentTitle(getString(R.string.app_name))
 		        .setContentText(message)
+		        .setPriority(NotificationCompat.PRIORITY_MAX)
 		        .setAutoCancel(true);
 		
 		PendingIntent resultPendingIntent = PendingIntent.getActivity(this,id,resultIntent,Intent.FLAG_ACTIVITY_NEW_TASK);
