@@ -46,42 +46,35 @@
             android:textSize="12.5sp"
             ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
-        <com.modusgo.ubi.customviews.TypefacedTextView
-            android:id="@+id/tvDateLabel"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="left"
-            android:text="Last Trip"
-            android:textColor="#3c454f"
-            android:textSize="10sp"
-            ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
+            android:gravity="center" >
 
-        <com.modusgo.ubi.customviews.TypefacedTextView
-            android:id="@+id/tvDate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="left"
-            android:text="07/05/2014 05:00 PM PST"
-            android:textColor="#a1a6ad"
-            android:textSize="10sp"
-            ubi:typeface="EncodeSansNormal-300-Light.ttf" />
-        
-        <com.modusgo.ubi.customviews.TypefacedTextView
-            android:id="@+id/tvInTrip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/rectangle_in_trip"
-            android:gravity="left"
-            android:paddingBottom="3dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:paddingTop="3dp"
-            android:text="In Trip"
-            android:textColor="#fff"
-            android:textSize="12.5sp"
-            android:visibility="gone"
-            ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+            <com.modusgo.ubi.customviews.TypefacedTextView
+                android:id="@+id/tvDateLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:text="Last Trip"
+                android:textColor="#3c454f"
+                android:textSize="10sp"
+                ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
 
+            <com.modusgo.ubi.customviews.TypefacedTextView
+                android:id="@+id/tvDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="07/05/2014 05:00 PM PST"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/tvDateLabel"
+                android:textColor="#a1a6ad"
+                android:textSize="10sp"
+                ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+
+            <include layout="@layout/in_trip_indicator" />
+        </RelativeLayout>
     </LinearLayout>
 
     <LinearLayout

@@ -158,8 +158,8 @@ public class HomeActivity extends MainActivity{
 		    View tvInTrip = view.findViewById(R.id.tvInTrip);
 		    
 		    if(vehicle.inTrip){
-		    	tvDateLabel.setVisibility(View.GONE);
-		    	tvDate.setVisibility(View.GONE);
+		    	tvDateLabel.setVisibility(View.INVISIBLE);
+		    	tvDate.setVisibility(View.INVISIBLE);
 		    	tvInTrip.setVisibility(View.VISIBLE);
 		    }
 		    else if(TextUtils.isEmpty(vehicle.lastTripDate)){
