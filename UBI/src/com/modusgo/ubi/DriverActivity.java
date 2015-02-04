@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTabHost;
@@ -42,6 +42,7 @@ public class DriverActivity extends MainActivity{
 	
 	private FragmentTabHost tabHost;
 	SlidingMenu menu;
+	View driverTabView;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -67,7 +68,7 @@ public class DriverActivity extends MainActivity{
 		DbHelper dbHelper = DbHelper.getInstance(this);
 		vehicle = dbHelper.getVehicle(getIntent().getLongExtra(VehicleEntry._ID, 0));
 		
-		setupTab(DriverDetailsFragment.class, b, "Driver Detail", R.drawable.ic_tab_driver, 0);
+		driverTabView = setupTab(DriverDetailsFragment.class, b, "Driver Detail", R.drawable.ic_tab_driver, 0);
 		setupTab(TripsFragment.class, b, "Trips", R.drawable.ic_tab_trips, 0);
 		setupTab(ScoreFragment.class, b, "Score", vehicle.grade, 0);
 		if(prefs.getBoolean(Constants.PREF_DIAGNOSTIC, false))
@@ -110,6 +111,25 @@ public class DriverActivity extends MainActivity{
 	protected void onResume() {
 		super.onResume();
 		setNavigationDrawerItemsUnselected();
+		updateDriverDetailsTab();
+	}
+	
+	private void updateDriverDetailsTab(){
+		if(driverTabView!=null){
+
+			ImageView icon = (ImageView) driverTabView.findViewById(R.id.imageIcon);
+			TextView tvTitle = (TextView) driverTabView.findViewById(R.id.tabsText);
+			
+			if(vehicle.inTrip){
+				int inTripColor = getResources().getColor(R.color.blue);
+				icon.setColorFilter(inTripColor, PorterDuff.Mode.MULTIPLY);
+				tvTitle.setTextColor(getResources().getColorStateList(R.drawable.driver_in_trip_tab_text_selector));
+			}
+			else{
+				icon.setColorFilter(null);
+				tvTitle.setTextColor(getResources().getColorStateList(R.drawable.driver_tab_text_selector));
+			}
+		}
 	}
 	
 	public void switchTab(int index){
@@ -207,10 +227,11 @@ public class DriverActivity extends MainActivity{
 		
 	}
 	
-	private void setupTab(Class<?> c, Bundle b, final String tag, int imageResId, int counter) {
+	private View setupTab(Class<?> c, Bundle b, final String tag, int imageResId, int counter) {
 		View tabview = createTabView(tabHost.getContext(), tag, imageResId, counter);
 	    TabSpec setContent = tabHost.newTabSpec(tag).setIndicator(tabview);
 	    tabHost.addTab(setContent, c, b);
+	    return tabview;
 	}
 	
 	private void setupTab(Class<?> c, Bundle b, final String tag, String title, int counter) {

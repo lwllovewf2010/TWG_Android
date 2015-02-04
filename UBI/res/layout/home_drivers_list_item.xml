@@ -11,7 +11,7 @@
         android:layout_width="102dp"
         android:layout_height="102dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/person_test" />
+        android:src="@drawable/person_test3" />
 
     <LinearLayout
         android:layout_width="0dp"
@@ -42,7 +42,7 @@
             android:layout_marginTop="4dp"
             android:gravity="left"
             android:text="2012 Ford Edge"
-            android:textColor="#00aeef"
+            android:textColor="@color/blue"
             android:textSize="12.5sp"
             ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
