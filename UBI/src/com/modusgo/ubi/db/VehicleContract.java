@@ -43,5 +43,6 @@ public class VehicleContract {
         public static final String COLUMN_NAME_ODOMETER = "odometer";
         public static final String COLUMN_NAME_LIMITS_BLOCKED = "limits_blocked";
         public static final String COLUMN_NAME_LIMITS_BLOCKED_BY = "limits_blocked_by";
+        public static final String COLUMN_NAME_UPDATED_AT = "updated_at";
     }
 }

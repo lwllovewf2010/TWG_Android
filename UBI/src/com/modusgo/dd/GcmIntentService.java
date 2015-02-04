@@ -1,5 +1,10 @@
 package com.modusgo.dd;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -15,14 +20,17 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.bugsnag.android.Bugsnag;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.modusgo.ubi.Constants;
 import com.modusgo.ubi.InitActivity;
 import com.modusgo.ubi.R;
+import com.modusgo.ubi.Vehicle;
+import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.requesttasks.GetDeviceInfoRequest;
 import com.modusgo.ubi.utils.Device;
+import com.modusgo.ubi.utils.Utils;
 
 /**
  * This {@code IntentService} does the actual handling of the GCM message.
@@ -74,61 +82,119 @@ public class GcmIntentService extends IntentService {
 //            	}
             	
             	Bugsnag.addToTab("User", "Push data", extras.toString());
+            	Bugsnag.notify(new RuntimeException("Push received"));
             	
-            	String deviceType = prefs.getString(Device.PREF_DEVICE_TYPE, "");
+            	if(extras.containsKey("aps")){
+            		String apsJSON = extras.getString("aps");
+            		try {
+            			JSONObject jsonObj = new JSONObject(apsJSON);
+            			if(jsonObj.optInt("content-available")==0){
+            				String message = jsonObj.optString("alert");
+            				if(!TextUtils.isEmpty(message))
+            					sendNotification(getResources().getString(R.string.app_name), message);
+            			}
+            		} catch (JSONException e1) {
+            			e1.printStackTrace();
+            		}
+            	}
             	
-            	if(deviceType.equals(Device.DEVICE_TYPE_OBD)){
-	            	Bugsnag.notify(new RuntimeException("Push received"));
-	            	
-	            	if(extras.containsKey("aps")){
-						String apsJSON = extras.getString("aps");
-						try {
-							JSONObject jsonObj = new JSONObject(apsJSON);
-							if(jsonObj.optInt("content-available")==0){
-								String message = jsonObj.optString("alert");
-				            	if(!TextUtils.isEmpty(message))
-				            		sendNotification(getResources().getString(R.string.app_name), message);
+            	
+            	Calendar calUpdatedAt = Calendar.getInstance();
+            	if(extras.containsKey("updated_at")){
+            		SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);
+            		try {
+            			calUpdatedAt.setTime(sdf.parse(Utils.fixTimezoneZ(extras.getString("updated_at"))));
+            		} catch (ParseException ex) {
+            			ex.printStackTrace();
+            		}
+            	}
+            	
+            	if(extras.containsKey("act")){
+            		switch (extras.getString("act", "du")) {
+            		case "du":
+            			String deviceType = prefs.getString(Device.PREF_DEVICE_TYPE, "");
+            			if(deviceType.equals(Device.DEVICE_TYPE_OBD)){
+            				if(extras.containsKey("in_trip")){
+            					e.putBoolean(Device.PREF_DEVICE_IN_TRIP, !TextUtils.isEmpty(extras.getString("in_trip")));
+            				}
+            				else{
+            					e.putBoolean(Device.PREF_DEVICE_IN_TRIP, false);
+            				}
+            				
+            				if(extras.containsKey("type")){
+            					e.putString(Device.PREF_DEVICE_TYPE, extras.getString("type"));
+            				}
+            				
+            				if(extras.containsKey("events")){
+            					try{
+            						e.putBoolean(Device.PREF_DEVICE_EVENTS, Boolean.parseBoolean(extras.getString("events")));
+            					}
+            					catch(Exception ex){
+            						ex.printStackTrace();
+            						e.putBoolean(Device.PREF_DEVICE_EVENTS, false);
+            					}
+            				}
+            				if(extras.containsKey("latitude")){
+            					e.putString(Device.PREF_DEVICE_LATITUDE, extras.getString("latitude"));
+            				}
+            				if(extras.containsKey("longitude")){
+            					e.putString(Device.PREF_DEVICE_LONGITUDE, extras.getString("longitude"));
+            				}
+            				if(extras.containsKey("location_date")){
+            					e.putString(Device.PREF_DEVICE_LOCATION_DATE, extras.getString("location_date"));
+            				}
+            			}
+            			else{
+            				Bugsnag.notify(new RuntimeException("Push received, not proccessed, device is not OBD"));
+            			}
+            			break;
+            		case "vu":
+            			if(extras.containsKey("id")){
+            				DbHelper dbHelper = DbHelper.getInstance(this);
+            				Vehicle vehicle = dbHelper.getVehicle(extras.getLong("id"));
+            				
+							Calendar calVehicleUpdatedAt = Calendar.getInstance();
+							SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);
+		            		try {
+		            			calVehicleUpdatedAt.setTime(sdf.parse(vehicle.updatedAt));
+		            		} catch (ParseException ex) {
+		            			ex.printStackTrace();
+		            		}
+							if(calVehicleUpdatedAt.before(calUpdatedAt)){
+	            				if(extras.containsKey("location")){
+	            					Bundle location = extras.getBundle("location");
+	            					if(location.containsKey("location_date")){
+	            						
+	            					}
+	            					if(location.containsKey("latitude")){
+	            						vehicle.latitude = location.getDouble("latitude");
+	            					}
+	            					if(location.containsKey("longitude")){
+	            						vehicle.longitude = location.getDouble("longitude");
+	            					}
+	            					if(location.containsKey("in_trip")){
+	            						vehicle.inTrip = !TextUtils.isEmpty(location.getString("in_trip"));
+	            					}
+	            					if(location.containsKey("last_trip_id")){
+	            						vehicle.lastTripId = location.getLong("last_trip_id");									
+	            					}
+	            					if(location.containsKey("last_trip_time")){
+	            						vehicle.lastTripDate = location.getString(Utils.fixTimezoneZ(extras.getString("last_trip_time")));										
+	            					}
+	            				}
+	            				dbHelper.saveVehicle(vehicle);
 							}
-						} catch (JSONException e1) {
-							e1.printStackTrace();
-						}
-	            	}
-	            	
-	            	if(extras.containsKey("in_trip")){
-						e.putBoolean(Device.PREF_DEVICE_IN_TRIP, !TextUtils.isEmpty(extras.getString("in_trip")));
-	            	}
-	            	else{
-	            		e.putBoolean(Device.PREF_DEVICE_IN_TRIP, false);
-	            	}
-	            	
-	            	if(extras.containsKey("type")){
-						e.putString(Device.PREF_DEVICE_TYPE, extras.getString("type"));
-	            	}
-	            	
-	            	if(extras.containsKey("events")){
-	            		try{
-	            			e.putBoolean(Device.PREF_DEVICE_EVENTS, Boolean.parseBoolean(extras.getString("events")));
-	            		}
-	            		catch(Exception ex){
-	            			ex.printStackTrace();
-	            			e.putBoolean(Device.PREF_DEVICE_EVENTS, false);
-	            		}
-	            	}
-	            	if(extras.containsKey("latitude")){
-						e.putString(Device.PREF_DEVICE_LATITUDE, extras.getString("latitude"));
-	            	}
-	            	if(extras.containsKey("longitude")){
-						e.putString(Device.PREF_DEVICE_LONGITUDE, extras.getString("longitude"));
-	            	}
-	            	if(extras.containsKey("location_date")){
-						e.putString(Device.PREF_DEVICE_LOCATION_DATE, extras.getString("location_date"));
-	            	}
-	            	
-	            	e.commit();
+            				
+            				dbHelper.close();
+            			}
+            			
+            		default:
+            			break;
+            		}
             	}
-            	else{
-	            	Bugsnag.notify(new RuntimeException("Push received, not proccessed, device is not OBD"));
-            	}
+            	
+            	e.commit();
+            	
             	
             	new GetDeviceInfoRequest(this).execute();
             }

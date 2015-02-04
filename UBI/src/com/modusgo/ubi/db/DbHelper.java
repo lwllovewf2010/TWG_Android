@@ -268,7 +268,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	"DROP TABLE IF EXISTS " + TrackingEntry.TABLE_NAME};
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 51;
+	public static final int DATABASE_VERSION = 52;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;
@@ -349,7 +349,8 @@ public class DbHelper extends SQLiteOpenHelper {
 				VehicleEntry.COLUMN_NAME_LAST_TRIP_DATE,
 				VehicleEntry.COLUMN_NAME_ALERTS,
 				VehicleEntry.COLUMN_NAME_DRIVER_PHOTO,
-				VehicleEntry.COLUMN_NAME_IN_TRIP}, 
+				VehicleEntry.COLUMN_NAME_IN_TRIP,
+				VehicleEntry.COLUMN_NAME_UPDATED_AT}, 
 				null, null, null, null, null);
 		
 		ArrayList<Vehicle> drivers = new ArrayList<Vehicle>();
@@ -367,6 +368,7 @@ public class DbHelper extends SQLiteOpenHelper {
 				d.alerts = c.getInt(7);
 				d.photo = c.getString(8);
 				d.inTrip = c.getInt(9) == 1;
+				d.updatedAt = c.getString(10);
 				drivers.add(d);
 				
 				c.moveToNext();
@@ -442,7 +444,8 @@ public class DbHelper extends SQLiteOpenHelper {
 			    VehicleEntry.COLUMN_NAME_CAR_LAST_CHECKUP,
 			    VehicleEntry.COLUMN_NAME_CAR_CHECKUP_STATUS,
 			    VehicleEntry.COLUMN_NAME_LIMITS_BLOCKED,
-			    VehicleEntry.COLUMN_NAME_LIMITS_BLOCKED_BY}, 
+			    VehicleEntry.COLUMN_NAME_LIMITS_BLOCKED_BY,
+			    VehicleEntry.COLUMN_NAME_UPDATED_AT}, 
 				VehicleEntry._ID+" = ?", new String[]{Long.toString(id)}, null, null, null);
 		
 		Vehicle v = new Vehicle();
@@ -481,6 +484,7 @@ public class DbHelper extends SQLiteOpenHelper {
 			v.carCheckupStatus = c.getString(30);
 			v.limitsBlocked = c.getInt(31) == 1;
 			v.limitsBlockedBy = c.getString(32);
+			v.updatedAt = c.getString(33);
 				
 		}
 		c.close();
@@ -531,7 +535,8 @@ public class DbHelper extends SQLiteOpenHelper {
 				VehicleEntry.COLUMN_NAME_CAR_LAST_CHECKUP,
 				VehicleEntry.COLUMN_NAME_CAR_CHECKUP_STATUS,
 				VehicleEntry.COLUMN_NAME_LIMITS_BLOCKED,
-				VehicleEntry.COLUMN_NAME_LIMITS_BLOCKED_BY
+				VehicleEntry.COLUMN_NAME_LIMITS_BLOCKED_BY,
+				VehicleEntry.COLUMN_NAME_UPDATED_AT
 			};
 			
 			String sql = buildSQLStatementString("INSERT OR REPLACE", VehicleEntry.TABLE_NAME, fields);
@@ -578,6 +583,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		    	statement.bindString(31, vehicle.carCheckupStatus);
 		    	statement.bindLong(32, vehicle.limitsBlocked ? 1 : 0);
 		    	statement.bindString(33, vehicle.limitsBlockedBy);
+		    	statement.bindString(34, vehicle.updatedAt);
 		    	statement.execute();
 		    	
 			}
