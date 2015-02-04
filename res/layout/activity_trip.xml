@@ -62,7 +62,7 @@
                     android:gravity="left|center_vertical"
                     android:orientation="horizontal" >
 
-                    <com.modusgo.ubi.customviews.TypefacedTextView
+                    <com.modusgo.twg.customviews.TypefacedTextView
                         android:id="@+id/tvDate"
                         android:layout_width="60dp"
                         android:layout_height="wrap_content"
@@ -94,7 +94,7 @@
                             android:layout_height="wrap_content"
                             android:src="@drawable/ic_trip_start_small" />
 
-                        <com.modusgo.ubi.customviews.TypefacedTextView
+                        <com.modusgo.twg.customviews.TypefacedTextView
                             android:id="@+id/tvStartTime"
                             android:layout_width="60dp"
                             android:layout_height="wrap_content"
@@ -117,7 +117,7 @@
                             android:layout_marginRight="4dp"
                             android:src="@drawable/ic_trip_stop_small" />
 
-                        <com.modusgo.ubi.customviews.TypefacedTextView
+                        <com.modusgo.twg.customviews.TypefacedTextView
                             android:id="@+id/tvEndTime"
                             android:layout_width="60dp"
                             android:layout_height="wrap_content"
@@ -148,7 +148,7 @@
                         android:paddingBottom="10dp"
                         android:paddingTop="10dp" >
 
-                        <com.modusgo.ubi.customviews.TypefacedTextView
+                        <com.modusgo.twg.customviews.TypefacedTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Avg Speed"
@@ -157,7 +157,7 @@
                             android:textSize="10sp"
                             ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
 
-                        <com.modusgo.ubi.customviews.TypefacedTextView
+                        <com.modusgo.twg.customviews.TypefacedTextView
                             android:id="@+id/tvAvgSpeed"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -166,7 +166,7 @@
                             android:textSize="31sp"
                             ubi:typeface="EncodeSansNarrow-700-Bold.ttf" />
 
-                        <com.modusgo.ubi.customviews.TypefacedTextView
+                        <com.modusgo.twg.customviews.TypefacedTextView
                             android:id="@+id/tvAvgSpeedUnits"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -187,7 +187,7 @@
                         android:paddingBottom="10dp"
                         android:paddingTop="10dp" >
 
-                        <com.modusgo.ubi.customviews.TypefacedTextView
+                        <com.modusgo.twg.customviews.TypefacedTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Max Speed"
@@ -196,7 +196,7 @@
                             android:textSize="10sp"
                             ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
 
-                        <com.modusgo.ubi.customviews.TypefacedTextView
+                        <com.modusgo.twg.customviews.TypefacedTextView
                             android:id="@+id/tvMaxSpeed"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -205,7 +205,7 @@
                             android:textSize="31sp"
                             ubi:typeface="EncodeSansNarrow-700-Bold.ttf" />
 
-                        <com.modusgo.ubi.customviews.TypefacedTextView
+                        <com.modusgo.twg.customviews.TypefacedTextView
                             android:id="@+id/tvMaxSpeedUnits"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -226,7 +226,7 @@
                         android:paddingBottom="10dp"
                         android:paddingTop="10dp" >
 
-                        <com.modusgo.ubi.customviews.TypefacedTextView
+                        <com.modusgo.twg.customviews.TypefacedTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Distance"
@@ -235,7 +235,7 @@
                             android:textSize="10sp"
                             ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
 
-                        <com.modusgo.ubi.customviews.TypefacedTextView
+                        <com.modusgo.twg.customviews.TypefacedTextView
                             android:id="@+id/tvDistance"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -244,7 +244,7 @@
                             android:textSize="31sp"
                             ubi:typeface="EncodeSansNarrow-700-Bold.ttf" />
 
-                        <com.modusgo.ubi.customviews.TypefacedTextView
+                        <com.modusgo.twg.customviews.TypefacedTextView
                             android:id="@+id/tvDistanceUnits"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -275,7 +275,7 @@
                         android:paddingBottom="10dp"
                         android:paddingTop="10dp" >
 
-                        <com.modusgo.ubi.customviews.TypefacedTextView
+                        <com.modusgo.twg.customviews.TypefacedTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Score"
@@ -284,7 +284,7 @@
                             android:textSize="10sp"
                             ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
 
-                        <com.modusgo.ubi.customviews.TypefacedTextView
+                        <com.modusgo.twg.customviews.TypefacedTextView
                             android:id="@+id/tvScore"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -314,7 +314,7 @@
                         android:paddingBottom="10dp"
                         android:paddingTop="10dp" >
 
-                        <com.modusgo.ubi.customviews.TypefacedTextView
+                        <com.modusgo.twg.customviews.TypefacedTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Fuel"
@@ -323,7 +323,7 @@
                             android:textSize="10sp"
                             ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
 
-                        <com.modusgo.ubi.customviews.TypefacedTextView
+                        <com.modusgo.twg.customviews.TypefacedTextView
                             android:id="@+id/tvFuelUsed"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -332,7 +332,7 @@
                             android:textSize="31sp"
                             ubi:typeface="EncodeSansNarrow-700-Bold.ttf" />
 
-                        <com.modusgo.ubi.customviews.TypefacedTextView
+                        <com.modusgo.twg.customviews.TypefacedTextView
                             android:id="@+id/tvFuelUnits"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -342,7 +342,7 @@
                             ubi:typeface="EncodeSansNormal-300-Light.ttf" />
                     </LinearLayout>
 
-                    <com.modusgo.ubi.customviews.TypefacedTextView
+                    <com.modusgo.twg.customviews.TypefacedTextView
                         android:id="@+id/tvFuelStatus"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -369,7 +369,7 @@
                         android:paddingBottom="10dp"
                         android:paddingTop="10dp" >
 
-                        <com.modusgo.ubi.customviews.TypefacedTextView
+                        <com.modusgo.twg.customviews.TypefacedTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Est. Fuel Cost"
@@ -378,7 +378,7 @@
                             android:textSize="10sp"
                             ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
 
-                        <com.modusgo.ubi.customviews.TypefacedTextView
+                        <com.modusgo.twg.customviews.TypefacedTextView
                             android:id="@+id/tvFuelCost"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -387,7 +387,7 @@
                             android:textSize="31sp"
                             ubi:typeface="EncodeSansNarrow-700-Bold.ttf" />
 
-                        <com.modusgo.ubi.customviews.TypefacedTextView
+                        <com.modusgo.twg.customviews.TypefacedTextView
                             android:id="@+id/tvDistanceUnits"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

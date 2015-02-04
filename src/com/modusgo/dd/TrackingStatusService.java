@@ -19,11 +19,11 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
-import com.modusgo.ubi.Constants;
-import com.modusgo.ubi.InitActivity;
-import com.modusgo.ubi.R;
-import com.modusgo.ubi.requesttasks.GetDeviceInfoRequest;
-import com.modusgo.ubi.utils.Device;
+import com.modusgo.twg.Constants;
+import com.modusgo.twg.InitActivity;
+import com.modusgo.twg.R;
+import com.modusgo.twg.requesttasks.GetDeviceInfoRequest;
+import com.modusgo.twg.utils.Device;
 
 public class TrackingStatusService extends Service implements GooglePlayServicesClient.ConnectionCallbacks,
 GooglePlayServicesClient.OnConnectionFailedListener{

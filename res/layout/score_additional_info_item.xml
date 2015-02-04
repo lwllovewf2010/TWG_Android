@@ -9,7 +9,7 @@
     android:layout_marginRight="22dp"
     android:orientation="horizontal" >
 
-    <com.modusgo.ubi.customviews.TypefacedTextView
+    <com.modusgo.twg.customviews.TypefacedTextView
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -18,7 +18,7 @@
         android:textSize="10sp"
         ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
 
-    <com.modusgo.ubi.customviews.TypefacedTextView
+    <com.modusgo.twg.customviews.TypefacedTextView
         android:id="@+id/tvValue"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

@@ -1,6 +1,6 @@
 package com.modusgo.dd;
 
-import com.modusgo.ubi.Constants;
+import com.modusgo.twg.Constants;
 
 import android.content.Context;
 import android.content.Intent;

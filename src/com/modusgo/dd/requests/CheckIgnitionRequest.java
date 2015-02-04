@@ -16,8 +16,8 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Base64;
 
-import com.modusgo.ubi.Constants;
-import com.modusgo.ubi.utils.Utils;
+import com.modusgo.twg.Constants;
+import com.modusgo.twg.utils.Utils;
 
 public class CheckIgnitionRequest extends BasicAsyncTask{
 	String finalScore[] = new String[]{"-","-","-"};

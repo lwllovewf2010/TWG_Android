@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:id="@+id/tvCode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
                 android:textSize="12sp"
                 ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:id="@+id/tvDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

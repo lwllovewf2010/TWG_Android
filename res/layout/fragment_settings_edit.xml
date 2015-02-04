@@ -55,7 +55,7 @@
             android:orientation="vertical"
             android:paddingLeft="18.5dp" >
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="First Name"
@@ -64,7 +64,7 @@
                 android:textSize="10sp"
                 ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
 
-            <com.modusgo.ubi.customviews.TypefacedEditText
+            <com.modusgo.twg.customviews.TypefacedEditText
                 android:id="@+id/editFirstName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -74,7 +74,7 @@
                 android:textSize="20sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -84,7 +84,7 @@
                 android:textSize="10sp"
                 ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
 
-            <com.modusgo.ubi.customviews.TypefacedEditText
+            <com.modusgo.twg.customviews.TypefacedEditText
                 android:id="@+id/editLastName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -110,7 +110,7 @@
             android:paddingLeft="22.5dp"
             android:paddingRight="22.5dp" >
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
@@ -120,7 +120,7 @@
                 android:textSize="10sp"
                 ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
 
-            <com.modusgo.ubi.customviews.TypefacedEditText
+            <com.modusgo.twg.customviews.TypefacedEditText
                 android:id="@+id/editPhone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -130,7 +130,7 @@
                 android:textSize="20sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
@@ -140,7 +140,7 @@
                 android:textSize="10sp"
                 ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
 
-            <com.modusgo.ubi.customviews.TypefacedEditText
+            <com.modusgo.twg.customviews.TypefacedEditText
                 android:id="@+id/editEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -150,7 +150,7 @@
                 android:textSize="20sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
@@ -166,7 +166,7 @@
                 android:layout_height="wrap_content"
                 android:spinnerMode="dialog" />
             
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
@@ -182,7 +182,7 @@
                 android:layout_height="wrap_content"
                 android:spinnerMode="dialog" />
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
@@ -192,7 +192,7 @@
                 android:textSize="10sp"
                 ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
 
-            <com.modusgo.ubi.customviews.TypefacedEditText
+            <com.modusgo.twg.customviews.TypefacedEditText
                 android:id="@+id/editPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -208,7 +208,7 @@
                 android:layout_marginTop="24dp"
                 android:orientation="horizontal" >
 
-                <com.modusgo.ubi.customviews.TypefacedTextView
+                <com.modusgo.twg.customviews.TypefacedTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Confirm Password"
@@ -217,7 +217,7 @@
                     android:textSize="10sp"
                     ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
 
-                <com.modusgo.ubi.customviews.TypefacedTextView
+                <com.modusgo.twg.customviews.TypefacedTextView
                     android:id="@+id/tvPasswordError"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -229,7 +229,7 @@
                     ubi:typeface="EncodeSansNormal-300-Light.ttf" />
             </LinearLayout>
 
-            <com.modusgo.ubi.customviews.TypefacedEditText
+            <com.modusgo.twg.customviews.TypefacedEditText
                 android:id="@+id/editConfirmPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -250,7 +250,7 @@
                 android:layout_marginTop="24dp"
                 android:orientation="horizontal" >
 
-                <com.modusgo.ubi.customviews.TypefacedButton
+                <com.modusgo.twg.customviews.TypefacedButton
                     android:id="@+id/btnUpdate"
                     android:layout_width="102dp"
                     android:layout_height="33dp"
@@ -262,7 +262,7 @@
                     android:textSize="12.5sp"
                     ubi:typeface="EncodeSansNormal-500-Medium.ttf" />
 
-                <com.modusgo.ubi.customviews.TypefacedButton
+                <com.modusgo.twg.customviews.TypefacedButton
                     android:id="@+id/btnCancel"
                     android:layout_width="102dp"
                     android:layout_height="33dp"

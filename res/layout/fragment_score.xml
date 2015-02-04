@@ -44,7 +44,7 @@
             android:gravity="center"
             android:background="@color/btn_transparent_orange_light" >
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:id="@+id/tvThisMonthMessage"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -56,7 +56,7 @@
                 android:textSize="12sp"
                 ubi:typeface="arialbd.ttf" />
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:id="@+id/tvScore"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
@@ -84,7 +84,7 @@
                     android:layout_alignRight="@+id/tvLastMonthMessage"
                     android:src="@drawable/arrow_down_red" />
 
-                <com.modusgo.ubi.customviews.TypefacedTextView
+                <com.modusgo.twg.customviews.TypefacedTextView
                     android:id="@+id/tvLastMonthMessage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -125,7 +125,7 @@
                     android:background="@color/btn_border_orange_light"
                     android:src="@drawable/ic_score_info" />
 
-                <com.modusgo.ubi.customviews.TypefacedTextView
+                <com.modusgo.twg.customviews.TypefacedTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/btnScoreInfo"
@@ -150,7 +150,7 @@
                     android:background="@color/btn_border_orange_light"
                     android:src="@drawable/ic_score_circles" />
 
-                <com.modusgo.ubi.customviews.TypefacedTextView
+                <com.modusgo.twg.customviews.TypefacedTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/btnScorePieChart"
@@ -175,7 +175,7 @@
                     android:background="@color/btn_border_orange_light"
                     android:src="@drawable/ic_score_piechart" />
 
-                <com.modusgo.ubi.customviews.TypefacedTextView
+                <com.modusgo.twg.customviews.TypefacedTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/btnScoreCircles"

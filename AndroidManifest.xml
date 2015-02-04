@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.modusgo.ubi"
+    package="com.modusgo.twg"
     android:versionCode="1002"
     android:versionName="1.0.2" >
 
@@ -18,8 +18,8 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     	<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
-	<uses-permission android:name="com.modusgo.ubi.permission.C2D_MESSAGE"/>
-		<permission android:name="com.modusgo.ubi.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+	<uses-permission android:name="com.modusgo.twg.permission.C2D_MESSAGE"/>
+		<permission android:name="com.modusgo.twg.permission.C2D_MESSAGE" android:protectionLevel="signature" />
 
     <!-- Maps API needs OpenGL ES 2.0. -->
     <uses-feature
@@ -40,7 +40,7 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name="com.modusgo.ubi.InitActivity"
+            android:name="com.modusgo.twg.InitActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
             <intent-filter>
@@ -50,12 +50,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.modusgo.ubi.SignInActivity"
+            android:name="com.modusgo.twg.SignInActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.modusgo.ubi.WelcomeActivity"
+            android:name="com.modusgo.twg.WelcomeActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
         </activity>
@@ -73,167 +73,167 @@
 	        </intent-filter>
         </activity>
         <activity
-            android:name="com.modusgo.ubi.HomeActivity"
+            android:name="com.modusgo.twg.HomeActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask" >
         </activity>
         <activity
-            android:name="com.modusgo.ubi.DriverSetupActivity"
+            android:name="com.modusgo.twg.DriverSetupActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
-            android:parentActivityName="com.modusgo.ubi.HomeActivity" >
+            android:parentActivityName="com.modusgo.twg.HomeActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.modusgo.ubi.HomeActivity" />
+                android:value="com.modusgo.twg.HomeActivity" />
         </activity>
         <activity
-            android:name="com.modusgo.ubi.CompareActivity"
+            android:name="com.modusgo.twg.CompareActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
-            android:parentActivityName="com.modusgo.ubi.HomeActivity" >
+            android:parentActivityName="com.modusgo.twg.HomeActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.modusgo.ubi.HomeActivity" />
+                android:value="com.modusgo.twg.HomeActivity" />
         </activity>
         <activity
-            android:name="com.modusgo.ubi.DriverActivity"
+            android:name="com.modusgo.twg.DriverActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
-            android:parentActivityName="com.modusgo.ubi.HomeActivity" >
+            android:parentActivityName="com.modusgo.twg.HomeActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.modusgo.ubi.HomeActivity" />
+                android:value="com.modusgo.twg.HomeActivity" />
         </activity>
         <activity
-            android:name="com.modusgo.ubi.MainActivity"
+            android:name="com.modusgo.twg.MainActivity"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="com.modusgo.ubi.SettingsActivity"
+            android:name="com.modusgo.twg.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:parentActivityName="com.modusgo.ubi.HomeActivity" >
+            android:parentActivityName="com.modusgo.twg.HomeActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.modusgo.ubi.HomeActivity" />
+                android:value="com.modusgo.twg.HomeActivity" />
         </activity>
         <activity
-            android:name="com.modusgo.ubi.AlertsActivity"
+            android:name="com.modusgo.twg.AlertsActivity"
             android:label="@string/title_activity_settings"
             android:launchMode="singleTask"
-            android:parentActivityName="com.modusgo.ubi.DriverActivity" >
+            android:parentActivityName="com.modusgo.twg.DriverActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.modusgo.ubi.DriverActivity" />
+                android:value="com.modusgo.twg.DriverActivity" />
         </activity>
         <activity
-            android:name="com.modusgo.ubi.TripActivity"
+            android:name="com.modusgo.twg.TripActivity"
             android:label="@string/title_activity_settings"
             android:launchMode="singleTask"
-            android:parentActivityName="com.modusgo.ubi.DriverActivity" >
+            android:parentActivityName="com.modusgo.twg.DriverActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.modusgo.ubi.DriverActivity" />
+                android:value="com.modusgo.twg.DriverActivity" />
         </activity>
         <activity
-            android:name="com.modusgo.ubi.GeofenceActivity"
-            android:parentActivityName="com.modusgo.ubi.DriverActivity" >
+            android:name="com.modusgo.twg.GeofenceActivity"
+            android:parentActivityName="com.modusgo.twg.DriverActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.modusgo.ubi.DriverActivity" />
+                android:value="com.modusgo.twg.DriverActivity" />
         </activity>
         <activity
-            android:name="com.modusgo.ubi.FindMyCarActivity"
-            android:parentActivityName="com.modusgo.ubi.DriverActivity" >
+            android:name="com.modusgo.twg.FindMyCarActivity"
+            android:parentActivityName="com.modusgo.twg.DriverActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.modusgo.ubi.DriverActivity" />
+                android:value="com.modusgo.twg.DriverActivity" />
         </activity>
         <activity
-            android:name="com.modusgo.ubi.EducationActivity"
-            android:parentActivityName="com.modusgo.ubi.TripActivity" >
+            android:name="com.modusgo.twg.EducationActivity"
+            android:parentActivityName="com.modusgo.twg.TripActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.modusgo.ubi.TripActivity" />
+                android:value="com.modusgo.twg.TripActivity" />
         </activity>
         <activity
-            android:name="com.modusgo.ubi.FindMechanicActivity"
-            android:parentActivityName="com.modusgo.ubi.DriverActivity" >
+            android:name="com.modusgo.twg.FindMechanicActivity"
+            android:parentActivityName="com.modusgo.twg.DriverActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.modusgo.ubi.DriverActivity" />
+                android:value="com.modusgo.twg.DriverActivity" />
         </activity>
         <activity
-            android:name="com.modusgo.ubi.DiagnosticDetailActivity"
-            android:parentActivityName="com.modusgo.ubi.DriverActivity" >
+            android:name="com.modusgo.twg.DiagnosticDetailActivity"
+            android:parentActivityName="com.modusgo.twg.DriverActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.modusgo.ubi.DriverActivity" />
+                android:value="com.modusgo.twg.DriverActivity" />
         </activity>
         <activity
-            android:name="com.modusgo.ubi.RecallActivity"
-            android:parentActivityName="com.modusgo.ubi.DriverActivity" >
+            android:name="com.modusgo.twg.RecallActivity"
+            android:parentActivityName="com.modusgo.twg.DriverActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.modusgo.ubi.DriverActivity" />
+                android:value="com.modusgo.twg.DriverActivity" />
         </activity>
         <activity
-            android:name="com.modusgo.ubi.ServiceLogActivity"
-            android:parentActivityName="com.modusgo.ubi.DriverActivity" >
+            android:name="com.modusgo.twg.ServiceLogActivity"
+            android:parentActivityName="com.modusgo.twg.DriverActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.modusgo.ubi.DriverActivity" />
+                android:value="com.modusgo.twg.DriverActivity" />
         </activity>
         <activity
-            android:name="com.modusgo.ubi.CompleteServiceDialog"
-            android:parentActivityName="com.modusgo.ubi.DriverActivity" >
+            android:name="com.modusgo.twg.CompleteServiceDialog"
+            android:parentActivityName="com.modusgo.twg.DriverActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.modusgo.ubi.DriverActivity" />
+                android:value="com.modusgo.twg.DriverActivity" />
         </activity>
         <activity
-            android:name="com.modusgo.ubi.DriversLocationsActivity"
-            android:parentActivityName="com.modusgo.ubi.HomeActivity" >
+            android:name="com.modusgo.twg.DriversLocationsActivity"
+            android:parentActivityName="com.modusgo.twg.HomeActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.modusgo.ubi.HomeActivity" />
+                android:value="com.modusgo.twg.HomeActivity" />
         </activity>
         <activity
-            android:name="com.modusgo.ubi.MapActivity"
-            android:parentActivityName="com.modusgo.ubi.DriverActivity" >
+            android:name="com.modusgo.twg.MapActivity"
+            android:parentActivityName="com.modusgo.twg.DriverActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.modusgo.ubi.DriverActivity" />
+                android:value="com.modusgo.twg.DriverActivity" />
         </activity>
         <activity
-            android:name="com.modusgo.ubi.ScoreInfoActivity"
-            android:parentActivityName="com.modusgo.ubi.DriverActivity" >
+            android:name="com.modusgo.twg.ScoreInfoActivity"
+            android:parentActivityName="com.modusgo.twg.DriverActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.modusgo.ubi.DriverActivity" />
+                android:value="com.modusgo.twg.DriverActivity" />
         </activity>
         <activity
-            android:name="com.modusgo.ubi.ScorePieChartActivity"
-            android:parentActivityName="com.modusgo.ubi.DriverActivity" >
+            android:name="com.modusgo.twg.ScorePieChartActivity"
+            android:parentActivityName="com.modusgo.twg.DriverActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.modusgo.ubi.DriverActivity" />
+                android:value="com.modusgo.twg.DriverActivity" />
         </activity>
         <activity
-            android:name="com.modusgo.ubi.ScoreCirclesActivity"
-            android:parentActivityName="com.modusgo.ubi.DriverActivity" >
+            android:name="com.modusgo.twg.ScoreCirclesActivity"
+            android:parentActivityName="com.modusgo.twg.DriverActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.modusgo.ubi.DriverActivity" />
+                android:value="com.modusgo.twg.DriverActivity" />
         </activity>
         
         <activity
-            android:name="com.modusgo.ubi.AlertMapActivity"
-            android:parentActivityName="com.modusgo.ubi.AlertsActivity" >
+            android:name="com.modusgo.twg.AlertMapActivity"
+            android:parentActivityName="com.modusgo.twg.AlertsActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.modusgo.ubi.AlertsActivity" />
+                android:value="com.modusgo.twg.AlertsActivity" />
         </activity>
         <activity android:name="net.hockeyapp.android.UpdateActivity" />
         
@@ -270,7 +270,7 @@
         <receiver android:name="com.modusgo.dd.GcmBroadcastReceiver">
             <intent-filter>                                  
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <category android:name="com.modusgo.ubi" />
+                <category android:name="com.modusgo.twg" />
             </intent-filter>
         </receiver>
             <receiver android:name="com.modusgo.dd.ChargerConnectionReceiver" >

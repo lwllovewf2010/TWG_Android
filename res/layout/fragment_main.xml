@@ -14,7 +14,7 @@
 	    android:layout_height="0dp"
 	    android:layout_weight=".4">
 	    
-		<com.modusgo.ubi.customviews.ViewPager
+		<com.modusgo.twg.customviews.ViewPager
 			android:id="@+id/pager_drivers"
 			android:layout_width="match_parent"
 	        android:layout_height="match_parent"/>
@@ -32,7 +32,7 @@
 	     android:layout_height="0dp"
 		 android:layout_weight=".6"
 		 android:orientation="vertical">
-		<com.modusgo.ubi.customviews.ViewPager
+		<com.modusgo.twg.customviews.ViewPager
 		    xmlns:android="http://schemas.android.com/apk/res/android"
 		    android:id="@+id/pager"
 		    android:layout_width="match_parent"
@@ -50,7 +50,7 @@
 		        android:paddingLeft="33dp"
 		        android:paddingRight="33dp" />
 		    
-	    </com.modusgo.ubi.customviews.ViewPager>
+	    </com.modusgo.twg.customviews.ViewPager>
 	    <ImageView
 		    android:id="@+id/arrowPrev"
 		    android:layout_width="wrap_content"

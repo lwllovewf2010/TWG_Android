@@ -12,7 +12,7 @@
         android:gravity="center"
         android:layout_marginBottom="-2dp" >
 
-        <com.modusgo.ubi.customviews.TypefacedTextView
+        <com.modusgo.twg.customviews.TypefacedTextView
             android:id="@+id/tvPercentValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
             android:textSize="24sp"
             ubi:typeface="arialbd.ttf" />
 
-        <com.modusgo.ubi.customviews.TypefacedTextView
+        <com.modusgo.twg.customviews.TypefacedTextView
             android:id="@+id/tvPercentSign"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
             ubi:typeface="arialbd.ttf" />
     </RelativeLayout>
 
-    <com.modusgo.ubi.customviews.TypefacedTextView
+    <com.modusgo.twg.customviews.TypefacedTextView
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

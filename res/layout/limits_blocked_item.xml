@@ -6,7 +6,7 @@
     android:background="#e6e9ed"
     android:orientation="horizontal" >
         
-        <com.modusgo.ubi.customviews.TypefacedTextView
+        <com.modusgo.twg.customviews.TypefacedTextView
             android:id="@+id/tvTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

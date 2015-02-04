@@ -17,7 +17,7 @@
         android:layout_marginBottom="3dp"
         android:background="@drawable/circle_gray" />
 
-    <com.modusgo.ubi.customviews.TypefacedTextView
+    <com.modusgo.twg.customviews.TypefacedTextView
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

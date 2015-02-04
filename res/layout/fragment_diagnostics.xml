@@ -52,7 +52,7 @@
                         android:orientation="vertical"
                         android:paddingLeft="5dp" >
 
-                        <com.modusgo.ubi.customviews.TypefacedTextView
+                        <com.modusgo.twg.customviews.TypefacedTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/YourVehicleHealthCheck"
@@ -60,7 +60,7 @@
                             android:textSize="10sp"
                             ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
 
-                        <com.modusgo.ubi.customviews.TypefacedTextView
+                        <com.modusgo.twg.customviews.TypefacedTextView
                             android:id="@+id/tvLastCheckup"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -71,7 +71,7 @@
                             ubi:typeface="EncodeSansNormal-300-Light.ttf" />
                     </LinearLayout>
 
-                    <com.modusgo.ubi.customviews.TypefacedTextView
+                    <com.modusgo.twg.customviews.TypefacedTextView
                         android:id="@+id/tvStatus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -128,7 +128,7 @@
             android:orientation="vertical"
             android:padding="20dp" >
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="To create your diagnostic profile please enter your vehicles current odometer reading below."
@@ -136,7 +136,7 @@
                 android:textSize="14sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
-            <com.modusgo.ubi.customviews.TypefacedEditText
+            <com.modusgo.twg.customviews.TypefacedEditText
                 android:id="@+id/odometer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -151,7 +151,7 @@
                 android:textSize="18sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
-            <com.modusgo.ubi.customviews.TypefacedButton
+            <com.modusgo.twg.customviews.TypefacedButton
                 android:id="@+id/btnSubmit"
                 android:layout_width="102dp"
                 android:layout_height="33dp"

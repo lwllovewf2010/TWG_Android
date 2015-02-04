@@ -19,7 +19,7 @@
         android:orientation="vertical" >
     </LinearLayout>
 
-    <com.modusgo.ubi.customviews.PieChartView
+    <com.modusgo.twg.customviews.PieChartView
         android:id="@+id/chart"
         android:layout_width="0dp"
         android:layout_height="230dp"

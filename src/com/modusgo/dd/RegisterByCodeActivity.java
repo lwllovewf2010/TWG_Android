@@ -41,11 +41,11 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.modusgo.ubi.Constants;
-import com.modusgo.ubi.InitActivity;
-import com.modusgo.ubi.MainActivity;
-import com.modusgo.ubi.R;
-import com.modusgo.ubi.utils.Utils;
+import com.modusgo.twg.Constants;
+import com.modusgo.twg.InitActivity;
+import com.modusgo.twg.MainActivity;
+import com.modusgo.twg.R;
+import com.modusgo.twg.utils.Utils;
 
 public class RegisterByCodeActivity extends FragmentActivity {
     

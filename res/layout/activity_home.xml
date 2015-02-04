@@ -14,7 +14,7 @@
         android:gravity="center"
         android:orientation="vertical" >
 
-        <com.modusgo.ubi.customviews.TypefacedTextView
+        <com.modusgo.twg.customviews.TypefacedTextView
             android:id="@+id/tvError"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

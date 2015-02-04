@@ -23,7 +23,7 @@
         android:gravity="bottom"
         android:orientation="vertical" >
 
-        <com.modusgo.ubi.customviews.TypefacedTextView
+        <com.modusgo.twg.customviews.TypefacedTextView
             android:id="@+id/tvName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
             android:textSize="17.5sp"
             ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
-        <com.modusgo.ubi.customviews.TypefacedTextView
+        <com.modusgo.twg.customviews.TypefacedTextView
             android:id="@+id/tvVehicle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
             android:textSize="12.5sp"
             ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
-        <com.modusgo.ubi.customviews.TypefacedTextView
+        <com.modusgo.twg.customviews.TypefacedTextView
             android:id="@+id/tvDateLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -56,7 +56,7 @@
             android:textSize="10sp"
             ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
 
-        <com.modusgo.ubi.customviews.TypefacedTextView
+        <com.modusgo.twg.customviews.TypefacedTextView
             android:id="@+id/tvDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

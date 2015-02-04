@@ -27,7 +27,7 @@
             android:layout_margin="5dp"
             android:orientation="horizontal" >
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -38,7 +38,7 @@
                 android:textSize="12.5sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:id="@+id/tvFuelLevel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -60,7 +60,7 @@
             android:layout_margin="5dp"
             android:orientation="horizontal" >
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
@@ -71,7 +71,7 @@
                 android:textSize="12.5sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:id="@+id/tvBattry"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -93,7 +93,7 @@
             android:layout_margin="5dp"
             android:orientation="horizontal" >
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
@@ -104,7 +104,7 @@
                 android:textSize="12.5sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:id="@+id/tvEngineTemp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -126,7 +126,7 @@
             android:layout_margin="5dp"
             android:orientation="horizontal" >
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
@@ -137,7 +137,7 @@
                 android:textSize="12.5sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:id="@+id/tvFuelCapacity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -159,7 +159,7 @@
             android:layout_margin="5dp"
             android:orientation="horizontal" >
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
@@ -170,7 +170,7 @@
                 android:textSize="12.5sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:id="@+id/tvFuelPercentage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -192,7 +192,7 @@
             android:layout_margin="5dp"
             android:orientation="horizontal" >
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
@@ -203,7 +203,7 @@
                 android:textSize="12.5sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:id="@+id/tvLastTripFuelEconomy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -225,7 +225,7 @@
             android:layout_margin="5dp"
             android:orientation="horizontal" >
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
@@ -236,7 +236,7 @@
                 android:textSize="12.5sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:id="@+id/tvFuelEconomyLast30Days"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -258,7 +258,7 @@
             android:layout_margin="5dp"
             android:orientation="horizontal" >
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
@@ -269,7 +269,7 @@
                 android:textSize="12.5sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:id="@+id/tvFuelUsedLast30Days"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

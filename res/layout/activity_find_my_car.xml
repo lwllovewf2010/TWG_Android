@@ -37,7 +37,7 @@
                 android:gravity="center"
                 android:orientation="horizontal" >
 
-                <com.modusgo.ubi.customviews.TypefacedTextView
+                <com.modusgo.twg.customviews.TypefacedTextView
                     android:id="@+id/tvInfo"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -69,7 +69,7 @@
                         android:layout_weight="1"
                         android:gravity="center|left" >
 
-                        <com.modusgo.ubi.customviews.TypefacedTextView
+                        <com.modusgo.twg.customviews.TypefacedTextView
                             android:id="@+id/tvDistance"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -78,7 +78,7 @@
                             android:textSize="26sp"
                             ubi:typeface="arialbd.ttf" />
 
-                        <com.modusgo.ubi.customviews.TypefacedTextView
+                        <com.modusgo.twg.customviews.TypefacedTextView
                             android:id="@+id/tvDistanceUnits"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -91,7 +91,7 @@
                             android:textSize="12.5sp"
                             ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
-                        <com.modusgo.ubi.customviews.TypefacedTextView
+                        <com.modusgo.twg.customviews.TypefacedTextView
                             android:id="@+id/tvTime"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -114,7 +114,7 @@
                     android:paddingLeft="11dp"
                     android:paddingRight="11dp" >
 
-                    <com.modusgo.ubi.customviews.TypefacedButton
+                    <com.modusgo.twg.customviews.TypefacedButton
                         android:id="@+id/btnStart"
                         android:layout_width="102dp"
                         android:layout_height="33dp"

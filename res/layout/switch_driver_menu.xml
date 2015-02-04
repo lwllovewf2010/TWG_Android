@@ -5,7 +5,7 @@
     android:background="#e6e9ed"
     android:orientation="vertical" >
 
-    <com.modusgo.ubi.customviews.TypefacedTextView
+    <com.modusgo.twg.customviews.TypefacedTextView
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:gravity="center"

@@ -20,13 +20,13 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
-import com.modusgo.ubi.Constants;
-import com.modusgo.ubi.InitActivity;
-import com.modusgo.ubi.R;
-import com.modusgo.ubi.Tracking;
-import com.modusgo.ubi.db.DbHelper;
-import com.modusgo.ubi.requesttasks.GetDeviceInfoRequest;
-import com.modusgo.ubi.utils.Device;
+import com.modusgo.twg.Constants;
+import com.modusgo.twg.InitActivity;
+import com.modusgo.twg.R;
+import com.modusgo.twg.Tracking;
+import com.modusgo.twg.db.DbHelper;
+import com.modusgo.twg.requesttasks.GetDeviceInfoRequest;
+import com.modusgo.twg.utils.Device;
 
 public class LocationService extends Service implements GooglePlayServicesClient.ConnectionCallbacks,
 GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{

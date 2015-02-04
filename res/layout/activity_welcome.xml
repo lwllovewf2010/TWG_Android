@@ -36,7 +36,7 @@
         android:orientation="vertical"
         android:weightSum="1" >
 
-        <com.modusgo.ubi.customviews.TypefacedTextView
+        <com.modusgo.twg.customviews.TypefacedTextView
             android:id="@+id/tvTitle"
             android:layout_width="275dp"
             android:layout_height="wrap_content"
@@ -64,7 +64,7 @@
             android:src="@drawable/slide_3"
             android:visibility="gone" />
 
-        <com.modusgo.ubi.customviews.TypefacedButton
+        <com.modusgo.twg.customviews.TypefacedButton
             android:id="@+id/btnNext"
             android:layout_width="102dp"
             android:layout_height="33dp"

@@ -34,7 +34,7 @@
             android:orientation="vertical"
             android:paddingLeft="18.5dp" >
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="First Name"
@@ -43,7 +43,7 @@
                 android:textSize="10sp"
                 ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:id="@+id/tvFirstName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
                 android:textSize="20sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -62,7 +62,7 @@
                 android:textSize="10sp"
                 ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:id="@+id/tvLastName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -87,7 +87,7 @@
             android:paddingLeft="22.5dp"
             android:paddingRight="22.5dp" >
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
@@ -97,7 +97,7 @@
                 android:textSize="10sp"
                 ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:id="@+id/tvPhone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -106,7 +106,7 @@
                 android:textSize="20sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
@@ -116,7 +116,7 @@
                 android:textSize="10sp"
                 ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:id="@+id/tvEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -125,7 +125,7 @@
                 android:textSize="20sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
@@ -135,7 +135,7 @@
                 android:textSize="10sp"
                 ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:id="@+id/tvTimezone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -144,7 +144,7 @@
                 android:textSize="20sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />
             
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
@@ -153,7 +153,7 @@
                 android:textSize="10sp"
                 ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:id="@+id/tvCar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -167,7 +167,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1" />
 
-            <com.modusgo.ubi.customviews.TypefacedButton
+            <com.modusgo.twg.customviews.TypefacedButton
                 android:id="@+id/btnEdit"
                 android:layout_width="102dp"
                 android:layout_height="33dp"

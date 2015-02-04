@@ -13,7 +13,7 @@
         android:paddingLeft="22dp"
         android:paddingRight="22dp" >
 
-        <com.modusgo.ubi.customviews.TypefacedTextView
+        <com.modusgo.twg.customviews.TypefacedTextView
             android:id="@+id/tvTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

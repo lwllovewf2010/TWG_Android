@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:background="#FFF" >
 
-    <com.modusgo.ubi.customviews.TypefacedTextView
+    <com.modusgo.twg.customviews.TypefacedTextView
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -16,7 +16,7 @@
         android:textSize="12.5sp"
         ubi:typeface="EncodeSansNormal-500-Medium.ttf" />
 
-    <com.modusgo.ubi.customviews.ExpandablePanel
+    <com.modusgo.twg.customviews.ExpandablePanel
         android:id="@+id/panelExpandable"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -49,6 +49,6 @@
                 android:paddingBottom="13dp" >
             </LinearLayout>
         </LinearLayout>
-    </com.modusgo.ubi.customviews.ExpandablePanel>
+    </com.modusgo.twg.customviews.ExpandablePanel>
 
 </LinearLayout>

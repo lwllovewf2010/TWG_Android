@@ -7,7 +7,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 
-import com.modusgo.ubi.utils.Device;
+import com.modusgo.twg.utils.Device;
 
 public class CallReceiver extends BroadcastReceiver {
 

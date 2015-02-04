@@ -6,13 +6,13 @@ package com.modusgo.adapters;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-import com.modusgo.ubi.DiagnosticsTroubleCode;
-import com.modusgo.ubi.R;
-import com.modusgo.ubi.utils.Maintenance;
-import com.modusgo.ubi.utils.Recall;
-import com.modusgo.ubi.utils.ServicePerformed;
-import com.modusgo.ubi.utils.TWGListItem;
-import com.modusgo.ubi.utils.TWGListItem.twg_list_item_type;
+import com.modusgo.twg.DiagnosticsTroubleCode;
+import com.modusgo.twg.R;
+import com.modusgo.twg.utils.Maintenance;
+import com.modusgo.twg.utils.Recall;
+import com.modusgo.twg.utils.ServicePerformed;
+import com.modusgo.twg.utils.TWGListItem;
+import com.modusgo.twg.utils.TWGListItem.twg_list_item_type;
 
 import android.content.Context;
 import android.content.res.Resources;

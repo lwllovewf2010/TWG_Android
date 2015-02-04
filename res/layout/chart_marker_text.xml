@@ -6,7 +6,7 @@
     android:layout_marginBottom="10dp"
     android:orientation="vertical" >
 
-    <com.modusgo.ubi.customviews.TypefacedTextView
+    <com.modusgo.twg.customviews.TypefacedTextView
         android:id="@+id/tvTitle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -16,7 +16,7 @@
         android:textSize="10sp"
         ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
 
-    <com.modusgo.ubi.customviews.TypefacedTextView
+    <com.modusgo.twg.customviews.TypefacedTextView
         android:id="@+id/tvSubTitle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

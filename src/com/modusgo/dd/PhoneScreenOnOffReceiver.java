@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import com.modusgo.ubi.utils.Device;
+import com.modusgo.twg.utils.Device;
 
 public class PhoneScreenOnOffReceiver extends BroadcastReceiver {
 	

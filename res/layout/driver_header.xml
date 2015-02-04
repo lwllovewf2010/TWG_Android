@@ -29,7 +29,7 @@
             android:scaleType="centerCrop"
             android:src="@drawable/person_test3" />
 
-        <com.modusgo.ubi.customviews.TypefacedTextView
+        <com.modusgo.twg.customviews.TypefacedTextView
             android:id="@+id/tvName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -44,7 +44,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1" />
 
-        <com.modusgo.ubi.customviews.TypefacedButton
+        <com.modusgo.twg.customviews.TypefacedButton
             android:id="@+id/btnTimePeriod"
             android:layout_width="wrap_content"
             android:layout_height="45dp"

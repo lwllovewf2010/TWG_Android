@@ -41,7 +41,7 @@
                 android:gravity="center"
                 android:orientation="horizontal" >
 
-                <com.modusgo.ubi.customviews.TypefacedTextView
+                <com.modusgo.twg.customviews.TypefacedTextView
                     android:id="@+id/tvInstructions"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -60,7 +60,7 @@
                     android:paddingLeft="11dp"
                     android:paddingRight="11dp" >
 
-                    <com.modusgo.ubi.customviews.TypefacedTextView
+                    <com.modusgo.twg.customviews.TypefacedTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Radius"
@@ -69,7 +69,7 @@
                         android:textSize="10sp"
                         ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
 
-                    <com.modusgo.ubi.customviews.TypefacedTextView
+                    <com.modusgo.twg.customviews.TypefacedTextView
                         android:id="@+id/tvRadius"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -78,7 +78,7 @@
                         android:textSize="31sp"
                         ubi:typeface="EncodeSansNarrow-700-Bold.ttf" />
 
-                    <com.modusgo.ubi.customviews.TypefacedTextView
+                    <com.modusgo.twg.customviews.TypefacedTextView
                         android:id="@+id/tvRadiusUnits"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -90,7 +90,7 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <com.modusgo.ubi.customviews.TypefacedButton
+            <com.modusgo.twg.customviews.TypefacedButton
                 android:id="@+id/btnSave"
                 android:layout_width="102dp"
                 android:layout_height="33dp"

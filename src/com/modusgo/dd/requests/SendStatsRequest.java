@@ -24,7 +24,7 @@ import android.util.Base64;
 
 import com.modusgo.dd.CallReceiver;
 import com.modusgo.dd.PhoneScreenOnOffReceiver;
-import com.modusgo.ubi.Constants;
+import com.modusgo.twg.Constants;
 
 public class SendStatsRequest extends AsyncTask<String, String, String[]>{
 	String finalScore[] = new String[]{"-","-","-"};

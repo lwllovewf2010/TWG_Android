@@ -7,8 +7,8 @@ import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 
-import com.modusgo.ubi.Tracking;
-import com.modusgo.ubi.db.DbHelper;
+import com.modusgo.twg.Tracking;
+import com.modusgo.twg.db.DbHelper;
 
 public class CallSaverService extends IntentService {
 

@@ -27,7 +27,7 @@
             android:src="@drawable/logo_login"
             android:layout_gravity="top" />
 
-        <com.modusgo.ubi.customviews.TypefacedTextView
+        <com.modusgo.twg.customviews.TypefacedTextView
             android:id="@+id/tvLoading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -54,7 +54,7 @@
         android:gravity="center|top"
         android:orientation="vertical" >
 
-        <com.modusgo.ubi.customviews.DynamicImageView
+        <com.modusgo.twg.customviews.DynamicImageView
             android:id="@+id/imageLogo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
             android:scaleType="centerCrop"
             android:src="@drawable/logo_login" />
 
-        <com.modusgo.ubi.customviews.TypefacedEditText
+        <com.modusgo.twg.customviews.TypefacedEditText
             android:id="@+id/username"
             android:layout_width="275dp"
             android:layout_height="30dp"
@@ -80,7 +80,7 @@
             android:background="@drawable/dashed_line"
             android:layerType="software" />
 
-        <com.modusgo.ubi.customviews.TypefacedEditText
+        <com.modusgo.twg.customviews.TypefacedEditText
             android:id="@+id/password"
             android:layout_width="275dp"
             android:layout_height="30dp"
@@ -97,7 +97,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="11dp" >
 
-            <com.modusgo.ubi.customviews.TypefacedButton
+            <com.modusgo.twg.customviews.TypefacedButton
                 android:id="@+id/btnSignIn"
                 android:layout_width="102dp"
                 android:layout_height="33dp"
@@ -109,7 +109,7 @@
                 android:textSize="12.5sp"
                 ubi:typeface="EncodeSansNormal-500-Medium.ttf" />
 
-            <com.modusgo.ubi.customviews.TypefacedButton
+            <com.modusgo.twg.customviews.TypefacedButton
                 android:id="@+id/btnForgotPassword"
                 android:layout_width="wrap_content"
                 android:layout_height="33dp"

@@ -135,108 +135,97 @@
 -keep class com.modusgo.dd.TrackingStatusService { <init>(...); }
 
 # view AndroidManifest.xml #generated:231
--keep class com.modusgo.ubi.AlertMapActivity { <init>(...); }
+-keep class com.modusgo.twg.AlertMapActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:121
--keep class com.modusgo.ubi.AlertsActivity { <init>(...); }
+-keep class com.modusgo.twg.AlertsActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:89
--keep class com.modusgo.ubi.CompareActivity { <init>(...); }
+-keep class com.modusgo.twg.CompareActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:188
--keep class com.modusgo.ubi.CompleteServiceDialog { <init>(...); }
+-keep class com.modusgo.twg.CompleteServiceDialog { <init>(...); }
 
 # view AndroidManifest.xml #generated:167
--keep class com.modusgo.ubi.DiagnosticDetailActivity { <init>(...); }
+-keep class com.modusgo.twg.DiagnosticDetailActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:98
--keep class com.modusgo.ubi.DriverActivity { <init>(...); }
+-keep class com.modusgo.twg.DriverActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:80
--keep class com.modusgo.ubi.DriverSetupActivity { <init>(...); }
+-keep class com.modusgo.twg.DriverSetupActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:195
--keep class com.modusgo.ubi.DriversLocationsActivity { <init>(...); }
+-keep class com.modusgo.twg.DriversLocationsActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:153
--keep class com.modusgo.ubi.EducationActivity { <init>(...); }
+-keep class com.modusgo.twg.EducationActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:160
--keep class com.modusgo.ubi.FindMechanicActivity { <init>(...); }
+-keep class com.modusgo.twg.FindMechanicActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:146
--keep class com.modusgo.ubi.FindMyCarActivity { <init>(...); }
+-keep class com.modusgo.twg.FindMyCarActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:139
--keep class com.modusgo.ubi.GeofenceActivity { <init>(...); }
+-keep class com.modusgo.twg.GeofenceActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:75
--keep class com.modusgo.ubi.HomeActivity { <init>(...); }
+-keep class com.modusgo.twg.HomeActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:42
--keep class com.modusgo.ubi.InitActivity { <init>(...); }
+-keep class com.modusgo.twg.InitActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:107
--keep class com.modusgo.ubi.MainActivity { <init>(...); }
+-keep class com.modusgo.twg.MainActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:202
--keep class com.modusgo.ubi.MapActivity { <init>(...); }
+-keep class com.modusgo.twg.MapActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:174
--keep class com.modusgo.ubi.RecallActivity { <init>(...); }
+-keep class com.modusgo.twg.RecallActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:223
--keep class com.modusgo.ubi.ScoreCirclesActivity { <init>(...); }
+-keep class com.modusgo.twg.ScoreCirclesActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:209
--keep class com.modusgo.ubi.ScoreInfoActivity { <init>(...); }
+-keep class com.modusgo.twg.ScoreInfoActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:216
--keep class com.modusgo.ubi.ScorePieChartActivity { <init>(...); }
+-keep class com.modusgo.twg.ScorePieChartActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:181
--keep class com.modusgo.ubi.ServiceLogActivity { <init>(...); }
+-keep class com.modusgo.twg.ServiceLogActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:111
--keep class com.modusgo.ubi.SettingsActivity { <init>(...); }
-
-# view res/xml/pref_headers.xml #generated:11
--keep class com.modusgo.ubi.SettingsActivity$DataSyncPreferenceFragment { <init>(...); }
-
-# view res/xml/pref_headers.xml #generated:5
-# view v14/res/xml-v14/pref_headers.xml #generated:5
--keep class com.modusgo.ubi.SettingsActivity$GeneralPreferenceFragment { <init>(...); }
-
-# view res/xml/pref_headers.xml #generated:8
-# view v14/res/xml-v14/pref_headers.xml #generated:8
--keep class com.modusgo.ubi.SettingsActivity$NotificationPreferenceFragment { <init>(...); }
+-keep class com.modusgo.twg.SettingsActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:52
--keep class com.modusgo.ubi.SignInActivity { <init>(...); }
+-keep class com.modusgo.twg.SignInActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:130
--keep class com.modusgo.ubi.TripActivity { <init>(...); }
+-keep class com.modusgo.twg.TripActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:57
--keep class com.modusgo.ubi.WelcomeActivity { <init>(...); }
+-keep class com.modusgo.twg.WelcomeActivity { <init>(...); }
 
 # view res/layout/drawer_list_item.xml #generated:1
--keep class com.modusgo.ubi.customviews.CheckedRelativeLayout { <init>(...); }
+-keep class com.modusgo.twg.customviews.CheckedRelativeLayout { <init>(...); }
 
 # view res/layout/drawer_list_item.xml #generated:6
--keep class com.modusgo.ubi.customviews.CheckedTypefacedTextView { <init>(...); }
+-keep class com.modusgo.twg.customviews.CheckedTypefacedTextView { <init>(...); }
 
 # view res/layout/activity_sign_in.xml #generated:57
--keep class com.modusgo.ubi.customviews.DynamicImageView { <init>(...); }
+-keep class com.modusgo.twg.customviews.DynamicImageView { <init>(...); }
 
 # view res/layout/activity_score_info.xml #generated:35
--keep class com.modusgo.ubi.customviews.ExpandableHeightGridView { <init>(...); }
+-keep class com.modusgo.twg.customviews.ExpandableHeightGridView { <init>(...); }
 
 # view res/layout/score_circles_row_item.xml #generated:19
--keep class com.modusgo.ubi.customviews.ExpandablePanel { <init>(...); }
+-keep class com.modusgo.twg.customviews.ExpandablePanel { <init>(...); }
 
 # view res/layout/pie_chart_fragment.xml #generated:22
--keep class com.modusgo.ubi.customviews.PieChartView { <init>(...); }
+-keep class com.modusgo.twg.customviews.PieChartView { <init>(...); }
 
 # view res/layout/activity_diagnostic_detail.xml #generated:210
 # view res/layout/activity_find_my_car.xml #generated:117
@@ -244,13 +233,15 @@
 # view res/layout/activity_sign_in.xml #generated:100
 # view res/layout/activity_sign_in.xml #generated:112
 # view res/layout/activity_welcome.xml #generated:67
+# view res/layout/dialog_other_info.xml #generated:21
+# view res/layout/dialog_other_info.xml #generated:28
 # view res/layout/driver_header.xml #generated:47
 # view res/layout/fragment_diagnostics.xml #generated:154
 # view res/layout/fragment_settings_edit.xml #generated:253
 # view res/layout/fragment_settings_edit.xml #generated:265
 # view res/layout/fragment_settings_view.xml #generated:170
 # view res/layout/scheduled_maintenance_item.xml #generated:14
--keep class com.modusgo.ubi.customviews.TypefacedButton { <init>(...); }
+-keep class com.modusgo.twg.customviews.TypefacedButton { <init>(...); }
 
 # view res/layout/activity_sign_in.xml #generated:65
 # view res/layout/activity_sign_in.xml #generated:83
@@ -261,7 +252,7 @@
 # view res/layout/fragment_settings_edit.xml #generated:232
 # view res/layout/fragment_settings_edit.xml #generated:67
 # view res/layout/fragment_settings_edit.xml #generated:87
--keep class com.modusgo.ubi.customviews.TypefacedEditText { <init>(...); }
+-keep class com.modusgo.twg.customviews.TypefacedEditText { <init>(...); }
 
 # view res/layout/action_bar.xml #generated:22
 # view res/layout/activity_alert_map.xml #generated:35
@@ -327,20 +318,20 @@
 # view res/layout/diagnostics_item.xml #generated:37
 # view res/layout/diagnostics_item.xml #generated:49
 # view res/layout/diagnostics_item.xml #generated:65
-# view res/layout/driver_details_fragment.xml #generated:109
-# view res/layout/driver_details_fragment.xml #generated:137
-# view res/layout/driver_details_fragment.xml #generated:149
-# view res/layout/driver_details_fragment.xml #generated:176
-# view res/layout/driver_details_fragment.xml #generated:187
-# view res/layout/driver_details_fragment.xml #generated:210
-# view res/layout/driver_details_fragment.xml #generated:219
-# view res/layout/driver_details_fragment.xml #generated:247
-# view res/layout/driver_details_fragment.xml #generated:256
-# view res/layout/driver_details_fragment.xml #generated:292
-# view res/layout/driver_details_fragment.xml #generated:305
-# view res/layout/driver_details_fragment.xml #generated:54
-# view res/layout/driver_details_fragment.xml #generated:66
-# view res/layout/driver_details_fragment.xml #generated:94
+# view res/layout/driver_details_fragment.xml #generated:112
+# view res/layout/driver_details_fragment.xml #generated:141
+# view res/layout/driver_details_fragment.xml #generated:153
+# view res/layout/driver_details_fragment.xml #generated:181
+# view res/layout/driver_details_fragment.xml #generated:192
+# view res/layout/driver_details_fragment.xml #generated:215
+# view res/layout/driver_details_fragment.xml #generated:224
+# view res/layout/driver_details_fragment.xml #generated:252
+# view res/layout/driver_details_fragment.xml #generated:261
+# view res/layout/driver_details_fragment.xml #generated:297
+# view res/layout/driver_details_fragment.xml #generated:310
+# view res/layout/driver_details_fragment.xml #generated:56
+# view res/layout/driver_details_fragment.xml #generated:68
+# view res/layout/driver_details_fragment.xml #generated:97
 # view res/layout/driver_header.xml #generated:32
 # view res/layout/driver_tabs_bg.xml #generated:37
 # view res/layout/driver_tabs_bg.xml #generated:56
@@ -438,11 +429,22 @@
 # view res/layout/trips_list_item.xml #generated:69
 # view res/layout/trips_list_item.xml #generated:80
 # view res/layout/trips_list_item.xml #generated:94
--keep class com.modusgo.ubi.customviews.TypefacedTextView { <init>(...); }
+-keep class com.modusgo.twg.customviews.TypefacedTextView { <init>(...); }
 
 # view res/layout/fragment_main.xml #generated:17
 # view res/layout/fragment_main.xml #generated:35
--keep class com.modusgo.ubi.customviews.ViewPager { <init>(...); }
+-keep class com.modusgo.twg.customviews.ViewPager { <init>(...); }
+
+# view res/xml/pref_headers.xml #generated:11
+-keep class com.modusgo.ubi.SettingsActivity$DataSyncPreferenceFragment { <init>(...); }
+
+# view res/xml/pref_headers.xml #generated:5
+# view v14/res/xml-v14/pref_headers.xml #generated:5
+-keep class com.modusgo.ubi.SettingsActivity$GeneralPreferenceFragment { <init>(...); }
+
+# view res/xml/pref_headers.xml #generated:8
+# view v14/res/xml-v14/pref_headers.xml #generated:8
+-keep class com.modusgo.ubi.SettingsActivity$NotificationPreferenceFragment { <init>(...); }
 
 # view res/layout/activity_sign_in.xml #generated:133
 # view res/layout/fragment_main.xml #generated:22

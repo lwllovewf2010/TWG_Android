@@ -32,9 +32,11 @@
     <string name="Done">Done</string>
     <string name="Cancel">Cancel</string>
     <string name="Other">Other</string>
+    <string name="EnterOtherInfo">Enter Other Information</string>
     <string name="MissingFieldsErrorMsg">Missing data, please enter data for all fields</string>
-    
+    <string name="RetrievingMapData">Retrieving Map Data</string>
     <string name="app_name">TWG</string>
+    
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="frag1_text">Fragment 1</string>

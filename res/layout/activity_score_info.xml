@@ -32,7 +32,7 @@
                 android:layout_height="1dp"
                 android:background="#acb1b7" />
 
-            <com.modusgo.ubi.customviews.ExpandableHeightGridView
+            <com.modusgo.twg.customviews.ExpandableHeightGridView
                 android:id="@+id/gvPercentData"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
                 android:isScrollContainer="false"
                 android:listSelector="@color/btn_transparent_orange_light"
                 android:stretchMode="columnWidth" >
-            </com.modusgo.ubi.customviews.ExpandableHeightGridView>
+            </com.modusgo.twg.customviews.ExpandableHeightGridView>
         </LinearLayout>
     </ScrollView>
 

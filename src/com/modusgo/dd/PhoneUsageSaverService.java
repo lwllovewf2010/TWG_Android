@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import com.modusgo.ubi.Tracking;
-import com.modusgo.ubi.db.DbHelper;
+import com.modusgo.twg.Tracking;
+import com.modusgo.twg.db.DbHelper;
 
 public class PhoneUsageSaverService extends IntentService {
 

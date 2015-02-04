@@ -16,6 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="bottom"
+        android:layout_alignParentBottom="true"
         android:orientation="vertical"
         android:weightSum="1" >
 
@@ -42,6 +43,7 @@
                     android:paddingRight="20dp" >
 
                     <!-- Fuel Level -->
+
                     <RelativeLayout
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -51,19 +53,19 @@
                         android:paddingBottom="10dp"
                         android:paddingTop="10dp" >
 
-                        <com.modusgo.ubi.customviews.TypefacedTextView
+                        <com.modusgo.twg.customviews.TypefacedTextView
                             android:id="@+id/tvFuel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:gravity="top"
                             android:drawableLeft="@drawable/ic_fuel_green"
                             android:drawablePadding="3dp"
+                            android:gravity="top"
                             android:text="N/A"
                             android:textColor="#24a406"
                             android:textSize="24sp"
                             ubi:typeface="arialbd.ttf" />
 
-                        <com.modusgo.ubi.customviews.TypefacedTextView
+                        <com.modusgo.twg.customviews.TypefacedTextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/tvFuel"
@@ -75,13 +77,14 @@
                             ubi:typeface="EncodeSansNormal-300-Light.ttf" />
                     </RelativeLayout>
 
-                                    <Space
+                    <Space
                         android:id="@+id/spaceFuel"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight=".1" />
 
                     <!-- Oil Life -->
+
                     <RelativeLayout
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -91,7 +94,7 @@
                         android:paddingBottom="10dp"
                         android:paddingTop="10dp" >
 
-                        <com.modusgo.ubi.customviews.TypefacedTextView
+                        <com.modusgo.twg.customviews.TypefacedTextView
                             android:id="@+id/tvOilLife"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -106,7 +109,7 @@
                             android:textSize="20sp"
                             ubi:typeface="arialbd.ttf" />
 
-                        <com.modusgo.ubi.customviews.TypefacedTextView
+                        <com.modusgo.twg.customviews.TypefacedTextView
                             android:id="@+id/tvOilLifeLabel"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -125,6 +128,7 @@
                         android:layout_weight=".1" />
 
                     <!-- Engine Temperature -->
+
                     <RelativeLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -134,19 +138,19 @@
                         android:paddingBottom="10dp"
                         android:paddingTop="10dp" >
 
-                        <com.modusgo.ubi.customviews.TypefacedTextView
+                        <com.modusgo.twg.customviews.TypefacedTextView
                             android:id="@+id/tvEngineTemperature"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerHorizontal="true"
-                            android:gravity="top"
                             android:drawableLeft="@drawable/ic_coolant"
                             android:drawablePadding="3dp"
+                            android:gravity="top"
                             android:textColor="#EF4136"
                             android:textSize="18sp"
                             ubi:typeface="arialbd.ttf" />
 
-                        <com.modusgo.ubi.customviews.TypefacedTextView
+                        <com.modusgo.twg.customviews.TypefacedTextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/tvEngineTemperature"
@@ -164,6 +168,7 @@
                         android:layout_weight=".1" />
 
                     <!-- Battery Output -->
+
                     <RelativeLayout
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -173,7 +178,7 @@
                         android:paddingBottom="10dp"
                         android:paddingTop="10dp" >
 
-                        <com.modusgo.ubi.customviews.TypefacedTextView
+                        <com.modusgo.twg.customviews.TypefacedTextView
                             android:id="@+id/tvBattery"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -184,7 +189,7 @@
                             android:textSize="18sp"
                             ubi:typeface="arialbd.ttf" />
 
-                        <com.modusgo.ubi.customviews.TypefacedTextView
+                        <com.modusgo.twg.customviews.TypefacedTextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/tvBattery"
@@ -207,7 +212,7 @@
                     android:paddingRight="20dp"
                     android:paddingTop="3dp" >
 
-                    <com.modusgo.ubi.customviews.TypefacedTextView
+                    <com.modusgo.twg.customviews.TypefacedTextView
                         android:id="@+id/tvLocationLabel"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -216,7 +221,7 @@
                         android:textSize="10sp"
                         ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
 
-                    <com.modusgo.ubi.customviews.TypefacedTextView
+                    <com.modusgo.twg.customviews.TypefacedTextView
                         android:id="@+id/tvLocation"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -244,7 +249,7 @@
                     android:paddingRight="20dp"
                     android:paddingTop="3dp" >
 
-                    <com.modusgo.ubi.customviews.TypefacedTextView
+                    <com.modusgo.twg.customviews.TypefacedTextView
                         android:id="@+id/tvDateLabel"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -253,7 +258,7 @@
                         android:textSize="10sp"
                         ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
 
-                    <com.modusgo.ubi.customviews.TypefacedTextView
+                    <com.modusgo.twg.customviews.TypefacedTextView
                         android:id="@+id/tvDate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -289,20 +294,20 @@
                 android:scaleType="centerCrop"
                 android:src="@drawable/person_test3" />
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:id="@+id/tvName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="12dp"
                 android:layout_marginTop="65dp"
-                android:paddingTop="4dp"
                 android:layout_toRightOf="@+id/imagePhoto"
+                android:paddingTop="4dp"
                 android:text="Melissa"
                 android:textColor="#697078"
                 android:textSize="20sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
-            <com.modusgo.ubi.customviews.TypefacedTextView
+            <com.modusgo.twg.customviews.TypefacedTextView
                 android:id="@+id/tvVehicle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -313,20 +318,16 @@
                 android:textSize="12.5sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />
         </RelativeLayout>
-	<Button
-	    android:id="@+id/callServiceBtn"
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:layout_below="@id/LinearLayout1"
-	    android:layout_marginLeft="10dip"
-	    android:layout_marginRight="10dip"
-	    android:layout_marginTop="5dip"
-	    android:layout_marginBottom="5dip"
-	    android:background="#FF000000"
-	    android:text="@string/CallScheduleService"
-	    android:textAlignment="center"
-	    android:textColor="@color/white" />
 
-        </LinearLayout>
+        <Button
+            android:id="@+id/callServiceBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/LinearLayout1"
+            android:background="#FF000000"
+            android:text="@string/CallScheduleService"
+            android:textAlignment="center"
+            android:textColor="@color/white" />
+    </LinearLayout>
 
 </RelativeLayout>
