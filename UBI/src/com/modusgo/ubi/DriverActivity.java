@@ -218,6 +218,12 @@ public class DriverActivity extends MainActivity{
 				}
 			});
 		    
+		    View tvInTrip = view.findViewById(R.id.tvInTrip);
+		    if(v.inTrip)
+		    	tvInTrip.setVisibility(View.VISIBLE);
+		    else
+		    	tvInTrip.setVisibility(View.GONE);
+		    
 		    return view;
 		}
 		

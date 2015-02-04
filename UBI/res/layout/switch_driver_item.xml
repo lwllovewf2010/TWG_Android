@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ubi="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="57dp"
@@ -13,9 +13,10 @@
 
     <com.modusgo.ubi.customviews.TypefacedTextView
         android:id="@+id/tvName"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_weight="1"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@+id/imagePhoto"
         android:gravity="center|left"
         android:paddingLeft="20dp"
         android:text="Switch Driver"
@@ -23,4 +24,23 @@
         android:textSize="12.5sp"
         ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
-</LinearLayout>
+    <com.modusgo.ubi.customviews.TypefacedTextView
+        android:id="@+id/tvInTrip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rectangle_in_trip"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="4dp"
+        android:layout_marginRight="4dp"
+        android:paddingBottom="3dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="3dp"
+        android:text="In Trip"
+        android:textColor="#fff"
+        android:textSize="10sp"
+        android:visibility="gone"
+        ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+
+</RelativeLayout>
