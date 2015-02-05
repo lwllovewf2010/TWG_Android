@@ -83,7 +83,8 @@ public class DbHelper extends SQLiteOpenHelper {
 	    VehicleEntry.COLUMN_NAME_CAR_LAST_CHECKUP + TEXT_TYPE + COMMA_SEP +
 	    VehicleEntry.COLUMN_NAME_CAR_CHECKUP_STATUS + TEXT_TYPE + COMMA_SEP +
 	    VehicleEntry.COLUMN_NAME_LIMITS_BLOCKED + INT_TYPE + COMMA_SEP +
-	    VehicleEntry.COLUMN_NAME_LIMITS_BLOCKED_BY + TEXT_TYPE + " ); ",
+	    VehicleEntry.COLUMN_NAME_LIMITS_BLOCKED_BY + TEXT_TYPE + COMMA_SEP +
+	    VehicleEntry.COLUMN_NAME_UPDATED_AT + TEXT_TYPE + " ); ",
 	    
 		    "CREATE TABLE " + TripEntry.TABLE_NAME + " (" +
 		    TripEntry._ID + " INTEGER PRIMARY KEY," +
@@ -268,7 +269,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	"DROP TABLE IF EXISTS " + TrackingEntry.TABLE_NAME};
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 52;
+	public static final int DATABASE_VERSION = 53;
 	public static final String DATABASE_NAME = "ubi.db";
 	
 	private static DbHelper sInstance;
