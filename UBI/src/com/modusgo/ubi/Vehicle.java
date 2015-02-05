@@ -31,8 +31,8 @@ public class Vehicle implements Serializable{
 	public String carFuelUnit="";
 	public String carFuelStatus="";
 	public int carDTCCount;
-	public String carLastCheckup;
-	public String carCheckupStatus;
+	public String carLastCheckup="";
+	public String carCheckupStatus="";
 
 	public int alerts;
 	
