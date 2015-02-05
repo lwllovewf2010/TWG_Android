@@ -594,10 +594,12 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 	}
 	
 	private void stopStopTimer(){
-		stopTimerHandler.removeCallbacksAndMessages(null);
-		firstZeroSpeedTimeMillis = 0;
-		stopTimerRunnable = null;
-		stopTimerHandler = null;
+		if(stopTimerHandler!=null){
+			stopTimerHandler.removeCallbacksAndMessages(null);
+			firstZeroSpeedTimeMillis = 0;
+			stopTimerRunnable = null;
+			stopTimerHandler = null;
+		}
 	}
 
 	private class OnSensorSingle implements IPacketProcessor
