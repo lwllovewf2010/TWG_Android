@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.bugsnag.android.Bugsnag;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
@@ -71,10 +72,6 @@ public class GcmIntentService extends IntentService {
             // If it's a regular GCM message, do some work.
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
             	
-            	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-            	Editor e  = prefs.edit();
-            	
-            	
 //            	for (String key : extras.keySet()) {
 //            	    Object value = extras.get(key);
 //            	    Log.d(TAG, String.format("%s %s (%s)", key,  
@@ -110,10 +107,21 @@ public class GcmIntentService extends IntentService {
             	}
             	
             	if(extras.containsKey("act")){
+            		SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);;
+            		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                	
             		switch (extras.getString("act", "du")) {
             		case "du":
+            			Calendar calDeviceUpdatedAt = Calendar.getInstance();
+	            		try {
+	            			calDeviceUpdatedAt.setTime(sdf.parse(prefs.getString(Device.PREF_DEVICE_UPDATED_AT, "")));
+	            		} catch (ParseException ex) {
+	            			ex.printStackTrace();
+	            		}
+            			
             			String deviceType = prefs.getString(Device.PREF_DEVICE_TYPE, "");
-            			if(deviceType.equals(Device.DEVICE_TYPE_OBD)){
+            			if(deviceType.equals(Device.DEVICE_TYPE_OBD) && calDeviceUpdatedAt.before(calUpdatedAt)){
+            				Editor e  = prefs.edit();
             				if(extras.containsKey("in_trip")){
             					e.putBoolean(Device.PREF_DEVICE_IN_TRIP, !TextUtils.isEmpty(extras.getString("in_trip")));
             				}
@@ -143,18 +151,34 @@ public class GcmIntentService extends IntentService {
             				if(extras.containsKey("location_date")){
             					e.putString(Device.PREF_DEVICE_LOCATION_DATE, extras.getString("location_date"));
             				}
+            				if(extras.containsKey("location_date")){
+            					e.putString(Device.PREF_DEVICE_LOCATION_DATE, extras.getString("location_date"));
+            				}
+            				if(extras.containsKey("updated_at")){
+            					e.putString(Device.PREF_DEVICE_UPDATED_AT, Utils.fixTimezoneZ(extras.getString("updated_at")));
+            				}
+            				
+                        	e.commit();
+
+            				sendBroadcast(new Intent(Constants.BROADCAST_UPDATE_VEHICLES));
             			}
             			else{
-            				Bugsnag.notify(new RuntimeException("Push received, not proccessed, device is not OBD"));
+            				Bugsnag.notify(new RuntimeException("Push received, not proccessed, device is not OBD or data is old"));
             			}
             			break;
             		case "vu":
             			if(extras.containsKey("id")){
             				DbHelper dbHelper = DbHelper.getInstance(this);
-            				Vehicle vehicle = dbHelper.getVehicle(extras.getLong("id"));
+            				Vehicle vehicle;
+            				
+            				Object id = extras.get("id");
+            				if(id instanceof Long)
+            					vehicle = dbHelper.getVehicle(extras.getLong("id"));
+            				else{
+            					vehicle = dbHelper.getVehicle(Long.parseLong(extras.getString("id")));            					
+            				}
             				
 							Calendar calVehicleUpdatedAt = Calendar.getInstance();
-							SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);
 		            		try {
 		            			calVehicleUpdatedAt.setTime(sdf.parse(vehicle.updatedAt));
 		            		} catch (ParseException ex) {
@@ -162,27 +186,41 @@ public class GcmIntentService extends IntentService {
 		            		}
 							if(calVehicleUpdatedAt.before(calUpdatedAt)){
 	            				if(extras.containsKey("location")){
-	            					Bundle location = extras.getBundle("location");
-	            					if(location.containsKey("location_date")){
-	            						
-	            					}
-	            					if(location.containsKey("latitude")){
-	            						vehicle.latitude = location.getDouble("latitude");
-	            					}
-	            					if(location.containsKey("longitude")){
-	            						vehicle.longitude = location.getDouble("longitude");
-	            					}
-	            					if(location.containsKey("in_trip")){
-	            						vehicle.inTrip = !TextUtils.isEmpty(location.getString("in_trip"));
-	            					}
-	            					if(location.containsKey("last_trip_id")){
-	            						vehicle.lastTripId = location.getLong("last_trip_id");									
-	            					}
-	            					if(location.containsKey("last_trip_time")){
-	            						vehicle.lastTripDate = location.getString(Utils.fixTimezoneZ(extras.getString("last_trip_time")));										
-	            					}
+	            					String locationJSONStr = extras.getString("location");
+	                        		try {
+	                        			JSONObject locationJSON = new JSONObject(locationJSONStr);
+	                        			
+	                        			if(locationJSON.has("location_date")){
+	                        				
+	                        			}
+	                        			if(locationJSON.has("latitude")){
+	                        				vehicle.latitude = locationJSON.optDouble("latitude");
+	                        			}
+	                        			if(locationJSON.has("longitude")){
+	                        				vehicle.longitude = locationJSON.optDouble("longitude");
+	                        				System.out.println("longitude: "+locationJSON.optDouble("longitude"));
+	                        			}
+	                        			if(!locationJSON.isNull("in_trip")){
+	                        				vehicle.inTrip = !TextUtils.isEmpty(locationJSON.optString("in_trip"));
+	                        			}
+	                        			if(locationJSON.has("last_trip_id")){
+	                        				vehicle.lastTripId = locationJSON.optLong("last_trip_id");	
+	                        				System.out.println("last_trip_id: "+locationJSON.optLong("last_trip_id"));								
+	                        			}
+	                        			if(locationJSON.has("last_trip_time")){
+	                        				vehicle.lastTripDate = Utils.fixTimezoneZ(locationJSON.optString("last_trip_time"));										
+	                        			}
+	                        		} catch (JSONException ex) {
+	                        			ex.printStackTrace();
+	                        		}
+	            				}
+
+	            				if(extras.containsKey("updated_at")){
+	            					vehicle.updatedAt = Utils.fixTimezoneZ(extras.getString("updated_at"));
 	            				}
 	            				dbHelper.saveVehicle(vehicle);
+	            				
+	            				sendBroadcast(new Intent(Constants.BROADCAST_UPDATE_VEHICLES));
 							}
             				
             				dbHelper.close();
@@ -191,10 +229,7 @@ public class GcmIntentService extends IntentService {
             		default:
             			break;
             		}
-            	}
-            	
-            	e.commit();
-            	
+            	}            	
             	
             	new GetDeviceInfoRequest(this).execute();
             }

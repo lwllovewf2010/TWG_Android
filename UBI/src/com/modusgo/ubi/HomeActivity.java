@@ -11,8 +11,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -43,6 +45,8 @@ public class HomeActivity extends MainActivity{
 	
 	VehiclesAdapter driversAdapter;
 	ArrayList<Vehicle> vehicles = new ArrayList<Vehicle>();
+	BroadcastReceiver vehiclesUpdateReceiver;
+	IntentFilter vehiclesUpdateFilter;
 
 	SwipeRefreshLayout lRefresh;
 	ListView lvVehicles;
@@ -75,6 +79,15 @@ public class HomeActivity extends MainActivity{
 				new GetVehiclesTask(HomeActivity.this).execute("vehicles.json");
 			}
 		});
+		
+		vehiclesUpdateFilter = new IntentFilter(Constants.BROADCAST_UPDATE_VEHICLES);
+		vehiclesUpdateReceiver = new BroadcastReceiver(){
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				System.out.println("Hello motherfucker");
+				updateDrivers();
+			}
+		};
 		
 		Device.checkDevice(this);
 		new SendEventsRequest(getApplicationContext(), true).execute();
@@ -250,9 +263,16 @@ public class HomeActivity extends MainActivity{
 	@Override
 	public void onResume() {
 		super.onResume();
+		registerReceiver(vehiclesUpdateReceiver, vehiclesUpdateFilter);
 		setNavigationDrawerItemSelected(MenuItems.HOME);
-		driversAdapter.notifyDataSetChanged();
+		updateDrivers();
 		Utils.gaTrackScreen(this, "Home Screen");
+	}
+	
+	@Override
+	protected void onPause() {
+		unregisterReceiver(vehiclesUpdateReceiver);
+		super.onPause();
 	}
 	
 	class GetVehiclesTask extends BaseRequestAsyncTask{
