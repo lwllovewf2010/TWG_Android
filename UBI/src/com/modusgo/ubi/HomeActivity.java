@@ -84,7 +84,6 @@ public class HomeActivity extends MainActivity{
 		vehiclesUpdateReceiver = new BroadcastReceiver(){
 			@Override
 			public void onReceive(Context context, Intent intent) {
-				System.out.println("Hello motherfucker");
 				updateDrivers();
 			}
 		};

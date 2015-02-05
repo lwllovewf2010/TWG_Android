@@ -267,9 +267,10 @@
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:src="@drawable/arrow_small_right" />
+                    
+                	<include layout="@layout/in_trip_indicator" />
                 </RelativeLayout>
                 
-                <include layout="@layout/in_trip_indicator" />
                 
             </LinearLayout>
 

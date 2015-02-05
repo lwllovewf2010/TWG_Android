@@ -62,6 +62,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	TextView tvVehicle;
 	TextView tvLocation;
 	TextView tvDate;
+	TextView tvDateLabel;
 	ImageView imagePhoto;
 	TextView tvDistanceToCar;
 	TextView tvDistanceToCarLabel;
@@ -103,6 +104,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	    tvVehicle = (TextView) rootView.findViewById(R.id.tvVehicle);
 	    tvLocation = (TextView) rootView.findViewById(R.id.tvLocation);
 	    tvDate = (TextView) rootView.findViewById(R.id.tvDate);
+	    tvDateLabel = (TextView) rootView.findViewById(R.id.tvDateLabel);
 	    imagePhoto = (ImageView)rootView.findViewById(R.id.imagePhoto);
 	    tvDistanceToCar = (TextView)rootView.findViewById(R.id.tvDistanceToCar);
 	    tvDistanceToCarLabel = (TextView)rootView.findViewById(R.id.tvDistanceToCarLabel);
@@ -283,7 +285,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	    	tvAlerts.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_alerts_red_medium, 0, 0, 0);		    	
 	    }
 	    
-	    if(vehicle.lastTripId>0){
+	    if(vehicle.lastTripId>0 && !vehicle.inTrip){
 	    	rlLastTrip.findViewById(R.id.dateImageArrow).setVisibility(View.VISIBLE);
 		    rlLastTrip.setOnClickListener(new OnClickListener() {
 				@Override
@@ -296,20 +298,24 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 			});
 	    }
 	    else{
-	    	rlLastTrip.findViewById(R.id.dateImageArrow).setVisibility(View.GONE);	    	
+	    	rlLastTrip.findViewById(R.id.dateImageArrow).setVisibility(View.GONE);	
+	    	rlLastTrip.setOnClickListener(null);
 	    }
 	    
 	    if(vehicle.inTrip){
 	    	tvInTrip.setVisibility(View.VISIBLE);
-	    	rlLastTrip.setVisibility(View.GONE);
+	    	tvDate.setVisibility(View.INVISIBLE);
+	    	tvDateLabel.setVisibility(View.INVISIBLE);
 	    }
 	    else if(TextUtils.isEmpty(vehicle.lastTripDate)){
 	    	tvInTrip.setVisibility(View.GONE);
-	    	rlLastTrip.setVisibility(View.GONE);
+	    	tvDate.setVisibility(View.INVISIBLE);
+	    	tvDateLabel.setVisibility(View.INVISIBLE);
 	    }
 	    else{
 	    	tvInTrip.setVisibility(View.GONE);
-	    	rlLastTrip.setVisibility(View.VISIBLE);
+	    	tvDate.setVisibility(View.VISIBLE);
+	    	tvDateLabel.setVisibility(View.VISIBLE);
 	    }
 	    
         setUpMapIfNeeded();
