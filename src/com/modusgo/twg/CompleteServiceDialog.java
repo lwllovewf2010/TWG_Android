@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import com.modusgo.twg.R;
 import com.modusgo.twg.db.DbHelper;
@@ -13,9 +16,11 @@ import com.modusgo.twg.utils.ServicePerformed;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -62,7 +67,8 @@ public class CompleteServiceDialog extends DialogFragment implements DatePickerD
 	private EditText milageText = null;
 	private String dateSelectedString = null;
 	private AlertDialog alertDialog = null;
-
+	private ArrayAdapter<String> typeAdapter = null;
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
@@ -80,22 +86,53 @@ public class CompleteServiceDialog extends DialogFragment implements DatePickerD
 		LayoutInflater li = (LayoutInflater) main.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View dlgView = li.inflate(R.layout.dialog_other_info, null);
 		AlertDialog.Builder builder = new AlertDialog.Builder(main);
-		builder.setTitle(R.string.EnterOtherInfo);
 		builder.setView(dlgView);
-		alertDialog = builder.create();
-
-		doneBtn = (Button)alertDialog.findViewById(R.id.done_btn);
-		cancelBtn = (Button)alertDialog.findViewById(R.id.cancel_btn);
-		cancelBtn.setOnClickListener(new OnClickListener()
+		builder.setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener()
+		{
+			@Override
+			public void onClick(DialogInterface dialog, int which)
+			{
+				dialog.dismiss();
+			}
+		});
+		builder.setPositiveButton(R.string.Done, new DialogInterface.OnClickListener()
 		{
 			
 			@Override
-			public void onClick(View v)
+			public void onClick(DialogInterface dialog, int which)
 			{
-				alertDialog.dismiss();
+				Dialog dlg = (Dialog)dialog;
+				EditText et = (EditText) dlg.findViewById(R.id.editOtherText);
+				String otherText = et.getText().toString();
+				if(otherText.length() == 0)
+				{
+					Toast.makeText(main, getResources().getString(R.string.MissingFieldsErrorMsg), Toast.LENGTH_LONG).show();
+				}
+				else
+				{
+					TextView titleView = (TextView) dlg.findViewById(getResources().getIdentifier("alertTitle", "id", "android"));
+					String title = titleView.getText().toString();
+					if(title.equals(getResources().getString(R.string.EnterOtherTypeInfo)))
+					{
+						typeList.add(otherText);
+						Editor editor = prefs.edit();
+						//list is immutable, so create a new one
+						Set<String> list = prefs.getStringSet(Constants.PREF_OTHER_TYPES, null);
+						if(list == null || !list.contains(otherText))
+						{
+							TreeSet<String> newList = new TreeSet<String>();
+							newList.addAll(typeList);
+							editor.putStringSet(Constants.PREF_OTHER_TYPES, newList);
+						}
+						typeAdapter.notifyDataSetChanged();
+						typeAdapter.notifyDataSetInvalidated();
+					}
+				}
 			}
 		});
 		
+		alertDialog = builder.create();
+
 		Long vehicleId = main.vehicleId;
 
 
@@ -144,8 +181,7 @@ public class CompleteServiceDialog extends DialogFragment implements DatePickerD
 					String choice = (String) parent.getItemAtPosition(position);
 					if(choice.equals(getResources().getString(R.string.Other)))
 					{
-//						doneBtn.setOnClickListener(handleTypeDoneBtn);
-						// show it
+						alertDialog.setTitle(R.string.EnterOtherTypeInfo);
 						alertDialog.show();
 					}
 				}
@@ -208,8 +244,7 @@ public class CompleteServiceDialog extends DialogFragment implements DatePickerD
 			}
 		});
 		
-		ArrayAdapter<String> typeAdapter = new ArrayAdapter<String>(main,
-				android.R.layout.simple_spinner_item, (List)typeList);
+		typeAdapter = new ArrayAdapter<String>(main, android.R.layout.simple_spinner_item, (List)typeList);
 		typeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		typeSpinner.setAdapter(typeAdapter);
 			

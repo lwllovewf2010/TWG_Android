@@ -15,7 +15,6 @@ import com.modusgo.twg.Alert;
 import com.modusgo.twg.DiagnosticsTroubleCode;
 import com.modusgo.twg.Tracking;
 import com.modusgo.twg.Trip;
-import com.modusgo.twg.Vehicle;
 import com.modusgo.twg.LimitsFragment.Limit;
 import com.modusgo.twg.ScoreCirclesActivity.CirclesSection;
 import com.modusgo.twg.ScoreFragment.MonthStats;
@@ -42,6 +41,7 @@ import com.modusgo.twg.db.WarrantyInfoContract.WarrantyInfoEntry;
 import com.modusgo.twg.utils.Maintenance;
 import com.modusgo.twg.utils.Recall;
 import com.modusgo.twg.utils.ServicePerformed;
+import com.modusgo.twg.utils.Vehicle;
 import com.modusgo.twg.utils.WarrantyInformation;
 
 public class DbHelper extends SQLiteOpenHelper {
@@ -198,7 +198,8 @@ public class DbHelper extends SQLiteOpenHelper {
 			MaintenanceEntry.COLUMN_NAME_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
 			MaintenanceEntry.COLUMN_NAME_IMPORTANCE + TEXT_TYPE + COMMA_SEP +
 			MaintenanceEntry.COLUMN_NAME_MILEAGE + TEXT_TYPE + COMMA_SEP +
-			MaintenanceEntry.COLUMN_NAME_PRICE + FLOAT_TYPE + " ); ",
+			MaintenanceEntry.COLUMN_NAME_PRICE + FLOAT_TYPE + COMMA_SEP + 
+			MaintenanceEntry.COLUMN_NAME_COUNTDOWN + INT_TYPE + " ); ",
 		    
 		    "CREATE TABLE " + WarrantyInfoEntry.TABLE_NAME + " (" +
 		    WarrantyInfoEntry._ID + " INTEGER PRIMARY KEY," +
@@ -277,8 +278,8 @@ public class DbHelper extends SQLiteOpenHelper {
 	"DROP TABLE IF EXISTS " + ServicePerformedEntry.TABLE_NAME};
 	
 	// If you change the database schema, you must increment the database version.
-	public static final int DATABASE_VERSION = 49;
-	public static final String DATABASE_NAME = "ubi.db";
+	public static final int DATABASE_VERSION = 50;
+	public static final String DATABASE_NAME = "twg.db";
 	
 	private static DbHelper sInstance;
     private SQLiteDatabase database;

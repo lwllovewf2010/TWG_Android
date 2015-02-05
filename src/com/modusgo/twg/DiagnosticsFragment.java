@@ -58,6 +58,7 @@ import com.modusgo.twg.utils.AnimationUtils;
 import com.modusgo.twg.utils.Maintenance;
 import com.modusgo.twg.utils.Recall;
 import com.modusgo.twg.utils.Utils;
+import com.modusgo.twg.utils.Vehicle;
 import com.modusgo.twg.utils.WarrantyInformation;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;

@@ -30,6 +30,7 @@ import com.modusgo.twg.db.ScoreInfoContract.ScoreInfoEntry;
 import com.modusgo.twg.db.ScorePercentageContract.ScorePercentageEntry;
 import com.modusgo.twg.db.VehicleContract.VehicleEntry;
 import com.modusgo.twg.utils.Utils;
+import com.modusgo.twg.utils.Vehicle;
 
 public class ScoreInfoActivity extends MainActivity{
 	

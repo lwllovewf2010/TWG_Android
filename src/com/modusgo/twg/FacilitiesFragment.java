@@ -9,6 +9,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.modusgo.twg.R;
 import com.modusgo.twg.customviews.GoogleMapFragment;
 import com.modusgo.twg.customviews.GoogleMapFragment.OnMapReadyListener;
+import com.modusgo.twg.utils.Vehicle;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;

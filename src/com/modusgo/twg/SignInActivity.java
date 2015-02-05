@@ -46,6 +46,7 @@ import com.modusgo.twg.db.DbHelper;
 import com.modusgo.twg.requesttasks.BasePostRequestAsyncTask;
 import com.modusgo.twg.utils.Device;
 import com.modusgo.twg.utils.Utils;
+import com.modusgo.twg.utils.Vehicle;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.viewpagerindicator.CirclePageIndicator;
@@ -466,7 +467,11 @@ public class SignInActivity extends FragmentActivity {
 	    	double oldTotalDistance = 0;
 	    	double deltaDistance = 0;
 	    	long vehicleId = prefs.getLong(Constants.PREF_VEHICLE_ID, 0);
-		    prefs = PreferenceManager.getDefaultSharedPreferences(SignInActivity.this);
+	    	//if this is the first time the user has logged in, then this pref will not
+	    	// exist and we will set it to 1 (true), in DriverDetailActivity we will check
+	    	// this and initialize the Maintenance.countDown fields in the local DB
+		    int initCountdowns = prefs.getInt(Constants.PREF_INIT_NAINTENANCE_COUNTDOWNS, 1);
+	    	prefs = PreferenceManager.getDefaultSharedPreferences(SignInActivity.this);
 		    if(prefs.contains(Constants.PREF_TOTAL_DISTANCE))
 		    {
 		    	oldTotalDistance = prefs.getLong(Constants.PREF_TOTAL_DISTANCE, 0);
@@ -475,7 +480,9 @@ public class SignInActivity extends FragmentActivity {
 		    deltaDistance =  vehicle.totalDistance - oldTotalDistance;
 		    e.putLong(Constants.PREF_TOTAL_DISTANCE, (long) vehicle.totalDistance);
 		    e.putLong(Constants.PREF_DELTA_DISTANCE, (long) deltaDistance);
-			
+			e.putInt(Constants.PREF_INIT_NAINTENANCE_COUNTDOWNS, initCountdowns);
+		    
+		    
 			startActivity(new Intent(SignInActivity.this, HomeActivity.class));
 			finish();
 			super.onSuccess(responseJSON);

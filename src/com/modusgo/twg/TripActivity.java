@@ -248,7 +248,7 @@ public class TripActivity extends MainActivity {
 					RouteEntry.COLUMN_NAME_TRIP_ID+" = ?", new String[]{Long.toString(tripId)}, null, null, RouteEntry._ID+" ASC");
 			if(c.moveToFirst()){
 				while (!c.isAfterLast()) {
-					t.route.add(new LatLng(c.getDouble(1), c.getDouble(2)));
+					t.getRoute().add(new LatLng(c.getDouble(1), c.getDouble(2)));
 					c.moveToNext();
 				}
 			}
@@ -268,7 +268,7 @@ public class TripActivity extends MainActivity {
 				ArrayList<LatLng> speedingRoute = new ArrayList<LatLng>();
 				while (!c.isAfterLast()) {
 					if(lastNum!=c.getInt(1)){
-						t.speedingRoutes.add(speedingRoute);
+						t.getSpeedingRoutes().add(speedingRoute);
 						speedingRoute = new ArrayList<LatLng>();
 					}
 					speedingRoute.add(new LatLng(c.getDouble(2), c.getDouble(3)));
@@ -297,7 +297,7 @@ public class TripActivity extends MainActivity {
 						event = EventType.UNKNOWN;
 					}
 					
-					t.points.add(new Point(new LatLng(c.getDouble(1), c.getDouble(2)), event, c.getString(4), c.getString(5)));
+					t.getPoints().add(new Point(new LatLng(c.getDouble(1), c.getDouble(2)), event, c.getString(4), c.getString(5)));
 					c.moveToNext();
 				}
 			}
@@ -418,7 +418,7 @@ public class TripActivity extends MainActivity {
         llEventsList.removeAllViews();
         
         
-        for (Point p : trip.points) {
+        for (Point p : trip.getPoints()) {
         	if(p.event!=EventType.START && p.event!=EventType.STOP){
 	        	RelativeLayout eventItem = (RelativeLayout) getLayoutInflater().inflate(R.layout.trip_event_item, llContent, false);
 				((TextView)eventItem.findViewById(R.id.tvTitle)).setText(p.title);

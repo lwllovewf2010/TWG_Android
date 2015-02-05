@@ -38,6 +38,7 @@ import com.modusgo.twg.requesttasks.SendEventsRequest;
 import com.modusgo.twg.utils.Device;
 import com.modusgo.twg.utils.RequestGet;
 import com.modusgo.twg.utils.Utils;
+import com.modusgo.twg.utils.Vehicle;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -297,8 +298,8 @@ public class InitActivity extends FragmentActivity {
 						
 //						//Before we go, calculate the distance traveled, if there is no vehicle JSON
 						// then the user is logging in for the first time and we do this in SignInActivity
-							if(responseJSON.has("vehicles"))
-							{
+						if(responseJSON.has("vehicles"))
+						{
 					    	double oldTotalDistance = 0;
 					    	double deltaDistance = 0;
 					    	long vehicleId = prefs.getLong(Constants.PREF_VEHICLE_ID, 0);
@@ -311,6 +312,11 @@ public class InitActivity extends FragmentActivity {
 						    deltaDistance =  vehicle.totalDistance - oldTotalDistance;
 						    e.putLong(Constants.PREF_TOTAL_DISTANCE, (long) vehicle.totalDistance);
 						    e.putLong(Constants.PREF_DELTA_DISTANCE, (long) deltaDistance);
+						}
+						else
+						{
+						    e.putLong(Constants.PREF_TOTAL_DISTANCE, (long) 0);
+						    e.putLong(Constants.PREF_DELTA_DISTANCE, (long) 0);
 						}
 						return true;
 					}

@@ -3,15 +3,20 @@ package com.modusgo.twg;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.TimeZone;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
@@ -55,9 +60,13 @@ import com.modusgo.twg.R;
 import com.modusgo.twg.customviews.GoogleMapFragment;
 import com.modusgo.twg.customviews.GoogleMapFragment.OnMapReadyListener;
 import com.modusgo.twg.db.DbHelper;
+import com.modusgo.twg.db.MaintenanceContract.MaintenanceEntry;
 import com.modusgo.twg.db.VehicleContract.VehicleEntry;
 import com.modusgo.twg.requesttasks.BaseRequestAsyncTask;
+import com.modusgo.twg.utils.Maintenance;
+import com.modusgo.twg.utils.TWGListItem;
 import com.modusgo.twg.utils.Utils;
+import com.modusgo.twg.utils.Vehicle;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -450,7 +459,7 @@ public class DriverDetailsFragment extends Fragment implements ConnectionCallbac
 
 		mMap.getUiSettings().setZoomControlsEnabled(false);
 	}
-
+		
 	private void setUpLocationClientIfNeeded()
 	{
 		if(mLocationClient == null)

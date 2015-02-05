@@ -92,9 +92,10 @@ public class TWGInfoArrayAdapter extends ArrayAdapter<TWGListItem>
 				hdr.setText(resources.getString(R.string.VehicleInformation));
 			} else if(item.type == twg_list_item_type.li_recall_hdr)
 			{
-				hdr.setText(resources.getString(R.string.RecallUpdate));
-				hdr.setTextColor(resources.getColor(R.color.white));
-				hdr.setBackgroundColor(resources.getColor(R.color.red));
+				//deleted per Jon
+//				hdr.setText(resources.getString(R.string.RecallUpdate));
+//				hdr.setTextColor(resources.getColor(R.color.white));
+//				hdr.setBackgroundColor(resources.getColor(R.color.red));
 			} else if(item.type == twg_list_item_type.li_dtc_hdr)
 			{
 				hdr.setText(resources.getString(R.string.DiagnosticsTroubleCodeDetails));
@@ -170,7 +171,7 @@ public class TWGInfoArrayAdapter extends ArrayAdapter<TWGListItem>
 			description.setText(maintenance.description);
 			text = context.getResources().getString(R.string.ReplaceEvery) + " " + maintenance.mileage + " miles";
 			interval.setText(text);
-			text = context.getResources().getString(R.string.NextServiceIn) + " 0 miles";
+			text = context.getResources().getString(R.string.NextServiceIn) +  " " +maintenance.countdown + " miles";
 			remaining.setText(text);
 			break;
 		case li_service_log_item:

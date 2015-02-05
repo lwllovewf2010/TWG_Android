@@ -31,6 +31,7 @@ import com.modusgo.twg.R;
 import com.modusgo.twg.db.DbHelper;
 import com.modusgo.twg.db.VehicleContract.VehicleEntry;
 import com.modusgo.twg.utils.Utils;
+import com.modusgo.twg.utils.Vehicle;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;

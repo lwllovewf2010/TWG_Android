@@ -42,6 +42,9 @@ public class Constants {
 	public static final String PREF_CHARGER_CONNECTED = "chargerConnected";
 	public static final String PREF_TOTAL_DISTANCE = "totalDistance";
 	public static final String PREF_DELTA_DISTANCE = "deltaDistance";
+	public static final String PREF_INIT_NAINTENANCE_COUNTDOWNS = "initCountdowns";
+	public static final String PREF_OTHER_TYPES = "otherTypes";
+	public static final String PREF_OTHER_LOCATIONS = "otherLocations";
 	
 	public static final String ROLE_CUSTOMER = "customer";
 

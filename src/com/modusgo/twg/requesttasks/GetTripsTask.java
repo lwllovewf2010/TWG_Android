@@ -26,11 +26,11 @@ import com.modusgo.twg.Constants;
 import com.modusgo.twg.DriverActivity;
 import com.modusgo.twg.Trip;
 import com.modusgo.twg.TripActivity;
-import com.modusgo.twg.Vehicle;
 import com.modusgo.twg.Trip.Point;
 import com.modusgo.twg.db.DbHelper;
 import com.modusgo.twg.db.TripContract.TripEntry;
 import com.modusgo.twg.utils.Utils;
+import com.modusgo.twg.utils.Vehicle;
 
 public class GetTripsTask extends BaseRequestAsyncTask
 {

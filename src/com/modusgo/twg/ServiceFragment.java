@@ -4,14 +4,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.modusgo.adapters.TWGInfoArrayAdapter;
+import com.modusgo.templates.UpdateCallback;
 import com.modusgo.twg.R;
-import com.modusgo.twg.AlertsFragment.GetDiagnosticsTask;
 import com.modusgo.twg.db.DbHelper;
 import com.modusgo.twg.db.MaintenanceContract.MaintenanceEntry;
 import com.modusgo.twg.db.VehicleContract.VehicleEntry;
+import com.modusgo.twg.requesttasks.GetDiagnosticsTask;
+import com.modusgo.twg.requesttasks.UpdateMaintenanceCountdownTask;
 import com.modusgo.twg.utils.Maintenance;
 import com.modusgo.twg.utils.TWGListItem;
 import com.modusgo.twg.utils.Utils;
+import com.modusgo.twg.utils.Vehicle;
 import com.modusgo.twg.utils.TWGListItem.twg_list_item_type;
 
 import android.content.Intent;
@@ -34,7 +37,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class ServiceFragment extends Fragment
+public class ServiceFragment extends Fragment implements UpdateCallback
 {
 	private Vehicle vehicle;
 	private SharedPreferences prefs;
@@ -45,6 +48,13 @@ public class ServiceFragment extends Fragment
 	private MainActivity main = null;
 	ListView infoList = null;
 	RelativeLayout rootView = null;
+
+	private enum TaskState
+	{
+		Diagnostics, CountDown, Idle
+	};
+
+	private TaskState taskState = TaskState.Idle;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -70,7 +80,10 @@ public class ServiceFragment extends Fragment
 		// vehicle.id
 		// + "/diagnostics.json");
 
-		updateInfo();
+		main.showBusyDialog(R.string.GatheringDiagnosticInformation);
+
+		taskState = TaskState.Diagnostics;
+		new GetDiagnosticsTask(getActivity(), this, vehicle).execute("vehicles/" + vehicle.id + "/diagnostics.json");
 
 		return rootView;
 
@@ -79,12 +92,19 @@ public class ServiceFragment extends Fragment
 	protected void updateInfo()
 	{
 
+		main.hideBusyDialog();
+
 		// --------------------------------Maintenances----------------------------
 		c = db.query(MaintenanceEntry.TABLE_NAME, new String[]
-		{ MaintenanceEntry._ID, MaintenanceEntry.COLUMN_NAME_CREATED_AT, MaintenanceEntry.COLUMN_NAME_DESCRIPTION,
-				MaintenanceEntry.COLUMN_NAME_IMPORTANCE, MaintenanceEntry.COLUMN_NAME_MILEAGE,
-				MaintenanceEntry.COLUMN_NAME_PRICE }, MaintenanceEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id,
-				null, null, null, MaintenanceEntry.COLUMN_NAME_MILEAGE + " DESC");
+		{ 
+				MaintenanceEntry._ID, 
+				MaintenanceEntry.COLUMN_NAME_CREATED_AT, 
+				MaintenanceEntry.COLUMN_NAME_DESCRIPTION,
+				MaintenanceEntry.COLUMN_NAME_IMPORTANCE, 
+				MaintenanceEntry.COLUMN_NAME_MILEAGE,
+				MaintenanceEntry.COLUMN_NAME_PRICE,
+				MaintenanceEntry.COLUMN_NAME_COUNTDOWN }, 
+				null, null, null, null, MaintenanceEntry.COLUMN_NAME_MILEAGE + " DESC");
 
 		final ArrayList<TWGListItem> info_list = new ArrayList<TWGListItem>();
 
@@ -97,7 +117,8 @@ public class ServiceFragment extends Fragment
 								.getColumnIndex(MaintenanceEntry.COLUMN_NAME_DESCRIPTION)), c.getString(c
 								.getColumnIndex(MaintenanceEntry.COLUMN_NAME_IMPORTANCE)), c.getString(c
 								.getColumnIndex(MaintenanceEntry.COLUMN_NAME_MILEAGE)), c.getFloat(c
-								.getColumnIndex(MaintenanceEntry.COLUMN_NAME_PRICE)));
+								.getColumnIndex(MaintenanceEntry.COLUMN_NAME_PRICE)), c.getInt(c
+								.getColumnIndex(MaintenanceEntry.COLUMN_NAME_COUNTDOWN)));
 				/************************** DEBUGGING ONLY ***************************/
 				// for(int i = 0; i < catagory.length; i++)
 				// {
@@ -115,8 +136,8 @@ public class ServiceFragment extends Fragment
 		}
 		c.close();
 
-		Button serviceLogBtn = (Button)rootView.findViewById(R.id.service_view_log_button);
-		
+		Button serviceLogBtn = (Button) rootView.findViewById(R.id.service_view_log_button);
+
 		serviceLogBtn.setOnClickListener(new OnClickListener()
 		{
 			@Override
@@ -128,7 +149,7 @@ public class ServiceFragment extends Fragment
 			}
 		});
 
-		Button callServiceBtn = (Button) rootView.findViewById(R.id.call_service_button); 
+		Button callServiceBtn = (Button) rootView.findViewById(R.id.call_service_button);
 
 		callServiceBtn.setOnClickListener(new OnClickListener()
 		{
@@ -143,6 +164,23 @@ public class ServiceFragment extends Fragment
 			}
 		});
 
+	}
 
+	@Override
+	public void callback()
+	{
+		switch (taskState)
+		{
+		case Diagnostics:
+			taskState = TaskState.CountDown;
+			new UpdateMaintenanceCountdownTask(main, this).execute();
+			break;
+		case CountDown:
+			taskState = TaskState.Idle;
+			updateInfo();
+			break;
+		default:
+			break;
+		}
 	}
 }

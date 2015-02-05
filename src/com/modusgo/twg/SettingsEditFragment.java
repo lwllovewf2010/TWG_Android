@@ -61,6 +61,7 @@ import com.modusgo.twg.db.DbHelper;
 import com.modusgo.twg.requesttasks.BasePostRequestAsyncTask;
 import com.modusgo.twg.requesttasks.BaseRequestAsyncTask;
 import com.modusgo.twg.utils.Utils;
+import com.modusgo.twg.utils.Vehicle;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 

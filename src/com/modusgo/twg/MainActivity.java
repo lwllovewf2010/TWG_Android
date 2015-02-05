@@ -41,6 +41,7 @@ import android.widget.TextView;
 import com.modusgo.dd.LocationService;
 import com.modusgo.twg.R;
 import com.modusgo.twg.utils.Utils;
+import com.modusgo.twg.utils.Vehicle;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -102,7 +103,7 @@ public class MainActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		// setContentView(R.layout.activity_main);
 		
-		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+//		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
