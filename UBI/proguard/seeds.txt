@@ -7759,6 +7759,7 @@ com.modusgo.ubi.R$id: int editLastName
 com.modusgo.ubi.R$id: int editPassword
 com.modusgo.ubi.R$id: int editPhone
 com.modusgo.ubi.R$id: int editText
+com.modusgo.ubi.R$id: int editTextLogs
 com.modusgo.ubi.R$id: int editValue
 com.modusgo.ubi.R$id: int edit_query
 com.modusgo.ubi.R$id: int email
@@ -7949,6 +7950,7 @@ com.modusgo.ubi.R$id: int tvMaxSpeed
 com.modusgo.ubi.R$id: int tvMaxSpeedUnits
 com.modusgo.ubi.R$id: int tvMessage
 com.modusgo.ubi.R$id: int tvName
+com.modusgo.ubi.R$id: int tvOngoingLog
 com.modusgo.ubi.R$id: int tvParameter
 com.modusgo.ubi.R$id: int tvParameterSign
 com.modusgo.ubi.R$id: int tvPasswordError
@@ -8027,6 +8029,7 @@ com.modusgo.ubi.R$layout: int activity_forgot_password
 com.modusgo.ubi.R$layout: int activity_geofence
 com.modusgo.ubi.R$layout: int activity_home
 com.modusgo.ubi.R$layout: int activity_init
+com.modusgo.ubi.R$layout: int activity_log
 com.modusgo.ubi.R$layout: int activity_main
 com.modusgo.ubi.R$layout: int activity_map
 com.modusgo.ubi.R$layout: int activity_recall
@@ -8644,6 +8647,8 @@ com.modusgo.ubi.customviews.ViewPager: void setSwipeEnabled(boolean)
 com.modusgo.ubi.jastec.Calenda_RTC
 com.modusgo.ubi.jastec.DevicesListActivity
 com.modusgo.ubi.jastec.DevicesListActivity: DevicesListActivity()
+com.modusgo.ubi.jastec.LogActivity
+com.modusgo.ubi.jastec.LogActivity: LogActivity()
 com.modusgo.ubi.jastec.Protocol$PacketType: com.modusgo.ubi.jastec.Protocol$PacketType[] values()
 com.modusgo.ubi.jastec.Protocol$PacketType: com.modusgo.ubi.jastec.Protocol$PacketType valueOf(java.lang.String)
 com.modusgo.ubi.jastec.dtc.IDTCDescriptor$MakerType: com.modusgo.ubi.jastec.dtc.IDTCDescriptor$MakerType[] values()

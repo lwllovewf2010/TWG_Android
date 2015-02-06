@@ -8124,10 +8124,10 @@ com.modusgo.ubi.ForgotPasswordActivity$RestorePasswordTask:
 com.modusgo.ubi.LimitsFragment:
     579:582:private java.lang.String getTime24String(int,int)
 com.modusgo.ubi.MainActivity:
-    530:532:public void showFeedbackActivity()
+    537:539:public void showFeedbackActivity()
 com.modusgo.ubi.MainActivity$MenuItems:
-    78:78:public int toInt()
-    82:82:public java.lang.String[] valuesString()
+    79:79:public int toInt()
+    83:83:public java.lang.String[] valuesString()
 com.modusgo.ubi.Manifest
 com.modusgo.ubi.Manifest$permission
 com.modusgo.ubi.PieChartFragment:
@@ -8152,7 +8152,7 @@ com.modusgo.ubi.R$raw
 com.modusgo.ubi.R$string
 com.modusgo.ubi.R$style
 com.modusgo.ubi.R$styleable:
-    3201:3201:public R$styleable()
+    3204:3204:public R$styleable()
 com.modusgo.ubi.R$xml
 com.modusgo.ubi.Recall:
     private static final long serialVersionUID
@@ -8269,6 +8269,10 @@ com.modusgo.ubi.jastec.IParser
 com.modusgo.ubi.jastec.JastecManager:
     private static final java.lang.String TAG
     public static final int DIVIDE_SIZE
+com.modusgo.ubi.jastec.LogActivity:
+    public static final java.lang.String ACTION_ONGING_LOG
+    public static final java.lang.String ACTION_LOGS
+    public static final java.lang.String BROADCAST_INTENT_EXTRA_MESSAGE
 com.modusgo.ubi.jastec.PacketBuilder:
     private static final int SIZE
     32:33:public void putSrc(byte)
