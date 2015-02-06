@@ -155,7 +155,7 @@ public class MainActivity extends FragmentActivity {
         //menuItems.add(MenuItems.DRIVERSETUP);
         menuItems.add(MenuItems.LOGOUT);
         menuItems.add(MenuItems.RESET);
-        menuItems.add(MenuItems.LOG);
+        //menuItems.add(MenuItems.LOG);
        
         ArrayAdapter<MenuItems> adapter = new ArrayAdapter<MenuItems>(this, R.layout.drawer_list_item, menuItemsArray){
         	
