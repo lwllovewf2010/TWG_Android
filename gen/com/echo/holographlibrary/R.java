@@ -24,7 +24,7 @@ public final class R {
 		public static final int pieSlicePadding = 0x7f010021;
 	}
 	public static final class drawable {
-		public static final int popup_black = 0x7f0200fb;
+		public static final int popup_black = 0x7f020100;
 	}
 	public static final class id {
 		public static final int horizontal = 0x7f0a001d;

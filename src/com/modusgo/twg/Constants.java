@@ -49,8 +49,8 @@ public class Constants {
 	public static final String ROLE_CUSTOMER = "customer";
 
 //	public static final String API_BASE_URL_PREFIX = "http://api."; 
-	public static final String API_BASE_URL_PREFIX = "http://api";
-//	public static final String API_BASE_URL_PREFIX = "http://api.staging";
+//	public static final String API_BASE_URL_PREFIX = "http://api";
+	public static final String API_BASE_URL_PREFIX = "http://api.staging";
 	public static final String API_BASE_URL_POSTFIX = ".twg.modusgo.com/api/";
 	public static final String API_PLATFORM = "android";
 	

@@ -42,10 +42,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.daimajia.swipe.SwipeLayout;
+import com.modusgo.templates.UpdateCallback;
 import com.modusgo.twg.R;
 import com.modusgo.twg.db.DbHelper;
 import com.modusgo.twg.db.DTCContract.DTCEntry;
@@ -54,6 +56,7 @@ import com.modusgo.twg.db.RecallContract.RecallEntry;
 import com.modusgo.twg.db.ScoreGraphContract.ScoreGraphEntry;
 import com.modusgo.twg.db.WarrantyInfoContract.WarrantyInfoEntry;
 import com.modusgo.twg.requesttasks.BaseRequestAsyncTask;
+import com.modusgo.twg.requesttasks.GetDiagnosticsTask;
 import com.modusgo.twg.utils.AnimationUtils;
 import com.modusgo.twg.utils.Maintenance;
 import com.modusgo.twg.utils.Recall;
@@ -63,7 +66,7 @@ import com.modusgo.twg.utils.WarrantyInformation;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-public class DiagnosticsFragment extends Fragment
+public class DiagnosticsFragment extends Fragment implements UpdateCallback
 {
 
 	private static final String ERROR_STATUS_MESSAGE = "Gathering diagnostic information...";
@@ -83,6 +86,7 @@ public class DiagnosticsFragment extends Fragment
 	EditText editOdometer;
 
 	SharedPreferences prefs;
+	private MainActivity main = null;
 
 	int maintenancesCount = 0;
 	HashMap<String, Integer> maintenancesByMileage;
@@ -94,12 +98,14 @@ public class DiagnosticsFragment extends Fragment
 	{
 		LinearLayout rootView = (LinearLayout) inflater.inflate(R.layout.fragment_diagnostics, container, false);
 
-		((MainActivity) getActivity()).setActionBarTitle("DIAGNOSTICS");
+		main = (MainActivity) getActivity();
+		main.setActionBarTitle("DIAGNOSTICS");
 
-		prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+		prefs = PreferenceManager.getDefaultSharedPreferences(main);
 
 		vehicle = ((DriverActivity) getActivity()).vehicle;
 
+		final DiagnosticsFragment diagFrag = this;
 		this.inflater = inflater;
 
 		lRefresh = (SwipeRefreshLayout) rootView.findViewById(R.id.lRefresh);
@@ -118,33 +124,36 @@ public class DiagnosticsFragment extends Fragment
 			@Override
 			public void onRefresh()
 			{
-				new GetDiagnosticsTask(getActivity()).execute("vehicles/" + vehicle.id + "/diagnostics.json");
+				new GetDiagnosticsTask(getActivity(), diagFrag, vehicle).execute("vehicles/" + vehicle.id
+						+ "/diagnostics.json");
 			}
 		});
 
-//		{
-			updateInfo();
+		// updateInfo();
 
-			if(llContent.getChildCount() == 0)
-			{
-				new GetDiagnosticsTask(getActivity()).execute("vehicles/" + vehicle.id + "/diagnostics.json");
-			}
-//		}
-
-		if(!prefs.getBoolean(Constants.PREF_DIAGNOSTICS_DELETE_POPUP_SHOWED, false))
+		if(llContent.getChildCount() == 0)
 		{
-			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-			builder.setMessage("Swipe left on Recalls and Scheduled Maintenance to mark them Completed.")
-					.setPositiveButton("OK", new DialogInterface.OnClickListener()
-					{
-						public void onClick(DialogInterface dialog, int id)
-						{
-							prefs.edit().putBoolean(Constants.PREF_DIAGNOSTICS_DELETE_POPUP_SHOWED, true).commit();
-							dialog.dismiss();
-						}
-					});
-			builder.show();
+			main.showBusyDialog(R.string.GatheringDiagnosticInformation);
+			new GetDiagnosticsTask(getActivity(), diagFrag, vehicle).execute("vehicles/" + vehicle.id
+					+ "/diagnostics.json");
 		}
+
+		// if(!prefs.getBoolean(Constants.PREF_DIAGNOSTICS_DELETE_POPUP_SHOWED,
+		// false))
+		// {
+		// AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		// builder.setMessage("Swipe left on Recalls and Scheduled Maintenance to mark them Completed.")
+		// .setPositiveButton("OK", new DialogInterface.OnClickListener()
+		// {
+		// public void onClick(DialogInterface dialog, int id)
+		// {
+		// prefs.edit().putBoolean(Constants.PREF_DIAGNOSTICS_DELETE_POPUP_SHOWED,
+		// true).commit();
+		// dialog.dismiss();
+		// }
+		// });
+		// builder.show();
+		// }
 
 		return rootView;
 	}
@@ -161,6 +170,8 @@ public class DiagnosticsFragment extends Fragment
 	 */
 	private void updateInfo()
 	{
+		main.hideBusyDialog();
+
 		SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
 		SimpleDateFormat sdfTo = new SimpleDateFormat("MM/dd/yyyy KK:mm aa z", Locale.getDefault());
 
@@ -179,61 +190,45 @@ public class DiagnosticsFragment extends Fragment
 			int len = updated.length();
 			try
 			{
-				updated += 	sdfTo.format(sdfFrom.parse(vehicle.carLastCheckup));
+				updated += sdfTo.format(sdfFrom.parse(vehicle.carLastCheckup));
 			} catch(ParseException e)
 			{
 				updated += vehicle.carLastCheckup;
 			}
 			Spannable updatedSpan = new SpannableString(updated);
 			updatedSpan.setSpan(new ForegroundColorSpan(Color.BLACK), 0, len, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-			updatedSpan.setSpan(new ForegroundColorSpan(Color.BLUE), len+1, updated.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+			updatedSpan.setSpan(new ForegroundColorSpan(Color.BLUE), len + 1, updated.length(),
+					Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 			tvLastCheckup.setText(updatedSpan);
 		}
 
 		if(!TextUtils.isEmpty(vehicle.carCheckupStatus))
 		{
 			tvStatus.setText(vehicle.carCheckupStatus);
-		}
-		else
+		} else
 		{
 			tvStatus.setText(ERROR_STATUS_MESSAGE);
 		}
-		
-		//-----------------------------Summary Info-------------------------------------
+
+		// -----------------------------Summary
+		// Info-------------------------------------
 		llContent.removeAllViews();
-		
-		for(int iView = 0; iView<3; iView++)
-		{
-			LinearLayout summaryView = (LinearLayout) inflater.inflate(R.layout.diagnostic_summary_item, null);
-			ImageView iv = (ImageView)summaryView.findViewById(R.id.diagnostic_summary_icon);
-			TextView type = (TextView)summaryView.findViewById(R.id.diagnostic_summary_type);
-			TextView status = (TextView)summaryView.findViewById(R.id.diagnostic_summary_status);
-			switch(iView)
-			{
-			case 0:
-				iv.setBackgroundResource(R.drawable.ic_alerts_green_medium);
-				type.setText(R.string.DTCStatus);
-				status.setText(R.string.DTCsReported);
-				break;
-			case 1:
-				iv.setBackgroundResource(R.drawable.ic_battery);
-				type.setText(R.string.BatteryStatus);
-				status.setText(R.string.NoIssues);
-				break;
-			case 2:
-				iv.setBackgroundResource(R.drawable.engine);
-				type.setText(R.string.EngineTemp);
-				status.setText(R.string.UrgentIssues);
-				break;
-			}
-			
-			llContent.addView(summaryView);
-		}		
-				
-		llVechicleInfo = (LinearLayout) inflater.inflate(R.layout.fragment_diagnostic_vehcle_info, null);		
-		llContent.addView(llVechicleInfo);		
-				
-		// --------------------------------------------- DTC  ------------------------------------
+
+		RelativeLayout summaryView = (RelativeLayout) inflater.inflate(R.layout.diagnostic_summary_item, null);
+		ImageView dtcImage = (ImageView) summaryView.findViewById(R.id.diagnostic_DTC_status_icon);
+		ImageView batteryImage = (ImageView) summaryView.findViewById(R.id.diagnostic_battery_status_icon);
+		ImageView engineImage = (ImageView) summaryView.findViewById(R.id.diagnostic_engine_temperature_status_icon);
+		dtcImage.setBackgroundResource(R.drawable.ic_alerts_big);
+		batteryImage.setBackgroundResource(R.drawable.ic_battery_big);
+		engineImage.setBackgroundResource(R.drawable.ic_engine_big);
+
+		llContent.addView(summaryView);
+
+		llVechicleInfo = (LinearLayout) inflater.inflate(R.layout.fragment_diagnostic_vehcle_info, null);
+		llContent.addView(llVechicleInfo);
+
+		// --------------------------------------------- DTC
+		// ------------------------------------
 		DbHelper dbHelper = DbHelper.getInstance(getActivity());
 		SQLiteDatabase db = dbHelper.openDatabase();
 
@@ -241,8 +236,8 @@ public class DiagnosticsFragment extends Fragment
 		{ DTCEntry.COLUMN_NAME_CODE, DTCEntry.COLUMN_NAME_CONDITIONS, DTCEntry.COLUMN_NAME_CREATED_AT,
 				DTCEntry.COLUMN_NAME_DESCRIPTION, DTCEntry.COLUMN_NAME_DETAILS, DTCEntry.COLUMN_NAME_FULL_DESCRIPTION,
 				DTCEntry.COLUMN_NAME_IMPORTANCE, DTCEntry.COLUMN_NAME_LABOR_COST, DTCEntry.COLUMN_NAME_LABOR_HOURS,
-				DTCEntry.COLUMN_NAME_PARTS, DTCEntry.COLUMN_NAME_PARTS_COST, DTCEntry.COLUMN_NAME_TOTAL_COST },
-				null, null, null, null, null);
+				DTCEntry.COLUMN_NAME_PARTS, DTCEntry.COLUMN_NAME_PARTS_COST, DTCEntry.COLUMN_NAME_TOTAL_COST }, null,
+				null, null, null, null);
 
 		if(c.moveToFirst())
 		{
@@ -302,10 +297,9 @@ public class DiagnosticsFragment extends Fragment
 			// imageDTCAlert.setImageResource(R.drawable.ic_alerts_green_big);
 		}
 		c.close();
-		
-		
 
-		// --------------------------------------------- Recalls ------------------------------------
+		// --------------------------------------------- Recalls
+		// ------------------------------------
 		c = db.query(RecallEntry.TABLE_NAME, new String[]
 		{ RecallEntry._ID, RecallEntry.COLUMN_NAME_CONSEQUENCE, RecallEntry.COLUMN_NAME_CORRECTIVE_ACTION,
 				RecallEntry.COLUMN_NAME_CREATED_AT, RecallEntry.COLUMN_NAME_DEFECT_DESCRIPTION,
@@ -366,159 +360,190 @@ public class DiagnosticsFragment extends Fragment
 		}
 		c.close();
 
-		// --------------------------------------------- Maintenances ------------------------------------
-//		c = db.query(MaintenanceEntry.TABLE_NAME, new String[]
-//		{ MaintenanceEntry._ID, MaintenanceEntry.COLUMN_NAME_CREATED_AT, MaintenanceEntry.COLUMN_NAME_DESCRIPTION,
-//				MaintenanceEntry.COLUMN_NAME_IMPORTANCE, MaintenanceEntry.COLUMN_NAME_MILEAGE,
-//				MaintenanceEntry.COLUMN_NAME_PRICE }, MaintenanceEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id,
-//				null, null, null, MaintenanceEntry.COLUMN_NAME_MILEAGE + " DESC");
-//
-//		if(c.moveToFirst())
-//		{
-//			final View headerView = inflater.inflate(R.layout.diagnostics_header, llContent, false);
-//			headerView.findViewById(R.id.bottom_line).setBackgroundColor(
-//					Color.parseColor(prefs.getString(Constants.PREF_BR_LIST_HEADER_LINE_COLOR,
-//							Constants.LIST_HEADER_LINE_COLOR)));
-//			((TextView) headerView.findViewById(R.id.tvTitle)).setText("Scheduled Maintenance");
-//			llContent.addView(headerView);
-//
-//			String lastMileage = "";
-//			maintenancesByMileage = new HashMap<String, Integer>();
-//			maintenancesHeaders = new HashMap<String, View>();
-//
-//			while(!c.isAfterLast())
-//			{
-//				final Maintenance maintenance = new Maintenance(c.getLong(0), c.getString(1), c.getString(2),
-//						c.getString(3), c.getString(4), c.getFloat(5));
-//
-//				if(!lastMileage.equals(maintenance.mileage))
-//				{
-//					lastMileage = maintenance.mileage;
-//					View mileageHeader = inflater.inflate(R.layout.scheduled_maintenance_header, llContent, false);
-//					String mileageUnit = "";
-//					if(prefs.getString(Constants.PREF_UNITS_OF_MEASURE, "mile").equals("mile"))
-//						mileageUnit = "miles";
-//					else
-//						mileageUnit = "km";
-//					((TextView) mileageHeader.findViewById(R.id.tvTitle)).setText(lastMileage + " " + mileageUnit);
-//
-//					maintenancesHeaders.put(maintenance.mileage, mileageHeader);
-//					llContent.addView(mileageHeader);
-//				}
-//
-//				if(maintenancesByMileage.containsKey(maintenance.mileage))
-//				{
-//					int value = maintenancesByMileage.get(maintenance.mileage);
-//					maintenancesByMileage.put(maintenance.mileage, value + 1);
-//				} else
-//					maintenancesByMileage.put(maintenance.mileage, 1);
-//
-//				final SwipeLayout rowView = (SwipeLayout) inflater.inflate(R.layout.scheduled_maintenance_item,
-//						llContent, false);
-//				rowView.setShowMode(SwipeLayout.ShowMode.PullOut);
-//				rowView.findViewById(R.id.btnDelete).setOnClickListener(new OnClickListener()
-//				{
-//					@Override
-//					public void onClick(View v)
-//					{
-//						maintenancesCount--;
-//						llContent.removeView(rowView);
-//						new HideMaintenanceTask(getActivity().getApplicationContext(), maintenance.id)
-//								.execute("vehicles/" + vehicle.id + "/diagnostics/vehicle_maintenances/"
-//										+ maintenance.id + "/hide.json");
-//
-//						if(maintenancesByMileage.containsKey(maintenance.mileage))
-//						{
-//							int maintenanceByMileageCount = maintenancesByMileage.get(maintenance.mileage);
-//							maintenancesByMileage.put(maintenance.mileage, maintenanceByMileageCount - 1);
-//
-//							if(maintenancesByMileage.get(maintenance.mileage) == 0)
-//							{
-//								llContent.removeView(maintenancesHeaders.get(maintenance.mileage));
-//								maintenancesHeaders.remove(maintenance.mileage);
-//							}
-//						}
-//
-//						if(maintenancesCount == 0)
-//							llContent.removeView(headerView);
-//					}
-//				});
-//
-//				TextView tvDescription = (TextView) rowView.findViewById(R.id.tvDescription);
-//				TextView tvImportance = (TextView) rowView.findViewById(R.id.tvImportance);
-//				TextView tvCost = (TextView) rowView.findViewById(R.id.tvCost);
-//				tvDescription.setText(maintenance.description);
-//				tvImportance.setText(maintenance.importance);
-//				if(prefs.getBoolean(Constants.PREF_MAINTENANCE_PRICES_ENABLED, false))
-//				{
-//					if(maintenance.price > 0)
-//					{
-//						DecimalFormat df = new DecimalFormat("0.##");
-//						tvCost.setText("$" + df.format(maintenance.price));
-//					} else
-//						tvCost.setText("");
-//				} else
-//				{
-//					tvCost.setVisibility(View.GONE);
-//				}
-//				switch (maintenance.importance.toLowerCase(Locale.US))
-//				{
-//				case "high":
-//					tvImportance.setTextColor(Color.parseColor("#ee4e43"));
-//					break;
-//				case "medium":
-//					tvImportance.setTextColor(Color.parseColor("#FBB040"));
-//					break;
-//				case "low":
-//					tvImportance.setTextColor(Color.parseColor("#00AEEF"));
-//					break;
-//				default:
-//					break;
-//				}
-//				maintenancesCount++;
-//				llContent.addView(rowView);
-//				c.moveToNext();
-//			}
-//		}
-//		c.close();
+		// --------------------------------------------- Maintenances
+		// ------------------------------------
+		// c = db.query(MaintenanceEntry.TABLE_NAME, new String[]
+		// { MaintenanceEntry._ID, MaintenanceEntry.COLUMN_NAME_CREATED_AT,
+		// MaintenanceEntry.COLUMN_NAME_DESCRIPTION,
+		// MaintenanceEntry.COLUMN_NAME_IMPORTANCE,
+		// MaintenanceEntry.COLUMN_NAME_MILEAGE,
+		// MaintenanceEntry.COLUMN_NAME_PRICE },
+		// MaintenanceEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id,
+		// null, null, null, MaintenanceEntry.COLUMN_NAME_MILEAGE + " DESC");
+		//
+		// if(c.moveToFirst())
+		// {
+		// final View headerView = inflater.inflate(R.layout.diagnostics_header,
+		// llContent, false);
+		// headerView.findViewById(R.id.bottom_line).setBackgroundColor(
+		// Color.parseColor(prefs.getString(Constants.PREF_BR_LIST_HEADER_LINE_COLOR,
+		// Constants.LIST_HEADER_LINE_COLOR)));
+		// ((TextView)
+		// headerView.findViewById(R.id.tvTitle)).setText("Scheduled Maintenance");
+		// llContent.addView(headerView);
+		//
+		// String lastMileage = "";
+		// maintenancesByMileage = new HashMap<String, Integer>();
+		// maintenancesHeaders = new HashMap<String, View>();
+		//
+		// while(!c.isAfterLast())
+		// {
+		// final Maintenance maintenance = new Maintenance(c.getLong(0),
+		// c.getString(1), c.getString(2),
+		// c.getString(3), c.getString(4), c.getFloat(5));
+		//
+		// if(!lastMileage.equals(maintenance.mileage))
+		// {
+		// lastMileage = maintenance.mileage;
+		// View mileageHeader =
+		// inflater.inflate(R.layout.scheduled_maintenance_header, llContent,
+		// false);
+		// String mileageUnit = "";
+		// if(prefs.getString(Constants.PREF_UNITS_OF_MEASURE,
+		// "mile").equals("mile"))
+		// mileageUnit = "miles";
+		// else
+		// mileageUnit = "km";
+		// ((TextView)
+		// mileageHeader.findViewById(R.id.tvTitle)).setText(lastMileage + " " +
+		// mileageUnit);
+		//
+		// maintenancesHeaders.put(maintenance.mileage, mileageHeader);
+		// llContent.addView(mileageHeader);
+		// }
+		//
+		// if(maintenancesByMileage.containsKey(maintenance.mileage))
+		// {
+		// int value = maintenancesByMileage.get(maintenance.mileage);
+		// maintenancesByMileage.put(maintenance.mileage, value + 1);
+		// } else
+		// maintenancesByMileage.put(maintenance.mileage, 1);
+		//
+		// final SwipeLayout rowView = (SwipeLayout)
+		// inflater.inflate(R.layout.scheduled_maintenance_item,
+		// llContent, false);
+		// rowView.setShowMode(SwipeLayout.ShowMode.PullOut);
+		// rowView.findViewById(R.id.btnDelete).setOnClickListener(new
+		// OnClickListener()
+		// {
+		// @Override
+		// public void onClick(View v)
+		// {
+		// maintenancesCount--;
+		// llContent.removeView(rowView);
+		// new HideMaintenanceTask(getActivity().getApplicationContext(),
+		// maintenance.id)
+		// .execute("vehicles/" + vehicle.id +
+		// "/diagnostics/vehicle_maintenances/"
+		// + maintenance.id + "/hide.json");
+		//
+		// if(maintenancesByMileage.containsKey(maintenance.mileage))
+		// {
+		// int maintenanceByMileageCount =
+		// maintenancesByMileage.get(maintenance.mileage);
+		// maintenancesByMileage.put(maintenance.mileage,
+		// maintenanceByMileageCount - 1);
+		//
+		// if(maintenancesByMileage.get(maintenance.mileage) == 0)
+		// {
+		// llContent.removeView(maintenancesHeaders.get(maintenance.mileage));
+		// maintenancesHeaders.remove(maintenance.mileage);
+		// }
+		// }
+		//
+		// if(maintenancesCount == 0)
+		// llContent.removeView(headerView);
+		// }
+		// });
+		//
+		// TextView tvDescription = (TextView)
+		// rowView.findViewById(R.id.tvDescription);
+		// TextView tvImportance = (TextView)
+		// rowView.findViewById(R.id.tvImportance);
+		// TextView tvCost = (TextView) rowView.findViewById(R.id.tvCost);
+		// tvDescription.setText(maintenance.description);
+		// tvImportance.setText(maintenance.importance);
+		// if(prefs.getBoolean(Constants.PREF_MAINTENANCE_PRICES_ENABLED,
+		// false))
+		// {
+		// if(maintenance.price > 0)
+		// {
+		// DecimalFormat df = new DecimalFormat("0.##");
+		// tvCost.setText("$" + df.format(maintenance.price));
+		// } else
+		// tvCost.setText("");
+		// } else
+		// {
+		// tvCost.setVisibility(View.GONE);
+		// }
+		// switch (maintenance.importance.toLowerCase(Locale.US))
+		// {
+		// case "high":
+		// tvImportance.setTextColor(Color.parseColor("#ee4e43"));
+		// break;
+		// case "medium":
+		// tvImportance.setTextColor(Color.parseColor("#FBB040"));
+		// break;
+		// case "low":
+		// tvImportance.setTextColor(Color.parseColor("#00AEEF"));
+		// break;
+		// default:
+		// break;
+		// }
+		// maintenancesCount++;
+		// llContent.addView(rowView);
+		// c.moveToNext();
+		// }
+		// }
+		// c.close();
 
-		// --------------------------------------------- Warranty Information ------------------------------------
-//		c = db.query(WarrantyInfoEntry.TABLE_NAME, new String[]
-//		{ WarrantyInfoEntry.COLUMN_NAME_CREATED_AT, WarrantyInfoEntry.COLUMN_NAME_DESCRIPTION,
-//				WarrantyInfoEntry.COLUMN_NAME_MILEAGE }, WarrantyInfoEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id,
-//				null, null, null, null);
-//
-//		if(c.moveToFirst())
-//		{
-//			View headerView = inflater.inflate(R.layout.diagnostics_header, llContent, false);
-//			headerView.findViewById(R.id.bottom_line).setBackgroundColor(
-//					Color.parseColor(prefs.getString(Constants.PREF_BR_LIST_HEADER_LINE_COLOR,
-//							Constants.LIST_HEADER_LINE_COLOR)));
-//			((TextView) headerView.findViewById(R.id.tvTitle)).setText("Warranty Information");
-//			llContent.addView(headerView);
-//
-//			while(!c.isAfterLast())
-//			{
-//				WarrantyInformation wi = new WarrantyInformation(c.getString(0), c.getString(1), c.getString(2));
-//				View rowView = (LinearLayout) inflater.inflate(R.layout.diagnostics_item, llContent, false);
-//				SwipeLayout swipeLayout = (SwipeLayout) rowView.findViewById(R.id.lSwipe);
-//				swipeLayout.setSwipeEnabled(false);
-//
-//				TextView tvCode = (TextView) rowView.findViewById(R.id.tvCode);
-//				TextView tvDescription = (TextView) rowView.findViewById(R.id.tvDescription);
-//				TextView tvImportance = (TextView) rowView.findViewById(R.id.tvImportance);
-//				View imageArrow = rowView.findViewById(R.id.imageArrow);
-//				imageArrow.setVisibility(View.GONE);
-//				tvCode.setText(wi.mileage);
-//				tvDescription.setText(wi.description);
-//				tvImportance.setVisibility(View.GONE);
-//				llContent.addView(rowView);
-//				c.moveToNext();
-//			}
-//		}
-//		c.close();
-//		dbHelper.closeDatabase();
-//		dbHelper.close();
+		// --------------------------------------------- Warranty Information
+		// ------------------------------------
+		// c = db.query(WarrantyInfoEntry.TABLE_NAME, new String[]
+		// { WarrantyInfoEntry.COLUMN_NAME_CREATED_AT,
+		// WarrantyInfoEntry.COLUMN_NAME_DESCRIPTION,
+		// WarrantyInfoEntry.COLUMN_NAME_MILEAGE },
+		// WarrantyInfoEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id,
+		// null, null, null, null);
+		//
+		// if(c.moveToFirst())
+		// {
+		// View headerView = inflater.inflate(R.layout.diagnostics_header,
+		// llContent, false);
+		// headerView.findViewById(R.id.bottom_line).setBackgroundColor(
+		// Color.parseColor(prefs.getString(Constants.PREF_BR_LIST_HEADER_LINE_COLOR,
+		// Constants.LIST_HEADER_LINE_COLOR)));
+		// ((TextView)
+		// headerView.findViewById(R.id.tvTitle)).setText("Warranty Information");
+		// llContent.addView(headerView);
+		//
+		// while(!c.isAfterLast())
+		// {
+		// WarrantyInformation wi = new WarrantyInformation(c.getString(0),
+		// c.getString(1), c.getString(2));
+		// View rowView = (LinearLayout)
+		// inflater.inflate(R.layout.diagnostics_item, llContent, false);
+		// SwipeLayout swipeLayout = (SwipeLayout)
+		// rowView.findViewById(R.id.lSwipe);
+		// swipeLayout.setSwipeEnabled(false);
+		//
+		// TextView tvCode = (TextView) rowView.findViewById(R.id.tvCode);
+		// TextView tvDescription = (TextView)
+		// rowView.findViewById(R.id.tvDescription);
+		// TextView tvImportance = (TextView)
+		// rowView.findViewById(R.id.tvImportance);
+		// View imageArrow = rowView.findViewById(R.id.imageArrow);
+		// imageArrow.setVisibility(View.GONE);
+		// tvCode.setText(wi.mileage);
+		// tvDescription.setText(wi.description);
+		// tvImportance.setVisibility(View.GONE);
+		// llContent.addView(rowView);
+		// c.moveToNext();
+		// }
+		// }
+		// c.close();
+		// dbHelper.closeDatabase();
+		// dbHelper.close();
 
 	}
 
@@ -594,156 +619,177 @@ public class DiagnosticsFragment extends Fragment
 		}
 	}
 
-	class GetDiagnosticsTask extends BaseRequestAsyncTask
+	// class GetDiagnosticsTask extends BaseRequestAsyncTask
+	// {
+	//
+	// public GetDiagnosticsTask(Context context)
+	// {
+	// super(context);
+	// }
+	//
+	// @Override
+	// protected void onPreExecute()
+	// {
+	// super.onPreExecute();
+	// lRefresh.setRefreshing(true);
+	// }
+	//
+	// @Override
+	// protected void onPostExecute(JSONObject result)
+	// {
+	// super.onPostExecute(result);
+	// lRefresh.setRefreshing(false);
+	// }
+	//
+	// @Override
+	// protected JSONObject doInBackground(String... params)
+	// {
+	// requestParams.add(new BasicNameValuePair("vehicle_id", "" + vehicle.id));
+	// requestParams.add(new BasicNameValuePair("mileage", "" +
+	// vehicle.odometer));
+	// return super.doInBackground(params);
+	// }
+	//
+	// @Override
+	// protected void onError(String message)
+	// {
+	// // super.onError(message);
+	// }
+	//
+	// @Override
+	// protected void onSuccess(JSONObject responseJSON) throws JSONException
+	// {
+	// DbHelper dbHelper = DbHelper.getInstance(getActivity());
+	// System.out.println(responseJSON);
+	//
+	// if(responseJSON.has("diagnostics"))
+	// {
+	// JSONObject diagnosticsJSON = responseJSON.getJSONObject("diagnostics");
+	//
+	// // Editor e = prefs.edit();
+	// // e.putString(Constants.PREF_DIAGNOSTICS_CHECKUP_DATE+vehicle.id,
+	// // Utils.fixTimezoneZ(diagnosticsJSON.optString("last_checkup")));
+	// //
+	// System.out.println(Constants.PREF_DIAGNOSTICS_CHECKUP_DATE+vehicle.id+" = "+Utils.fixTimezoneZ(diagnosticsJSON.optString("last_checkup")));
+	// // e.putString(Constants.PREF_DIAGNOSTICS_STATUS+vehicle.id,
+	// // diagnosticsJSON.optString("checkup_status",ERROR_STATUS_MESSAGE));
+	// // e.commit();
+	//
+	// if(diagnosticsJSON.has("diagnostics_trouble_codes"))
+	// {
+	// Object dtcsObject = diagnosticsJSON.get("diagnostics_trouble_codes");
+	// if(dtcsObject instanceof JSONArray)
+	// {
+	// JSONArray dtcsJSON = (JSONArray) dtcsObject;
+	// ArrayList<DiagnosticsTroubleCode> dtcs = new
+	// ArrayList<DiagnosticsTroubleCode>();
+	// for(int i = 0; i < dtcsJSON.length(); i++)
+	// {
+	//
+	// JSONObject dtc = dtcsJSON.getJSONObject(i);
+	//
+	// dtcs.add(new DiagnosticsTroubleCode(dtc.optString("code"),
+	// dtc.optString("conditions"),
+	// Utils.fixTimezoneZ(dtc.optString("created_at")),
+	// dtc.optString("description"), dtc
+	// .optString("details"), dtc.optString("full_description"), dtc
+	// .optString("importance_text"), dtc.optString("labor_cost"), dtc
+	// .optString("labor_hours"), dtc.optString("parts"), dtc
+	// .optString("parts_cost"), dtc.optString("total_cost")));
+	// }
+	// vehicle.carDTCCount = dtcs.size();
+	//
+	// dbHelper.saveDTCs(vehicle.id, dtcs);
+	// }
+	// }
+	//
+	// if(diagnosticsJSON.has("recall_updates"))
+	// {
+	// Object recallsObject = diagnosticsJSON.get("recall_updates");
+	// if(recallsObject instanceof JSONArray)
+	// {
+	// JSONArray recallsJSON = (JSONArray) recallsObject;
+	// ArrayList<Recall> recalls = new ArrayList<Recall>();
+	// for(int i = 0; i < recallsJSON.length(); i++)
+	// {
+	//
+	// JSONObject recall = recallsJSON.getJSONObject(i);
+	//
+	// recalls.add(new Recall(recall.optLong("id"),
+	// recall.optString("consequence"), recall
+	// .optString("corrective_action"),
+	// Utils.fixTimezoneZ(recall.optString("recall_date")), recall
+	// .optString("defect_description"), recall.optString("description"), recall
+	// .optString("recall_id")));
+	// }
+	// dbHelper.saveRecalls(vehicle.id, recalls);
+	// }
+	// }
+	//
+	// if(diagnosticsJSON.has("vehicle_maintenances"))
+	// {
+	// Object maintenancesObject = diagnosticsJSON.get("vehicle_maintenances");
+	// if(maintenancesObject instanceof JSONArray)
+	// {
+	// JSONArray maintenancesJSON = (JSONArray) maintenancesObject;
+	// ArrayList<Maintenance> maintenances = new ArrayList<Maintenance>();
+	// for(int i = 0; i < maintenancesJSON.length(); i++)
+	// {
+	//
+	// JSONObject maintenance = maintenancesJSON.getJSONObject(i);
+	//
+	// maintenances.add(new Maintenance(maintenance.optLong("id"),
+	// Utils.fixTimezoneZ(maintenance
+	// .optString("created_at")), maintenance.optString("description"),
+	// maintenance
+	// .optString("importance"),
+	// Integer.toString(maintenance.optInt("mileage")),
+	// (float) maintenance.optDouble("price")));
+	// }
+	// dbHelper.saveMaintenances(vehicle.id, maintenances);
+	// }
+	// }
+	//
+	// if(diagnosticsJSON.has("diagnostics_warranty_informations"))
+	// {
+	// Object warrantyInformationsObject =
+	// diagnosticsJSON.get("diagnostics_warranty_informations");
+	// if(warrantyInformationsObject instanceof JSONArray)
+	// {
+	// JSONArray warrantyInformationsJSON = (JSONArray)
+	// warrantyInformationsObject;
+	// ArrayList<WarrantyInformation> warrantyInformation = new
+	// ArrayList<WarrantyInformation>();
+	// for(int i = 0; i < warrantyInformationsJSON.length(); i++)
+	// {
+	//
+	// JSONObject wInfoJSON = warrantyInformationsJSON.getJSONObject(i);
+	//
+	// warrantyInformation.add(new
+	// WarrantyInformation(wInfoJSON.optString("created_at"),
+	// wInfoJSON.optString("description"), wInfoJSON.optString("mileage")));
+	// }
+	// dbHelper.saveWarrantyInformation(vehicle.id, warrantyInformation);
+	// }
+	// }
+	//
+	// vehicle.carCheckupStatus = diagnosticsJSON.optString("checkup_status");
+	// vehicle.carLastCheckup = diagnosticsJSON.optString("last_checkup");
+	// dbHelper.saveVehicle(vehicle);
+	//
+	// updateInfo();
+	// }
+	// dbHelper.close();
+	//
+	// super.onSuccess(responseJSON);
+	// }
+	// }
+
+	@Override
+	public void callback()
 	{
+		lRefresh.setRefreshing(false);
 
-		public GetDiagnosticsTask(Context context)
-		{
-			super(context);
-		}
-
-		@Override
-		protected void onPreExecute()
-		{
-			super.onPreExecute();
-			lRefresh.setRefreshing(true);
-		}
-
-		@Override
-		protected void onPostExecute(JSONObject result)
-		{
-			super.onPostExecute(result);
-			lRefresh.setRefreshing(false);
-		}
-
-		@Override
-		protected JSONObject doInBackground(String... params)
-		{
-			requestParams.add(new BasicNameValuePair("vehicle_id", "" + vehicle.id));
-			requestParams.add(new BasicNameValuePair("mileage", "" + vehicle.odometer));
-			return super.doInBackground(params);
-		}
-
-		@Override
-		protected void onError(String message)
-		{
-			// super.onError(message);
-		}
-
-		@Override
-		protected void onSuccess(JSONObject responseJSON) throws JSONException
-		{
-			DbHelper dbHelper = DbHelper.getInstance(getActivity());
-			System.out.println(responseJSON);
-
-			if(responseJSON.has("diagnostics"))
-			{
-				JSONObject diagnosticsJSON = responseJSON.getJSONObject("diagnostics");
-
-				// Editor e = prefs.edit();
-				// e.putString(Constants.PREF_DIAGNOSTICS_CHECKUP_DATE+vehicle.id,
-				// Utils.fixTimezoneZ(diagnosticsJSON.optString("last_checkup")));
-				// System.out.println(Constants.PREF_DIAGNOSTICS_CHECKUP_DATE+vehicle.id+" = "+Utils.fixTimezoneZ(diagnosticsJSON.optString("last_checkup")));
-				// e.putString(Constants.PREF_DIAGNOSTICS_STATUS+vehicle.id,
-				// diagnosticsJSON.optString("checkup_status",ERROR_STATUS_MESSAGE));
-				// e.commit();
-
-				if(diagnosticsJSON.has("diagnostics_trouble_codes"))
-				{
-					Object dtcsObject = diagnosticsJSON.get("diagnostics_trouble_codes");
-					if(dtcsObject instanceof JSONArray)
-					{
-						JSONArray dtcsJSON = (JSONArray) dtcsObject;
-						ArrayList<DiagnosticsTroubleCode> dtcs = new ArrayList<DiagnosticsTroubleCode>();
-						for(int i = 0; i < dtcsJSON.length(); i++)
-						{
-
-							JSONObject dtc = dtcsJSON.getJSONObject(i);
-
-							dtcs.add(new DiagnosticsTroubleCode(dtc.optString("code"), dtc.optString("conditions"),
-									Utils.fixTimezoneZ(dtc.optString("created_at")), dtc.optString("description"), dtc
-											.optString("details"), dtc.optString("full_description"), dtc
-											.optString("importance_text"), dtc.optString("labor_cost"), dtc
-											.optString("labor_hours"), dtc.optString("parts"), dtc
-											.optString("parts_cost"), dtc.optString("total_cost")));
-						}
-						vehicle.carDTCCount = dtcs.size();
-
-						dbHelper.saveDTCs(vehicle.id, dtcs);
-					}
-				}
-
-				if(diagnosticsJSON.has("recall_updates"))
-				{
-					Object recallsObject = diagnosticsJSON.get("recall_updates");
-					if(recallsObject instanceof JSONArray)
-					{
-						JSONArray recallsJSON = (JSONArray) recallsObject;
-						ArrayList<Recall> recalls = new ArrayList<Recall>();
-						for(int i = 0; i < recallsJSON.length(); i++)
-						{
-
-							JSONObject recall = recallsJSON.getJSONObject(i);
-
-							recalls.add(new Recall(recall.optLong("id"), recall.optString("consequence"), recall
-									.optString("corrective_action"),
-									Utils.fixTimezoneZ(recall.optString("recall_date")), recall
-											.optString("defect_description"), recall.optString("description"), recall
-											.optString("recall_id")));
-						}
-						dbHelper.saveRecalls(vehicle.id, recalls);
-					}
-				}
-
-				if(diagnosticsJSON.has("vehicle_maintenances"))
-				{
-					Object maintenancesObject = diagnosticsJSON.get("vehicle_maintenances");
-					if(maintenancesObject instanceof JSONArray)
-					{
-						JSONArray maintenancesJSON = (JSONArray) maintenancesObject;
-						ArrayList<Maintenance> maintenances = new ArrayList<Maintenance>();
-						for(int i = 0; i < maintenancesJSON.length(); i++)
-						{
-
-							JSONObject maintenance = maintenancesJSON.getJSONObject(i);
-
-							maintenances.add(new Maintenance(maintenance.optLong("id"), Utils.fixTimezoneZ(maintenance
-									.optString("created_at")), maintenance.optString("description"), maintenance
-									.optString("importance"), Integer.toString(maintenance.optInt("mileage")),
-									(float) maintenance.optDouble("price")));
-						}
-						dbHelper.saveMaintenances(vehicle.id, maintenances);
-					}
-				}
-
-				if(diagnosticsJSON.has("diagnostics_warranty_informations"))
-				{
-					Object warrantyInformationsObject = diagnosticsJSON.get("diagnostics_warranty_informations");
-					if(warrantyInformationsObject instanceof JSONArray)
-					{
-						JSONArray warrantyInformationsJSON = (JSONArray) warrantyInformationsObject;
-						ArrayList<WarrantyInformation> warrantyInformation = new ArrayList<WarrantyInformation>();
-						for(int i = 0; i < warrantyInformationsJSON.length(); i++)
-						{
-
-							JSONObject wInfoJSON = warrantyInformationsJSON.getJSONObject(i);
-
-							warrantyInformation.add(new WarrantyInformation(wInfoJSON.optString("created_at"),
-									wInfoJSON.optString("description"), wInfoJSON.optString("mileage")));
-						}
-						dbHelper.saveWarrantyInformation(vehicle.id, warrantyInformation);
-					}
-				}
-
-				vehicle.carCheckupStatus = diagnosticsJSON.optString("checkup_status");
-				vehicle.carLastCheckup = diagnosticsJSON.optString("last_checkup");
-				dbHelper.saveVehicle(vehicle);
-
-				updateInfo();
-			}
-			dbHelper.close();
-
-			super.onSuccess(responseJSON);
-		}
+		updateInfo();
 	}
 }

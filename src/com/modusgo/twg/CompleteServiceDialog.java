@@ -83,6 +83,7 @@ public class CompleteServiceDialog extends DialogFragment implements DatePickerD
 		dbHelper = DbHelper.getInstance(getActivity());
 		db = dbHelper.openDatabase();
 		
+		//-----------------Other dialog------------------------//
 		LayoutInflater li = (LayoutInflater) main.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View dlgView = li.inflate(R.layout.dialog_other_info, null);
 		AlertDialog.Builder builder = new AlertDialog.Builder(main);
@@ -123,16 +124,39 @@ public class CompleteServiceDialog extends DialogFragment implements DatePickerD
 							TreeSet<String> newList = new TreeSet<String>();
 							newList.addAll(typeList);
 							editor.putStringSet(Constants.PREF_OTHER_TYPES, newList);
+							editor.commit();
 						}
-						typeAdapter.notifyDataSetChanged();
-						typeAdapter.notifyDataSetInvalidated();
+						//not needed
+//						typeAdapter.notifyDataSetChanged();
+//						typeAdapter.notifyDataSetInvalidated();
+						typeSpinner.setSelection((typeList.size()-1));
 					}
+					else
+					{
+						locationList.add(otherText);
+						Editor editor = prefs.edit();
+						//list is immutable, so create a new one
+						Set<String> list = prefs.getStringSet(Constants.PREF_OTHER_LOCATIONS, null);
+						if(list == null || !list.contains(otherText))
+						{
+							TreeSet<String> newList = new TreeSet<String>();
+							newList.addAll(locationList);
+							editor.putStringSet(Constants.PREF_OTHER_LOCATIONS, newList);
+							editor.commit();
+						}
+						//not needed
+//						typeAdapter.notifyDataSetChanged();
+//						typeAdapter.notifyDataSetInvalidated();
+						locationSpinner.setSelection((locationList.size()-1));
+					}
+						
 				}
 			}
 		});
 		
 		alertDialog = builder.create();
-
+		//------------end Other dialog---------------//
+		
 		Long vehicleId = main.vehicleId;
 
 
@@ -164,12 +188,20 @@ public class CompleteServiceDialog extends DialogFragment implements DatePickerD
 		c.close();
 		c = null;
 		
+		//Add in any user defined types
+		Set<String> list = prefs.getStringSet(Constants.PREF_OTHER_TYPES, null);
+		if(list != null || list.size() > 0)
+		{
+			typeList.addAll(list);
+		}
+
 		//Add in "Other"
 		typeList.add(getResources().getString(R.string.Other));
 
 		Calendar now = Calendar.getInstance();
 		final DatePickerDialog picker = new DatePickerDialog(main, this, now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH));
 		
+		//-----------------type spinner--------------//
 		typeSpinner.setOnItemSelectedListener(new OnItemSelectedListener()
 		{
 
@@ -194,6 +226,34 @@ public class CompleteServiceDialog extends DialogFragment implements DatePickerD
 				
 			}
 		});		
+		
+		//-------------location spinner---------------//
+		locationSpinner.setOnItemSelectedListener(new OnItemSelectedListener()
+		{
+
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+			{
+				if(position > 0)
+				{
+					String choice = (String) parent.getItemAtPosition(position);
+					if(choice.equals(getResources().getString(R.string.Other)))
+					{
+						alertDialog.setTitle(R.string.EnterOtherLocationInfo);
+						alertDialog.show();
+					}
+				}
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent)
+			{
+				// TODO Auto-generated method stub
+				
+			}
+		});		
+		
+		//----------------date selected-------------//
 		dateBtn.setOnClickListener(new OnClickListener()
 		{
 			
@@ -251,6 +311,12 @@ public class CompleteServiceDialog extends DialogFragment implements DatePickerD
 		locationList = new ArrayList<String>();
 		locationList.add("[Selling Dealer]");
 		locationList.add("Self-Performed"); 
+		//Add in any user defined locations
+		list = prefs.getStringSet(Constants.PREF_OTHER_LOCATIONS, null);
+		if(list != null || list.size() > 0)
+		{
+			locationList.addAll(list);
+		}
 		locationList.add("Other");
 		
 		ArrayAdapter<String> locationAdapter = new ArrayAdapter<String>(main,

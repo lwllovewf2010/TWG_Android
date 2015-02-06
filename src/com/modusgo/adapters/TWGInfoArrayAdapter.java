@@ -56,7 +56,7 @@ public class TWGInfoArrayAdapter extends ArrayAdapter<TWGListItem>
 		RelativeLayout vehicle_info_view = (RelativeLayout) rowView.findViewById(R.id.vehicle_info_view);
 		LinearLayout recall_info_view = (LinearLayout) rowView.findViewById(R.id.recall_info_view);
 		LinearLayout dtc_info_view = (LinearLayout) rowView.findViewById(R.id.dtc_info_view);
-		RelativeLayout alert_info_view = (RelativeLayout) rowView.findViewById(R.id.alert_info_view);
+		LinearLayout alert_info_view = (LinearLayout) rowView.findViewById(R.id.alert_info_view);
 		LinearLayout service_info_view = (LinearLayout) rowView.findViewById(R.id.service_info_view);
 		LinearLayout service_log_info_view = (LinearLayout) rowView.findViewById(R.id.service_log_info_view);
 
@@ -150,17 +150,16 @@ public class TWGInfoArrayAdapter extends ArrayAdapter<TWGListItem>
 			dtc_priority.setText(dtc.importance);
 			break;
 
-		// TODO - if there are no alerts show a green triangle
 		case li_alert_info:
 			dtc = (DiagnosticsTroubleCode) item.value;
-			TextView alertInfo = (TextView) rowView.findViewById(R.id.alert_info);
 			TextView alertDate = (TextView) rowView.findViewById(R.id.alert_date);
+			TextView alertId = (TextView) rowView.findViewById(R.id.alert_id);
+			TextView alertInfo = (TextView) rowView.findViewById(R.id.alert_info);
 
 			alert_info_view.setVisibility(View.VISIBLE);
-			String info = dtc.code + " - " + dtc.description;
-			alertInfo.setText(info);
-			alertInfo.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_alerts_red_big, 0, 0, 0);
-			alertDate.setText(dtc.created_at);
+			alertDate.setText((dtc.created_at.length()>0)?dtc.created_at:"N/A");
+			alertId.setText(dtc.code);
+			alertInfo.setText((dtc.description.length()>0)?dtc.description:"N/A");
 			break;
 		case li_service_item:
 			maintenance = (Maintenance) item.value;
