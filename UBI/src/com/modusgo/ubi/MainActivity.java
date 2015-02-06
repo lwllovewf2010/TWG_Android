@@ -40,6 +40,7 @@ import android.widget.TextView;
 import com.modusgo.dd.LocationService;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.jastec.DevicesListActivity;
+import com.modusgo.ubi.jastec.LogActivity;
 import com.modusgo.ubi.utils.Device;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -60,7 +61,7 @@ public class MainActivity extends FragmentActivity {
     
     public static enum MenuItems {HOME("HOME",0), COMPARE("COMPARE",1), CALLSUPPORT("CONTACT CLAIMS",2), AGENT("CALL MY AGENT",3),
     	FEEDBACK("FEEDBACK",4), FINDAMECHANIC("FIND A MECHANIC",5), SETTINGS("SETTINGS",6), JASTECSETUP("JASTEC SETUP",7), 
-    	DRIVERSETUP("DRIVER SETUP",8), LOGOUT("LOGOUT",9), RESET("RESET",10); 
+    	DRIVERSETUP("DRIVER SETUP",8), LOGOUT("LOGOUT",9), RESET("RESET",10), LOG("LOG",10); 
 	    private MenuItems(final String text, final int num) {
 	        this.text = text;
 	        this.num = num;
@@ -154,6 +155,7 @@ public class MainActivity extends FragmentActivity {
         //menuItems.add(MenuItems.DRIVERSETUP);
         menuItems.add(MenuItems.LOGOUT);
         menuItems.add(MenuItems.RESET);
+        menuItems.add(MenuItems.LOG);
        
         ArrayAdapter<MenuItems> adapter = new ArrayAdapter<MenuItems>(this, R.layout.drawer_list_item, menuItemsArray){
         	
@@ -431,6 +433,11 @@ public class MainActivity extends FragmentActivity {
 		    		Intent resetItemIntent = new Intent(MainActivity.this, InitActivity.class);
 		    		resetItemIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
 		    		startActivity(resetItemIntent);
+		            break;
+		            
+		        case LOG:
+		    		Intent logItemIntent = new Intent(MainActivity.this, LogActivity.class);
+		    		startActivity(logItemIntent);
 		            break;
 	        	}
         		

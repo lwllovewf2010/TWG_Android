@@ -1,0 +1,94 @@
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ubi="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff" >
+
+    <!-- The main content view -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#fff"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <com.modusgo.ubi.customviews.TypefacedTextView
+            android:id="@+id/tvError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/ubi_orange"
+            android:gravity="center"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:text="Please check your internet connection"
+            android:textColor="#000"
+            android:textSize="12sp"
+            android:visibility="gone"
+            ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+
+        <com.modusgo.ubi.customviews.TypefacedTextView
+            android:id="@+id/tvOngoingLog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#D9FFFFFF"
+            android:gravity="left"
+            android:paddingBottom="8dp"
+            android:paddingTop="5dp"
+            android:paddingLeft="5dp"
+            android:text="Ongoing log"
+            android:textColor="@color/menu_text_gray"
+            android:textSize="12sp"
+            ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+
+        <EditText
+            android:id="@+id/editTextLogs"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:inputType="none"
+            android:textIsSelectable="true"
+            android:textSize="10sp"
+            android:text=""
+            android:gravity="bottom"
+            android:ems="10" >
+        </EditText>
+        
+    </LinearLayout>
+    <!-- The navigation drawer -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="right"
+        android:layout_marginLeft="-64dp"
+        android:orientation="vertical" >
+
+        <ListView
+            android:id="@+id/left_drawer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#D9FFFFFF"
+            android:cacheColorHint="@android:color/transparent"
+            android:choiceMode="singleChoice"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="0dp"
+            android:listSelector="@android:color/transparent" />
+
+        <com.modusgo.ubi.customviews.TypefacedTextView
+            android:id="@+id/tvVersion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#D9FFFFFF"
+            android:gravity="center|bottom"
+            android:paddingBottom="8dp"
+            android:paddingTop="5dp"
+            android:text="Version: 1.0.1"
+            android:textColor="@color/menu_text_gray"
+            android:textSize="12sp"
+            ubi:typeface="EncodeSansNormal-300-Light.ttf" />
+    </LinearLayout>
+
+</android.support.v4.widget.DrawerLayout>

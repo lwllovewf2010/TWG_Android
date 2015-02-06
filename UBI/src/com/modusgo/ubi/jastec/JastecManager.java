@@ -7,6 +7,7 @@ import java.util.Map;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -53,6 +54,8 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 
 	private OnConnectionListener mOnConnectionListener;
 	private boolean mConnectionStarted = false;
+	
+	private Context context;
 	
 	public static JastecManager getInstance(Context context) {
 		if (sInstance == null) {
@@ -114,6 +117,10 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 	
 	public void setOnSensorListener(OnSensorListener listener){
 		mOnSensorListener = listener;
+	}
+	
+	public void setContext(Context context){
+		this.context = context;
 	}
 	
 	public void connect(String deviceAddress, String deviceName){
@@ -546,9 +553,22 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 				}
 				else{
 					Bugsnag.notify(new RuntimeException("Jastec stopTimer canceled"));
+					
+					Intent i = new Intent(LogActivity.ACTION_LOGS);
+					i.putExtra(LogActivity.BROADCAST_INTENT_EXTRA_MESSAGE, "Stop timer canceled.");
+					context.sendBroadcast(i);
+					
 					stopStopTimer();
 				}
 			}
+			
+			Intent i = new Intent(LogActivity.ACTION_LOGS);
+			i.putExtra(LogActivity.BROADCAST_INTENT_EXTRA_MESSAGE, "Speed = " + mSensorBroadcating.Speed+", RPM = " + mSensorBroadcating.RPM + ", V = " +mSensorBroadcating.voltage);
+			context.sendBroadcast(i);
+			
+			Intent i2 = new Intent(LogActivity.ACTION_ONGING_LOG);
+			i2.putExtra(LogActivity.BROADCAST_INTENT_EXTRA_MESSAGE, "Speed = " + mSensorBroadcating.Speed+"\nRPM = " + mSensorBroadcating.RPM);
+			context.sendBroadcast(i2);
 			
 			Bugsnag.addToTab("Jastec", "Protocal", protocolType);
 			Bugsnag.addToTab("Jastec", "Speed", mSensorBroadcating.Speed);
@@ -570,12 +590,21 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 	private void startStopTimerIfNeeded(){
 		if(stopTimerHandler == null){
 			firstZeroSpeedTimeMillis = System.currentTimeMillis();
+			
+			Intent i = new Intent(LogActivity.ACTION_LOGS);
+			i.putExtra(LogActivity.BROADCAST_INTENT_EXTRA_MESSAGE, "Stop timer start, " + firstZeroSpeedTimeMillis);
+			context.sendBroadcast(i);
+			
 			stopTimerHandler = new Handler();
 		    stopTimerRunnable = new Runnable() {
 	
 		        @Override
 		        public void run() {
 		        	long millisSinceTimerStart = System.currentTimeMillis() - firstZeroSpeedTimeMillis;
+
+		        	Intent i = new Intent(LogActivity.ACTION_LOGS);
+					i.putExtra(LogActivity.BROADCAST_INTENT_EXTRA_MESSAGE, "Millis since Stop Timer Start = " + millisSinceTimerStart);
+					context.sendBroadcast(i);
 		        	
 		        	if(firstZeroSpeedTimeMillis != 0 && millisSinceTimerStart >= 5000){
 			        	if(mOnSensorListener!=null){
@@ -584,9 +613,19 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 						Bugsnag.addToTab("Jastec", "Millis since Stop Timer Start", millisSinceTimerStart);
 						Bugsnag.notify(new RuntimeException("Jastec stopTimerStop"));
 			        	stopStopTimer();
+			        	
+			        	Intent i2 = new Intent(LogActivity.ACTION_LOGS);
+						i2.putExtra(LogActivity.BROADCAST_INTENT_EXTRA_MESSAGE, "Stop Timer Stop Trip.");
+						context.sendBroadcast(i2);
 		        	}
-		        	else
+		        	else{
 		        		stopTimerHandler.postDelayed(this, 500);
+
+			        	
+			        	Intent i2 = new Intent(LogActivity.ACTION_LOGS);
+						i2.putExtra(LogActivity.BROADCAST_INTENT_EXTRA_MESSAGE, "Stop Timer reposted.");
+						context.sendBroadcast(i2);
+		        	}
 		        }
 		    };
 		    stopTimerHandler.postDelayed(stopTimerRunnable, 0);
@@ -696,6 +735,14 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 
 			System.out.println("MEID : " + mSerialNumber.serialNumber);
 			prefs.edit().putString(Constants.PREF_JASTEC_MEID, mSerialNumber.serialNumber).commit();
+			
+//			Intent i = new Intent(LogActivity.ACTION_LOGS);
+//			i.putExtra(LogActivity.BROADCAST_INTENT_EXTRA_MESSAGE, "MEID : " + mSerialNumber.serialNumber);
+//			context.sendBroadcast(i);
+//			
+//			Intent i2 = new Intent(LogActivity.ACTION_ONGING_LOG);
+//			i2.putExtra(LogActivity.BROADCAST_INTENT_EXTRA_MESSAGE, "MEID : " + mSerialNumber.serialNumber);
+//			context.sendBroadcast(i2);
 			
 			return true;
 		}

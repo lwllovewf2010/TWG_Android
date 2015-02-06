@@ -340,6 +340,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 			};
 			
 			JastecManager.getInstance(LocationService.this).setOnSensorListener(jastecTripStateListener);
+			JastecManager.getInstance(LocationService.this).setContext(this);
 	        
 	        if(jastecRunnable==null){
 	        	jastecHandler.removeCallbacksAndMessages(null);

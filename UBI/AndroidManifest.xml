@@ -238,6 +238,12 @@
             android:name="com.modusgo.ubi.jastec.DevicesListActivity"
             android:launchMode="singleTask">
         </activity>
+        
+        <activity
+            android:name="com.modusgo.ubi.jastec.LogActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTask" >
+        </activity>
 
         <activity android:name="com.modusgo.ubi.TripDeclineActivity" />
         
