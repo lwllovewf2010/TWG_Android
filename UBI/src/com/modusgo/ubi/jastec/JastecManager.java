@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -583,8 +584,8 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 		}
 	}
 	
-	private Handler stopTimerHandler;
-	private Runnable stopTimerRunnable;
+	private Handler stopTimerHandler = null;
+	private Runnable stopTimerRunnable = null;
 	private long firstZeroSpeedTimeMillis;
 	
 	private void startStopTimerIfNeeded(){
@@ -595,7 +596,7 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 			i.putExtra(LogActivity.BROADCAST_INTENT_EXTRA_MESSAGE, "Stop timer start, " + firstZeroSpeedTimeMillis);
 			context.sendBroadcast(i);
 			
-			stopTimerHandler = new Handler();
+			stopTimerHandler = new Handler(Looper.getMainLooper());
 		    stopTimerRunnable = new Runnable() {
 	
 		        @Override
