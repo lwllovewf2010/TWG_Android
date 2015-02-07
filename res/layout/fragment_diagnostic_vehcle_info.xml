@@ -34,7 +34,7 @@
                 android:layout_weight="1"
                 android:gravity="left"
                 android:text="@string/FuelLevel"
-                android:textColor="#00AEEF"
+                android:textColor="#000000"
                 android:textSize="12.5sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
@@ -46,7 +46,7 @@
                 android:layout_weight="1"
                 android:gravity="right"
                 android:text="4.5 Gallons"
-                android:textColor="#00AEEF"
+                android:textColor="#000000"
                 android:textSize="12.5sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />
         </LinearLayout>
@@ -67,7 +67,7 @@
                 android:layout_weight="1"
                 android:gravity="left"
                 android:text="@string/Battery"
-                android:textColor="#00AEEF"
+                android:textColor="#000000"
                 android:textSize="12.5sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
@@ -79,7 +79,7 @@
                 android:layout_weight="1"
                 android:gravity="right"
                 android:text="95%"
-                android:textColor="#00AEEF"
+                android:textColor="#000000"
                 android:textSize="12.5sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />
         </LinearLayout>
@@ -100,7 +100,7 @@
                 android:layout_weight="1"
                 android:gravity="left"
                 android:text="@string/EngineTemp"
-                android:textColor="#00AEEF"
+                android:textColor="#000000"
                 android:textSize="12.5sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
@@ -112,7 +112,7 @@
                 android:layout_weight="1"
                 android:gravity="right"
                 android:text="240 F"
-                android:textColor="#00AEEF"
+                android:textColor="#000000"
                 android:textSize="12.5sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />
         </LinearLayout>
@@ -133,7 +133,7 @@
                 android:layout_weight="1"
                 android:gravity="left"
                 android:text="@string/FuelCapacity"
-                android:textColor="#00AEEF"
+                android:textColor="#000000"
                 android:textSize="12.5sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
@@ -145,7 +145,7 @@
                 android:layout_weight="1"
                 android:gravity="right"
                 android:text="9.3 Gallons"
-                android:textColor="#00AEEF"
+                android:textColor="#000000"
                 android:textSize="12.5sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />
         </LinearLayout>
@@ -166,7 +166,7 @@
                 android:layout_weight="1"
                 android:gravity="left"
                 android:text="@string/FuelPercentage"
-                android:textColor="#00AEEF"
+                android:textColor="#000000"
                 android:textSize="12.5sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
@@ -178,7 +178,7 @@
                 android:layout_weight="1"
                 android:gravity="right"
                 android:text="83%"
-                android:textColor="#00AEEF"
+                android:textColor="#000000"
                 android:textSize="12.5sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />
         </LinearLayout>
@@ -199,7 +199,7 @@
                 android:layout_weight="1"
                 android:gravity="left"
                 android:text="@string/LastTripFuelEconomy"
-                android:textColor="#00AEEF"
+                android:textColor="#000000"
                 android:textSize="12.5sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
@@ -211,7 +211,7 @@
                 android:layout_weight="1"
                 android:gravity="right"
                 android:text="42.4 MPG"
-                android:textColor="#00AEEF"
+                android:textColor="#000000"
                 android:textSize="12.5sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />
         </LinearLayout>
@@ -232,7 +232,7 @@
                 android:layout_weight="1"
                 android:gravity="left"
                 android:text="@string/FuelEconomyLast30Days"
-                android:textColor="#00AEEF"
+                android:textColor="#000000"
                 android:textSize="12.5sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
@@ -244,7 +244,7 @@
                 android:layout_weight="1"
                 android:gravity="right"
                 android:text="44.4 MPG"
-                android:textColor="#00AEEF"
+                android:textColor="#000000"
                 android:textSize="12.5sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />
         </LinearLayout>
@@ -265,7 +265,7 @@
                 android:layout_weight="1"
                 android:gravity="left"
                 android:text="@string/FuelUsedLast30Days"
-                android:textColor="#00AEEF"
+                android:textColor="#000000"
                 android:textSize="12.5sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
@@ -277,7 +277,7 @@
                 android:layout_weight="1"
                 android:gravity="right"
                 android:text="44.4 MPG"
-                android:textColor="#00AEEF"
+                android:textColor="#000000"
                 android:textSize="12.5sp"
                 ubi:typeface="EncodeSansNormal-300-Light.ttf" />
         </LinearLayout>

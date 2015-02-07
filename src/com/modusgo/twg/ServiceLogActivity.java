@@ -109,9 +109,6 @@ public class ServiceLogActivity extends MainActivity
 		setActionBarTitle(getResources().getString(R.string.ServiceLog));
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-		dbHelper = DbHelper.getInstance(this);
-		db = dbHelper.openDatabase();
-
 		infoList = (ListView) findViewById(R.id.service_log_info_list);
 
 		final TWGInfoArrayAdapter info_adapter = new TWGInfoArrayAdapter(getApplicationContext(),

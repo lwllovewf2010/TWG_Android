@@ -42,7 +42,7 @@ public class DriverActivity extends MainActivity{
 
 	public static final String SAVED_DRIVER = "driver";
 	
-	private FragmentTabHost tabHost;
+	public FragmentTabHost tabHost;
 	SlidingMenu menu;
 	
 	@Override

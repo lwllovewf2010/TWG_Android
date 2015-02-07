@@ -103,6 +103,12 @@ public class MainActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		// setContentView(R.layout.activity_main);
 		
+		//Are we exiting
+		 if (getIntent().getBooleanExtra("EXIT", false)) {
+	         this.finishAffinity();
+	         return;
+	    }
+		
 //		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -390,6 +396,11 @@ public class MainActivity extends FragmentActivity {
 		super.onResume();
 		// overridePendingTransition(R.anim.slide_in_right,
 		// R.anim.slide_out_left);
+		//Are we exiting
+		 if (getIntent().getBooleanExtra("EXIT", false)) {
+	         this.finishAffinity();
+	         return;
+	    }
 		setNavigationDrawerItemsUnselected();
 		setActionBarAppearance();
 		checkForCrashes();
@@ -423,6 +434,9 @@ public class MainActivity extends FragmentActivity {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
+			
+			Intent intent = null;
+			
 			System.out.println("pos: " + position + " checked: "
 					+ mDrawerList.getCheckedItemPosition());
 			System.out.println(mDrawerList.isItemChecked(1));
@@ -499,13 +513,16 @@ public class MainActivity extends FragmentActivity {
 							.commit();
 					stopService(new Intent(MainActivity.this,
 							LocationService.class));
-					Intent intent = new Intent(MainActivity.this, InitActivity.class);
+					intent = new Intent(MainActivity.this, InitActivity.class);
 					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK	| Intent.FLAG_ACTIVITY_NEW_TASK);
 					startActivity(intent);
 					break;
 				case EXIT:
 					// EXIT
-					finish();
+					intent = new Intent(getApplicationContext(), MainActivity.class);
+					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					intent.putExtra("EXIT", true);
+					startActivity(intent);
 				}
 
 				mDrawerLayout.closeDrawers();

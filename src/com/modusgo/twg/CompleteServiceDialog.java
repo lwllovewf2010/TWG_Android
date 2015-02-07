@@ -38,6 +38,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -59,7 +60,7 @@ public class CompleteServiceDialog extends DialogFragment implements DatePickerD
 	private Cursor c = null;
 	private DatePickerDialog picker = null;
 	private Spinner typeSpinner = null;
-	private Button dateBtn = null;
+	private ImageButton dateBtn = null;
 	private Button doneBtn = null;
 	private Button cancelBtn = null;
 	private Spinner locationSpinner = null;
@@ -161,7 +162,7 @@ public class CompleteServiceDialog extends DialogFragment implements DatePickerD
 
 
 		typeSpinner = (Spinner) rootView.findViewById(R.id.complete_service_type_spinner);
-		dateBtn = (Button) rootView.findViewById(R.id.complete_service_date_btn);
+		dateBtn = (ImageButton) rootView.findViewById(R.id.complete_service_date_btn);
 		locationSpinner = (Spinner) rootView.findViewById(R.id.complete_service_location_spinner);
 		dateText = (TextView) rootView.findViewById(R.id.complete_service_date);
 		milageText = (EditText)rootView.findViewById(R.id.complete_service_milage);
@@ -189,8 +190,8 @@ public class CompleteServiceDialog extends DialogFragment implements DatePickerD
 		c = null;
 		
 		//Add in any user defined types
-		Set<String> list = prefs.getStringSet(Constants.PREF_OTHER_TYPES, null);
-		if(list != null || list.size() > 0)
+		Set<String> list = (Set<String>) prefs.getStringSet(Constants.PREF_OTHER_TYPES, null);
+		if(list != null && list.size() > 0)
 		{
 			typeList.addAll(list);
 		}
@@ -312,8 +313,8 @@ public class CompleteServiceDialog extends DialogFragment implements DatePickerD
 		locationList.add("[Selling Dealer]");
 		locationList.add("Self-Performed"); 
 		//Add in any user defined locations
-		list = prefs.getStringSet(Constants.PREF_OTHER_LOCATIONS, null);
-		if(list != null || list.size() > 0)
+		list = (Set<String>) prefs.getStringSet(Constants.PREF_OTHER_LOCATIONS, null);
+		if(list != null && list.size() > 0)
 		{
 			locationList.addAll(list);
 		}

@@ -100,21 +100,7 @@
         </ScrollView>
     </android.support.v4.widget.SwipeRefreshLayout>
 
-
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+<!--     
     <LinearLayout
         android:id="@+id/llOdometer"
         android:layout_width="match_parent"
@@ -168,5 +154,5 @@
             android:layout_height="1dp"
             android:background="#00aeef" />
     </LinearLayout>
-
+-->
 </LinearLayout>

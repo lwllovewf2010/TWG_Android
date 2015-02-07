@@ -169,174 +169,56 @@ public class AlertsFragment extends Fragment implements UpdateCallback
 				}
 			}
 		});
-	}
+	
 
+	//-----------------Maintenances Due-----------------------
+	///---------less than 100 miles left
+	// --------------------------------Maintenances----------------------------
+	c = db.query(MaintenanceEntry.TABLE_NAME, new String[]
+	{ 
+			MaintenanceEntry._ID, 
+			MaintenanceEntry.COLUMN_NAME_CREATED_AT, 
+			MaintenanceEntry.COLUMN_NAME_DESCRIPTION,
+			MaintenanceEntry.COLUMN_NAME_IMPORTANCE, 
+			MaintenanceEntry.COLUMN_NAME_MILEAGE,
+			MaintenanceEntry.COLUMN_NAME_PRICE,
+			MaintenanceEntry.COLUMN_NAME_COUNTDOWN }, 
+			null, null, null, null, MaintenanceEntry.COLUMN_NAME_MILEAGE + " DESC");
+
+//	info_list = new ArrayList<TWGListItem>();
+
+	int demoCount = 0;
+	if(c.moveToFirst())
+	{
+		while(!c.isAfterLast())
+		{
+			final Maintenance maintenance = new Maintenance(
+					c.getLong(c.getColumnIndex(MaintenanceEntry._ID)),
+					c.getString(c.getColumnIndex(MaintenanceEntry.COLUMN_NAME_CREATED_AT)), 
+					c.getString(c.getColumnIndex(MaintenanceEntry.COLUMN_NAME_DESCRIPTION)), 
+					c.getString(c.getColumnIndex(MaintenanceEntry.COLUMN_NAME_IMPORTANCE)), 
+					c.getString(c.getColumnIndex(MaintenanceEntry.COLUMN_NAME_MILEAGE)), 
+					c.getFloat(c.getColumnIndex(MaintenanceEntry.COLUMN_NAME_PRICE)), 
+					c.getInt(c.getColumnIndex(MaintenanceEntry.COLUMN_NAME_COUNTDOWN)));
+			/************************** DEBUGGING ONLY ***************************/
+			if(demoCount < 2)
+			{
+				demoCount++;
+				info_list.add(new TWGListItem(twg_list_item_type.li_service_due_item, maintenance));
+			}
+			/************************** DEBUGGING ONLY ***************************/
+/////Release			info_list.add(new TWGListItem(twg_list_item_type.li_service_item, maintenance));
+			c.moveToNext();
+		}
+//		info_adapter = new TWGInfoArrayAdapter(getActivity(), R.layout.twg_info_list_item, info_list);
+		infoList.setAdapter(info_adapter);
+	}
+	c.close();
+	}
 	@Override
 	public void callback()
 	{
 		updateInfo();
 	}
 
-	/**
-	 * GetDiagnosticsTask
-	 * 
-	 * @author yaturner
-	 *
-	 */
-//	class GetDiagnosticsTask extends BaseRequestAsyncTask
-//	{
-//
-//		public GetDiagnosticsTask(Context context)
-//		{
-//			super(context);
-//		}
-//
-//		@Override
-//		protected void onPreExecute()
-//		{
-//			super.onPreExecute();
-//			// lRefresh.setRefreshing(true);
-//		}
-//
-//		@Override
-//		protected void onPostExecute(JSONObject result)
-//		{
-//			super.onPostExecute(result);
-//			// lRefresh.setRefreshing(false);
-//		}
-//
-//		@Override
-//		protected JSONObject doInBackground(String... params)
-//		{
-//			requestParams.add(new BasicNameValuePair("vehicle_id", "" + vehicle.id));
-//			requestParams.add(new BasicNameValuePair("mileage", "" + vehicle.odometer));
-//			return super.doInBackground(params);
-//		}
-//
-//		@Override
-//		protected void onError(String message)
-//		{
-//			// super.onError(message);
-//		}
-//
-//		@Override
-//		protected void onSuccess(JSONObject responseJSON) throws JSONException
-//		{
-//			DbHelper dbHelper = DbHelper.getInstance(getActivity());
-//			System.out.println(responseJSON);
-//
-//			if(responseJSON.has("diagnostics"))
-//			{
-//				JSONObject diagnosticsJSON = responseJSON.getJSONObject("diagnostics");
-//
-//				// Editor e = prefs.edit();
-//				// e.putString(Constants.PREF_DIAGNOSTICS_CHECKUP_DATE+vehicle.id,
-//				// Utils.fixTimezoneZ(diagnosticsJSON.optString("last_checkup")));
-//				// System.out.println(Constants.PREF_DIAGNOSTICS_CHECKUP_DATE+vehicle.id+" = "+Utils.fixTimezoneZ(diagnosticsJSON.optString("last_checkup")));
-//				// e.putString(Constants.PREF_DIAGNOSTICS_STATUS+vehicle.id,
-//				// diagnosticsJSON.optString("checkup_status",ERROR_STATUS_MESSAGE));
-//				// e.commit();
-//
-//				if(diagnosticsJSON.has("diagnostics_trouble_codes"))
-//				{
-//					Object dtcsObject = diagnosticsJSON.get("diagnostics_trouble_codes");
-//					if(dtcsObject instanceof JSONArray)
-//					{
-//						JSONArray dtcsJSON = (JSONArray) dtcsObject;
-//						ArrayList<DiagnosticsTroubleCode> dtcs = new ArrayList<DiagnosticsTroubleCode>();
-//						for(int i = 0; i < dtcsJSON.length(); i++)
-//						{
-//
-//							JSONObject dtc = dtcsJSON.getJSONObject(i);
-//
-//							dtcs.add(new DiagnosticsTroubleCode(dtc.optString("code"), dtc.optString("conditions"),
-//									Utils.fixTimezoneZ(dtc.optString("created_at")), dtc.optString("description"), dtc
-//											.optString("details"), dtc.optString("full_description"), dtc
-//											.optString("importance_text"), dtc.optString("labor_cost"), dtc
-//											.optString("labor_hours"), dtc.optString("parts"), dtc
-//											.optString("parts_cost"), dtc.optString("total_cost")));
-//						}
-//						vehicle.carDTCCount = dtcs.size();
-//
-//						dbHelper.saveDTCs(vehicle.id, dtcs);
-//					}
-//				}
-//
-//				if(diagnosticsJSON.has("recall_updates"))
-//				{
-//					Object recallsObject = diagnosticsJSON.get("recall_updates");
-//					if(recallsObject instanceof JSONArray)
-//					{
-//						JSONArray recallsJSON = (JSONArray) recallsObject;
-//						ArrayList<Recall> recalls = new ArrayList<Recall>();
-//						for(int i = 0; i < recallsJSON.length(); i++)
-//						{
-//
-//							JSONObject recall = recallsJSON.getJSONObject(i);
-//
-//							recalls.add(new Recall(recall.optLong("id"), recall.optString("consequence"), recall
-//									.optString("corrective_action"),
-//									Utils.fixTimezoneZ(recall.optString("recall_date")), recall
-//											.optString("defect_description"), recall.optString("description"), recall
-//											.optString("recall_id")));
-//						}
-//						dbHelper.saveRecalls(vehicle.id, recalls);
-//					}
-//				}
-//
-//				if(diagnosticsJSON.has("vehicle_maintenances"))
-//				{
-//					Object maintenancesObject = diagnosticsJSON.get("vehicle_maintenances");
-//					if(maintenancesObject instanceof JSONArray)
-//					{
-//						JSONArray maintenancesJSON = (JSONArray) maintenancesObject;
-//						ArrayList<Maintenance> maintenances = new ArrayList<Maintenance>();
-//						for(int i = 0; i < maintenancesJSON.length(); i++)
-//						{
-//
-//							JSONObject maintenance = maintenancesJSON.getJSONObject(i);
-//
-//							maintenances.add(new Maintenance(maintenance.optLong("id"), Utils.fixTimezoneZ(maintenance
-//									.optString("created_at")), maintenance.optString("description"), maintenance
-//									.optString("importance"), Integer.toString(maintenance.optInt("mileage")),
-//									(float) maintenance.optDouble("price")));
-//						}
-//						dbHelper.saveMaintenances(vehicle.id, maintenances);
-//					}
-//				}
-//
-//				// if(diagnosticsJSON.has("diagnostics_warranty_informations")){
-//				// Object warrantyInformationsObject =
-//				// diagnosticsJSON.get("diagnostics_warranty_informations");
-//				// if(warrantyInformationsObject instanceof JSONArray){
-//				// JSONArray warrantyInformationsJSON = (JSONArray)
-//				// warrantyInformationsObject;
-//				// ArrayList<WarrantyInformation> warrantyInformation = new
-//				// ArrayList<WarrantyInformation>();
-//				// for (int i = 0; i < warrantyInformationsJSON.length(); i++) {
-//				//
-//				// JSONObject wInfoJSON =
-//				// warrantyInformationsJSON.getJSONObject(i);
-//				//
-//				// warrantyInformation.add(new WarrantyInformation(
-//				// wInfoJSON.optString("created_at"),
-//				// wInfoJSON.optString("description"),
-//				// wInfoJSON.optString("mileage")));
-//				// }
-//				// dbHelper.saveWarrantyInformation(vehicle.id,
-//				// warrantyInformation);
-//				// }
-//				// }
-//
-//				vehicle.carCheckupStatus = diagnosticsJSON.optString("checkup_status");
-//				vehicle.carLastCheckup = diagnosticsJSON.optString("last_checkup");
-//				dbHelper.saveVehicle(vehicle);
-//
-//				updateInfo();
-//			}
-//			dbHelper.close();
-//
-//			super.onSuccess(responseJSON);
-//		}
-//	}
 }

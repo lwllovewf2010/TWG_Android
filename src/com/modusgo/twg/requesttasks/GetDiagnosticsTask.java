@@ -142,10 +142,21 @@ public class GetDiagnosticsTask extends BaseRequestAsyncTask
 
 						JSONObject maintenance = maintenancesJSON.getJSONObject(i);
 
-						maintenances.add(new Maintenance(maintenance.optLong("id"), Utils.fixTimezoneZ(maintenance
-								.optString("created_at")), maintenance.optString("description"), maintenance
-								.optString("importance"), Integer.toString(maintenance.optInt("mileage")),
-								(float) maintenance.optDouble("price")));
+						//If the description is empty or missing, use the name
+						String descr = maintenance.optString("description");
+						if(descr.equals("null") || descr.length() == 0)
+						{
+							descr = maintenance.optString("name");
+						}
+						if(!descr.equals("null"))
+						{
+							maintenances.add(new Maintenance(maintenance.optLong("id"), 
+									Utils.fixTimezoneZ(maintenance.optString("created_at")), 
+									descr, 
+									maintenance.optString("importance"), 
+									Integer.toString(maintenance.optInt("mileage")),
+									(float) maintenance.optDouble("price")));
+						}
 					}
 					dbHelper.saveMaintenances(vehicle.id, maintenances);
 				}

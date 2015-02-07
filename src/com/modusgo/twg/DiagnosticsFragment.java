@@ -92,6 +92,10 @@ public class DiagnosticsFragment extends Fragment implements UpdateCallback
 	HashMap<String, Integer> maintenancesByMileage;
 	HashMap<String, View> maintenancesHeaders;
 	int recallCount = 0;
+	
+	private DbHelper dbHelper = null;
+	private SQLiteDatabase db = null;
+	private Cursor c = null;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -210,29 +214,89 @@ public class DiagnosticsFragment extends Fragment implements UpdateCallback
 			tvStatus.setText(ERROR_STATUS_MESSAGE);
 		}
 
-		// -----------------------------Summary
-		// Info-------------------------------------
+		// ---------------------Summary Info-----------------------
 		llContent.removeAllViews();
 
-		RelativeLayout summaryView = (RelativeLayout) inflater.inflate(R.layout.diagnostic_summary_item, null);
-		ImageView dtcImage = (ImageView) summaryView.findViewById(R.id.diagnostic_DTC_status_icon);
-		ImageView batteryImage = (ImageView) summaryView.findViewById(R.id.diagnostic_battery_status_icon);
-		ImageView engineImage = (ImageView) summaryView.findViewById(R.id.diagnostic_engine_temperature_status_icon);
-		dtcImage.setBackgroundResource(R.drawable.ic_alerts_big);
-		batteryImage.setBackgroundResource(R.drawable.ic_battery_big);
-		engineImage.setBackgroundResource(R.drawable.ic_engine_big);
+		for(int iView = 0; iView<3; iView++)
+		{
+			LinearLayout summaryView = (LinearLayout) inflater.inflate(R.layout.diagnostic_summary_item, null);
+			ImageView iv = (ImageView)summaryView.findViewById(R.id.diagnostic_summary_icon);
+			TextView type = (TextView)summaryView.findViewById(R.id.diagnostic_summary_type);
+			TextView status = (TextView)summaryView.findViewById(R.id.diagnostic_summary_status);
+			switch(iView)
+			{
+			case 0:
+				iv.setBackgroundResource(R.drawable.ic_alerts_green_medium);
+				type.setText(R.string.DTCStatus);
+				status.setText(R.string.DTCsReported);
+				break;
+			case 1:
+				iv.setBackgroundResource(R.drawable.ic_battery);
+				type.setText(R.string.BatteryStatus);
+				status.setText(R.string.NoIssues);
+				break;
+			case 2:
+				iv.setBackgroundResource(R.drawable.engine);
+				type.setText(R.string.EngineTemp);
+				status.setText(R.string.UrgentIssues);
+				break;
+			}
+		
 
-		llContent.addView(summaryView);
-
+			llContent.addView(summaryView);
+		}
+		
 		llVechicleInfo = (LinearLayout) inflater.inflate(R.layout.fragment_diagnostic_vehcle_info, null);
 		llContent.addView(llVechicleInfo);
 
-		// --------------------------------------------- DTC
-		// ------------------------------------
-		DbHelper dbHelper = DbHelper.getInstance(getActivity());
-		SQLiteDatabase db = dbHelper.openDatabase();
+		dbHelper = DbHelper.getInstance(getActivity());
+		db = dbHelper.openDatabase();
 
-		Cursor c = db.query(DTCEntry.TABLE_NAME, new String[]
+		// --------------------- Recalls -----------------------
+		c = db.query(RecallEntry.TABLE_NAME, new String[]
+		{ RecallEntry._ID, RecallEntry.COLUMN_NAME_CONSEQUENCE, RecallEntry.COLUMN_NAME_CORRECTIVE_ACTION,
+				RecallEntry.COLUMN_NAME_CREATED_AT, RecallEntry.COLUMN_NAME_DEFECT_DESCRIPTION,
+				RecallEntry.COLUMN_NAME_DESCRIPTION, RecallEntry.COLUMN_NAME_RECALL_ID },
+				RecallEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id, null, null, null, null);
+
+		if(c.moveToFirst())
+		{
+			final View headerView = inflater.inflate(R.layout.recall_header, llContent, false);
+			llContent.addView(headerView);
+
+			while(!c.isAfterLast())
+			{
+				final Recall recall = new Recall(c.getLong(0), c.getString(1), c.getString(2), c.getString(3),
+						c.getString(4), c.getString(5), c.getString(6));
+				final View rowView = (LinearLayout) inflater.inflate(R.layout.recalls_item, llContent, false);
+
+				TextView tvCode = (TextView) rowView.findViewById(R.id.tvCode);
+				TextView tvDescription = (TextView) rowView.findViewById(R.id.tvDescription);
+				tvCode.setText(recall.recall_id);
+				tvDescription.setText(recall.description);
+
+				rowView.setOnClickListener(new OnClickListener()
+				{
+
+					@Override
+					public void onClick(View v)
+					{
+						System.out.println("click");
+						Intent i = new Intent(getActivity(), RecallActivity.class);
+						i.putExtra(RecallActivity.EXTRA_RECALL, recall);
+						startActivity(i);
+
+					}
+				});
+				recallCount++;
+				llContent.addView(rowView);
+				c.moveToNext();
+			}
+		}
+		c.close();
+
+		// ---------------------------DTC-------------------------
+		c = db.query(DTCEntry.TABLE_NAME, new String[]
 		{ DTCEntry.COLUMN_NAME_CODE, DTCEntry.COLUMN_NAME_CONDITIONS, DTCEntry.COLUMN_NAME_CREATED_AT,
 				DTCEntry.COLUMN_NAME_DESCRIPTION, DTCEntry.COLUMN_NAME_DETAILS, DTCEntry.COLUMN_NAME_FULL_DESCRIPTION,
 				DTCEntry.COLUMN_NAME_IMPORTANCE, DTCEntry.COLUMN_NAME_LABOR_COST, DTCEntry.COLUMN_NAME_LABOR_HOURS,
@@ -265,6 +329,7 @@ public class DiagnosticsFragment extends Fragment implements UpdateCallback
 				tvImportance.setText(dtc.importance);
 				switch (dtc.importance.toLowerCase(Locale.US))
 				{
+				case "urgent":
 				case "high":
 					tvImportance.setTextColor(Color.parseColor("#ee4e43"));
 					break;
@@ -298,67 +363,6 @@ public class DiagnosticsFragment extends Fragment implements UpdateCallback
 		}
 		c.close();
 
-		// --------------------------------------------- Recalls
-		// ------------------------------------
-		c = db.query(RecallEntry.TABLE_NAME, new String[]
-		{ RecallEntry._ID, RecallEntry.COLUMN_NAME_CONSEQUENCE, RecallEntry.COLUMN_NAME_CORRECTIVE_ACTION,
-				RecallEntry.COLUMN_NAME_CREATED_AT, RecallEntry.COLUMN_NAME_DEFECT_DESCRIPTION,
-				RecallEntry.COLUMN_NAME_DESCRIPTION, RecallEntry.COLUMN_NAME_RECALL_ID },
-				RecallEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id, null, null, null, null);
-
-		if(c.moveToFirst())
-		{
-			final View headerView = inflater.inflate(R.layout.recall_header, llContent, false);
-			llContent.addView(headerView);
-
-			while(!c.isAfterLast())
-			{
-				final Recall recall = new Recall(c.getLong(0), c.getString(1), c.getString(2), c.getString(3),
-						c.getString(4), c.getString(5), c.getString(6));
-				final View rowView = (LinearLayout) inflater.inflate(R.layout.diagnostics_item, llContent, false);
-				SwipeLayout swipeLayout = (SwipeLayout) rowView.findViewById(R.id.lSwipe);
-				swipeLayout.setSwipeEnabled(true);
-				swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
-				swipeLayout.findViewById(R.id.btnDelete).setOnClickListener(new OnClickListener()
-				{
-					@Override
-					public void onClick(View v)
-					{
-						recallCount--;
-						llContent.removeView(rowView);
-						new HideRecallTask(getActivity().getApplicationContext(), recall.id).execute("vehicles/"
-								+ vehicle.id + "/diagnostics/recall_updates/" + recall.id + "/hide.json");
-						if(recallCount == 0)
-							llContent.removeView(headerView);
-					}
-				});
-
-				TextView tvCode = (TextView) rowView.findViewById(R.id.tvCode);
-				TextView tvDescription = (TextView) rowView.findViewById(R.id.tvDescription);
-				TextView tvImportance = (TextView) rowView.findViewById(R.id.tvImportance);
-				tvCode.setText(recall.recall_id);
-				tvDescription.setText(recall.description);
-				tvImportance.setVisibility(View.GONE);
-
-				rowView.setOnClickListener(new OnClickListener()
-				{
-
-					@Override
-					public void onClick(View v)
-					{
-						System.out.println("click");
-						Intent i = new Intent(getActivity(), RecallActivity.class);
-						i.putExtra(RecallActivity.EXTRA_RECALL, recall);
-						startActivity(i);
-
-					}
-				});
-				recallCount++;
-				llContent.addView(rowView);
-				c.moveToNext();
-			}
-		}
-		c.close();
 
 		// --------------------------------------------- Maintenances
 		// ------------------------------------

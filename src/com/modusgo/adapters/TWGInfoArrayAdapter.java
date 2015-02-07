@@ -3,9 +3,12 @@
  */
 package com.modusgo.adapters;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.zip.DataFormatException;
 
+import com.modusgo.twg.Constants;
 import com.modusgo.twg.DiagnosticsTroubleCode;
 import com.modusgo.twg.R;
 import com.modusgo.twg.utils.Maintenance;
@@ -37,6 +40,7 @@ public class TWGInfoArrayAdapter extends ArrayAdapter<TWGListItem>
 
 	private Context context = null;
 	private ArrayList<TWGListItem> objects = null;
+	private String dateString = null;
 
 	public TWGInfoArrayAdapter(Context context, int textViewResourceId, ArrayList<TWGListItem> objects)
 	{
@@ -58,6 +62,7 @@ public class TWGInfoArrayAdapter extends ArrayAdapter<TWGListItem>
 		LinearLayout dtc_info_view = (LinearLayout) rowView.findViewById(R.id.dtc_info_view);
 		LinearLayout alert_info_view = (LinearLayout) rowView.findViewById(R.id.alert_info_view);
 		LinearLayout service_info_view = (LinearLayout) rowView.findViewById(R.id.service_info_view);
+		LinearLayout service_due_info_view = (LinearLayout) rowView.findViewById(R.id.service_due_info_view);
 		LinearLayout service_log_info_view = (LinearLayout) rowView.findViewById(R.id.service_log_info_view);
 
 		hdr_view.setVisibility(View.GONE);
@@ -66,6 +71,7 @@ public class TWGInfoArrayAdapter extends ArrayAdapter<TWGListItem>
 		dtc_info_view.setVisibility(View.GONE);
 		alert_info_view.setVisibility(View.GONE);
 		service_info_view.setVisibility(View.GONE);
+		service_due_info_view.setVisibility(View.GONE);
 		service_log_info_view.setVisibility(View.GONE);
 
 		Recall recall = null;
@@ -73,7 +79,8 @@ public class TWGInfoArrayAdapter extends ArrayAdapter<TWGListItem>
 		Maintenance maintenance = null;
 		ServicePerformed serviceEntry = null;
 		
-		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+		SimpleDateFormat sdf = new SimpleDateFormat(Constants.DEFAULT_DATE_TIME_FORMAT);
+		SimpleDateFormat sdp = new SimpleDateFormat(Constants.DATE_TIME_FORMAT);
 		String text = null;
 
 		switch (item.type)
@@ -130,11 +137,21 @@ public class TWGInfoArrayAdapter extends ArrayAdapter<TWGListItem>
 			TextView recall_date = (TextView) rowView.findViewById(R.id.recall_date);
 
 			recall_info_view.setVisibility(View.VISIBLE);
-			//UGLY!!!!
-			//The date is in the format 2014-01-04T00:00:00-00:00, delete the time
-			String temp = recall.created_at;
-			temp = temp.replace("T00:00:00-00:00", "");
-			recall_date.setText(temp);
+			if(recall.created_at.length()>0)
+			{
+				try
+				{
+					dateString = sdf.format(sdp.parse(recall.created_at));
+				} catch(ParseException e)
+				{
+					dateString = "N/A";
+				}
+			}
+			else
+			{
+				dateString = "N/A";
+			}
+			recall_date.setText(dateString);
 			recall_name.setText(recall.recall_id);
 			recall_value.setText(recall.description);
 			break;
@@ -157,7 +174,21 @@ public class TWGInfoArrayAdapter extends ArrayAdapter<TWGListItem>
 			TextView alertInfo = (TextView) rowView.findViewById(R.id.alert_info);
 
 			alert_info_view.setVisibility(View.VISIBLE);
-			alertDate.setText((dtc.created_at.length()>0)?dtc.created_at:"N/A");
+			if(dtc.created_at.length()>0)
+			{
+				try
+				{
+					dateString = sdf.format(sdp.parse(dtc.created_at));
+				} catch(ParseException e)
+				{
+					dateString = "N/A";
+				}
+			}
+			else
+			{
+				dateString = "N/A";
+			}
+			alertDate.setText(dateString);
 			alertId.setText(dtc.code);
 			alertInfo.setText((dtc.description.length()>0)?dtc.description:"N/A");
 			break;
@@ -172,6 +203,14 @@ public class TWGInfoArrayAdapter extends ArrayAdapter<TWGListItem>
 			interval.setText(text);
 			text = context.getResources().getString(R.string.NextServiceIn) +  " " +maintenance.countdown + " miles";
 			remaining.setText(text);
+			break;
+		case li_service_due_item:
+			maintenance = (Maintenance) item.value;
+			TextView due_remaining = (TextView) rowView.findViewById(R.id.service_due_remaining);
+			TextView due_description = (TextView) rowView.findViewById(R.id.service_due_description);
+			service_due_info_view.setVisibility(View.VISIBLE);
+			due_description.setText(maintenance.description);
+			//due_remaining.setText(text);
 			break;
 		case li_service_log_item:
 			serviceEntry = (ServicePerformed) item.value;

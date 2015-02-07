@@ -3,30 +3,21 @@ package com.modusgo.twg;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Locale;
 import java.util.TimeZone;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuff.Mode;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -35,7 +26,6 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.SuperscriptSpan;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -60,11 +50,8 @@ import com.modusgo.twg.R;
 import com.modusgo.twg.customviews.GoogleMapFragment;
 import com.modusgo.twg.customviews.GoogleMapFragment.OnMapReadyListener;
 import com.modusgo.twg.db.DbHelper;
-import com.modusgo.twg.db.MaintenanceContract.MaintenanceEntry;
 import com.modusgo.twg.db.VehicleContract.VehicleEntry;
 import com.modusgo.twg.requesttasks.BaseRequestAsyncTask;
-import com.modusgo.twg.utils.Maintenance;
-import com.modusgo.twg.utils.TWGListItem;
 import com.modusgo.twg.utils.Utils;
 import com.modusgo.twg.utils.Vehicle;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -111,7 +98,7 @@ public class DriverDetailsFragment extends Fragment implements ConnectionCallbac
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 
-		View rootView = inflater.inflate(R.layout.driver_details_fragment, container, false);
+		View rootView = inflater.inflate(R.layout.fragment_driver_details, container, false);
 
 		main = ((MainActivity) getActivity());
 		main.setActionBarTitle(getResources().getString(R.string.app_name));
@@ -148,7 +135,7 @@ public class DriverDetailsFragment extends Fragment implements ConnectionCallbac
 			}
 		});
 
-		main.showBusyDialog(R.string.RetrievingMapData);
+//		main.showBusyDialog(R.string.RetrievingMapData);
 		
 		updateFragment();
 
@@ -179,7 +166,7 @@ public class DriverDetailsFragment extends Fragment implements ConnectionCallbac
 	@Override
 	public void onMapReady()
 	{
-		main.hideBusyDialog();
+//		main.hideBusyDialog();
 		
 		mMap = mMapFragment.getMap();
 		if(mMap != null)
@@ -331,9 +318,7 @@ public class DriverDetailsFragment extends Fragment implements ConnectionCallbac
 				@Override
 				public void onClick(View v)
 				{
-					Toast.makeText(getActivity(),
-							"The percentage shown is the last known oil level reported from your vehicle.",
-							Toast.LENGTH_SHORT).show();
+					((DriverActivity) getActivity()).tabHost.setCurrentTab(2);
 				}
 			});
 		} else
@@ -343,14 +328,6 @@ public class DriverDetailsFragment extends Fragment implements ConnectionCallbac
 				tvOilLife.setText("");
 				tvOilLife.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_oil, 0, R.drawable.ic_fuel_arrow_down,
 						0);
-				tvOilLife.setOnClickListener(new OnClickListener()
-				{
-					@Override
-					public void onClick(View v)
-					{
-						Toast.makeText(getActivity(), vehiclecarOilStatus, Toast.LENGTH_SHORT).show();
-					}
-				});
 			} else
 			{
 				tvOilLife.setText("N/A");
@@ -363,14 +340,14 @@ public class DriverDetailsFragment extends Fragment implements ConnectionCallbac
 		filter = new LightingColorFilter(Color.BLACK, Color.RED);
 		d.setColorFilter(filter);
 		tvEngineTemperature.setCompoundDrawablesWithIntrinsicBounds(d, null, null, null);
-		
+		tvEngineTemperature.setClickable(true);
 		tvEngineTemperature.setOnClickListener(new OnClickListener()
 		{
 			
 			@Override
 			public void onClick(View v)
 			{
-				
+				((DriverActivity) getActivity()).tabHost.setCurrentTab(3);
 			}
 		});
 
@@ -379,6 +356,17 @@ public class DriverDetailsFragment extends Fragment implements ConnectionCallbac
 		filter = new LightingColorFilter(Color.BLACK, Color.GREEN);
 		d.setColorFilter(filter);
 		tvBatteryOutput.setCompoundDrawablesWithIntrinsicBounds(d, null, null, null);
+		tvBatteryOutput.setClickable(true);
+		tvBatteryOutput.setOnClickListener(new OnClickListener()
+		{
+			
+			@Override
+			public void onClick(View v)
+			{
+				((DriverActivity) getActivity()).tabHost.setCurrentTab(3);
+			}
+		});
+
 
 		// if(vehicle.carDTCCount <= 0)
 		// {
@@ -407,7 +395,7 @@ public class DriverDetailsFragment extends Fragment implements ConnectionCallbac
 		//----------------Vehicle Last Trip--------------------
 		if(vehicle.lastTripId > 0)
 		{
-			rlVehicleDate.findViewById(R.id.imageArrow).setVisibility(View.VISIBLE);
+//			rlVehicleDate.findViewById(R.id.imageArrow).setVisibility(View.VISIBLE);
 			rlVehicleDate.setOnClickListener(new OnClickListener()
 			{
 				@Override
@@ -421,7 +409,7 @@ public class DriverDetailsFragment extends Fragment implements ConnectionCallbac
 			});
 		} else
 		{
-			rlVehicleDate.findViewById(R.id.imageArrow).setVisibility(View.GONE);
+//			rlVehicleDate.findViewById(R.id.imageArrow).setVisibility(View.GONE);
 		}
 
 		if(TextUtils.isEmpty(vehicle.lastTripDate))
