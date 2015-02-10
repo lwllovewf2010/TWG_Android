@@ -620,12 +620,13 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 						context.sendBroadcast(i2);
 		        	}
 		        	else{
-		        		stopTimerHandler.postDelayed(this, 500);
-
-			        	
-			        	Intent i2 = new Intent(LogActivity.ACTION_LOGS);
-						i2.putExtra(LogActivity.BROADCAST_INTENT_EXTRA_MESSAGE, "Stop Timer reposted.");
-						context.sendBroadcast(i2);
+		        		if(stopTimerHandler!=null){
+			        		stopTimerHandler.postDelayed(this, 500);
+	
+				        	Intent i2 = new Intent(LogActivity.ACTION_LOGS);
+							i2.putExtra(LogActivity.BROADCAST_INTENT_EXTRA_MESSAGE, "Stop Timer reposted.");
+							context.sendBroadcast(i2);
+		        		}
 		        	}
 		        }
 		    };
