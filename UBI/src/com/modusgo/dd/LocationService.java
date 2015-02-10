@@ -391,13 +391,6 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	        mLocationRequest.setInterval(40*1000);
 	        mLocationRequest.setFastestInterval(20*1000);
 			break;
-		case Device.MODE_NAVIGATION_TRACKING:
-			mLocationRequest = LocationRequest.create();
-	        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-	        mLocationRequest.setSmallestDisplacement(8);
-	        mLocationRequest.setInterval(5*1000);
-	        mLocationRequest.setFastestInterval(2*1000);
-			break;
 		case Device.MODE_SUPER_TRACKING:
 			mLocationRequest = LocationRequest.create();
 	        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);

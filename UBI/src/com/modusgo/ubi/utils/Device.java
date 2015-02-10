@@ -38,7 +38,6 @@ public class Device {
 	public static final String  MODE_LIGHT_TRACKING = "lightTracking";
 	public static final String  MODE_MEDIUM_TRACKING = "mediumTracking";
 	public static final String  MODE_SIGNIFICATION_TRACKING = "significationTracking";
-	public static final String  MODE_NAVIGATION_TRACKING = "navigationTracking";
 	public static final String  MODE_SUPER_TRACKING = "superTracking";
 	
 	public static void checkDevice(Context context){
@@ -100,7 +99,7 @@ public class Device {
 		
 		if(!deviceType.equals(DEVICE_TYPE_OBD)){
 			if(prefs.getBoolean(PREF_IN_TRIP_NOW, false)){
-				newTrackingMode = prefs.getBoolean(Constants.PREF_CHARGER_CONNECTED, false) ? MODE_SUPER_TRACKING : MODE_NAVIGATION_TRACKING;
+				newTrackingMode = MODE_SUPER_TRACKING;
 			}
 		}
 		
