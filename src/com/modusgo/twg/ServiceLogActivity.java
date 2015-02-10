@@ -17,6 +17,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -41,6 +43,7 @@ public class ServiceLogActivity extends MainActivity
 	private DbHelper dbHelper = null;
 	private SQLiteDatabase db = null;
 	private Cursor c = null;
+	private ArrayList<TWGListItem> info_list = null;
 	View rootView = null;
 	ListView infoList = null;
 	public Long vehicleId;
@@ -74,7 +77,7 @@ public class ServiceLogActivity extends MainActivity
 				ServicePerformedEntry.COLUMN_NAME_LOCATION, ServicePerformedEntry.COLUMN_NAME_MILAGE, }, null, null,
 				null, null, orderBy);
 
-		final ArrayList<TWGListItem> info_list = new ArrayList<TWGListItem>();
+		info_list = new ArrayList<TWGListItem>();
 
 		// Calendar date = Calendar.getInstance();
 		// SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
@@ -116,7 +119,24 @@ public class ServiceLogActivity extends MainActivity
 		final TWGInfoArrayAdapter info_adapter = new TWGInfoArrayAdapter(getApplicationContext(),
 				R.layout.twg_info_list_item, info_list);
 		infoList.setAdapter(info_adapter);
+		
+		infoList.setOnItemLongClickListener(new OnItemLongClickListener()
+		{
 
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
+			{
+				Bundle bundle = new Bundle();
+				bundle.putSerializable("service", (ServicePerformed)info_list.get(position).value);
+				CompleteServiceDialog completeServiceFragment = new CompleteServiceDialog();
+				FragmentManager fragmentManager = getSupportFragmentManager();
+				completeServiceFragment.setArguments(bundle);
+				completeServiceFragment.show(fragmentManager, "CompleteService");
+				return true;
+			}
+		});
+
+		
 		Button addButton = (Button) findViewById(R.id.service_log_add_button);
 		addButton.setOnClickListener(new OnClickListener()
 		{
@@ -137,10 +157,17 @@ public class ServiceLogActivity extends MainActivity
 			@Override
 			public void onClick(View v)
 			{
-				sendEmail("thursdaynext@gmail.com", "this is a test", "testing 1 2 3");
+				String log = "";
+				for(TWGListItem item : info_list)
+				{
+					ServicePerformed service = (ServicePerformed) item.value;
+					log += service.description + "\r\n Location: " + service.location_performed + "\r\n Date: " + service.date_performed + "\r\n";
+				}
+				sendEmail("jimt@modusgo.com", "Service Log", log);
 			}
 		});
 	}
+	
 	
 	 protected void sendEmail(final String recipient, final String subject, final String body) {
 

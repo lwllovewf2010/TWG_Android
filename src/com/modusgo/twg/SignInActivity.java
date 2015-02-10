@@ -145,9 +145,9 @@ public class SignInActivity extends FragmentActivity {
 			}
 		});
 	    
-	    mPager = (ViewPager) findViewById(R.id.pager);
-        mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
-        mPager.setAdapter(mPagerAdapter);
+//	    mPager = (ViewPager) findViewById(R.id.pager);
+//        mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
+//        mPager.setAdapter(mPagerAdapter);
         
         CirclePageIndicator indicator = (CirclePageIndicator)findViewById(R.id.pagerCircles);
         indicator.setViewPager(mPager);

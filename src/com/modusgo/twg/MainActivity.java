@@ -65,10 +65,10 @@ public class MainActivity extends FragmentActivity {
 	public static enum MenuItems {
 		HOME("HOME", 0),
 //		COMPARE("COMPARE", 1),
-//		CALLSUPPORT("CALLSUPPORT", 2), 
+		CALLSUPPORT("CALLSUPPORT", 2), 
 //		AGENT("AGENT", 3), 
 		FEEDBACK("FEEDBACK", 4), 
-		FINDAMECHANIC("FIND MECHANIC", 5), 
+		FINDAMECHANIC("FACILITIES", 5), 
 		SETTINGS("SETTINGS", 6), 
 //		DRIVERSETUP("DRIVER SETUP", 7), 
 		LOGOUT("LOGOUT", 8),
@@ -479,9 +479,9 @@ public class MainActivity extends FragmentActivity {
 					Utils.gaTrackScreen(MainActivity.this, "Feedback Dialog");
 					break;
 				case FINDAMECHANIC:
-					// Feedback
-					startActivity(new Intent(MainActivity.this,
-							FindMechanicActivity.class));
+					// Facilities
+					startActivity(new Intent(MainActivity.this,	FindMechanicActivity.class));
+//					startActivity(new Intent(MainActivity.this,	MapActivity.class));
 					break;
 //				case CALLSUPPORT:
 //					// Call support

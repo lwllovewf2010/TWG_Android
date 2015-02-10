@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils.TruncateAt;
@@ -115,6 +116,7 @@ public class TWGInfoArrayAdapter extends ArrayAdapter<TWGListItem>
 			{
 				hdr.setText((String)item.value);
 				hdr.setTextColor(0xFF000000);
+				hdr.setTextSize(12f);
 			} else if(item.type == twg_list_item_type.li_alert_subhdr)
 			{
 				hdr.setText((String)item.value);
@@ -157,9 +159,9 @@ public class TWGInfoArrayAdapter extends ArrayAdapter<TWGListItem>
 			{
 				dateString = "N/A";
 			}
-			String name = recall.recall_id + " - " + recall.description;
+			String HTMLname = "<b>" + recall.recall_id + "</b> - " + recall.description;
 			recall_date.setText(dateString);
-			recall_name.setText(name);
+			recall_name.setText(Html.fromHtml(HTMLname));
 //			recall_value.setText(recall.description);
 			break;
 		case li_dtc_info:
@@ -169,7 +171,7 @@ public class TWGInfoArrayAdapter extends ArrayAdapter<TWGListItem>
 			TextView dtc_priority = (TextView) rowView.findViewById(R.id.dtc_priority);
 
 			dtc_info_view.setVisibility(View.VISIBLE);
-			dtc_name.setText(dtc.code);
+			dtc_name.setText(Html.fromHtml("<b>"+dtc.code+"</b>"));
 			dtc_description.setText(dtc.description);
 			dtc_priority.setText(dtc.importance);
 			break;

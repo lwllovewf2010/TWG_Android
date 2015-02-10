@@ -55,15 +55,19 @@ import com.google.maps.android.ui.IconGenerator;
 import com.modusgo.twg.R;
 import com.modusgo.twg.customviews.GoogleMapFragment;
 import com.modusgo.twg.customviews.GoogleMapFragment.OnMapReadyListener;
+import com.modusgo.twg.db.DbHelper;
+import com.modusgo.twg.db.VehicleContract.VehicleEntry;
 import com.modusgo.twg.requesttasks.BaseRequestAsyncTask;
 import com.modusgo.twg.utils.Utils;
 import com.modusgo.twg.utils.Vehicle;
 
-public class FindMechanicActivity extends MainActivity implements OnMapReadyListener
+public class FindMechanicActivity extends MainActivity //implements OnMapReadyListener, OnMapLoadedCallback 
 {
 	private SharedPreferences prefs;
 	private GoogleMapFragment mMapFragment = null;
-	private GoogleMap mMap = null;
+	private MapView mapView;
+    private GoogleMap map;
+    
 
 	/**************DEBUGGING ONLY ***************/
 	String locHTML = "<h2>CarMax</h2>" +  
@@ -78,66 +82,58 @@ public class FindMechanicActivity extends MainActivity implements OnMapReadyList
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-
 		setContentView(R.layout.activity_find_mechanic);
 		super.onCreate(savedInstanceState);
-
-		setActionBarTitle("Find Mechanic");
 		
-		prefs = PreferenceManager.getDefaultSharedPreferences(this);
-
-		setUpMapIfNeeded();
-
-
-		TextView tv = (TextView) findViewById(R.id.mechanic_details);
-		tv.setMovementMethod(LinkMovementMethod.getInstance());
-		Spanned result = Html.fromHtml(locHTML);
-		tv.setText(result);
+		setActionBarTitle(getResources().getString(R.string.FindMechanic));
 		
-		showBusyDialog(R.string.RetrievingMapData);
+		// Gets the MapView from the XML layout and creates it
+        mapView = (MapView) findViewById(R.id.mapview);
+        mapView.onCreate(savedInstanceState);
+
+        // Gets to GoogleMap from the MapView and does initialization stuff
+        map = mapView.getMap();
+        map.getUiSettings().setMyLocationButtonEnabled(false);
+        map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
+			@Override
+			public void onMapLoaded() {
+				CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(latitude,longitude), 14);
+		        map.animateCamera(cameraUpdate);
+		        addMarkerToMap();
+			}
+		});
+        
+        MapsInitializer.initialize(this);    
+        
+        TextView tv = (TextView) findViewById(R.id.mechanic_details);
+        tv.setText(Html.fromHtml(locHTML));
+
 	}
-
-	private void setUpMapIfNeeded()
-	{
-		// Do a null check to confirm that we have not already instantiated the
-		// map.
-		if(mMap == null)
-		{
-//			FragmentManager mgr = getFragmentManager();
-//			map = ((MapFragment) getFragmentSupportManager().findFragmentById(R.id.map))
-//			        .getMap();
-//			mMapFragment = new GoogleMapFragment();
-//			mMapFragment.getMap();
-//			getChildFragmentManager().beginTransaction().replace(R.id.mapview, mMapFragment)
-//					.commitAllowingStateLoss();
-		}
-	}
-
-
-	private void setUpMap()
-	{
-		if(latitude != 0 && longitude != 0)
-		{
-			mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).icon(
-					BitmapDescriptorFactory.fromResource(R.drawable.marker_car)));
-			float density = 1;
-//			if(isAdded())
-//				density = getResources().getDisplayMetrics().density;
-			mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude - 0.016f / density,
-					longitude), 14.0f));
-		}
-
-		mMap.getUiSettings().setZoomControlsEnabled(false);
+	
+	private void addMarkerToMap(){
+		LatLng location = new LatLng(latitude, longitude);
+		map.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_car)).title(getResources().getString(R.string.CarMax)));
+		CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(location, 14);
+        map.animateCamera(cameraUpdate);
 	}
 	
 	@Override
-	public void onMapReady()
-	{
-		hideBusyDialog();
-		
-		mMap = mMapFragment.getMap();
-		if(mMap != null)
-			setUpMap();
-	}
+    public void onResume() {
+        mapView.onResume();
+        Utils.gaTrackScreen(this, "Current Location Screen");
+        super.onResume();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mapView.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
+    }
 
 }

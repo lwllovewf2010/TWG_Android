@@ -76,16 +76,18 @@ public class DiagnosticDetailActivity extends MainActivity {
 		if(TextUtils.isEmpty(dtc.labor_hours))
 			lLaborHours.setVisibility(View.GONE);
 		
-		if(prefs.getBoolean(Constants.PREF_DTC_PRICES_ENABLED, false)){
+//		if(prefs.getBoolean(Constants.PREF_DTC_PRICES_ENABLED, false))
+
+		{
 			tvEstLaborCost.setText("$"+dtc.labor_cost);
 			tvEstPartsCost.setText("$"+dtc.parts_cost);
 			tvEstTotalCost.setText("$"+dtc.total_cost);
 		}
-		else{
-			findViewById(R.id.llEstLaborCost).setVisibility(View.GONE);
-			findViewById(R.id.llEstPartsCost).setVisibility(View.GONE);
-			findViewById(R.id.llEstTotalCost).setVisibility(View.GONE);
-		}
+//		else{
+//			findViewById(R.id.llEstLaborCost).setVisibility(View.GONE);
+//			findViewById(R.id.llEstPartsCost).setVisibility(View.GONE);
+//			findViewById(R.id.llEstTotalCost).setVisibility(View.GONE);
+//		}
 		
 		switch (dtc.importance.toLowerCase(Locale.US)) {
 		case "high":

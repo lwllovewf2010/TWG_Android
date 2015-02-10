@@ -26,7 +26,9 @@
         <ListView
             android:id="@+id/alerts_info_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="14dp"
+            android:layout_marginRight="14dp" >
 
             <!--
         android:divider="@drawable/listview_home_divider"

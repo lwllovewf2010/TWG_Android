@@ -1,8 +1,9 @@
 package com.modusgo.twg.utils;
 
+import java.io.Serializable;
 import java.util.Calendar;
 
-public class ServicePerformed
+public class ServicePerformed implements Serializable
 {
 
 	public String description = null;

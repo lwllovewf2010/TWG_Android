@@ -1559,6 +1559,20 @@ public class DbHelper extends SQLiteOpenHelper {
 		closeDatabase();
 	}
 	
+	public void deleteServicePerformedEvent(ServicePerformed service)
+	{
+		SQLiteDatabase database = openDatabase();
+		
+		if(database!=null)
+		{
+			String where = ServicePerformedEntry.COLUMN_NAME_DESCRIPTION + " = '" + service.description + "' AND "  
+					+ ServicePerformedEntry.COLUMN_NAME_DATE + " = '" +service.date_performed + "' AND "
+					+ ServicePerformedEntry.COLUMN_NAME_LOCATION + " = '" + service.location_performed + "' AND "
+					+ ServicePerformedEntry.COLUMN_NAME_MILAGE + " = '" + service.milage_when_performed + "'";
+			database.delete(ServicePerformedEntry.TABLE_NAME, where, null);
+		}
+	}
+	
 //	public void setServicePerformedEventsBlock(ArrayList<Long> ids, boolean blocked){
 //		SQLiteDatabase database = openDatabase();
 //		

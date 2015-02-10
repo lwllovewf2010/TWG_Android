@@ -9,6 +9,7 @@
     <string name="CallScheduleService">Call to Schedule Service</string>
     <string name="CallService">Call Service</string>
     <string name="Cancel">Cancel</string>
+    <string name="CarMax">CarMax</string>
     <string name="Diagnostics">Diagnostics</string>
     <string name="DiagnosticsTroubleCodeDetails">DIAGNOSTICS TROUBLE CODE DETAILS</string>
     <string name="DiagnosticsTroubleCodes">DIAGNOSTICS TROUBLE CODES</string>
@@ -19,6 +20,7 @@
     <string name="EnterOtherLocationInfo">Enter Other Location Info</string>
     <string name="EnterOtherTypeInfo">Enter Other Type Info</string>
     <string name="EnterServiceCompletion">Enter Service Completion Info</string>
+    <string name="FindMechanic">Find a Mechanic</string>
     <string name="GatheringDiagnosticInformation">Gathering diagnostic information...</string>
     <string name="LogFor">LOG FOR:</string>
     <string name="MilageAtService">Milage At Service:</string>

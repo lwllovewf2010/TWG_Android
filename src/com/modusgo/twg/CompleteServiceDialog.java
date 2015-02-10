@@ -70,10 +70,13 @@ public class CompleteServiceDialog extends DialogFragment implements DatePickerD
 	private String dateSelectedString = null;
 	private AlertDialog alertDialog = null;
 	private ArrayAdapter<String> typeAdapter = null;
+	private Bundle bundle = null;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
+		bundle = getArguments();
+		
 		LinearLayout rootView = (LinearLayout) inflater.inflate(R.layout.dialog_complete_service, container, false);
 		getDialog().setTitle(R.string.EnterServiceCompletion);
 
@@ -196,6 +199,9 @@ public class CompleteServiceDialog extends DialogFragment implements DatePickerD
 		c.close();
 		c = null;
 		
+		//Add in "CarMax"
+		typeList.add(getResources().getString(R.string.CarMax));
+		
 		//Add in any user defined types
 		Set<String> list = (Set<String>) prefs.getStringSet(Constants.PREF_OTHER_TYPES, null);
 		if(list != null && list.size() > 0)
@@ -303,8 +309,16 @@ public class CompleteServiceDialog extends DialogFragment implements DatePickerD
 				}
 				else
 				{
-					ServicePerformed sp = new ServicePerformed(type, dateSelectedString, "Self-Performed", milage);
+					ServicePerformed sp = null;
+					if(bundle != null)
+					{
+						ServicePerformed service = (ServicePerformed) bundle.getSerializable("service");
+						dbHelper.deleteServicePerformedEvent(service);
+					}
+					
+					sp = new ServicePerformed(type, dateSelectedString, location, milage);
 					dbHelper.saveServicePerformedEvent(sp);
+					
 					main.updateInfo();
 					dismiss();
 				}
@@ -331,6 +345,29 @@ public class CompleteServiceDialog extends DialogFragment implements DatePickerD
 		locationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		locationSpinner.setAdapter(locationAdapter);
 			
+		//-----------------Edit mode-----------------//
+		//  get the ServicePerformed from the bundle //
+		//  and initialize all the dialog values     //
+		//-------------------------------------------//
+		if(bundle != null)
+		{
+			int position = -1;
+			ServicePerformed service = (ServicePerformed) bundle.getSerializable("service");
+			dateSelectedString = service.date_performed;
+			dateText.setText(dateSelectedString);
+			if(typeList.contains(service.description))
+			{
+				typeSpinner.setSelection(typeList.indexOf(service.description));
+			}
+			if(locationList.contains(service.location_performed))
+			{
+				locationSpinner.setSelection(locationList.indexOf(service.location_performed));
+			}
+			milageText.setText(""+service.milage_when_performed);
+		}
+
+		
+
 		return rootView;
 	}
 
