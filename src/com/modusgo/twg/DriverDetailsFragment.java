@@ -207,7 +207,7 @@ public class DriverDetailsFragment extends Fragment implements ConnectionCallbac
 			tvLocation.setText(vehicle.address);
 
 		SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
-		SimpleDateFormat sdfTo = new SimpleDateFormat("MM/dd/yyyy KK:mm aa z", Locale.getDefault());
+		SimpleDateFormat sdfTo = new SimpleDateFormat("MM/dd/yyyy KK:mm aa", Locale.getDefault());
 
 		TimeZone tzFrom = TimeZone.getTimeZone(Constants.DEFAULT_TIMEZONE);
 		sdfFrom.setTimeZone(tzFrom);
@@ -309,7 +309,7 @@ public class DriverDetailsFragment extends Fragment implements ConnectionCallbac
 			// tvOilLife.setText(cs);
 			// tvOilLife.setText(vehicleOilLevel);
 			d = getResources().getDrawable(R.drawable.ic_oil);
-			filter = new LightingColorFilter(Color.BLACK, Color.GREEN);
+			filter = new LightingColorFilter(Color.BLACK, getResources().getColor(R.color.green));
 			d.setColorFilter(filter);
 
 			tvOilLife.setCompoundDrawablesWithIntrinsicBounds(d, null, null, null);
@@ -337,7 +337,7 @@ public class DriverDetailsFragment extends Fragment implements ConnectionCallbac
 
 		/*-------------------------Engine Temperature-----------------------*/
 		d = getResources().getDrawable(R.drawable.ic_coolant);
-		filter = new LightingColorFilter(Color.BLACK, Color.RED);
+		filter = new LightingColorFilter(Color.BLACK, getResources().getColor(R.color.red));
 		d.setColorFilter(filter);
 		tvEngineTemperature.setCompoundDrawablesWithIntrinsicBounds(d, null, null, null);
 		tvEngineTemperature.setClickable(true);
@@ -353,7 +353,7 @@ public class DriverDetailsFragment extends Fragment implements ConnectionCallbac
 
 		/*-------------------------Battery Output---------------------------*/
 		d = getResources().getDrawable(R.drawable.ic_battery);
-		filter = new LightingColorFilter(Color.BLACK, Color.GREEN);
+		filter = new LightingColorFilter(Color.BLACK, getResources().getColor(R.color.green));
 		d.setColorFilter(filter);
 		tvBatteryOutput.setCompoundDrawablesWithIntrinsicBounds(d, null, null, null);
 		tvBatteryOutput.setClickable(true);
@@ -401,10 +401,12 @@ public class DriverDetailsFragment extends Fragment implements ConnectionCallbac
 				@Override
 				public void onClick(View v)
 				{
-					Intent intent = new Intent(getActivity(), TripActivity.class);
-					intent.putExtra(VehicleEntry._ID, vehicle.id);
-					intent.putExtra(TripActivity.EXTRA_TRIP_ID, vehicle.lastTripId);
-					startActivity(intent);
+//					Intent intent = new Intent(getActivity(), TripActivity.class);
+//					intent.putExtra(VehicleEntry._ID, vehicle.id);
+//					intent.putExtra(TripActivity.EXTRA_TRIP_ID, vehicle.lastTripId);
+//					startActivity(intent);
+					((DriverActivity) getActivity()).tabHost.setCurrentTab(2);
+
 				}
 			});
 		} else

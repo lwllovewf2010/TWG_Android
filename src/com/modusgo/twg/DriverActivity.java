@@ -42,8 +42,8 @@ public class DriverActivity extends MainActivity{
 
 	public static final String SAVED_DRIVER = "driver";
 	
-	public FragmentTabHost tabHost;
-	SlidingMenu menu;
+//	public FragmentTabHost tabHost;
+//	SlidingMenu menu;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -77,33 +77,33 @@ public class DriverActivity extends MainActivity{
 
 		setButtonUpVisibility(false);
 		
-		menu = new SlidingMenu(this);
-        menu.setMode(SlidingMenu.LEFT);
-        menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
-        menu.setBehindOffsetRes(R.dimen.drivers_menu_offset);
-        menu.setFadeDegree(0.35f);
-        menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
-        menu.setMenu(R.layout.switch_driver_menu);
-        menu.setOnOpenListener(new OnOpenListener() {
-			@Override
-			public void onOpen() {
-				setButtonNavigationDrawerVisibility(false);
-				Utils.gaTrackScreen(DriverActivity.this, "Switch Driver Menu");
-			}
-		});
-        menu.setOnCloseListener(new OnCloseListener() {
-			@Override
-			public void onClose() {
-				setButtonNavigationDrawerVisibility(true);			
-			}
-		});
+//		menu = new SlidingMenu(this);
+//        menu.setMode(SlidingMenu.LEFT);
+//        menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+//        menu.setBehindOffsetRes(R.dimen.drivers_menu_offset);
+//        menu.setFadeDegree(0.35f);
+//        menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+//        menu.setMenu(R.layout.switch_driver_menu);
+//        menu.setOnOpenListener(new OnOpenListener() {
+//			@Override
+//			public void onOpen() {
+//				setButtonNavigationDrawerVisibility(false);
+//				Utils.gaTrackScreen(DriverActivity.this, "Switch Driver Menu");
+//			}
+//		});
+//        menu.setOnCloseListener(new OnCloseListener() {
+//			@Override
+//			public void onClose() {
+//				setButtonNavigationDrawerVisibility(true);			
+//			}
+//		});
         
-        ListView lvVehicles = (ListView)menu.findViewById(R.id.listViewDrivers);
+ //       ListView lvVehicles = (ListView)menu.findViewById(R.id.listViewDrivers);
         
-		VehiclesAdapter vehiclesAdapter = new VehiclesAdapter(this, dbHelper.getVehiclesShort());
-		dbHelper.close();
+//		VehiclesAdapter vehiclesAdapter = new VehiclesAdapter(this, dbHelper.getVehiclesShort());
+//		dbHelper.close();
 		
-		lvVehicles.setAdapter(vehiclesAdapter);
+//		lvVehicles.setAdapter(vehiclesAdapter);
 		
 	}
 	
@@ -184,7 +184,7 @@ public class DriverActivity extends MainActivity{
 				public void onClick(View arg0) {
 					if(prefs.getInt(Constants.PREF_CURRENT_DRIVER, 0)!=position){
 						prefs.edit().putInt(Constants.PREF_CURRENT_DRIVER, position).commit();
-						menu.toggle();
+//						menu.toggle();
 						finish();
 						
 						Intent i = new Intent(DriverActivity.this, DriverActivity.class);
@@ -192,7 +192,7 @@ public class DriverActivity extends MainActivity{
 						startActivity(i);
 					}
 					else{
-						menu.toggle();
+//						menu.toggle();
 					}
 					
 				}
@@ -269,10 +269,10 @@ public class DriverActivity extends MainActivity{
 
 	@Override
 	public void onBackPressed() {
-	    if (menu.isMenuShowing()) {
-            menu.toggle();
-	        return;
-	    }
+//	    if (menu.isMenuShowing()) {
+//            menu.toggle();
+//	        return;
+//	    }
 	
 	    super.onBackPressed();
 	}

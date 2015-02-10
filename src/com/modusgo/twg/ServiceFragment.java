@@ -27,6 +27,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -42,6 +43,7 @@ public class ServiceFragment extends Fragment implements UpdateCallback
 	private Vehicle vehicle;
 	private SharedPreferences prefs;
 	private SwipeRefreshLayout lRefresh;
+	private LinearLayout llProgress = null;
 	private DbHelper dbHelper = null;
 	private SQLiteDatabase db = null;
 	private Cursor c = null;
@@ -64,11 +66,31 @@ public class ServiceFragment extends Fragment implements UpdateCallback
 		prefs = PreferenceManager.getDefaultSharedPreferences(main);
 		vehicle = ((DriverActivity) getActivity()).vehicle;
 
+		lRefresh = (SwipeRefreshLayout) rootView.findViewById(R.id.lRefresh);
+		llProgress = (LinearLayout) rootView.findViewById(R.id.llProgress);
+
 		main.setActionBarTitle(main.getResources().getString(R.string.Service));
 
 		prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
 		vehicle = ((DriverActivity) getActivity()).vehicle;
+
+		final ServiceFragment servicefrag = this;
+		lRefresh.setColorSchemeResources(R.color.ubi_gray, R.color.ubi_green, R.color.ubi_orange, R.color.ubi_red);
+		lRefresh.setOnRefreshListener(new OnRefreshListener()
+		{
+
+			@Override
+			public void onRefresh()
+			{
+				taskState = TaskState.Diagnostics;
+				main.showBusyDialog(R.string.GatheringDiagnosticInformation);
+
+				new GetDiagnosticsTask(getActivity(), servicefrag, vehicle).execute("vehicles/" + vehicle.id
+						+ "/diagnostics.json");
+			}
+		});
+
 
 		dbHelper = DbHelper.getInstance(getActivity());
 		db = dbHelper.openDatabase();
@@ -93,6 +115,7 @@ public class ServiceFragment extends Fragment implements UpdateCallback
 	{
 
 		main.hideBusyDialog();
+		lRefresh.setRefreshing(false);
 
 		// --------------------------------Maintenances----------------------------
 		c = db.query(MaintenanceEntry.TABLE_NAME, new String[]

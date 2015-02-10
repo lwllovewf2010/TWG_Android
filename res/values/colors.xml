@@ -9,12 +9,12 @@
      
      <color name="transparent">#00000000</color>
      <color name="red">#ef4136</color>
-     <color name="green">#a8cf49</color>
+     <color name="green">#a5cf36</color>
      <color name="orange">#f15b2a</color>
      <color name="blue">#00aeef</color>
      <color name="yellow">#FEEB51</color>
      <color name="white">#fff</color>
-     <color name="gray">#a1a6ad</color>
+     <color name="gray">#cecece</color>
     
      <color name="light_orange">#fff9f1</color>
      <color name="light_orange_2">#fde0b4</color>

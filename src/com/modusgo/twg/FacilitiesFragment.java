@@ -17,6 +17,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +37,7 @@ public class FacilitiesFragment extends Fragment implements OnMapReadyListener {
 			"2000 Frontage Road<br>" +
 			"Northbrook, IL 60062<br>" +
 			"Open today	10:00 am – 9:00 pm <br>" +
-			"<a href=\"carmax.com\">carmax.com</a><br>" +
+			"<a href=\"http://carmax.com\">carmax.com</a><br>" +
 			"<a href=\"tel:8472420045\">(847) 242-0045</a>";
 	double latitude = 42.11823;
 	double longitude = -87.77935;
@@ -60,6 +61,7 @@ public class FacilitiesFragment extends Fragment implements OnMapReadyListener {
 
 
 		TextView tv = (TextView) rootView.findViewById(R.id.mechanic_details);
+		tv.setMovementMethod(LinkMovementMethod.getInstance());
 		Spanned result = Html.fromHtml(locHTML);
 		tv.setText(result);
 		

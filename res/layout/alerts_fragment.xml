@@ -4,10 +4,35 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <ListView
-        android:id="@+id/alerts_info_list"
+    <LinearLayout
+        android:id="@+id/llProgress"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-    </ListView>
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/lRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <ListView
+            android:id="@+id/alerts_info_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <!--
+        android:divider="@drawable/listview_home_divider"
+        android:dividerHeight="2dp"  
+            -->
+        </ListView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </LinearLayout>

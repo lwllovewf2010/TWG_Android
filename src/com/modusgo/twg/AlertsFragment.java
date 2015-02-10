@@ -36,10 +36,12 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
@@ -53,6 +55,7 @@ public class AlertsFragment extends Fragment implements UpdateCallback
 	private Vehicle vehicle;
 	private SharedPreferences prefs;
 	private SwipeRefreshLayout lRefresh;
+	private LinearLayout llProgress = null;
 	private DbHelper dbHelper = null;
 	private SQLiteDatabase db = null;
 	private Cursor c = null;
@@ -66,10 +69,29 @@ public class AlertsFragment extends Fragment implements UpdateCallback
 
 		main = (MainActivity) getActivity();
 		rootView = inflater.inflate(R.layout.alerts_fragment, container, false);
+		lRefresh = (SwipeRefreshLayout) rootView.findViewById(R.id.lRefresh);
+		llProgress = (LinearLayout) rootView.findViewById(R.id.llProgress);
+
 		main.setActionBarTitle("Alerts");
 		prefs = PreferenceManager.getDefaultSharedPreferences(main);
 		vehicle = ((DriverActivity) getActivity()).vehicle;
 
+		final AlertsFragment alertsfrag = this;
+		lRefresh.setColorSchemeResources(R.color.ubi_gray, R.color.ubi_green, R.color.ubi_orange, R.color.ubi_red);
+		lRefresh.setOnRefreshListener(new OnRefreshListener()
+		{
+
+			@Override
+			public void onRefresh()
+			{
+				main.showBusyDialog(R.string.GatheringDiagnosticInformation);
+
+				new GetDiagnosticsTask(getActivity(), alertsfrag, vehicle).execute("vehicles/" + vehicle.id
+						+ "/diagnostics.json");
+			}
+		});
+
+		
 		infoList = (ListView) rootView.findViewById(R.id.alerts_info_list);
 
 		dbHelper = DbHelper.getInstance(getActivity());
@@ -87,42 +109,10 @@ public class AlertsFragment extends Fragment implements UpdateCallback
 	protected void updateInfo()
 	{
 		main.hideBusyDialog();
-
-		// ------------------------------------------DTC---------------------------------
-		Cursor c = db.query(DTCEntry.TABLE_NAME, new String[]
-		{ DTCEntry.COLUMN_NAME_CODE, DTCEntry.COLUMN_NAME_CONDITIONS, DTCEntry.COLUMN_NAME_CREATED_AT,
-				DTCEntry.COLUMN_NAME_DESCRIPTION, DTCEntry.COLUMN_NAME_DETAILS, DTCEntry.COLUMN_NAME_FULL_DESCRIPTION,
-				DTCEntry.COLUMN_NAME_IMPORTANCE, DTCEntry.COLUMN_NAME_LABOR_COST, DTCEntry.COLUMN_NAME_LABOR_HOURS,
-				DTCEntry.COLUMN_NAME_PARTS, DTCEntry.COLUMN_NAME_PARTS_COST, DTCEntry.COLUMN_NAME_TOTAL_COST },
-				ScoreGraphEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id, null, null, null, null);
-
+		lRefresh.setRefreshing(false);
+		
 		final ArrayList<TWGListItem> info_list = new ArrayList<TWGListItem>();
 
-		if(c.moveToFirst())
-		{
-			info_list.add(new TWGListItem(twg_list_item_type.li_alert_hdr, null));
-
-			while(!c.isAfterLast())
-			{
-				final DiagnosticsTroubleCode dtc = new DiagnosticsTroubleCode(c.getString(c
-						.getColumnIndex(DTCEntry.COLUMN_NAME_CODE)), c.getString(c
-						.getColumnIndex(DTCEntry.COLUMN_NAME_CONDITIONS)), c.getString(c
-						.getColumnIndex(DTCEntry.COLUMN_NAME_CREATED_AT)), c.getString(c
-						.getColumnIndex(DTCEntry.COLUMN_NAME_DESCRIPTION)), c.getString(c
-						.getColumnIndex(DTCEntry.COLUMN_NAME_DETAILS)), c.getString(c
-						.getColumnIndex(DTCEntry.COLUMN_NAME_FULL_DESCRIPTION)), c.getString(c
-						.getColumnIndex(DTCEntry.COLUMN_NAME_IMPORTANCE)), c.getString(c
-						.getColumnIndex(DTCEntry.COLUMN_NAME_LABOR_COST)), c.getString(c
-						.getColumnIndex(DTCEntry.COLUMN_NAME_LABOR_HOURS)), c.getString(c
-						.getColumnIndex(DTCEntry.COLUMN_NAME_PARTS)), c.getString(c
-						.getColumnIndex(DTCEntry.COLUMN_NAME_PARTS_COST)), c.getString(c
-						.getColumnIndex(DTCEntry.COLUMN_NAME_TOTAL_COST)));
-
-				info_list.add(new TWGListItem(twg_list_item_type.li_alert_info, dtc));
-				c.moveToNext();
-			}
-		}
-		c.close();
 		// ------------------------------------------ Recall Entry--------------------------------
 		c = db.query(RecallEntry.TABLE_NAME, new String[]
 		{ RecallEntry._ID, RecallEntry.COLUMN_NAME_CONSEQUENCE, RecallEntry.COLUMN_NAME_CORRECTIVE_ACTION,
@@ -143,6 +133,80 @@ public class AlertsFragment extends Fragment implements UpdateCallback
 			}
 		}
 		c.close();
+		
+		// ------------------------------------------DTC---------------------------------
+		c = db.query(DTCEntry.TABLE_NAME, new String[]
+		{ DTCEntry.COLUMN_NAME_CODE, DTCEntry.COLUMN_NAME_CONDITIONS, DTCEntry.COLUMN_NAME_CREATED_AT,
+				DTCEntry.COLUMN_NAME_DESCRIPTION, DTCEntry.COLUMN_NAME_DETAILS, DTCEntry.COLUMN_NAME_FULL_DESCRIPTION,
+				DTCEntry.COLUMN_NAME_IMPORTANCE, DTCEntry.COLUMN_NAME_LABOR_COST, DTCEntry.COLUMN_NAME_LABOR_HOURS,
+				DTCEntry.COLUMN_NAME_PARTS, DTCEntry.COLUMN_NAME_PARTS_COST, DTCEntry.COLUMN_NAME_TOTAL_COST },
+				ScoreGraphEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id, null, null, null, null);
+
+
+		if(c.moveToFirst())
+		{
+			info_list.add(new TWGListItem(twg_list_item_type.li_dtc_hdr, null));
+
+			while(!c.isAfterLast())
+			{
+				final DiagnosticsTroubleCode dtc = new DiagnosticsTroubleCode(c.getString(c
+						.getColumnIndex(DTCEntry.COLUMN_NAME_CODE)), c.getString(c
+						.getColumnIndex(DTCEntry.COLUMN_NAME_CONDITIONS)), c.getString(c
+						.getColumnIndex(DTCEntry.COLUMN_NAME_CREATED_AT)), c.getString(c
+						.getColumnIndex(DTCEntry.COLUMN_NAME_DESCRIPTION)), c.getString(c
+						.getColumnIndex(DTCEntry.COLUMN_NAME_DETAILS)), c.getString(c
+						.getColumnIndex(DTCEntry.COLUMN_NAME_FULL_DESCRIPTION)), c.getString(c
+						.getColumnIndex(DTCEntry.COLUMN_NAME_IMPORTANCE)), c.getString(c
+						.getColumnIndex(DTCEntry.COLUMN_NAME_LABOR_COST)), c.getString(c
+						.getColumnIndex(DTCEntry.COLUMN_NAME_LABOR_HOURS)), c.getString(c
+						.getColumnIndex(DTCEntry.COLUMN_NAME_PARTS)), c.getString(c
+						.getColumnIndex(DTCEntry.COLUMN_NAME_PARTS_COST)), c.getString(c
+						.getColumnIndex(DTCEntry.COLUMN_NAME_TOTAL_COST)));
+
+				info_list.add(new TWGListItem(twg_list_item_type.li_dtc_info, dtc));
+				c.moveToNext();
+			}
+		}
+		c.close();
+		//-----------------Maintenances Due-----------------------//
+		///---------less than 100 miles left
+		c = db.query(MaintenanceEntry.TABLE_NAME, new String[]
+		{ 
+				MaintenanceEntry._ID, 
+				MaintenanceEntry.COLUMN_NAME_CREATED_AT, 
+				MaintenanceEntry.COLUMN_NAME_DESCRIPTION,
+				MaintenanceEntry.COLUMN_NAME_IMPORTANCE, 
+				MaintenanceEntry.COLUMN_NAME_MILEAGE,
+				MaintenanceEntry.COLUMN_NAME_PRICE,
+				MaintenanceEntry.COLUMN_NAME_COUNTDOWN }, 
+				null, null, null, null, MaintenanceEntry.COLUMN_NAME_MILEAGE + " DESC");
+
+//		info_list = new ArrayList<TWGListItem>();
+
+		int demoCount = 0;
+		if(c.moveToFirst())
+		{
+			info_list.add(new TWGListItem(twg_list_item_type.li_service_due_hdr, null));
+			while(!c.isAfterLast())
+			{
+				final Maintenance maintenance = new Maintenance(
+						c.getLong(c.getColumnIndex(MaintenanceEntry._ID)),
+						c.getString(c.getColumnIndex(MaintenanceEntry.COLUMN_NAME_CREATED_AT)), 
+						c.getString(c.getColumnIndex(MaintenanceEntry.COLUMN_NAME_DESCRIPTION)), 
+						c.getString(c.getColumnIndex(MaintenanceEntry.COLUMN_NAME_IMPORTANCE)), 
+						c.getString(c.getColumnIndex(MaintenanceEntry.COLUMN_NAME_MILEAGE)), 
+						c.getFloat(c.getColumnIndex(MaintenanceEntry.COLUMN_NAME_PRICE)), 
+						c.getInt(c.getColumnIndex(MaintenanceEntry.COLUMN_NAME_COUNTDOWN)));
+				/************************** DEBUGGING ONLY ***************************/
+				if(demoCount < 2)
+				{
+					demoCount++;
+					info_list.add(new TWGListItem(twg_list_item_type.li_service_due_item, maintenance));
+				}
+				/************************** DEBUGGING ONLY ***************************/
+	/////Release			info_list.add(new TWGListItem(twg_list_item_type.li_service_item, maintenance));
+				c.moveToNext();
+			}
 
 		final TWGInfoArrayAdapter info_adapter = new TWGInfoArrayAdapter(getActivity(), R.layout.twg_info_list_item,
 				info_list);
@@ -154,62 +218,30 @@ public class AlertsFragment extends Fragment implements UpdateCallback
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id)
 			{
+				Intent intent = null;
 				TWGListItem item = (TWGListItem) view.getTag();
 				switch (item.type)
 				{
 				case li_recall_info:
 					Recall recall = (Recall) item.value;
-					Intent i = new Intent(getActivity(), RecallActivity.class);
-					i.putExtra(RecallActivity.EXTRA_RECALL, recall);
-					startActivity(i);
+					intent = new Intent(getActivity(), RecallActivity.class);
+					intent.putExtra(RecallActivity.EXTRA_RECALL, recall);
+					startActivity(intent);
 					break;
-				case li_alert_info:
-					// showAlertDetailView(item);
+				case li_dtc_info:
+					DiagnosticsTroubleCode dtc = (DiagnosticsTroubleCode) item.value;
+					intent = new Intent(getActivity(), DiagnosticDetailActivity.class);
+					intent.putExtra(DiagnosticDetailActivity.EXTRA_DTC, dtc);
+					startActivity(intent);
+					break;
+				case li_service_due_item:
+					((DriverActivity)getActivity()).tabHost.setCurrentTab(2);
 					break;
 				}
 			}
 		});
 	
 
-	//-----------------Maintenances Due-----------------------
-	///---------less than 100 miles left
-	// --------------------------------Maintenances----------------------------
-	c = db.query(MaintenanceEntry.TABLE_NAME, new String[]
-	{ 
-			MaintenanceEntry._ID, 
-			MaintenanceEntry.COLUMN_NAME_CREATED_AT, 
-			MaintenanceEntry.COLUMN_NAME_DESCRIPTION,
-			MaintenanceEntry.COLUMN_NAME_IMPORTANCE, 
-			MaintenanceEntry.COLUMN_NAME_MILEAGE,
-			MaintenanceEntry.COLUMN_NAME_PRICE,
-			MaintenanceEntry.COLUMN_NAME_COUNTDOWN }, 
-			null, null, null, null, MaintenanceEntry.COLUMN_NAME_MILEAGE + " DESC");
-
-//	info_list = new ArrayList<TWGListItem>();
-
-	int demoCount = 0;
-	if(c.moveToFirst())
-	{
-		while(!c.isAfterLast())
-		{
-			final Maintenance maintenance = new Maintenance(
-					c.getLong(c.getColumnIndex(MaintenanceEntry._ID)),
-					c.getString(c.getColumnIndex(MaintenanceEntry.COLUMN_NAME_CREATED_AT)), 
-					c.getString(c.getColumnIndex(MaintenanceEntry.COLUMN_NAME_DESCRIPTION)), 
-					c.getString(c.getColumnIndex(MaintenanceEntry.COLUMN_NAME_IMPORTANCE)), 
-					c.getString(c.getColumnIndex(MaintenanceEntry.COLUMN_NAME_MILEAGE)), 
-					c.getFloat(c.getColumnIndex(MaintenanceEntry.COLUMN_NAME_PRICE)), 
-					c.getInt(c.getColumnIndex(MaintenanceEntry.COLUMN_NAME_COUNTDOWN)));
-			/************************** DEBUGGING ONLY ***************************/
-			if(demoCount < 2)
-			{
-				demoCount++;
-				info_list.add(new TWGListItem(twg_list_item_type.li_service_due_item, maintenance));
-			}
-			/************************** DEBUGGING ONLY ***************************/
-/////Release			info_list.add(new TWGListItem(twg_list_item_type.li_service_item, maintenance));
-			c.moveToNext();
-		}
 //		info_adapter = new TWGInfoArrayAdapter(getActivity(), R.layout.twg_info_list_item, info_list);
 		infoList.setAdapter(info_adapter);
 	}

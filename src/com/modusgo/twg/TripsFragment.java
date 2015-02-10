@@ -100,7 +100,7 @@ public class TripsFragment extends Fragment{
 		rootView.findViewById(R.id.btnSwitchDriverMenu).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				((DriverActivity)getActivity()).menu.toggle();
+//				((DriverActivity)getActivity()).menu.toggle();
 			}
 		});
 		

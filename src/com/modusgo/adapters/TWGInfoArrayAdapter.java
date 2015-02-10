@@ -20,8 +20,10 @@ import com.modusgo.twg.utils.TWGListItem.twg_list_item_type;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.TextUtils.TruncateAt;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -91,6 +93,7 @@ public class TWGInfoArrayAdapter extends ArrayAdapter<TWGListItem>
 		case li_alert_hdr:
 		case li_service_log_hdr:
 		case li_alert_subhdr:
+		case li_service_due_hdr:
 			hdr_view.setVisibility(View.VISIBLE);
 			TextView hdr = (TextView) rowView.findViewById(R.id.hdr);
 
@@ -99,13 +102,12 @@ public class TWGInfoArrayAdapter extends ArrayAdapter<TWGListItem>
 				hdr.setText(resources.getString(R.string.VehicleInformation));
 			} else if(item.type == twg_list_item_type.li_recall_hdr)
 			{
-				//deleted per Jon
-//				hdr.setText(resources.getString(R.string.RecallUpdate));
-//				hdr.setTextColor(resources.getColor(R.color.white));
-//				hdr.setBackgroundColor(resources.getColor(R.color.red));
+				hdr.setText(resources.getString(R.string.RecallUpdate));
+				hdr.setTextColor(resources.getColor(R.color.white));
+				hdr.setBackgroundColor(resources.getColor(R.color.red));
 			} else if(item.type == twg_list_item_type.li_dtc_hdr)
 			{
-				hdr.setText(resources.getString(R.string.DiagnosticsTroubleCodeDetails));
+				hdr.setText(resources.getString(R.string.DiagnosticsTroubleCodes));
 			} else if(item.type == twg_list_item_type.li_alert_hdr)
 			{
 				hdr.setText(resources.getString(R.string.Alerts));
@@ -117,9 +119,14 @@ public class TWGInfoArrayAdapter extends ArrayAdapter<TWGListItem>
 			{
 				hdr.setText((String)item.value);
 				hdr.setTextColor(0xFF000000);
-				
+			}
+			 else if(item.type == twg_list_item_type.li_service_due_hdr)
+			{
+					hdr.setText(resources.getString(R.string.VehicleInformation));
+					hdr.setTextColor(0xFF000000);
 			}
 			break;
+			
 		case li_vehicle_info:
 			// TextView info_name =
 			// (TextView)rowView.findViewById(R.id.info_name);
@@ -133,9 +140,8 @@ public class TWGInfoArrayAdapter extends ArrayAdapter<TWGListItem>
 		case li_recall_info:
 			recall = (Recall) item.value;
 			TextView recall_name = (TextView) rowView.findViewById(R.id.recall_name);
-			TextView recall_value = (TextView) rowView.findViewById(R.id.recall_value);
+//			TextView recall_value = (TextView) rowView.findViewById(R.id.recall_value);
 			TextView recall_date = (TextView) rowView.findViewById(R.id.recall_date);
-
 			recall_info_view.setVisibility(View.VISIBLE);
 			if(recall.created_at.length()>0)
 			{
@@ -151,9 +157,10 @@ public class TWGInfoArrayAdapter extends ArrayAdapter<TWGListItem>
 			{
 				dateString = "N/A";
 			}
+			String name = recall.recall_id + " - " + recall.description;
 			recall_date.setText(dateString);
-			recall_name.setText(recall.recall_id);
-			recall_value.setText(recall.description);
+			recall_name.setText(name);
+//			recall_value.setText(recall.description);
 			break;
 		case li_dtc_info:
 			dtc = (DiagnosticsTroubleCode) item.value;
@@ -210,7 +217,7 @@ public class TWGInfoArrayAdapter extends ArrayAdapter<TWGListItem>
 			TextView due_description = (TextView) rowView.findViewById(R.id.service_due_description);
 			service_due_info_view.setVisibility(View.VISIBLE);
 			due_description.setText(maintenance.description);
-			//due_remaining.setText(text);
+			//due_remaining.setText(text);  //demo only - this is hard coded in the XML
 			break;
 		case li_service_log_item:
 			serviceEntry = (ServicePerformed) item.value;

@@ -21,6 +21,9 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.LightingColorFilter;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -128,6 +131,7 @@ public class DiagnosticsFragment extends Fragment implements UpdateCallback
 			@Override
 			public void onRefresh()
 			{
+				main.showBusyDialog(R.string.GatheringDiagnosticInformation);
 				new GetDiagnosticsTask(getActivity(), diagFrag, vehicle).execute("vehicles/" + vehicle.id
 						+ "/diagnostics.json");
 			}
@@ -175,9 +179,10 @@ public class DiagnosticsFragment extends Fragment implements UpdateCallback
 	private void updateInfo()
 	{
 		main.hideBusyDialog();
-
+		lRefresh.setRefreshing(false);
+		
 		SimpleDateFormat sdfFrom = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.getDefault());
-		SimpleDateFormat sdfTo = new SimpleDateFormat("MM/dd/yyyy KK:mm aa z", Locale.getDefault());
+		SimpleDateFormat sdfTo = new SimpleDateFormat("MM/dd/yyyy KK:mm", Locale.getDefault());
 
 		TimeZone tzFrom = TimeZone.getTimeZone(Constants.DEFAULT_TIMEZONE);
 		sdfFrom.setTimeZone(tzFrom);
@@ -206,13 +211,17 @@ public class DiagnosticsFragment extends Fragment implements UpdateCallback
 			tvLastCheckup.setText(updatedSpan);
 		}
 
-		if(!TextUtils.isEmpty(vehicle.carCheckupStatus))
-		{
-			tvStatus.setText(vehicle.carCheckupStatus);
-		} else
-		{
-			tvStatus.setText(ERROR_STATUS_MESSAGE);
-		}
+//		if(!TextUtils.isEmpty(vehicle.carCheckupStatus))
+//		{
+//			tvStatus.setText(vehicle.carCheckupStatus);
+//		} else
+//		{
+//			tvStatus.setText(ERROR_STATUS_MESSAGE);
+//		}
+		tvStatus.setText("");
+		
+		ColorFilter filter = null;
+		Drawable d = null;
 
 		// ---------------------Summary Info-----------------------
 		llContent.removeAllViews();
@@ -231,12 +240,20 @@ public class DiagnosticsFragment extends Fragment implements UpdateCallback
 				status.setText(R.string.DTCsReported);
 				break;
 			case 1:
-				iv.setBackgroundResource(R.drawable.ic_battery);
+				d = getResources().getDrawable(R.drawable.ic_battery);
+				filter = new LightingColorFilter(Color.BLACK, getResources().getColor(R.color.green));
+				d.setColorFilter(filter);
+				iv.setBackground(d);
+				
 				type.setText(R.string.BatteryStatus);
 				status.setText(R.string.NoIssues);
 				break;
 			case 2:
-				iv.setBackgroundResource(R.drawable.engine);
+				d = getResources().getDrawable(R.drawable.engine);
+				filter = new LightingColorFilter(Color.BLACK, getResources().getColor(R.color.red));
+				d.setColorFilter(filter);
+				iv.setBackground(d);
+
 				type.setText(R.string.EngineTemp);
 				status.setText(R.string.UrgentIssues);
 				break;

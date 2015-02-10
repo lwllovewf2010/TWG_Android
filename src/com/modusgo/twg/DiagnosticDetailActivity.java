@@ -5,6 +5,8 @@ import java.util.Locale;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -133,12 +135,14 @@ public class DiagnosticDetailActivity extends MainActivity {
 			tvText.setText(dtc.conditions);
 			llList.addView(rowView);
 		}
-		
+
+		final MainActivity main = (MainActivity)this;
 		if(prefs.getBoolean(Constants.PREF_FIND_MECHANIC_ENABLED, false)){
 			btnFindMechanic.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					startActivity(new Intent(DiagnosticDetailActivity.this, FindMechanicActivity.class));
+					Intent intent = new Intent(main, FindMechanicActivity.class);
+					main.startActivity(intent);
 				}
 			});
 			btnFindMechanic.setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, Constants.BUTTON_BG_COLOR)));

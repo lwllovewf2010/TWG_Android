@@ -38,6 +38,7 @@ public class RecallActivity extends MainActivity {
     LinearLayout llInfoList;
     LinearLayout llList;
     ScrollView scrollView;
+    private Button btnContact = null;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -64,7 +65,20 @@ public class RecallActivity extends MainActivity {
 		llInfoList = (LinearLayout)findViewById(R.id.llInfoList);
 		llList = (LinearLayout)findViewById(R.id.llList);
 		scrollView = (ScrollView)findViewById(R.id.svContent);
+		btnContact = (Button)findViewById(R.id.contact_btn);
 		
+		btnContact.setOnClickListener(new OnClickListener()
+		{
+			
+			@Override
+			public void onClick(View v)
+			{
+				String uri = "tel: 18005551212";
+				Intent intent = new Intent(Intent.ACTION_DIAL);
+				intent.setData(Uri.parse(uri));
+				startActivity(intent);
+			}
+		});
 		tvCode.setText("Recall id - "+recall.recall_id);
 		
 		if(!TextUtils.isEmpty(recall.created_at)){

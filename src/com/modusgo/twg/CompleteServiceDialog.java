@@ -1,5 +1,6 @@
 package com.modusgo.twg;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -123,7 +124,7 @@ public class CompleteServiceDialog extends DialogFragment implements DatePickerD
 						if(list == null || !list.contains(otherText))
 						{
 							TreeSet<String> newList = new TreeSet<String>();
-							newList.addAll(typeList);
+							newList.add(otherText);
 							editor.putStringSet(Constants.PREF_OTHER_TYPES, newList);
 							editor.commit();
 						}
@@ -141,7 +142,7 @@ public class CompleteServiceDialog extends DialogFragment implements DatePickerD
 						if(list == null || !list.contains(otherText))
 						{
 							TreeSet<String> newList = new TreeSet<String>();
-							newList.addAll(locationList);
+							newList.add(otherText);
 							editor.putStringSet(Constants.PREF_OTHER_LOCATIONS, newList);
 							editor.commit();
 						}
@@ -168,6 +169,12 @@ public class CompleteServiceDialog extends DialogFragment implements DatePickerD
 		milageText = (EditText)rootView.findViewById(R.id.complete_service_milage);
 		cancelBtn = (Button)rootView.findViewById(R.id.complete_service_cancel_btn);
 		doneBtn = (Button)rootView.findViewById(R.id.complete_service_done_btn);
+		
+		Calendar now = Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat(Constants.DEFAULT_DATE_TIME_FORMAT);
+		String today = sdf.format(now.getTime());
+		dateText.setText(today);
+		dateSelectedString = today;
 
 		// --------------------------------Maintenances----------------------------
 		c = db.query(MaintenanceEntry.TABLE_NAME, new String[]
@@ -199,7 +206,6 @@ public class CompleteServiceDialog extends DialogFragment implements DatePickerD
 		//Add in "Other"
 		typeList.add(getResources().getString(R.string.Other));
 
-		Calendar now = Calendar.getInstance();
 		final DatePickerDialog picker = new DatePickerDialog(main, this, now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH));
 		
 		//-----------------type spinner--------------//

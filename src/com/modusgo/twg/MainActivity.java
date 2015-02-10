@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTabHost;
 import android.support.v4.app.NavUtils;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
@@ -59,15 +60,17 @@ public class MainActivity extends FragmentActivity {
 	public Vehicle vehicle;
 	public ProgressDialog busyDialog = null;
 	
+	public FragmentTabHost tabHost;
+
 	public static enum MenuItems {
 		HOME("HOME", 0),
-		COMPARE("COMPARE", 1),
-		CALLSUPPORT("CALLSUPPORT", 2), 
-		AGENT("AGENT", 3), 
+//		COMPARE("COMPARE", 1),
+//		CALLSUPPORT("CALLSUPPORT", 2), 
+//		AGENT("AGENT", 3), 
 		FEEDBACK("FEEDBACK", 4), 
 		FINDAMECHANIC("FIND MECHANIC", 5), 
 		SETTINGS("SETTINGS", 6), 
-		DRIVERSETUP("DRIVER SETUP", 7), 
+//		DRIVERSETUP("DRIVER SETUP", 7), 
 		LOGOUT("LOGOUT", 8),
 		EXIT("EXIT", 9);
 		
@@ -109,7 +112,7 @@ public class MainActivity extends FragmentActivity {
 	         return;
 	    }
 		
-//		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -153,11 +156,11 @@ public class MainActivity extends FragmentActivity {
 
 		// menuItems.add(MenuItems.HOME);
 		menuItems.add(MenuItems.FEEDBACK);
-		menuItems.add(MenuItems.COMPARE);
+//		menuItems.add(MenuItems.COMPARE);
 		menuItems.add(MenuItems.FINDAMECHANIC);
 		menuItems.add(MenuItems.SETTINGS);
-		menuItems.add(MenuItems.CALLSUPPORT);
-		menuItems.add(MenuItems.AGENT);
+//		menuItems.add(MenuItems.CALLSUPPORT);
+//		menuItems.add(MenuItems.AGENT);
 		// menuItems.add(MenuItems.DRIVERSETUP);
 		menuItems.add(MenuItems.LOGOUT);
 		menuItems.add(MenuItems.EXIT);
@@ -450,21 +453,21 @@ public class MainActivity extends FragmentActivity {
 					startActivity(new Intent(MainActivity.this,
 							HomeActivity.class));
 					break;
-				case COMPARE:
-					// Compare
-					startActivity(new Intent(MainActivity.this,
-							CompareActivity.class));
-					break;
+//				case COMPARE:
+//					// Compare
+//					startActivity(new Intent(MainActivity.this,
+//							CompareActivity.class));
+//					break;
 				case SETTINGS:
 					// Settings
 					startActivity(new Intent(MainActivity.this,
 							SettingsActivity.class));
 					break;
-				case DRIVERSETUP:
-					// Driver setup
-					startActivity(new Intent(MainActivity.this,
-							DriverSetupActivity.class));
-					break;
+//				case DRIVERSETUP:
+//					// Driver setup
+//					startActivity(new Intent(MainActivity.this,
+//							DriverSetupActivity.class));
+//					break;
 				case FEEDBACK:
 					// Feedback
 					String driverName = vehicle != null ? ", " + vehicle.name
@@ -480,32 +483,32 @@ public class MainActivity extends FragmentActivity {
 					startActivity(new Intent(MainActivity.this,
 							FindMechanicActivity.class));
 					break;
-				case CALLSUPPORT:
-					// Call support
-					String contactPhone = prefs.getString(
-							Constants.PREF_CONTACT_PHONE, "");
-					if (!contactPhone.equals("")) {
-						Intent callSupportIntent = new Intent(
-								Intent.ACTION_VIEW);
-						callSupportIntent.setData(Uri.parse("tel:"
-								+ contactPhone));
-						startActivity(callSupportIntent);
-					}
-
-					Utils.gaTrackScreen(MainActivity.this, "Contact claims");
-					break;
-				case AGENT:
-					// Agent
-					String agentPhone = prefs.getString(
-							Constants.PREF_AGENT_PHONE, "");
-					if (!agentPhone.equals("")) {
-						Intent callAgentIntent = new Intent(Intent.ACTION_VIEW);
-						callAgentIntent.setData(Uri.parse("tel:" + agentPhone));
-						startActivity(callAgentIntent);
-					}
-
-					Utils.gaTrackScreen(MainActivity.this, "Call my agent");
-					break;
+//				case CALLSUPPORT:
+//					// Call support
+//					String contactPhone = prefs.getString(
+//							Constants.PREF_CONTACT_PHONE, "");
+//					if (!contactPhone.equals("")) {
+//						Intent callSupportIntent = new Intent(
+//								Intent.ACTION_VIEW);
+//						callSupportIntent.setData(Uri.parse("tel:"
+//								+ contactPhone));
+//						startActivity(callSupportIntent);
+//					}
+//
+//					Utils.gaTrackScreen(MainActivity.this, "Contact claims");
+//					break;
+//				case AGENT:
+//					// Agent
+//					String agentPhone = prefs.getString(
+//							Constants.PREF_AGENT_PHONE, "");
+//					if (!agentPhone.equals("")) {
+//						Intent callAgentIntent = new Intent(Intent.ACTION_VIEW);
+//						callAgentIntent.setData(Uri.parse("tel:" + agentPhone));
+//						startActivity(callAgentIntent);
+//					}
+//
+//					Utils.gaTrackScreen(MainActivity.this, "Call my agent");
+//					break;
 				case LOGOUT:
 					// Logout
 					Utils.gaTrackScreen(MainActivity.this, "Logout");
@@ -608,7 +611,7 @@ public class MainActivity extends FragmentActivity {
 				new CrashManagerListener() {
 					@Override
 					public boolean shouldAutoUploadCrashes() {
-						return true;
+						return false;
 					}
 				});
 	}

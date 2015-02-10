@@ -34,11 +34,31 @@
             android:text="@string/CallService" />
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/service_info_list"
+    <LinearLayout
+        android:id="@+id/llProgress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/lRefresh"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/service_buttons" >
-    </ListView>
+
+        <ListView
+            android:id="@+id/service_info_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+        </ListView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </RelativeLayout>

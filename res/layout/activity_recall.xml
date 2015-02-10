@@ -10,6 +10,9 @@
 
     <!-- The main content view -->
 
+	<RelativeLayout 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
     <ScrollView
         android:id="@+id/svContent"
         android:layout_width="match_parent"
@@ -70,6 +73,17 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
+
+    <Button
+        android:id="@+id/contact_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:layout_alignParentBottom="true"
+        android:text="Contact Service Location" 
+        android:background="#000000"
+        android:textColor="@color/white"/>
+</RelativeLayout>
     <!-- The navigation drawer -->
 
     <ListView

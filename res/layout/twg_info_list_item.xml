@@ -47,36 +47,43 @@
         android:id="@+id/recall_info_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="5dp"
+        android:layout_marginBottom="10dp"
+        
         android:orientation="horizontal"
-        android:weightSum="3" >
+        android:weightSum="1" >
+
+        <ImageView 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/ic_alerts_red" />
+        
+		<LinearLayout 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:weightSum="2">
+		    
+        <TextView
+            android:id="@+id/recall_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginRight="4dp"
+            android:layout_weight="1"
+            android:singleLine="true" 
+            android:ellipsize="end"/>
 
         <TextView
-            android:id="@+id/recall_date"
-            android:layout_width="0dp"
+        	android:id="@+id/recall_date"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:layout_marginRight="4dp"
             android:layout_weight="1"
             android:singleLine="true" />
-
-        <TextView
-            android:id="@+id/recall_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="4dp"
-            android:layout_weight="1"
-            android:singleLine="true" />
-
-        <TextView
-            android:id="@+id/recall_value"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_weight="1"
-            android:ellipsize="end"
-            android:gravity="left"
-            android:singleLine="true" />
+		</LinearLayout>        
+        
     </LinearLayout>
 
     <!-- Diagnostic Trouble Codes -->
@@ -106,8 +113,8 @@
             android:id="@+id/dtc_priority"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/recall_name"
             android:layout_weight="1"
+            android:gravity="end"
             android:padding="5dip" />
     </LinearLayout>
 
@@ -171,7 +178,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dip"
             android:layout_marginStart="5dip"
-            android:background="#C0C0C0"
+            android:background="@color/gray"
             android:orientation="vertical" >
 
             <TextView
@@ -223,7 +230,8 @@
         android:id="@+id/service_due_info_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical" >
+        android:orientation="vertical" 
+        android:layout_margin="2dp">
 
         <TextView
             android:id="@+id/service_due_description"
@@ -239,7 +247,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="2dp"
-            android:text="Service due in 0 miles"
+            android:text="Service required now"
             android:textColor="#000000"
             android:textSize="12.5sp" />
     </LinearLayout>

@@ -31,8 +31,10 @@
 
 # view res/layout/activity_alerts.xml #generated:20
 # view res/layout/activity_home.xml #generated:31
+# view res/layout/alerts_fragment.xml #generated:21
 # view res/layout/fragment_diagnostics.xml #generated:24
 # view res/layout/framgent_trips.xml #generated:27
+# view res/layout/service_fragment.xml #generated:51
 -keep class android.support.v4.widget.SwipeRefreshLayout { <init>(...); }
 
 # view res/layout/abc_action_menu_item_layout.xml #generated:17
@@ -276,8 +278,8 @@
 # view res/layout/activity_geofence.xml #generated:72
 # view res/layout/activity_geofence.xml #generated:81
 # view res/layout/activity_home.xml #generated:17
-# view res/layout/activity_recall.xml #generated:24
-# view res/layout/activity_recall.xml #generated:37
+# view res/layout/activity_recall.xml #generated:27
+# view res/layout/activity_recall.xml #generated:40
 # view res/layout/activity_register_by_code.xml #generated:28
 # view res/layout/activity_sign_in.xml #generated:30
 # view res/layout/activity_trip.xml #generated:120
@@ -348,10 +350,10 @@
 # view res/layout/fragment_driver_details.xml #generated:192
 # view res/layout/fragment_driver_details.xml #generated:215
 # view res/layout/fragment_driver_details.xml #generated:224
-# view res/layout/fragment_driver_details.xml #generated:253
-# view res/layout/fragment_driver_details.xml #generated:262
-# view res/layout/fragment_driver_details.xml #generated:299
-# view res/layout/fragment_driver_details.xml #generated:312
+# view res/layout/fragment_driver_details.xml #generated:255
+# view res/layout/fragment_driver_details.xml #generated:264
+# view res/layout/fragment_driver_details.xml #generated:301
+# view res/layout/fragment_driver_details.xml #generated:314
 # view res/layout/fragment_driver_details.xml #generated:56
 # view res/layout/fragment_driver_details.xml #generated:68
 # view res/layout/fragment_driver_details.xml #generated:97

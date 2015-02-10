@@ -229,6 +229,8 @@
                         android:text="301-383 Lake Street, Huntington Beach, CA"
                         android:textColor="#697078"
                         android:textSize="12.5sp"
+                        android:singleLine="true"
+                        android:ellipsize="end"
                         ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 <!-- 
                     <ImageView
