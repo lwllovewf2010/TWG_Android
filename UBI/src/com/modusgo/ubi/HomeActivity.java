@@ -11,8 +11,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -29,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.modusgo.ubi.DriverActivity.VehiclesAdapter.ViewHolder;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.modusgo.ubi.requesttasks.BaseRequestAsyncTask;
@@ -43,6 +46,8 @@ public class HomeActivity extends MainActivity{
 	
 	VehiclesAdapter driversAdapter;
 	ArrayList<Vehicle> vehicles = new ArrayList<Vehicle>();
+	BroadcastReceiver vehiclesUpdateReceiver;
+	IntentFilter vehiclesUpdateFilter;
 
 	SwipeRefreshLayout lRefresh;
 	ListView lvVehicles;
@@ -75,6 +80,14 @@ public class HomeActivity extends MainActivity{
 				new GetVehiclesTask(HomeActivity.this).execute("vehicles.json");
 			}
 		});
+		
+		vehiclesUpdateFilter = new IntentFilter(Constants.BROADCAST_UPDATE_VEHICLES);
+		vehiclesUpdateReceiver = new BroadcastReceiver(){
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				updateDrivers();
+			}
+		};
 		
 		Device.checkDevice(this);
 		new SendEventsRequest(getApplicationContext(), true).execute();
@@ -142,36 +155,52 @@ public class HomeActivity extends MainActivity{
 
 		@Override
 		public View getView(final int position, View convertView, ViewGroup parent) {
-			
-			View view = convertView;
-		    if (view == null) {
-		      view = lInflater.inflate(R.layout.home_drivers_list_item, parent, false);
+			ViewHolder holder;
+		    if (convertView == null) {
+		    	convertView = lInflater.inflate(R.layout.home_drivers_list_item, parent, false);
+		    	holder = new ViewHolder();
+		    	holder.tvName = (TextView) convertView.findViewById(R.id.tvName);
+		    	holder.tvVehicle = (TextView) convertView.findViewById(R.id.tvVehicle);
+		    	holder.tvDateLabel = (TextView)convertView.findViewById(R.id.tvDateLabel);
+		    	holder.tvDate = (TextView) convertView.findViewById(R.id.tvDate);
+		    	holder.tvInTrip = convertView.findViewById(R.id.tvInTrip);
+		    	holder.imagePhoto = (ImageView)convertView.findViewById(R.id.imagePhoto);
+		    	holder.imageDiagnostics = (ImageButton) convertView.findViewById(R.id.imageDiagnostics);
+		    	holder.imageAlerts = (ImageButton) convertView.findViewById(R.id.imageAlerts);
+		    	convertView.setTag(holder);
+		    }else{
+		    	holder = (ViewHolder) convertView.getTag();
 		    }
 
 		    final Vehicle vehicle = getVehicle(position);
 
-		    ((TextView) view.findViewById(R.id.tvName)).setText(vehicle.name);
-		    ((TextView) view.findViewById(R.id.tvVehicle)).setText(vehicle.getCarFullName());
+		    holder.tvName.setText(vehicle.name);
+		    holder.tvVehicle.setText(vehicle.getCarFullName());
 		    
-		    if(TextUtils.isEmpty(vehicle.lastTripDate)){
-		    	view.findViewById(R.id.tvDateLabel).setVisibility(View.INVISIBLE);
-		    	view.findViewById(R.id.tvDate).setVisibility(View.INVISIBLE);
+		    if(vehicle.inTrip){
+		    	holder.tvDateLabel.setVisibility(View.INVISIBLE);
+		    	holder.tvDate.setVisibility(View.INVISIBLE);
+		    	holder.tvInTrip.setVisibility(View.VISIBLE);
+		    }
+		    else if(TextUtils.isEmpty(vehicle.lastTripDate)){
+		    	holder.tvDateLabel.setVisibility(View.INVISIBLE);
+		    	holder.tvDate.setVisibility(View.INVISIBLE);
+		    	holder.tvInTrip.setVisibility(View.GONE);
 		    }
 		    else{
-		    	view.findViewById(R.id.tvDateLabel).setVisibility(View.VISIBLE);
-		    	TextView tvDate = (TextView) view.findViewById(R.id.tvDate);
-		    	tvDate.setVisibility(View.VISIBLE);
+		    	holder.tvDateLabel.setVisibility(View.VISIBLE);
+		    	holder.tvDate.setVisibility(View.VISIBLE);
+		    	holder.tvInTrip.setVisibility(View.GONE);
 		    	try {
-		    		tvDate.setText(sdfTo.format(sdfFrom.parse(vehicle.lastTripDate)));
+		    		holder.tvDate.setText(sdfTo.format(sdfFrom.parse(vehicle.lastTripDate)));
 				} catch (ParseException e) {
-					tvDate.setText(vehicle.lastTripDate);
+					holder.tvDate.setText(vehicle.lastTripDate);
 					e.printStackTrace();
 				}
 		    }
 		    
-		    ImageView imagePhoto = (ImageView)view.findViewById(R.id.imagePhoto);
 		    if(vehicle.photo == null || vehicle.photo.equals(""))
-		    	imagePhoto.setImageResource(R.drawable.person_placeholder);
+		    	holder.imagePhoto.setImageResource(R.drawable.person_placeholder);
 		    else{
 		    	DisplayImageOptions options = new DisplayImageOptions.Builder()
 		        .showImageOnLoading(R.drawable.person_placeholder)
@@ -181,31 +210,28 @@ public class HomeActivity extends MainActivity{
 		        .cacheOnDisk(true)
 		        .build();
 		    	
-		    	ImageLoader.getInstance().displayImage(vehicle.photo, imagePhoto, options);
+		    	ImageLoader.getInstance().displayImage(vehicle.photo, holder.imagePhoto, options);
 		    }
 		    
-		    ImageButton btnDiagnostic = (ImageButton) view.findViewById(R.id.imageDiagnostics);
 		    
 		    if(prefs.getBoolean(Constants.PREF_DIAGNOSTIC, false)){
 			    if(vehicle.carDTCCount<=0){
-			    	btnDiagnostic.setImageResource(R.drawable.ic_diagnostics_green);
+			    	holder.imageDiagnostics.setImageResource(R.drawable.ic_diagnostics_green);
 			    }else{
-			    	btnDiagnostic.setImageResource(R.drawable.ic_diagnostics_red);		    	
+			    	holder.imageDiagnostics.setImageResource(R.drawable.ic_diagnostics_red);		    	
 			    }
 		    }
 		    else{
-		    	btnDiagnostic.setVisibility(View.GONE);
+		    	holder.imageDiagnostics.setVisibility(View.GONE);
 		    }
-		    
-		    ImageButton btnAlerts = (ImageButton) view.findViewById(R.id.imageAlerts);
 		    
 		    if(vehicle.alerts<=0){
-		    	btnAlerts.setImageResource(R.drawable.ic_alerts_green);
+		    	holder.imageAlerts.setImageResource(R.drawable.ic_alerts_green);
 		    }else{
-		    	btnAlerts.setImageResource(R.drawable.ic_alerts_red);
+		    	holder.imageAlerts.setImageResource(R.drawable.ic_alerts_red);
 		    }
 		    
-		    btnAlerts.setOnClickListener(new OnClickListener() {
+		    holder.imageAlerts.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					Intent i = new Intent(HomeActivity.this, AlertsActivity.class);
@@ -214,7 +240,7 @@ public class HomeActivity extends MainActivity{
 				}
 			});
 		    
-		    view.setOnClickListener(new OnClickListener() {
+		    convertView.setOnClickListener(new OnClickListener() {
 				
 				@Override
 				public void onClick(View arg0) {
@@ -228,11 +254,22 @@ public class HomeActivity extends MainActivity{
 				}
 			});
 		    
-		    return view;
+		    return convertView;
 		}
 		
 		Vehicle getVehicle(int position) {
 			return ((Vehicle) getItem(position));
+		}
+		
+		class ViewHolder {
+			ImageView imagePhoto;
+			TextView tvName;
+			TextView tvVehicle;
+			TextView tvDateLabel;
+			TextView tvDate;
+			View tvInTrip;
+			ImageButton imageDiagnostics;
+			ImageButton imageAlerts;
 		}
 		
 	}
@@ -240,9 +277,16 @@ public class HomeActivity extends MainActivity{
 	@Override
 	public void onResume() {
 		super.onResume();
+		registerReceiver(vehiclesUpdateReceiver, vehiclesUpdateFilter);
 		setNavigationDrawerItemSelected(MenuItems.HOME);
-		driversAdapter.notifyDataSetChanged();
+		updateDrivers();
 		Utils.gaTrackScreen(this, "Home Screen");
+	}
+	
+	@Override
+	protected void onPause() {
+		unregisterReceiver(vehiclesUpdateReceiver);
+		super.onPause();
 	}
 	
 	class GetVehiclesTask extends BaseRequestAsyncTask{

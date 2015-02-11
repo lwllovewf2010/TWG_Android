@@ -1,5 +1,10 @@
 package com.modusgo.dd;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -15,14 +20,17 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.bugsnag.android.Bugsnag;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.modusgo.ubi.Constants;
 import com.modusgo.ubi.InitActivity;
 import com.modusgo.ubi.R;
+import com.modusgo.ubi.Vehicle;
+import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.requesttasks.GetDeviceInfoRequest;
 import com.modusgo.ubi.utils.Device;
+import com.modusgo.ubi.utils.Utils;
 
 /**
  * This {@code IntentService} does the actual handling of the GCM message.
@@ -63,10 +71,6 @@ public class GcmIntentService extends IntentService {
             // If it's a regular GCM message, do some work.
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
             	
-            	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-            	Editor e  = prefs.edit();
-            	
-            	
 //            	for (String key : extras.keySet()) {
 //            	    Object value = extras.get(key);
 //            	    Log.d(TAG, String.format("%s %s (%s)", key,  
@@ -74,61 +78,157 @@ public class GcmIntentService extends IntentService {
 //            	}
             	
             	Bugsnag.addToTab("User", "Push data", extras.toString());
+            	Bugsnag.notify(new RuntimeException("Push received"));
             	
-            	String deviceType = prefs.getString(Device.PREF_DEVICE_TYPE, "");
+            	if(extras.containsKey("aps")){
+            		String apsJSON = extras.getString("aps");
+            		try {
+            			JSONObject jsonObj = new JSONObject(apsJSON);
+            			if(jsonObj.optInt("content-available")==0){
+            				String message = jsonObj.optString("alert");
+            				if(!TextUtils.isEmpty(message))
+            					sendNotification(getResources().getString(R.string.app_name), message);
+            			}
+            		} catch (JSONException e1) {
+            			e1.printStackTrace();
+            		}
+            	}
             	
-            	if(deviceType.equals(Device.DEVICE_TYPE_OBD)){
-	            	Bugsnag.notify(new RuntimeException("Push received"));
-	            	
-	            	if(extras.containsKey("aps")){
-						String apsJSON = extras.getString("aps");
-						try {
-							JSONObject jsonObj = new JSONObject(apsJSON);
-							if(jsonObj.optInt("content-available")==0){
-								String message = jsonObj.optString("alert");
-				            	if(!TextUtils.isEmpty(message))
-				            		sendNotification(getResources().getString(R.string.app_name), message);
-							}
-						} catch (JSONException e1) {
-							e1.printStackTrace();
-						}
-	            	}
-	            	
-	            	if(extras.containsKey("in_trip")){
-						e.putBoolean(Device.PREF_DEVICE_IN_TRIP, !TextUtils.isEmpty(extras.getString("in_trip")));
-	            	}
-	            	else{
-	            		e.putBoolean(Device.PREF_DEVICE_IN_TRIP, false);
-	            	}
-	            	
-	            	if(extras.containsKey("type")){
-						e.putString(Device.PREF_DEVICE_TYPE, extras.getString("type"));
-	            	}
-	            	
-	            	if(extras.containsKey("events")){
-	            		try{
-	            			e.putBoolean(Device.PREF_DEVICE_EVENTS, Boolean.parseBoolean(extras.getString("events")));
-	            		}
-	            		catch(Exception ex){
+            	
+            	Calendar calUpdatedAt = Calendar.getInstance();
+            	if(extras.containsKey("updated_at")){
+            		SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);
+            		try {
+            			calUpdatedAt.setTime(sdf.parse(Utils.fixTimezoneZ(extras.getString("updated_at"))));
+            		} catch (ParseException ex) {
+            			ex.printStackTrace();
+            		}
+            	}
+            	
+            	if(extras.containsKey("act")){
+            		SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);;
+            		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                	
+            		switch (extras.getString("act", "du")) {
+            		case "du":
+            			Calendar calDeviceUpdatedAt = Calendar.getInstance();
+	            		try {
+	            			calDeviceUpdatedAt.setTime(sdf.parse(prefs.getString(Device.PREF_DEVICE_UPDATED_AT, "")));
+	            		} catch (ParseException ex) {
 	            			ex.printStackTrace();
-	            			e.putBoolean(Device.PREF_DEVICE_EVENTS, false);
 	            		}
-	            	}
-	            	if(extras.containsKey("latitude")){
-						e.putString(Device.PREF_DEVICE_LATITUDE, extras.getString("latitude"));
-	            	}
-	            	if(extras.containsKey("longitude")){
-						e.putString(Device.PREF_DEVICE_LONGITUDE, extras.getString("longitude"));
-	            	}
-	            	if(extras.containsKey("location_date")){
-						e.putString(Device.PREF_DEVICE_LOCATION_DATE, extras.getString("location_date"));
-	            	}
-	            	
-	            	e.commit();
-            	}
-            	else{
-	            	Bugsnag.notify(new RuntimeException("Push received, not proccessed, device is not OBD"));
-            	}
+            			
+            			String deviceType = prefs.getString(Device.PREF_DEVICE_TYPE, "");
+            			if(deviceType.equals(Device.DEVICE_TYPE_OBD) && calDeviceUpdatedAt.before(calUpdatedAt)){
+            				Editor e  = prefs.edit();
+            				if(extras.containsKey("in_trip")){
+            					e.putBoolean(Device.PREF_DEVICE_IN_TRIP, !TextUtils.isEmpty(extras.getString("in_trip")));
+            				}
+            				else{
+            					e.putBoolean(Device.PREF_DEVICE_IN_TRIP, false);
+            				}
+            				
+            				if(extras.containsKey("type")){
+            					e.putString(Device.PREF_DEVICE_TYPE, extras.getString("type"));
+            				}
+            				
+            				if(extras.containsKey("events")){
+            					try{
+            						e.putBoolean(Device.PREF_DEVICE_EVENTS, Boolean.parseBoolean(extras.getString("events")));
+            					}
+            					catch(Exception ex){
+            						ex.printStackTrace();
+            						e.putBoolean(Device.PREF_DEVICE_EVENTS, false);
+            					}
+            				}
+            				if(extras.containsKey("latitude")){
+            					e.putString(Device.PREF_DEVICE_LATITUDE, extras.getString("latitude"));
+            				}
+            				if(extras.containsKey("longitude")){
+            					e.putString(Device.PREF_DEVICE_LONGITUDE, extras.getString("longitude"));
+            				}
+            				if(extras.containsKey("location_date")){
+            					e.putString(Device.PREF_DEVICE_LOCATION_DATE, extras.getString("location_date"));
+            				}
+            				if(extras.containsKey("location_date")){
+            					e.putString(Device.PREF_DEVICE_LOCATION_DATE, extras.getString("location_date"));
+            				}
+            				if(extras.containsKey("updated_at")){
+            					e.putString(Device.PREF_DEVICE_UPDATED_AT, Utils.fixTimezoneZ(extras.getString("updated_at")));
+            				}
+            				
+                        	e.commit();
+
+            				sendBroadcast(new Intent(Constants.BROADCAST_UPDATE_VEHICLES));
+            			}
+            			else{
+            				Bugsnag.notify(new RuntimeException("Push received, not proccessed, device is not OBD or data is old"));
+            			}
+            			break;
+            		case "vu":
+            			if(extras.containsKey("id")){
+            				DbHelper dbHelper = DbHelper.getInstance(this);
+            				Vehicle vehicle;
+            				
+            				Object id = extras.get("id");
+            				if(id instanceof Long)
+            					vehicle = dbHelper.getVehicle(extras.getLong("id"));
+            				else{
+            					vehicle = dbHelper.getVehicle(Long.parseLong(extras.getString("id")));            					
+            				}
+            				
+							Calendar calVehicleUpdatedAt = Calendar.getInstance();
+		            		try {
+		            			calVehicleUpdatedAt.setTime(sdf.parse(vehicle.updatedAt));
+		            		} catch (ParseException ex) {
+		            			ex.printStackTrace();
+		            		}
+							if(calVehicleUpdatedAt.before(calUpdatedAt)){
+	            				if(extras.containsKey("location")){
+	            					String locationJSONStr = extras.getString("location");
+	                        		try {
+	                        			JSONObject locationJSON = new JSONObject(locationJSONStr);
+	                        			
+	                        			if(locationJSON.has("location_date")){
+	                        				
+	                        			}
+	                        			if(locationJSON.has("latitude")){
+	                        				vehicle.latitude = locationJSON.optDouble("latitude");
+	                        			}
+	                        			if(locationJSON.has("longitude")){
+	                        				vehicle.longitude = locationJSON.optDouble("longitude");
+	                        				System.out.println("longitude: "+locationJSON.optDouble("longitude"));
+	                        			}
+	                        			if(!locationJSON.isNull("in_trip")){
+	                        				vehicle.inTrip = !TextUtils.isEmpty(locationJSON.optString("in_trip"));
+	                        			}
+	                        			if(locationJSON.has("last_trip_id")){
+	                        				vehicle.lastTripId = locationJSON.optLong("last_trip_id");	
+	                        				System.out.println("last_trip_id: "+locationJSON.optLong("last_trip_id"));								
+	                        			}
+	                        			if(locationJSON.has("last_trip_time")){
+	                        				vehicle.lastTripDate = Utils.fixTimezoneZ(locationJSON.optString("last_trip_time"));										
+	                        			}
+	                        		} catch (JSONException ex) {
+	                        			ex.printStackTrace();
+	                        		}
+	            				}
+
+	            				if(extras.containsKey("updated_at")){
+	            					vehicle.updatedAt = Utils.fixTimezoneZ(extras.getString("updated_at"));
+	            				}
+	            				dbHelper.saveVehicle(vehicle);
+	            				
+	            				sendBroadcast(new Intent(Constants.BROADCAST_UPDATE_VEHICLES));
+							}
+            				
+            				dbHelper.close();
+            			}
+            			
+            		default:
+            			break;
+            		}
+            	}            	
             	
             	new GetDeviceInfoRequest(this).execute();
             }

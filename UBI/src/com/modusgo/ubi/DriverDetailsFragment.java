@@ -6,14 +6,9 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -46,7 +41,6 @@ import com.modusgo.ubi.customviews.GoogleMapFragment;
 import com.modusgo.ubi.customviews.GoogleMapFragment.OnMapReadyListener;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
-import com.modusgo.ubi.requesttasks.BaseRequestAsyncTask;
 import com.modusgo.ubi.requesttasks.GetVehicleRequest;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -62,6 +56,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	TextView tvVehicle;
 	TextView tvLocation;
 	TextView tvDate;
+	TextView tvDateLabel;
 	ImageView imagePhoto;
 	TextView tvDistanceToCar;
 	TextView tvDistanceToCarLabel;
@@ -71,6 +66,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	
 	View btnDistanceToCar;
 	View rlLastTrip;
+	View tvInTrip;
 	View rlLocation;
 	View spaceFuel;
 
@@ -102,6 +98,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	    tvVehicle = (TextView) rootView.findViewById(R.id.tvVehicle);
 	    tvLocation = (TextView) rootView.findViewById(R.id.tvLocation);
 	    tvDate = (TextView) rootView.findViewById(R.id.tvDate);
+	    tvDateLabel = (TextView) rootView.findViewById(R.id.tvDateLabel);
 	    imagePhoto = (ImageView)rootView.findViewById(R.id.imagePhoto);
 	    tvDistanceToCar = (TextView)rootView.findViewById(R.id.tvDistanceToCar);
 	    tvDistanceToCarLabel = (TextView)rootView.findViewById(R.id.tvDistanceToCarLabel);
@@ -111,6 +108,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	    btnDistanceToCar = (View)tvDistanceToCar.getParent();
 	    rlLocation = rootView.findViewById(R.id.rlLocation);
 	    rlLastTrip = rootView.findViewById(R.id.rlDate);
+	    tvInTrip = rootView.findViewById(R.id.tvInTrip);
 	    spaceFuel = rootView.findViewById(R.id.spaceFuel);
 	    
 	    updateFragment();
@@ -181,7 +179,9 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 		}
 	}
 	
-	private void updateDriverInfo(){
+	public void updateDriverInfo(){
+		if(vehicle.id == ((DriverActivity)getActivity()).vehicle.id)
+			vehicle = ((DriverActivity)getActivity()).vehicle;
 		tvName.setText(vehicle.name);
 	    tvVehicle.setText(vehicle.getCarFullName());
 	    if(TextUtils.isEmpty(vehicle.address)){
@@ -281,7 +281,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	    	tvAlerts.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_alerts_red_medium, 0, 0, 0);		    	
 	    }
 	    
-	    if(vehicle.lastTripId>0){
+	    if(vehicle.lastTripId>0 && !vehicle.inTrip){
 	    	rlLastTrip.findViewById(R.id.dateImageArrow).setVisibility(View.VISIBLE);
 		    rlLastTrip.setOnClickListener(new OnClickListener() {
 				@Override
@@ -294,11 +294,24 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 			});
 	    }
 	    else{
-	    	rlLastTrip.findViewById(R.id.dateImageArrow).setVisibility(View.GONE);	    	
+	    	rlLastTrip.findViewById(R.id.dateImageArrow).setVisibility(View.GONE);	
+	    	rlLastTrip.setOnClickListener(null);
 	    }
 	    
-	    if(TextUtils.isEmpty(vehicle.lastTripDate)){
-	    	rlLastTrip.setVisibility(View.GONE);
+	    if(vehicle.inTrip){
+	    	tvInTrip.setVisibility(View.VISIBLE);
+	    	tvDate.setVisibility(View.INVISIBLE);
+	    	tvDateLabel.setVisibility(View.INVISIBLE);
+	    }
+	    else if(TextUtils.isEmpty(vehicle.lastTripDate)){
+	    	tvInTrip.setVisibility(View.GONE);
+	    	tvDate.setVisibility(View.INVISIBLE);
+	    	tvDateLabel.setVisibility(View.INVISIBLE);
+	    }
+	    else{
+	    	tvInTrip.setVisibility(View.GONE);
+	    	tvDate.setVisibility(View.VISIBLE);
+	    	tvDateLabel.setVisibility(View.VISIBLE);
 	    }
 	    
         setUpMapIfNeeded();

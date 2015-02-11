@@ -27,6 +27,7 @@ public class Device {
 	public static final String PREF_DEVICE_LATITUDE = "deviceLatitude";
 	public static final String PREF_DEVICE_LONGITUDE = "deviceLongitude";
 	public static final String PREF_DEVICE_LOCATION_DATE = "locationDate";
+	public static final String PREF_DEVICE_UPDATED_AT = "updatedAt";
 	public static final String PREF_IN_TRIP_NOW = "inTripNow";
 	private static final String PREF_LAST_SENDEVENT_MILLIS = "lastSendEventMillis";
 

@@ -28,6 +28,7 @@ public class VehicleContract {
         public static final String COLUMN_NAME_ADDRESS = "address";
         public static final String COLUMN_NAME_LAST_TRIP_DATE = "last_trip_date";
         public static final String COLUMN_NAME_LAST_TRIP_ID = "last_trip_id";
+        public static final String COLUMN_NAME_IN_TRIP = "in_trip";
 
         public static final String COLUMN_NAME_SCORE = "score";
         public static final String COLUMN_NAME_GRADE = "grade";
@@ -42,5 +43,6 @@ public class VehicleContract {
         public static final String COLUMN_NAME_ODOMETER = "odometer";
         public static final String COLUMN_NAME_LIMITS_BLOCKED = "limits_blocked";
         public static final String COLUMN_NAME_LIMITS_BLOCKED_BY = "limits_blocked_by";
+        public static final String COLUMN_NAME_UPDATED_AT = "updated_at";
     }
 }
