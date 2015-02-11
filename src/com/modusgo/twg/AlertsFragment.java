@@ -32,6 +32,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -40,7 +41,9 @@ import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
@@ -62,6 +65,7 @@ public class AlertsFragment extends Fragment implements UpdateCallback
 	private MainActivity main = null;
 	View rootView = null;
 	ListView infoList = null;
+	private Button callServiceBtn = null;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -71,6 +75,21 @@ public class AlertsFragment extends Fragment implements UpdateCallback
 		rootView = inflater.inflate(R.layout.alerts_fragment, container, false);
 		lRefresh = (SwipeRefreshLayout) rootView.findViewById(R.id.lRefresh);
 		llProgress = (LinearLayout) rootView.findViewById(R.id.llProgress);
+		callServiceBtn = (Button) rootView.findViewById(R.id.callServiceBtn);
+
+		callServiceBtn.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public void onClick(View v)
+			{
+				String uri = "tel: 18005551212";
+				Intent intent = new Intent(Intent.ACTION_DIAL);
+				intent.setData(Uri.parse(uri));
+				startActivity(intent);
+			}
+		});
+
 
 		main.setActionBarTitle("Alerts");
 		prefs = PreferenceManager.getDefaultSharedPreferences(main);

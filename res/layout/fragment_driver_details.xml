@@ -59,10 +59,11 @@
                             android:layout_height="wrap_content"
                             android:drawableLeft="@drawable/ic_fuel_green"
                             android:drawablePadding="3dp"
-                            android:gravity="top"
+                            android:layout_alignParentTop="false"
+                            android:layout_centerHorizontal="true"
                             android:text="N/A"
                             android:textColor="#24a406"
-                            android:textSize="24sp"
+                            android:textSize="12sp"
                             ubi:typeface="arialbd.ttf" />
 
                         <com.modusgo.twg.customviews.TypefacedTextView
@@ -70,7 +71,8 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@id/tvFuel"
                             android:layout_marginTop="3dp"
-                            android:gravity="center_horizontal"
+                            android:layout_alignParentBottom="true"
+                            android:gravity="center"
                             android:text="Fuel level"
                             android:textColor="#697078"
                             android:textSize="12sp"

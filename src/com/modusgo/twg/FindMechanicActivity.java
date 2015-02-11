@@ -94,14 +94,16 @@ public class FindMechanicActivity extends MainActivity //implements OnMapReadyLi
         // Gets to GoogleMap from the MapView and does initialization stuff
         map = mapView.getMap();
         map.getUiSettings().setMyLocationButtonEnabled(false);
-        map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
-			@Override
-			public void onMapLoaded() {
-				CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(latitude,longitude), 14);
-		        map.animateCamera(cameraUpdate);
+		CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(latitude,longitude), 14);
+        map.animateCamera(cameraUpdate);
+ //       map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
+//			@Override
+//			public void onMapLoaded() {
+//				CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(latitude,longitude), 14);
+//		        map.animateCamera(cameraUpdate);
 		        addMarkerToMap();
-			}
-		});
+//			}
+//		});
         
         MapsInitializer.initialize(this);    
         

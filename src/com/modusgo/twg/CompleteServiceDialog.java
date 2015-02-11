@@ -199,9 +199,6 @@ public class CompleteServiceDialog extends DialogFragment implements DatePickerD
 		c.close();
 		c = null;
 		
-		//Add in "CarMax"
-		typeList.add(getResources().getString(R.string.CarMax));
-		
 		//Add in any user defined types
 		Set<String> list = (Set<String>) prefs.getStringSet(Constants.PREF_OTHER_TYPES, null);
 		if(list != null && list.size() > 0)
@@ -338,6 +335,10 @@ public class CompleteServiceDialog extends DialogFragment implements DatePickerD
 		{
 			locationList.addAll(list);
 		}
+		
+		//Add in "CarMax"
+		locationList.add(getResources().getString(R.string.CarMax));
+
 		locationList.add("Other");
 		
 		ArrayAdapter<String> locationAdapter = new ArrayAdapter<String>(main,

@@ -20,6 +20,7 @@
     <string name="EnterOtherLocationInfo">Enter Other Location Info</string>
     <string name="EnterOtherTypeInfo">Enter Other Type Info</string>
     <string name="EnterServiceCompletion">Enter Service Completion Info</string>
+    <string name="Facilities">Facilities</string>
     <string name="FindMechanic">Find a Mechanic</string>
     <string name="GatheringDiagnosticInformation">Gathering diagnostic information...</string>
     <string name="LogFor">LOG FOR:</string>

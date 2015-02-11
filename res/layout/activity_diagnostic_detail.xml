@@ -214,7 +214,7 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="15dp"
                         android:background="@color/btn_orange"
-                        android:text="Find a mechanic"
+                        android:text="Facilities"
                         android:textAllCaps="true"
                         android:textColor="#edf1f9"
                         android:textSize="12.5sp"

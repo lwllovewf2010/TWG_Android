@@ -237,6 +237,9 @@ public class DriverDetailsFragment extends Fragment implements ConnectionCallbac
 		}
 
 		/*-------------------------Fuel Level------------------------*/
+		vehicle.carFuelLevel = 95;
+		vehicle.carFuelUnit = "%";
+		
 		View fuelBlock = (View) tvFuelLevel.getParent();
 
 		if(vehicle.carFuelLevel >= 0 && !TextUtils.isEmpty(vehicle.carFuelUnit))

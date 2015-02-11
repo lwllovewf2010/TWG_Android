@@ -94,9 +94,7 @@ android.support.v4.app.DialogFragment:
     private static final java.lang.String SAVED_BACK_STACK_ID
     113:120:public void setStyle(int,int)
     151:156:public int show(android.support.v4.app.FragmentTransaction,java.lang.String)
-    166:167:public void dismiss()
     176:177:public void dismissAllowingStateLoss()
-    206:206:public android.app.Dialog getDialog()
     224:226:public void setCancelable(boolean)
     232:232:public boolean isCancelable()
     253:254:public void setShowsDialog(boolean)
@@ -122,11 +120,14 @@ android.support.v4.app.Fragment:
     716:716:public final boolean isInLayout()
     724:724:public final boolean isResumed()
     733:733:public final boolean isVisible()
+    745:745:public final boolean isHidden()
     750:750:public final boolean hasOptionsMenu()
     755:755:public final boolean isMenuVisible()
     783:788:public void setRetainInstance(boolean)
     791:791:public final boolean getRetainInstance()
     802:808:public void setHasOptionsMenu(boolean)
+    820:826:public void setMenuVisibility(boolean)
+    842:847:public void setUserVisibleHint(boolean)
     854:854:public boolean getUserVisibleHint()
     861:869:public android.support.v4.app.LoaderManager getLoaderManager()
     1332:1333:public void registerForContextMenu(android.view.View)
@@ -192,9 +193,7 @@ android.support.v4.app.FragmentManagerImpl:
     611:611:public boolean isDestroyed()
     1347:1355:public android.support.v4.app.Fragment findFragmentByWho(java.lang.String)
 android.support.v4.app.FragmentManagerImpl$3
-android.support.v4.app.FragmentPagerAdapter:
-    private static final java.lang.String TAG
-    private static final boolean DEBUG
+android.support.v4.app.FragmentPagerAdapter
 android.support.v4.app.FragmentStatePagerAdapter
 android.support.v4.app.FragmentTabHost:
     188:193:public void setup(android.content.Context,android.support.v4.app.FragmentManager)
@@ -2552,11 +2551,17 @@ com.daimajia.swipe.interfaces.SwipeItemMangerInterface:
 com.echo.holographlibrary.Bar:
     private float mOldValue
     private float mGoalValue
+    56:58:public void setColor(int)
+    65:66:public void setLabelColor(int)
     74:75:public void setSelectedColor(int)
+    82:83:public void setValueColor(int)
+    90:91:public void setName(java.lang.String)
+    98:99:public void setValue(float)
     102:102:public float getOldValue()
     105:105:public void setOldValue(float)
     108:108:public float getGoalValue()
     111:111:public void setGoalValue(float)
+    122:123:public void setValueString(java.lang.String)
     124:124:public java.lang.String getValuePrefix()
     126:126:public void setValuePrefix(java.lang.String)
     128:128:public java.lang.String getValueSuffix()
@@ -7304,16 +7309,13 @@ com.google.maps.android.MarkerManager
 com.google.maps.android.MarkerManager$Collection
 com.google.maps.android.MathUtil
 com.google.maps.android.PolyUtil
-com.google.maps.android.R:
-    9:9:public R()
+com.google.maps.android.R
 com.google.maps.android.R$attr
 com.google.maps.android.R$color
 com.google.maps.android.R$drawable
-com.google.maps.android.R$id:
-    113:113:public R$id()
+com.google.maps.android.R$id
 com.google.maps.android.R$integer
-com.google.maps.android.R$layout:
-    139:139:public R$layout()
+com.google.maps.android.R$layout
 com.google.maps.android.R$string
 com.google.maps.android.R$style
 com.google.maps.android.R$styleable
@@ -7359,27 +7361,7 @@ com.google.maps.android.projection.SphericalMercatorProjection
 com.google.maps.android.quadtree.PointQuadTree
 com.google.maps.android.quadtree.PointQuadTree$Item
 com.google.maps.android.ui.BubbleIconFactory
-com.google.maps.android.ui.IconGenerator:
-    public static final int STYLE_DEFAULT
-    public static final int STYLE_WHITE
-    public static final int STYLE_RED
-    public static final int STYLE_BLUE
-    public static final int STYLE_GREEN
-    public static final int STYLE_PURPLE
-    public static final int STYLE_ORANGE
-    70:76:public android.graphics.Bitmap makeIcon(java.lang.String)
-    142:148:public void setContentView(android.view.View)
-    156:158:public void setContentRotation(int)
-    166:167:public void setRotation(int)
-    174:174:public float getAnchorU()
-    181:181:public float getAnchorV()
-    188:198:private float rotateAnchor(float,float)
-    208:212:public void setTextAppearance(android.content.Context,int)
-    221:222:public void setTextAppearance(int)
-    228:230:public void setStyle(int)
-    282:284:public void setContentPadding(int,int,int,int)
-    295:309:private static int getBackground(int)
-    314:324:private static int getTextStyle(int)
+com.google.maps.android.ui.IconGenerator
 com.google.maps.android.ui.RotationLayout:
     58:59:public void setViewRotation(int)
 com.google.maps.android.ui.SquareTextView
@@ -7429,8 +7411,12 @@ com.jeremyfeinstein.slidingmenu.lib.SlidingMenu:
     public static final int LEFT_RIGHT
     439:439:public boolean isSlidingEnabled()
     484:485:public void showMenu()
+    493:494:public void showMenu(boolean)
     501:502:public void showSecondaryMenu()
     511:512:public void showSecondaryMenu(boolean)
+    534:535:public void toggle()
+    543:548:public void toggle(boolean)
+    556:556:public boolean isMenuShowing()
     565:565:public boolean isSecondaryMenuShowing()
     857:858:public void addIgnoredView(android.view.View)
     866:867:public void removeIgnoredView(android.view.View)
@@ -7474,162 +7460,247 @@ com.modusgo.dd.TrackingStatusService:
 com.modusgo.dd.requests.BasicAsyncTask
 com.modusgo.dd.requests.CheckIgnitionRequest
 com.modusgo.dd.requests.SendStatsRequest
-com.modusgo.ubi.AlertMapActivity:
+com.modusgo.twg.AlertMapActivity:
     public static final java.lang.String EXTRA_ALERT_ID
-com.modusgo.ubi.AlertsActivity:
+com.modusgo.twg.AlertsActivity:
     private static final int ALERTS_PER_REQUEST
-com.modusgo.ubi.BuildConfig
-com.modusgo.ubi.CirclesFragment:
+com.modusgo.twg.BuildConfig
+com.modusgo.twg.CirclesFragment:
     public static final java.lang.String SAVED_SECTIONS
-com.modusgo.ubi.Constants
-com.modusgo.ubi.DiagnosticDetailActivity:
+com.modusgo.twg.CompleteServiceDialog:
+    java.util.HashMap maintenancesByMileage
+    java.util.HashMap maintenancesHeaders
+com.modusgo.twg.Constants
+com.modusgo.twg.DiagnosticDetailActivity:
     public static final java.lang.String EXTRA_DTC
-com.modusgo.ubi.DiagnosticsFragment:
+com.modusgo.twg.DiagnosticsFragment:
     private static final java.lang.String ERROR_STATUS_MESSAGE
-com.modusgo.ubi.DiagnosticsTroubleCode:
+    android.widget.EditText editOdometer
+    java.util.HashMap maintenancesByMileage
+    java.util.HashMap maintenancesHeaders
+com.modusgo.twg.DiagnosticsFragment$HideMaintenanceTask
+com.modusgo.twg.DiagnosticsFragment$HideRecallTask
+com.modusgo.twg.DiagnosticsTroubleCode:
     private static final long serialVersionUID
-com.modusgo.ubi.DriverActivity:
+com.modusgo.twg.DriverActivity:
     public static final java.lang.String SAVED_DRIVER
+    117:118:public void switchTab(int)
+    217:220:private void setupTab(java.lang.Class,android.os.Bundle,java.lang.String,java.lang.String,int)
+    237:251:private static android.view.View createTabView(android.content.Context,java.lang.String,java.lang.String,int)
     256:259:public android.view.animation.Animation fadeOutAnimation()
     264:267:public android.view.animation.Animation fadeInAnimation()
-com.modusgo.ubi.EducationActivity:
+com.modusgo.twg.DriverActivity$VehiclesAdapter
+com.modusgo.twg.DriverActivity$VehiclesAdapter$1
+com.modusgo.twg.DriverDetailsFragment:
+    android.view.View btnFuelLevel
+com.modusgo.twg.EducationActivity:
     public static final java.lang.String SAVED_STRING_RESOURCE
-com.modusgo.ubi.FindMechanicActivity:
-    public static final java.lang.String EXTRA_TRIP_ID
-com.modusgo.ubi.FindMyCarActivity:
+com.modusgo.twg.FindMechanicActivity:
+    private android.content.SharedPreferences prefs
+com.modusgo.twg.FindMyCarActivity:
     public static final java.lang.String EXTRA_POINTS
-com.modusgo.ubi.FindMyCarActivity$ErrorDialogFragment
-com.modusgo.ubi.LimitsFragment:
-    578:581:private java.lang.String getTime24String(int,int)
-com.modusgo.ubi.MainActivity:
-    485:487:public void showFeedbackActivity()
-com.modusgo.ubi.MainActivity$MenuItems:
-    73:73:public int toInt()
-    77:77:public java.lang.String[] valuesString()
-com.modusgo.ubi.Manifest
-com.modusgo.ubi.Manifest$permission
-com.modusgo.ubi.PieChartFragment:
+com.modusgo.twg.FindMyCarActivity$ErrorDialogFragment
+com.modusgo.twg.InitActivity:
+    android.view.View layoutProgress
+    android.view.View layoutFields
+    android.widget.EditText editClientId
+    android.widget.TextView tvError
+    android.view.animation.Animation fadeInProgress
+    android.view.animation.Animation fadeOutProgress
+    android.view.animation.Animation fadeInFields
+    android.view.animation.Animation fadeOutFields
+    149:151:private android.view.animation.Animation getFadeInAnmation(android.view.View)
+    155:157:private android.view.animation.Animation getFadeOutAnmation(android.view.View)
+com.modusgo.twg.InitActivity$MyAnimationListener
+com.modusgo.twg.LimitsFragment
+com.modusgo.twg.LimitsFragment$1
+com.modusgo.twg.LimitsFragment$10
+com.modusgo.twg.LimitsFragment$10$1
+com.modusgo.twg.LimitsFragment$2
+com.modusgo.twg.LimitsFragment$3
+com.modusgo.twg.LimitsFragment$4
+com.modusgo.twg.LimitsFragment$4$1
+com.modusgo.twg.LimitsFragment$4$1$1
+com.modusgo.twg.LimitsFragment$4$2
+com.modusgo.twg.LimitsFragment$5
+com.modusgo.twg.LimitsFragment$6
+com.modusgo.twg.LimitsFragment$6$1
+com.modusgo.twg.LimitsFragment$6$1$1
+com.modusgo.twg.LimitsFragment$7
+com.modusgo.twg.LimitsFragment$7$1
+com.modusgo.twg.LimitsFragment$7$1$1
+com.modusgo.twg.LimitsFragment$8
+com.modusgo.twg.LimitsFragment$9
+com.modusgo.twg.LimitsFragment$GetLimitsTask
+com.modusgo.twg.LimitsFragment$Limit
+com.modusgo.twg.LimitsFragment$LimitsLinkChild
+com.modusgo.twg.LimitsFragment$LimitsListChild
+com.modusgo.twg.LimitsFragment$LimitsSingleValueChild
+com.modusgo.twg.LimitsFragment$LimitsTimePeriodChild
+com.modusgo.twg.LimitsFragment$SetLimitsTask
+com.modusgo.twg.MainActivity:
+    294:298:public void setButtonNavigationDrawerVisibility(boolean)
+    620:622:public void showFeedbackActivity()
+com.modusgo.twg.MainActivity$MenuItems:
+    91:91:public int toInt()
+    95:95:public java.lang.String[] valuesString()
+com.modusgo.twg.Manifest
+com.modusgo.twg.Manifest$permission
+com.modusgo.twg.PieChartFragment:
     public static final java.lang.String SAVED_VALUES
     public static final java.lang.String SAVED_SUBTITLES
     public static final java.lang.String SAVED_TITLES
     public static final java.lang.String SAVED_COLORS
-    36:40:public PieChartFragment(float[],java.lang.String[],java.lang.String[])
-com.modusgo.ubi.R:
+    37:41:public PieChartFragment(float[],java.lang.String[],java.lang.String[])
+com.modusgo.twg.R:
     10:10:public R()
-com.modusgo.ubi.R$anim
-com.modusgo.ubi.R$array
-com.modusgo.ubi.R$attr
-com.modusgo.ubi.R$bool
-com.modusgo.ubi.R$color
-com.modusgo.ubi.R$dimen
-com.modusgo.ubi.R$drawable
-com.modusgo.ubi.R$id
-com.modusgo.ubi.R$integer
-com.modusgo.ubi.R$layout
-com.modusgo.ubi.R$string
-com.modusgo.ubi.R$style
-com.modusgo.ubi.R$styleable:
-    3183:3183:public R$styleable()
-com.modusgo.ubi.R$xml
-com.modusgo.ubi.Recall:
-    private static final long serialVersionUID
-com.modusgo.ubi.RecallActivity:
+com.modusgo.twg.R$anim
+com.modusgo.twg.R$array
+com.modusgo.twg.R$attr
+com.modusgo.twg.R$bool
+com.modusgo.twg.R$color
+com.modusgo.twg.R$dimen
+com.modusgo.twg.R$drawable
+com.modusgo.twg.R$id
+com.modusgo.twg.R$integer
+com.modusgo.twg.R$layout
+com.modusgo.twg.R$string
+com.modusgo.twg.R$style
+com.modusgo.twg.R$styleable:
+    3329:3329:public R$styleable()
+com.modusgo.twg.R$xml
+com.modusgo.twg.RecallActivity:
     public static final java.lang.String EXTRA_RECALL
-com.modusgo.ubi.ScoreCirclesActivity:
+com.modusgo.twg.ScoreCirclesActivity:
     public static final java.lang.String SAVED_CIRCLES_BUNDLE
-com.modusgo.ubi.ScoreCirclesActivity$CirclesSection:
+com.modusgo.twg.ScoreCirclesActivity$CirclesSection:
     private static final long serialVersionUID
-com.modusgo.ubi.ScoreInfoActivity:
+com.modusgo.twg.ScoreFragment
+com.modusgo.twg.ScoreFragment$1
+com.modusgo.twg.ScoreFragment$2
+com.modusgo.twg.ScoreFragment$3
+com.modusgo.twg.ScoreFragment$4
+com.modusgo.twg.ScoreFragment$5
+com.modusgo.twg.ScoreFragment$GetScoreTask
+com.modusgo.twg.ScoreFragment$MonthStats
+com.modusgo.twg.ScoreInfoActivity:
     private static final java.lang.String ATTRIBUTE_NAME_VALUE
     private static final java.lang.String ATTRIBUTE_NAME_TITLE
     public static final java.lang.String SAVED_ADDITIONAL_DATA
     public static final java.lang.String SAVED_PERCENTAGE_DATA
-com.modusgo.ubi.ScorePieChartActivity:
+com.modusgo.twg.ScorePieChartActivity:
     public static final java.lang.String SAVED_PIE_CHART_ROAD_SETTINGS
     public static final java.lang.String SAVED_PIE_CHART_ROAD_TYPE
     public static final java.lang.String SAVED_PIE_CHART_TIME_OF_DAY
-com.modusgo.ubi.SettingsEditFragment:
+com.modusgo.twg.ScorePieChartActivity$PieChartTab
+com.modusgo.twg.ServiceLogActivity:
+    public static final java.lang.String VEHICLE_ID
+    private static final java.lang.String TAG
+    private android.support.v4.widget.SwipeRefreshLayout lRefresh
+com.modusgo.twg.SettingsEditFragment:
     private static final java.lang.String TAG_CHANGED
     private static final java.lang.String PHOTOS_FOLDER
-com.modusgo.ubi.SignInActivity:
+com.modusgo.twg.SignInActivity:
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST
-com.modusgo.ubi.SignInActivity$LoginTask:
+    private android.support.v4.view.PagerAdapter mPagerAdapter
+com.modusgo.twg.SignInActivity$LoginTask:
     int status
-com.modusgo.ubi.SignInActivity$ScreenSlidePageFragment:
-    int mNum
-com.modusgo.ubi.TitledFragment:
+com.modusgo.twg.SignInActivity$ScreenSlidePageFragment
+com.modusgo.twg.SignInActivity$ScreenSlidePagerAdapter
+com.modusgo.twg.TitledFragment:
     public static final java.lang.String SAVED_TITLE
-com.modusgo.ubi.Tracking:
+com.modusgo.twg.Tracking:
     public long id
-com.modusgo.ubi.Trip:
+com.modusgo.twg.Trip:
     private static final long serialVersionUID
-com.modusgo.ubi.TripActivity:
+com.modusgo.twg.TripActivity:
     public static final java.lang.String EXTRA_TRIP_ID
-com.modusgo.ubi.TripsFragment:
-    private static final int TRIPS_PER_REQUEST
-com.modusgo.ubi.Vehicle:
-    private static final long serialVersionUID
-    public int harshEvents
-    65:65:public java.lang.String getFirstName()
-    69:75:public java.lang.String getLastName()
-com.modusgo.ubi.WelcomeActivity:
+com.modusgo.twg.TripListHeader
+com.modusgo.twg.TripsFragment
+com.modusgo.twg.TripsFragment$1
+com.modusgo.twg.TripsFragment$2
+com.modusgo.twg.TripsFragment$GetTripsTask
+com.modusgo.twg.TripsFragment$TripsAdapter
+com.modusgo.twg.TripsFragment$TripsAdapter$1
+com.modusgo.twg.TripsFragment$ViewHolderHeader
+com.modusgo.twg.TripsFragment$ViewHolderTrip
+com.modusgo.twg.WelcomeActivity:
     public static final java.lang.String SAVED_SCREENS
-com.modusgo.ubi.customviews.CircularProgressBar
-com.modusgo.ubi.customviews.CircularProgressBar$1
-com.modusgo.ubi.customviews.CircularProgressBar$2
-com.modusgo.ubi.customviews.CircularProgressBar$ProgressAnimationListener
-com.modusgo.ubi.customviews.PieChartView:
+    android.view.View layoutFields
+com.modusgo.twg.customviews.CircularProgressBar
+com.modusgo.twg.customviews.CircularProgressBar$1
+com.modusgo.twg.customviews.CircularProgressBar$2
+com.modusgo.twg.customviews.CircularProgressBar$ProgressAnimationListener
+com.modusgo.twg.customviews.PieChartView:
     private static final int START_ANGLE
-com.modusgo.ubi.customviews.PieChartView$PieSector:
-    155:155:public PieChartView$PieSector(com.modusgo.ubi.customviews.PieChartView)
-com.modusgo.ubi.db.AlertContract
-com.modusgo.ubi.db.AlertContract$AlertEntry
-com.modusgo.ubi.db.DTCContract
-com.modusgo.ubi.db.DTCContract$DTCEntry
-com.modusgo.ubi.db.DbHelper:
+com.modusgo.twg.customviews.PieChartView$PieSector:
+    155:155:public PieChartView$PieSector(com.modusgo.twg.customviews.PieChartView)
+com.modusgo.twg.db.AlertContract
+com.modusgo.twg.db.AlertContract$AlertEntry
+com.modusgo.twg.db.DTCContract
+com.modusgo.twg.db.DTCContract$DTCEntry
+com.modusgo.twg.db.DbHelper:
     private static final java.lang.String TEXT_TYPE
     private static final java.lang.String INT_TYPE
     private static final java.lang.String FLOAT_TYPE
     private static final java.lang.String COMMA_SEP
     public static final int DATABASE_VERSION
     public static final java.lang.String DATABASE_NAME
-com.modusgo.ubi.db.LimitsContract
-com.modusgo.ubi.db.LimitsContract$LimitsEntry
-com.modusgo.ubi.db.MaintenanceContract
-com.modusgo.ubi.db.MaintenanceContract$MaintenanceEntry
-com.modusgo.ubi.db.PointContract
-com.modusgo.ubi.db.PointContract$PointEntry
-com.modusgo.ubi.db.RecallContract
-com.modusgo.ubi.db.RecallContract$RecallEntry
-com.modusgo.ubi.db.RouteContract
-com.modusgo.ubi.db.RouteContract$RouteEntry
-com.modusgo.ubi.db.ScoreCirclesContract
-com.modusgo.ubi.db.ScoreCirclesContract$ScoreCirclesEntry
-com.modusgo.ubi.db.ScoreGraphContract
-com.modusgo.ubi.db.ScoreGraphContract$ScoreGraphEntry
-com.modusgo.ubi.db.ScoreInfoContract
-com.modusgo.ubi.db.ScoreInfoContract$ScoreInfoEntry
-com.modusgo.ubi.db.ScorePercentageContract
-com.modusgo.ubi.db.ScorePercentageContract$ScorePercentageEntry
-com.modusgo.ubi.db.ScorePieChartContract
-com.modusgo.ubi.db.ScorePieChartContract$ScorePieChartEntry
-com.modusgo.ubi.db.SpeedingRouteContract
-com.modusgo.ubi.db.SpeedingRouteContract$SpeedingRouteEntry
-com.modusgo.ubi.db.TrackingContract
-com.modusgo.ubi.db.TrackingContract$TrackingEntry
-com.modusgo.ubi.db.TripContract
-com.modusgo.ubi.db.TripContract$TripEntry
-com.modusgo.ubi.db.VehicleContract
-com.modusgo.ubi.db.VehicleContract$VehicleEntry
-com.modusgo.ubi.db.WarrantyInfoContract
-com.modusgo.ubi.db.WarrantyInfoContract$WarrantyInfoEntry
-com.modusgo.ubi.requesttasks.BaseRequestAsyncTask:
-    35:36:public BaseRequestAsyncTask()
-com.modusgo.ubi.requesttasks.GetDeviceInfoRequest:
+    802:837:public void saveScoreGraph(long,com.modusgo.twg.ScoreFragment$MonthStats[])
+    840:877:public void saveScorePercentage(long,java.util.LinkedHashMap)
+    880:916:public void saveScoreInfo(long,java.lang.String,java.lang.String,float,float)
+    919:965:public void saveScorePieCharts(long,java.util.ArrayList)
+    968:1013:public void saveScoreCircles(long,java.util.LinkedHashMap)
+    1121:1135:public void deleteRecall(long,long)
+    1183:1197:public void deleteMaintenance(long,long)
+    1200:1236:public void saveWarrantyInformation(long,java.util.ArrayList)
+    1239:1285:public void saveLimits(long,java.util.ArrayList)
+    1603:1624:public void deleteServicePerformedEvents(java.util.ArrayList)
+com.modusgo.twg.db.LimitsContract
+com.modusgo.twg.db.LimitsContract$LimitsEntry
+com.modusgo.twg.db.MaintenanceContract
+com.modusgo.twg.db.MaintenanceContract$MaintenanceEntry
+com.modusgo.twg.db.PointContract
+com.modusgo.twg.db.PointContract$PointEntry
+com.modusgo.twg.db.RecallContract
+com.modusgo.twg.db.RecallContract$RecallEntry
+com.modusgo.twg.db.RouteContract
+com.modusgo.twg.db.RouteContract$RouteEntry
+com.modusgo.twg.db.ScoreCirclesContract
+com.modusgo.twg.db.ScoreCirclesContract$ScoreCirclesEntry
+com.modusgo.twg.db.ScoreGraphContract
+com.modusgo.twg.db.ScoreGraphContract$ScoreGraphEntry
+com.modusgo.twg.db.ScoreInfoContract
+com.modusgo.twg.db.ScoreInfoContract$ScoreInfoEntry
+com.modusgo.twg.db.ScorePercentageContract
+com.modusgo.twg.db.ScorePercentageContract$ScorePercentageEntry
+com.modusgo.twg.db.ScorePieChartContract
+com.modusgo.twg.db.ScorePieChartContract$ScorePieChartEntry
+com.modusgo.twg.db.ServicePerformedContract
+com.modusgo.twg.db.ServicePerformedContract$ServicePerformedEntry
+com.modusgo.twg.db.SpeedingRouteContract
+com.modusgo.twg.db.SpeedingRouteContract$SpeedingRouteEntry
+com.modusgo.twg.db.TrackingContract
+com.modusgo.twg.db.TrackingContract$TrackingEntry
+com.modusgo.twg.db.TripContract
+com.modusgo.twg.db.TripContract$TripEntry
+com.modusgo.twg.db.VehicleContract
+com.modusgo.twg.db.VehicleContract$VehicleEntry
+com.modusgo.twg.db.WarrantyInfoContract
+com.modusgo.twg.db.WarrantyInfoContract$WarrantyInfoEntry
+com.modusgo.twg.requesttasks.BasePostRequestAsyncTask:
+    private static final java.lang.String TAG
+com.modusgo.twg.requesttasks.BaseRequestAsyncTask:
+    private static final java.lang.String TAG
+    38:39:public BaseRequestAsyncTask()
+com.modusgo.twg.requesttasks.GetDeviceInfoRequest:
     java.util.ArrayList eventIds
-com.modusgo.ubi.utils.AnimationUtils:
+com.modusgo.twg.requesttasks.GetTripsTask
+com.modusgo.twg.requesttasks.UpdateMaintenanceCountdownTask:
+    private static final java.lang.String TAG
+com.modusgo.twg.utils.AnimationUtils:
     10:10:public AnimationUtils()
-com.modusgo.ubi.utils.Device:
+com.modusgo.twg.utils.Device:
     public static final java.lang.String PREF_CURRENT_TRACKING_MODE
     public static final java.lang.String PREF_DEVICE_MEID
     public static final java.lang.String PREF_DEVICE_TYPE
@@ -7650,19 +7721,30 @@ com.modusgo.ubi.utils.Device:
     public static final java.lang.String MODE_NAVIGATION_TRACKING
     public static final java.lang.String MODE_SUPER_TRACKING
     15:15:public Device()
-com.modusgo.ubi.utils.RequestGet:
+com.modusgo.twg.utils.Recall:
+    private static final long serialVersionUID
+com.modusgo.twg.utils.RequestGet:
     19:21:public RequestGet(java.lang.String)
-com.modusgo.ubi.utils.SwipeDismissListViewTouchListener
-com.modusgo.ubi.utils.SwipeDismissListViewTouchListener$1
-com.modusgo.ubi.utils.SwipeDismissListViewTouchListener$2
-com.modusgo.ubi.utils.SwipeDismissListViewTouchListener$3
-com.modusgo.ubi.utils.SwipeDismissListViewTouchListener$4
-com.modusgo.ubi.utils.SwipeDismissListViewTouchListener$DismissCallbacks
-com.modusgo.ubi.utils.SwipeDismissListViewTouchListener$PendingDismissData
-com.modusgo.ubi.utils.Utils:
+com.modusgo.twg.utils.SwipeDismissListViewTouchListener
+com.modusgo.twg.utils.SwipeDismissListViewTouchListener$1
+com.modusgo.twg.utils.SwipeDismissListViewTouchListener$2
+com.modusgo.twg.utils.SwipeDismissListViewTouchListener$3
+com.modusgo.twg.utils.SwipeDismissListViewTouchListener$4
+com.modusgo.twg.utils.SwipeDismissListViewTouchListener$DismissCallbacks
+com.modusgo.twg.utils.SwipeDismissListViewTouchListener$PendingDismissData
+com.modusgo.twg.utils.Utils:
     42:42:public Utils()
     89:106:public static org.json.JSONObject getJSONObjectFromAssets(android.content.Context,java.lang.String)
+    162:162:public static float milesToFeet(float)
+    167:212:public static int durationInMinutes(java.util.Date,java.util.Date)
+    216:224:public static void enableDisableViewGroup(android.view.ViewGroup,boolean)
     278:279:public static android.graphics.Bitmap decodeBase64(java.lang.String)
+com.modusgo.twg.utils.Vehicle:
+    private static final long serialVersionUID
+    public int harshEvents
+    63:63:public java.lang.String getFirstName()
+    67:73:public java.lang.String getLastName()
+com.modusgo.twg.utils.WarrantyInformation
 com.nostra13.universalimageloader.cache.disc.DiscCacheAware:
     public abstract java.io.File getDirectory()
     public abstract boolean remove(java.lang.String)

@@ -160,8 +160,11 @@ public class ServiceLogActivity extends MainActivity
 				String log = "";
 				for(TWGListItem item : info_list)
 				{
-					ServicePerformed service = (ServicePerformed) item.value;
-					log += service.description + "\r\n Location: " + service.location_performed + "\r\n Date: " + service.date_performed + "\r\n";
+					if(item.type == twg_list_item_type.li_service_log_item)
+					{
+						ServicePerformed service = (ServicePerformed) item.value;
+						log += service.description + "\r\n Location: " + service.location_performed + "\r\n Date: " + service.date_performed + "\r\n\r\n";
+					}
 				}
 				sendEmail("jimt@modusgo.com", "Service Log", log);
 			}

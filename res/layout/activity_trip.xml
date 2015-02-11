@@ -388,7 +388,7 @@
                             ubi:typeface="EncodeSansNarrow-700-Bold.ttf" />
 
                         <com.modusgo.twg.customviews.TypefacedTextView
-                            android:id="@+id/tvDistanceUnits"
+                            android:id="@+id/tvFuelCostUnits"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="DOLLARS"

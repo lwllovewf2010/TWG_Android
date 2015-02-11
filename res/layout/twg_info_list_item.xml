@@ -61,12 +61,13 @@
         android:weightSum="1" >
 
         <!-- ImageView depricated per Jon -->
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
-            android:background="@drawable/ic_alerts_red" 
-            android:visibility="gone"/>
+            android:background="@drawable/ic_alerts_red"
+            android:visibility="gone" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -104,7 +105,7 @@
         android:orientation="horizontal"
         android:paddingLeft="14dp"
         android:paddingRight="14dp"
-        android:weightSum="3" >
+        android:weightSum="4" >
 
         <TextView
             android:id="@+id/dtc_name"
@@ -117,8 +118,10 @@
             android:id="@+id/dtc_description"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="start" />
+            android:layout_weight="2"
+            android:ellipsize="end"
+            android:gravity="start"
+            android:singleLine="true" />
 
         <TextView
             android:id="@+id/dtc_priority"
@@ -173,8 +176,6 @@
         android:id="@+id/service_info_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingLeft="14dp"
-        android:paddingRight="14dp"
         android:orientation="vertical" >
 
         <TextView
@@ -188,19 +189,17 @@
 
         <View
             android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:layout_marginLeft="5dip"
-            android:layout_marginRight="5dip"
-            android:background="@color/gray" />
-        
+            android:layout_height="2dp"
+            android:background="@color/blue" />
+
         <LinearLayout
             android:id="@+id/service_detail_block"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="5dip"
-            android:layout_marginStart="5dip"
             android:background="@color/gray"
-            android:orientation="vertical" >
+            android:orientation="vertical"
+            android:paddingLeft="14dp"
+            android:paddingRight="14dp" >
 
             <TextView
                 android:id="@+id/service_detail_replace_every"
@@ -224,21 +223,25 @@
         android:id="@+id/service_log_info_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="2dp"
-        android:layout_marginRight="2dp"
         android:background="@color/gray"
         android:orientation="vertical"
-        android:paddingLeft="14dp"
-        android:paddingRight="14dp"
         android:paddingBottom="5dp" >
 
+                <View
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:background="@color/blue" />
+
+        
         <TextView
             android:id="@+id/service_log_info_line1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:layout_weight="1"
-            android:textColor="@color/black"/>
+            android:textColor="@color/black" 
+        android:paddingLeft="14dp"
+        android:paddingRight="14dp"/>
 
         <TextView
             android:id="@+id/service_log_info_line2"
@@ -246,17 +249,20 @@
             android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:layout_weight="1"
-            android:textColor="@color/black"/>
+            android:textColor="@color/black" 
+        android:paddingLeft="14dp"
+        android:paddingRight="14dp"/>
     </LinearLayout>
 
+    <!-- Service due info -->
     <LinearLayout
         android:id="@+id/service_due_info_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="2dp"
+        android:orientation="vertical"
         android:paddingLeft="14dp"
-        android:paddingRight="14dp"
-        android:orientation="vertical" >
+        android:paddingRight="14dp" >
 
         <TextView
             android:id="@+id/service_due_description"

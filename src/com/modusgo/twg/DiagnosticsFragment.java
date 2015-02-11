@@ -1,21 +1,16 @@
 package com.modusgo.twg;
 
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.TimeZone;
 
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -24,6 +19,7 @@ import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -37,37 +33,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
-import android.view.animation.TranslateAnimation;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.daimajia.swipe.SwipeLayout;
 import com.modusgo.templates.UpdateCallback;
 import com.modusgo.twg.R;
 import com.modusgo.twg.db.DbHelper;
 import com.modusgo.twg.db.DTCContract.DTCEntry;
-import com.modusgo.twg.db.MaintenanceContract.MaintenanceEntry;
 import com.modusgo.twg.db.RecallContract.RecallEntry;
-import com.modusgo.twg.db.ScoreGraphContract.ScoreGraphEntry;
-import com.modusgo.twg.db.WarrantyInfoContract.WarrantyInfoEntry;
 import com.modusgo.twg.requesttasks.BaseRequestAsyncTask;
 import com.modusgo.twg.requesttasks.GetDiagnosticsTask;
-import com.modusgo.twg.utils.AnimationUtils;
-import com.modusgo.twg.utils.Maintenance;
 import com.modusgo.twg.utils.Recall;
 import com.modusgo.twg.utils.Utils;
 import com.modusgo.twg.utils.Vehicle;
-import com.modusgo.twg.utils.WarrantyInformation;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class DiagnosticsFragment extends Fragment implements UpdateCallback
 {
@@ -87,6 +69,7 @@ public class DiagnosticsFragment extends Fragment implements UpdateCallback
 	TextView tvLastCheckup;
 	TextView tvStatus;
 	EditText editOdometer;
+	private Button callServiceBtn = null;
 
 	SharedPreferences prefs;
 	private MainActivity main = null;
@@ -103,7 +86,7 @@ public class DiagnosticsFragment extends Fragment implements UpdateCallback
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		LinearLayout rootView = (LinearLayout) inflater.inflate(R.layout.fragment_diagnostics, container, false);
+		RelativeLayout rootView = (RelativeLayout) inflater.inflate(R.layout.fragment_diagnostics, container, false);
 
 		main = (MainActivity) getActivity();
 		main.setActionBarTitle("DIAGNOSTICS");
@@ -123,6 +106,21 @@ public class DiagnosticsFragment extends Fragment implements UpdateCallback
 		// imageDTCAlert = (ImageView) rootView.findViewById(R.id.imageAlerts);
 		tvLastCheckup = (TextView) rootView.findViewById(R.id.tvLastCheckup);
 		tvStatus = (TextView) rootView.findViewById(R.id.tvStatus);
+		callServiceBtn = (Button) rootView.findViewById(R.id.callServiceBtn);
+
+		callServiceBtn.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public void onClick(View v)
+			{
+				String uri = "tel: 18005551212";
+				Intent intent = new Intent(Intent.ACTION_DIAL);
+				intent.setData(Uri.parse(uri));
+				startActivity(intent);
+			}
+		});
+
 
 		lRefresh.setColorSchemeResources(R.color.ubi_gray, R.color.ubi_green, R.color.ubi_orange, R.color.ubi_red);
 		lRefresh.setOnRefreshListener(new OnRefreshListener()
@@ -235,7 +233,7 @@ public class DiagnosticsFragment extends Fragment implements UpdateCallback
 			switch(iView)
 			{
 			case 0:
-				iv.setBackgroundResource(R.drawable.ic_alerts_green_medium);
+				iv.setBackgroundResource(R.drawable.ic_alerts_green);
 				type.setText(R.string.DTCStatus);
 				status.setText(R.string.DTCsReported);
 				break;

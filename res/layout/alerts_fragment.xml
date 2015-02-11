@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:layout_height="match_parent" >
 
     <LinearLayout
         android:id="@+id/llProgress"
@@ -21,12 +20,13 @@
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/lRefresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true" >
 
         <ListView
             android:id="@+id/alerts_info_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginLeft="14dp"
             android:layout_marginRight="14dp" >
 
@@ -37,4 +37,16 @@
         </ListView>
     </android.support.v4.widget.SwipeRefreshLayout>
 
-</LinearLayout>
+    <Button
+        android:id="@+id/callServiceBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="5dp"
+        android:background="#FF000000"
+        android:padding="2dp"
+        android:text="@string/CallScheduleService"
+        android:textAlignment="center"
+        android:textColor="@color/white" />
+
+</RelativeLayout>
