@@ -2,8 +2,10 @@ package com.modusgo.ubi;
 
 import java.util.ArrayList;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -43,6 +45,12 @@ public class DriverActivity extends MainActivity{
 	private FragmentTabHost tabHost;
 	SlidingMenu menu;
 	View driverTabView;
+	
+	ArrayList<Vehicle> vehiclesShort;
+	VehiclesAdapter vehiclesAdapter;
+
+	BroadcastReceiver vehiclesUpdateReceiver;
+	IntentFilter vehiclesUpdateFilter;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -99,19 +107,45 @@ public class DriverActivity extends MainActivity{
 		});
         
         ListView lvVehicles = (ListView)menu.findViewById(R.id.listViewDrivers);
-        
-		VehiclesAdapter vehiclesAdapter = new VehiclesAdapter(this, dbHelper.getVehiclesShort());
+
+        vehiclesShort = dbHelper.getVehiclesShort();
+		vehiclesAdapter = new VehiclesAdapter(this, vehiclesShort);
 		dbHelper.close();
 		
 		lvVehicles.setAdapter(vehiclesAdapter);
-		
+	    
+	    vehiclesUpdateFilter = new IntentFilter(Constants.BROADCAST_UPDATE_VEHICLES);
+		vehiclesUpdateReceiver = new BroadcastReceiver(){
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				updateDriverDetailsTab();
+				//TODO: update driver details fragment
+				//TODO: update switch driver menu
+			}
+		};
 	}
 	
 	@Override
 	protected void onResume() {
 		super.onResume();
+		updateVehicles();
 		setNavigationDrawerItemsUnselected();
 		updateDriverDetailsTab();
+		registerReceiver(vehiclesUpdateReceiver, vehiclesUpdateFilter);
+	}
+	
+	@Override
+	protected void onPause() {
+		unregisterReceiver(vehiclesUpdateReceiver);
+		super.onPause();
+	}
+	
+	private void updateVehicles(){
+		DbHelper dbHelper = DbHelper.getInstance(this);
+		vehicle = dbHelper.getVehicle(getIntent().getLongExtra(VehicleEntry._ID, 0));
+		vehiclesShort = dbHelper.getVehiclesShort();
+		dbHelper.close();
+		vehiclesAdapter.notifyDataSetChanged();
 	}
 	
 	private void updateDriverDetailsTab(){
