@@ -46,12 +46,12 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 	
 	private OnSensorListener mOnSensorListener;
 	
-	SharedPreferences prefs;
+	private static SharedPreferences prefs;
 	
 	private int mProtocolNum;
 	
-    private String mDeviceName;
-    private String mDeviceAddress;
+    private static String mDeviceName;
+    private static String mDeviceAddress;
 
 	private OnConnectionListener mOnConnectionListener;
 	private boolean mConnectionStarted = false;
@@ -62,6 +62,10 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 		if (sInstance == null) {
 			sInstance = new JastecManager(context);
 		}
+		prefs = PreferenceManager.getDefaultSharedPreferences(context);
+		mDeviceAddress = prefs.getString(Constants.PREF_JASTEC_ADDRESS, "");
+		mDeviceName = prefs.getString(Constants.PREF_JASTEC_NAME, "");
+		
 		return sInstance;
 	}
 	
