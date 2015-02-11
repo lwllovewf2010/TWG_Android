@@ -52,13 +52,17 @@ public class DriverActivity extends MainActivity{
 
 	BroadcastReceiver vehiclesUpdateReceiver;
 	IntentFilter vehiclesUpdateFilter;
+	private DbHelper dbHelper;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_driver);
 		super.onCreate(savedInstanceState);
 		
+		
+		
 		tabHost = (FragmentTabHost)findViewById(android.R.id.tabhost);
+		
         tabHost.setup(getApplicationContext(), getSupportFragmentManager(), R.id.realtabcontent);
         tabHost.addOnAttachStateChangeListener(new OnAttachStateChangeListener() {
 
@@ -74,7 +78,7 @@ public class DriverActivity extends MainActivity{
         Bundle b = new Bundle();
 		b.putLong("id", getIntent().getLongExtra(VehicleEntry._ID, 0));
 		
-		DbHelper dbHelper = DbHelper.getInstance(this);
+		dbHelper = DbHelper.getInstance(this);
 		vehicle = dbHelper.getVehicle(getIntent().getLongExtra(VehicleEntry._ID, 0));
 		
 		driverTabView = setupTab(DriverDetailsFragment.class, b, "Driver Detail", R.drawable.ic_tab_driver, 0);
@@ -109,7 +113,6 @@ public class DriverActivity extends MainActivity{
         
         ListView lvVehicles = (ListView)menu.findViewById(R.id.listViewDrivers);
         
-        vehiclesAdapter = new VehiclesAdapter(this, dbHelper.getVehiclesShort());
 
         vehiclesShort = dbHelper.getVehiclesShort();
 		vehiclesAdapter = new VehiclesAdapter(this, vehiclesShort);
@@ -128,7 +131,7 @@ public class DriverActivity extends MainActivity{
 					finish();
 					
 					Intent i = new Intent(DriverActivity.this, DriverActivity.class);
-					i.putExtra(VehicleEntry._ID, vehiclesAdapter.getVehicle(position).id);
+					i.putExtra(VehicleEntry._ID,vehiclesShort.get(position).id);
 					startActivity(i);
 				}
 				else{
@@ -144,9 +147,12 @@ public class DriverActivity extends MainActivity{
 		vehiclesUpdateReceiver = new BroadcastReceiver(){
 			@Override
 			public void onReceive(Context context, Intent intent) {
+				vehicle = dbHelper.getVehicle(getIntent().getLongExtra(VehicleEntry._ID, 0));
 				updateDriverDetailsTab();
-				//TODO: update driver details fragment
-				//TODO: update switch driver menu
+				vehiclesAdapter.updateVehicle(dbHelper.getVehiclesShort());
+				if(getSupportFragmentManager().findFragmentByTag("Driver Detail") instanceof DriverDetailsFragment){
+					((DriverDetailsFragment)getSupportFragmentManager().findFragmentByTag("Driver Detail")).updateDriverInfo();
+				}
 			}
 		};
 	}
@@ -154,8 +160,15 @@ public class DriverActivity extends MainActivity{
 	@Override
 	protected void onResume() {
 		super.onResume();
+		registerReceiver(vehiclesUpdateReceiver, vehiclesUpdateFilter);
 		setNavigationDrawerItemsUnselected();
 		updateDriverDetailsTab();
+	}
+	
+	@Override
+	protected void onPause() {
+		unregisterReceiver(vehiclesUpdateReceiver);
+		super.onPause();
 	}
 	
 	private void updateDriverDetailsTab(){
@@ -196,6 +209,11 @@ public class DriverActivity extends MainActivity{
 		@Override
 		public int getCount() {
 		    return objects.size();
+		}
+		
+		private void updateVehicle(ArrayList<Vehicle> objects){
+			this.objects = objects;
+			notifyDataSetChanged();
 		}
 
 		@Override

@@ -6,14 +6,9 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -46,7 +41,6 @@ import com.modusgo.ubi.customviews.GoogleMapFragment;
 import com.modusgo.ubi.customviews.GoogleMapFragment.OnMapReadyListener;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
-import com.modusgo.ubi.requesttasks.BaseRequestAsyncTask;
 import com.modusgo.ubi.requesttasks.GetVehicleRequest;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -185,7 +179,9 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 		}
 	}
 	
-	private void updateDriverInfo(){
+	public void updateDriverInfo(){
+		if(vehicle.id == ((DriverActivity)getActivity()).vehicle.id)
+			vehicle = ((DriverActivity)getActivity()).vehicle;
 		tvName.setText(vehicle.name);
 	    tvVehicle.setText(vehicle.getCarFullName());
 	    if(TextUtils.isEmpty(vehicle.address)){
