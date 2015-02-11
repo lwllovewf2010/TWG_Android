@@ -7,7 +7,7 @@
 	    android:id="@+id/tvText"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:layout_centerInParent="true"
+	    android:layout_marginLeft="@dimen/twenty_five"
 	    android:gravity="center"
 	    android:minHeight="54dp"
 	    android:textColor="@drawable/drawer_list_item_text_selector"

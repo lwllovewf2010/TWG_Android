@@ -128,6 +128,7 @@ public class MainActivity extends FragmentActivity {
 		});
 	    
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout.setScrimColor(Color.TRANSPARENT);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         TextView tvVersion = (TextView) findViewById(R.id.tvVersion);
         

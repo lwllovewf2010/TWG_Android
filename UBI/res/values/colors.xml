@@ -54,4 +54,6 @@
      <color name="score_red">#e6451b</color>
      
      <color name="list_header_line">#00aeef</color>
+     <color name="white_ninety">#D9FFFFFF</color>
+     <color name="menu_color">#414750</color>
 </resources>
