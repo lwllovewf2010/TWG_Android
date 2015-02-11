@@ -16,11 +16,12 @@ import android.text.style.RelativeSizeSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnAttachStateChangeListener;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -43,6 +44,7 @@ public class DriverActivity extends MainActivity{
 	private FragmentTabHost tabHost;
 	SlidingMenu menu;
 	View driverTabView;
+	private VehiclesAdapter vehiclesAdapter;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -100,10 +102,33 @@ public class DriverActivity extends MainActivity{
         
         ListView lvVehicles = (ListView)menu.findViewById(R.id.listViewDrivers);
         
-		VehiclesAdapter vehiclesAdapter = new VehiclesAdapter(this, dbHelper.getVehiclesShort());
+        vehiclesAdapter = new VehiclesAdapter(this, dbHelper.getVehiclesShort());
 		dbHelper.close();
 		
 		lvVehicles.setAdapter(vehiclesAdapter);
+		lvVehicles.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+
+				if(prefs.getInt(Constants.PREF_CURRENT_DRIVER, 0)!=position){
+					prefs.edit().putInt(Constants.PREF_CURRENT_DRIVER, position).commit();
+					menu.toggle();
+					finish();
+					
+					Intent i = new Intent(DriverActivity.this, DriverActivity.class);
+					i.putExtra(VehicleEntry._ID, vehiclesAdapter.getVehicle(position).id);
+					startActivity(i);
+				}
+				else{
+					menu.toggle();
+				}
+				
+			
+				
+			}
+		});
 		
 	}
 	
@@ -167,9 +192,16 @@ public class DriverActivity extends MainActivity{
 		@Override
 		public View getView(final int position, View convertView, ViewGroup parent) {
 			// используем созданные, но не используемые view
-		    View view = convertView;
-		    if (view == null) {
-		      view = lInflater.inflate(R.layout.switch_driver_item, parent, false);
+		    ViewHolder holder;
+		    if (convertView == null) {
+		    	convertView = lInflater.inflate(R.layout.switch_driver_item, parent, false);
+		    	holder = new ViewHolder();
+		    	holder.imagePhoto = (ImageView) convertView.findViewById(R.id.imagePhoto);
+		    	holder.tvName = ((TextView) convertView.findViewById(R.id.tvName));
+		    	holder.tvInTrip = convertView.findViewById(R.id.tvInTrip);;
+		    	convertView.setTag(holder);
+		    }else{
+		    	holder = (ViewHolder) convertView.getTag();
 		    }
 
 		    final Vehicle v = getVehicle(position);
@@ -180,13 +212,12 @@ public class DriverActivity extends MainActivity{
 		    	Spannable span = new SpannableString(Html.fromHtml("<font size=\"10px\" color=\"#3c454f\" face=\"fonts/EncodeSansNormal-600-SemiBold.ttf\">CURRENT</font><br>"+v.name));
 		    	span.setSpan(new RelativeSizeSpan(0.95f), 0, 7, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		    	
-		    	((TextView) view.findViewById(R.id.tvName)).setText(span);
+		    	holder.tvName.setText(span);
 		    }else
-		    	((TextView) view.findViewById(R.id.tvName)).setText(v.name);
+		    	holder.tvName.setText(v.name);
 		    
-		    ImageView imagePhoto = (ImageView)view.findViewById(R.id.imagePhoto);
 		    if(v.photo == null || v.photo.equals(""))
-		    	imagePhoto.setImageResource(R.drawable.person_placeholder);
+		    	holder.imagePhoto.setImageResource(R.drawable.person_placeholder);
 		    else{
 		    	DisplayImageOptions options = new DisplayImageOptions.Builder()
 		        .showImageOnLoading(R.drawable.person_placeholder)
@@ -196,39 +227,25 @@ public class DriverActivity extends MainActivity{
 		        .cacheOnDisk(true)
 		        .build();
 		    	
-		    	ImageLoader.getInstance().displayImage(v.photo, imagePhoto, options);
+		    	ImageLoader.getInstance().displayImage(v.photo, holder.imagePhoto, options);
 		    }
 		    
-		    view.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View arg0) {
-					if(prefs.getInt(Constants.PREF_CURRENT_DRIVER, 0)!=position){
-						prefs.edit().putInt(Constants.PREF_CURRENT_DRIVER, position).commit();
-						menu.toggle();
-						finish();
-						
-						Intent i = new Intent(DriverActivity.this, DriverActivity.class);
-						i.putExtra(VehicleEntry._ID, v.id);
-						startActivity(i);
-					}
-					else{
-						menu.toggle();
-					}
-					
-				}
-			});
-		    
-		    View tvInTrip = view.findViewById(R.id.tvInTrip);
 		    if(v.inTrip)
-		    	tvInTrip.setVisibility(View.VISIBLE);
+		    	holder.tvInTrip.setVisibility(View.VISIBLE);
 		    else
-		    	tvInTrip.setVisibility(View.GONE);
+		    	holder.tvInTrip.setVisibility(View.GONE);
 		    
-		    return view;
+		    return convertView;
 		}
 		
 		Vehicle getVehicle(int position) {
 			return ((Vehicle) getItem(position));
+		}
+		
+		class ViewHolder {
+			ImageView imagePhoto;
+			TextView tvName;
+			View tvInTrip;
 		}
 		
 	}
