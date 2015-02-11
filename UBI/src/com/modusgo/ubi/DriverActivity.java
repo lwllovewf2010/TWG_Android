@@ -2,8 +2,10 @@ package com.modusgo.ubi;
 
 import java.util.ArrayList;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -45,6 +47,11 @@ public class DriverActivity extends MainActivity{
 	SlidingMenu menu;
 	View driverTabView;
 	private VehiclesAdapter vehiclesAdapter;
+	
+	ArrayList<Vehicle> vehiclesShort;
+
+	BroadcastReceiver vehiclesUpdateReceiver;
+	IntentFilter vehiclesUpdateFilter;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -103,6 +110,9 @@ public class DriverActivity extends MainActivity{
         ListView lvVehicles = (ListView)menu.findViewById(R.id.listViewDrivers);
         
         vehiclesAdapter = new VehiclesAdapter(this, dbHelper.getVehiclesShort());
+
+        vehiclesShort = dbHelper.getVehiclesShort();
+		vehiclesAdapter = new VehiclesAdapter(this, vehiclesShort);
 		dbHelper.close();
 		
 		lvVehicles.setAdapter(vehiclesAdapter);
@@ -129,7 +139,16 @@ public class DriverActivity extends MainActivity{
 				
 			}
 		});
-		
+	    
+	    vehiclesUpdateFilter = new IntentFilter(Constants.BROADCAST_UPDATE_VEHICLES);
+		vehiclesUpdateReceiver = new BroadcastReceiver(){
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				updateDriverDetailsTab();
+				//TODO: update driver details fragment
+				//TODO: update switch driver menu
+			}
+		};
 	}
 	
 	@Override
