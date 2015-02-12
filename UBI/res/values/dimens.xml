@@ -5,6 +5,8 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="chart_column_width">20dp</dimen>
     <dimen name="drivers_menu_offset">130dp</dimen>
+    <dimen name="navigation_drawer_item_margin_left">25dp</dimen>
+    <dimen name="navigation_drawer_width">200dp</dimen>
     <dimen name="five_dp">5dp</dimen>
     <dimen name="eight_dp">8dp</dimen>
     <dimen name="ten_dp">10dp</dimen>

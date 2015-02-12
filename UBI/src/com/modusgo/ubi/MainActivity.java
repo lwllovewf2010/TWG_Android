@@ -22,6 +22,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -130,6 +131,7 @@ public class MainActivity extends FragmentActivity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.setScrimColor(Color.TRANSPARENT);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.END);
         TextView tvVersion = (TextView) findViewById(R.id.tvVersion);
         
         if(tvVersion!=null){
@@ -206,7 +208,6 @@ public class MainActivity extends FragmentActivity {
         };
         
         
-//        mDrawerList.addFooterView(getLayoutInflater().inflate(R.layout.drawer_list_version_item, null, false));
         // set up the drawer's list view with items and click listener
         mDrawerList.setAdapter(adapter);
 
