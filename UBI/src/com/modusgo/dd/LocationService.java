@@ -26,11 +26,13 @@ import android.text.TextUtils;
 
 import com.bugsnag.android.Bugsnag;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.kontakt.sdk.android.configuration.BeaconActivityCheckConfiguration;
 import com.kontakt.sdk.android.configuration.ForceScanConfiguration;
 import com.kontakt.sdk.android.connection.OnServiceBoundListener;
@@ -47,14 +49,15 @@ import com.modusgo.ubi.Tracking;
 import com.modusgo.ubi.TripDeclineActivity;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.jastec.JastecManager;
-import com.modusgo.ubi.jastec.LogActivity;
 import com.modusgo.ubi.jastec.JastecManager.OnSensorListener;
+import com.modusgo.ubi.jastec.LogActivity;
 import com.modusgo.ubi.requesttasks.GetDeviceInfoRequest;
 import com.modusgo.ubi.requesttasks.SendEventsRequest;
 import com.modusgo.ubi.utils.Device;
 
-public class LocationService extends Service implements GooglePlayServicesClient.ConnectionCallbacks,
-GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
+public class LocationService extends Service implements ConnectionCallbacks,
+OnConnectionFailedListener,
+LocationListener{
 
 	private static final int PERMANENT_NOTIFICATION_ID = 30;
 	private static final int SERVICES_DISABLED_NOTIFICATION_ID = 29;
@@ -100,8 +103,9 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	//Location stuff
 	private Boolean servicesAvailable = false;
     private boolean mInProgress;
-	private LocationClient mLocationClient;
+//	private LocationClient mLocationClient;
     private LocationRequest mLocationRequest;
+    private GoogleApiClient mGoogleApiClient;
 
     public final static String EVENT_TRIP_START = "start";
     public final static String EVENT_TRIP_STOP = "stop";
@@ -140,7 +144,6 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
          * Create a new location client, using the enclosing class to
          * handle callbacks.
          */
-        mLocationClient = new LocationClient(this, this, this);
         
         logger = AndroidLogger.getLogger(getApplicationContext(), "561a64f6-9d58-4ff3-ab25-a932ff2d10c6", false);
 
@@ -171,11 +174,11 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 				updateServiceMode();
 				updateNotification(false);
 				
-				setUpLocationClientIfNeeded();
-		        if(!mLocationClient.isConnected() || !mLocationClient.isConnecting() && !mInProgress)
+				setUpGoogleApiClientIfNeeded();
+		        if(!mGoogleApiClient.isConnected() || !mGoogleApiClient.isConnecting() && !mInProgress)
 		        {
 		        	mInProgress = true;
-		        	mLocationClient.connect();
+		        	mGoogleApiClient.connect();
 		        }
 				
 		        if(checkIgnitionHandler==null){
@@ -214,6 +217,16 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	    
 		return START_STICKY;//super.onStartCommand(intent, flags, startId);
 	}
+	
+    private void setUpGoogleApiClientIfNeeded() {
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addApi(LocationServices.API)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .build();
+        }
+    }
 	
 	private void iBeaconStartMonitoring() {
         try {
@@ -404,10 +417,13 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 			break;
 		}
 		
-		if(mLocationClient!=null && mLocationClient.isConnected()){
-			mLocationClient.removeLocationUpdates(this);
+		if(mGoogleApiClient!=null && mGoogleApiClient.isConnected()){
+			LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
 			if(!mode.equals(Device.MODE_SIGNIFICATION_TRACKING))
-				mLocationClient.requestLocationUpdates(mLocationRequest, this);
+				LocationServices.FusedLocationApi.requestLocationUpdates(
+		                mGoogleApiClient,
+		                mLocationRequest,
+		                this);
 		}
 	}
 	
@@ -828,11 +844,11 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		JastecManager.getInstance(this).disconnect();
 		
 		mInProgress = false;
-        if(servicesAvailable && mLocationClient != null) {
-        	if(mLocationClient.isConnected())
-        		mLocationClient.removeLocationUpdates(this);
+        if(servicesAvailable && mGoogleApiClient != null) {
+        	if(mGoogleApiClient.isConnected())
+        		LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
 	        // Destroy the current location client
-	        mLocationClient = null;
+        	mGoogleApiClient = null;
         }
         
         if(prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false) && !prefs.getString(Device.PREF_DEVICE_TYPE, "").equals(Device.DEVICE_TYPE_OBD)){
@@ -864,12 +880,6 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
         }
     }
 	
-	private void setUpLocationClientIfNeeded()
-    {
-    	if(mLocationClient == null) 
-            mLocationClient = new LocationClient(this, this, this);
-    }
-	
 	/*
      * Called by Location Services when the request to connect the
      * client finishes successfully. At this point, you can
@@ -880,8 +890,8 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
     	
 		updateServiceMode();
     	
-		if(mLocationClient!=null){
-	    	Location lastLocation = mLocationClient.getLastLocation();
+		if(mGoogleApiClient!=null){
+	    	Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 	    	if(lastLocation!=null){
 		    	Editor e = prefs.edit();
 		        e.putString(Constants.PREF_MOBILE_LATITUDE, ""+lastLocation.getLatitude());
@@ -900,15 +910,15 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
      * Called by Location Services if the connection to the
      * location client drops because of an error.
      */
-    @Override
-    public void onDisconnected() {
-        // Turn off the request flag
-        mInProgress = false;
-        // Destroy the current location client
-        mLocationClient = null;
-        // Display the connection status
-        // Toast.makeText(this, DateFormat.getDateTimeInstance().format(new Date()) + ": Disconnected. Please re-connect.", Toast.LENGTH_SHORT).show();
-    }
+//    @Override
+//    public void onDisconnected() {
+//        // Turn off the request flag
+//        mInProgress = false;
+//        // Destroy the current location client
+//        mLocationClient = null;
+//        // Display the connection status
+//        // Toast.makeText(this, DateFormat.getDateTimeInstance().format(new Date()) + ": Disconnected. Please re-connect.", Toast.LENGTH_SHORT).show();
+//    }
  
     /*
      * Called by Location Services if the attempt to
@@ -925,4 +935,11 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
  
         }
     }
+
+	@Override
+	public void onConnectionSuspended(int arg0) {
+		// TODO Auto-generated method stub
+		mInProgress = false;
+		mGoogleApiClient = null;
+	}
 }
