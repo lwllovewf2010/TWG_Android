@@ -42,6 +42,7 @@ import com.modusgo.ubi.customviews.GoogleMapFragment.OnMapReadyListener;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.modusgo.ubi.requesttasks.GetVehicleRequest;
+import com.modusgo.ubi.utils.TimeAgoUtils;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -63,6 +64,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	TextView tvFuel;
 	TextView tvDiagnostics;
 	TextView tvAlerts;
+	TextView tvLocationHour;
 	
 	View btnDistanceToCar;
 	View rlLastTrip;
@@ -99,6 +101,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	    tvLocation = (TextView) rootView.findViewById(R.id.tvLocation);
 	    tvDate = (TextView) rootView.findViewById(R.id.tvDate);
 	    tvDateLabel = (TextView) rootView.findViewById(R.id.tvDateLabel);
+	    tvLocationHour = (TextView) rootView.findViewById(R.id.tvLocationHour);
 	    imagePhoto = (ImageView)rootView.findViewById(R.id.imagePhoto);
 	    tvDistanceToCar = (TextView)rootView.findViewById(R.id.tvDistanceToCar);
 	    tvDistanceToCarLabel = (TextView)rootView.findViewById(R.id.tvDistanceToCarLabel);
@@ -302,17 +305,22 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	    	tvInTrip.setVisibility(View.VISIBLE);
 	    	tvDate.setVisibility(View.INVISIBLE);
 	    	tvDateLabel.setVisibility(View.INVISIBLE);
+	    	tvLocationHour.setText(TimeAgoUtils.getTimeAgo("", getActivity()));
 	    }
 	    else if(TextUtils.isEmpty(vehicle.lastTripDate)){
 	    	tvInTrip.setVisibility(View.GONE);
 	    	tvDate.setVisibility(View.INVISIBLE);
 	    	tvDateLabel.setVisibility(View.INVISIBLE);
+	    	tvLocationHour.setText("");
 	    }
 	    else{
 	    	tvInTrip.setVisibility(View.GONE);
 	    	tvDate.setVisibility(View.VISIBLE);
 	    	tvDateLabel.setVisibility(View.VISIBLE);
+	    	tvLocationHour.setText(TimeAgoUtils.getTimeAgo(vehicle.lastTripDate, getActivity()));
 	    }
+	    
+	    
 	    
         setUpMapIfNeeded();
 	}

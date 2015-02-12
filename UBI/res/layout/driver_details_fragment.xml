@@ -205,12 +205,23 @@
 
                     <com.modusgo.ubi.customviews.TypefacedTextView
                         android:id="@+id/tvLocationLabel"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="CURRENT LOCATION"
                         android:textColor="#3c454f"
                         android:textSize="10sp"
                         ubi:typeface="EncodeSansNormal-600-SemiBold.ttf" />
+                    
+                    <com.modusgo.ubi.customviews.TypefacedTextView
+                        android:id="@+id/tvLocationHour"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/tvLocationLabel"
+                        android:layout_marginLeft="@dimen/five_dp"
+                        android:text="3 hour ago"
+                        android:textColor="#697078"
+                        android:textSize="10sp"
+                        ubi:typeface="EncodeSansNormal-300-Light.ttf" />
 
                     <com.modusgo.ubi.customviews.TypefacedTextView
                         android:id="@+id/tvLocation"

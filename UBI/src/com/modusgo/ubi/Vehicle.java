@@ -127,7 +127,7 @@ public class Vehicle implements Serializable{
 					e.printStackTrace();
 				}
 			}
-			v.lastTripDate = Utils.fixTimezoneZ(locationJSON.optString("last_trip_time","Undefined"));
+			v.lastTripDate = Utils.fixTimezoneZ(locationJSON.optString("last_trip_time","Undefined")).equals("null") ? "" : Utils.fixTimezoneZ(locationJSON.optString("last_trip_time","Undefined"));
 			v.lastTripId = locationJSON.optLong("last_trip_id");
 			v.inTrip = !locationJSON.isNull("in_trip");
 		}
