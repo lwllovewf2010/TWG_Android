@@ -420,11 +420,13 @@ public class MainActivity extends FragmentActivity {
 		        	//Trip tagging
 		        	Utils.gaTrackScreen(MainActivity.this, "Trip tagging");
 		        	Toast.makeText(MainActivity.this, R.string.coming_soon, Toast.LENGTH_SHORT).show();
+		        	setNavigationDrawerItemsUnselected();
 		            break;
 		        case REWARDS:
 		        	//Rewards
 		        	Utils.gaTrackScreen(MainActivity.this, "Rewards");
 		        	Toast.makeText(MainActivity.this, R.string.coming_soon, Toast.LENGTH_SHORT).show();
+		        	setNavigationDrawerItemsUnselected();
 		            break;
 		        case LOGOUT:
 		        	//Logout
