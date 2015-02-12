@@ -47,6 +47,7 @@ import com.modusgo.ubi.Tracking;
 import com.modusgo.ubi.TripDeclineActivity;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.jastec.JastecManager;
+import com.modusgo.ubi.jastec.LogActivity;
 import com.modusgo.ubi.jastec.JastecManager.OnSensorListener;
 import com.modusgo.ubi.requesttasks.GetDeviceInfoRequest;
 import com.modusgo.ubi.requesttasks.SendEventsRequest;
@@ -653,6 +654,10 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
         }
         else if(deviceInTrip){
         	savePoint(location, event);
+        	
+        	Intent i = new Intent(LogActivity.ACTION_LOGS);
+			i.putExtra(LogActivity.BROADCAST_INTENT_EXTRA_MESSAGE, "GPS Speed = " + location.getSpeed());
+			sendBroadcast(i);
         }
     }
 	
