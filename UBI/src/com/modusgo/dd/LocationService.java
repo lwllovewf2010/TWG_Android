@@ -717,7 +717,7 @@ LocationListener{
 	    		lastLocationUpdateTime = System.currentTimeMillis();
 	        	updateLocationUpdatesHandler();
 	    		updateNotification(true); 
-				showTripDeclineNotification();	
+				//showTripDeclineNotification();	
 			}
 			else if(event.equals(EVENT_TRIP_STOP)){
 				e.putBoolean(Device.PREF_IN_TRIP_NOW, false).commit();
@@ -773,7 +773,7 @@ LocationListener{
 			stayFromMillis = 0;
 			lastLocationUpdateTime = System.currentTimeMillis();
     		updateNotification(true);
-			showTripDeclineNotification();
+			//showTripDeclineNotification();
 		}
 		else if(event.equals(EVENT_TRIP_STOP)){
 			e.putBoolean(Device.PREF_IN_TRIP_NOW, false).commit();
