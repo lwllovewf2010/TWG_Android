@@ -13255,6 +13255,7 @@ com.google.android.gms.maps.model.PolylineOptions -> com.google.android.gms.maps
     int describeContents() -> describeContents
     int getVersionCode() -> a
     com.google.android.gms.maps.model.PolylineOptions add(com.google.android.gms.maps.model.LatLng) -> a
+    com.google.android.gms.maps.model.PolylineOptions addAll(java.lang.Iterable) -> a
     com.google.android.gms.maps.model.PolylineOptions width(float) -> a
     com.google.android.gms.maps.model.PolylineOptions color(int) -> a
     com.google.android.gms.maps.model.PolylineOptions zIndex(float) -> b
@@ -15434,23 +15435,23 @@ com.modusgo.twg.AlertsFragment -> com.modusgo.twg.r:
     android.view.View rootView -> a
     android.widget.ListView infoList -> b
     android.widget.Button callServiceBtn -> Z
-    74:124:android.view.View onCreateView(android.view.LayoutInflater,android.view.ViewGroup,android.os.Bundle) -> a
-    130:268:void updateInfo() -> b
-    272:273:void callback() -> a
-    65:65:com.modusgo.twg.MainActivity access$0(com.modusgo.twg.AlertsFragment) -> a
-    58:58:com.modusgo.twg.utils.Vehicle access$1(com.modusgo.twg.AlertsFragment) -> b
+    75:125:android.view.View onCreateView(android.view.LayoutInflater,android.view.ViewGroup,android.os.Bundle) -> a
+    131:270:void updateInfo() -> b
+    274:275:void callback() -> a
+    66:66:com.modusgo.twg.MainActivity access$0(com.modusgo.twg.AlertsFragment) -> a
+    59:59:com.modusgo.twg.utils.Vehicle access$1(com.modusgo.twg.AlertsFragment) -> b
 com.modusgo.twg.AlertsFragment$1 -> com.modusgo.twg.s:
     com.modusgo.twg.AlertsFragment this$0 -> a
-    86:90:void onClick(android.view.View) -> onClick
+    87:91:void onClick(android.view.View) -> onClick
 com.modusgo.twg.AlertsFragment$2 -> com.modusgo.twg.t:
     com.modusgo.twg.AlertsFragment this$0 -> a
     com.modusgo.twg.AlertsFragment val$alertsfrag -> b
-    106:110:void onRefresh() -> a
+    107:111:void onRefresh() -> a
 com.modusgo.twg.AlertsFragment$3 -> com.modusgo.twg.u:
     com.modusgo.twg.AlertsFragment this$0 -> a
     int[] $SWITCH_TABLE$com$modusgo$twg$utils$TWGListItem$twg_list_item_type -> b
-    240:260:void onItemClick(android.widget.AdapterView,android.view.View,int,long) -> onItemClick
-    234:234:int[] $SWITCH_TABLE$com$modusgo$twg$utils$TWGListItem$twg_list_item_type() -> a
+    241:262:void onItemClick(android.widget.AdapterView,android.view.View,int,long) -> onItemClick
+    235:235:int[] $SWITCH_TABLE$com$modusgo$twg$utils$TWGListItem$twg_list_item_type() -> a
 com.modusgo.twg.CirclesFragment -> com.modusgo.twg.v:
     android.content.SharedPreferences prefs -> a
     android.widget.TextView tvPopup -> b
@@ -15615,13 +15616,14 @@ com.modusgo.twg.DiagnosticDetailActivity -> com.modusgo.twg.DiagnosticDetailActi
     android.widget.LinearLayout llList -> x
     android.widget.ScrollView scrollView -> y
     android.widget.Button btnFindMechanic -> z
-    43:161:void onCreate(android.os.Bundle) -> onCreate
-    165:167:void onResume() -> onResume
-    171:173:void onSaveInstanceState(android.os.Bundle) -> onSaveInstanceState
+    long vehicleId -> A
+    45:167:void onCreate(android.os.Bundle) -> onCreate
+    171:173:void onResume() -> onResume
+    177:179:void onSaveInstanceState(android.os.Bundle) -> onSaveInstanceState
 com.modusgo.twg.DiagnosticDetailActivity$1 -> com.modusgo.twg.an:
     com.modusgo.twg.DiagnosticDetailActivity this$0 -> a
     com.modusgo.twg.MainActivity val$main -> b
-    146:148:void onClick(android.view.View) -> onClick
+    151:154:void onClick(android.view.View) -> onClick
 com.modusgo.twg.DiagnosticsFragment -> com.modusgo.twg.ao:
     com.modusgo.twg.utils.Vehicle vehicle -> a
     android.support.v4.widget.SwipeRefreshLayout lRefresh -> b
@@ -15640,26 +15642,26 @@ com.modusgo.twg.DiagnosticsFragment -> com.modusgo.twg.ao:
     com.modusgo.twg.db.DbHelper dbHelper -> ad
     android.database.sqlite.SQLiteDatabase db -> ae
     android.database.Cursor c -> af
-    89:164:android.view.View onCreateView(android.view.LayoutInflater,android.view.ViewGroup,android.os.Bundle) -> a
-    170:172:void onResume() -> r
-    179:567:void updateInfo() -> b
-    810:813:void callback() -> a
-    75:75:com.modusgo.twg.MainActivity access$0(com.modusgo.twg.DiagnosticsFragment) -> a
+    91:166:android.view.View onCreateView(android.view.LayoutInflater,android.view.ViewGroup,android.os.Bundle) -> a
+    172:174:void onResume() -> r
+    181:570:void updateInfo() -> b
+    813:816:void callback() -> a
+    77:77:com.modusgo.twg.MainActivity access$0(com.modusgo.twg.DiagnosticsFragment) -> a
 com.modusgo.twg.DiagnosticsFragment$1 -> com.modusgo.twg.ap:
     com.modusgo.twg.DiagnosticsFragment this$0 -> a
-    117:121:void onClick(android.view.View) -> onClick
+    119:123:void onClick(android.view.View) -> onClick
 com.modusgo.twg.DiagnosticsFragment$2 -> com.modusgo.twg.aq:
     com.modusgo.twg.DiagnosticsFragment this$0 -> a
     com.modusgo.twg.DiagnosticsFragment val$diagFrag -> b
-    132:135:void onRefresh() -> a
+    134:137:void onRefresh() -> a
 com.modusgo.twg.DiagnosticsFragment$3 -> com.modusgo.twg.ar:
     com.modusgo.twg.DiagnosticsFragment this$0 -> a
     com.modusgo.twg.utils.Recall val$recall -> b
-    299:304:void onClick(android.view.View) -> onClick
+    301:306:void onClick(android.view.View) -> onClick
 com.modusgo.twg.DiagnosticsFragment$4 -> com.modusgo.twg.as:
     com.modusgo.twg.DiagnosticsFragment this$0 -> a
     com.modusgo.twg.DiagnosticsTroubleCode val$dtc -> b
-    366:369:void onClick(android.view.View) -> onClick
+    368:372:void onClick(android.view.View) -> onClick
 com.modusgo.twg.DiagnosticsTroubleCode -> com.modusgo.twg.at:
     java.lang.String code -> a
     java.lang.String conditions -> b
@@ -15821,31 +15823,67 @@ com.modusgo.twg.EducationActivity -> com.modusgo.twg.EducationActivity:
     50:58:void setActionBarAppearance() -> v_
     62:64:void onSaveInstanceState(android.os.Bundle) -> onSaveInstanceState
 com.modusgo.twg.FacilitiesFragment -> com.modusgo.twg.bo:
-    com.modusgo.twg.utils.Vehicle vehicle -> d
-    android.content.SharedPreferences prefs -> e
-    android.view.View rootView -> f
-    com.modusgo.twg.customviews.GoogleMapFragment mMapFragment -> g
-    com.google.android.gms.maps.GoogleMap mMap -> h
-    com.modusgo.twg.MainActivity main -> i
+    com.modusgo.twg.utils.Vehicle vehicle -> e
+    android.content.SharedPreferences prefs -> f
+    android.view.View rootView -> g
+    com.modusgo.twg.customviews.GoogleMapFragment mMapFragment -> h
+    com.google.android.gms.maps.GoogleMap mMap -> i
+    com.modusgo.twg.MainActivity main -> Y
+    java.util.ArrayList lines -> Z
+    com.google.android.gms.maps.model.PolylineOptions options -> aa
     java.lang.String locHTML -> a
-    double latitude -> b
-    double longitude -> c
-    50:69:android.view.View onCreateView(android.view.LayoutInflater,android.view.ViewGroup,android.os.Bundle) -> a
-    76:82:void setUpMapIfNeeded() -> a
-    87:99:void setUpMap() -> c
-    104:109:void onMapReady() -> b
+    java.lang.String linkHTML -> b
+    double latitude -> c
+    double longitude -> d
+    69:136:android.view.View onCreateView(android.view.LayoutInflater,android.view.ViewGroup,android.os.Bundle) -> a
+    143:149:void setUpMapIfNeeded() -> a
+    154:174:void setUpMap() -> c
+    180:187:void onMapReady() -> b
+    48:48:com.google.android.gms.maps.GoogleMap access$0(com.modusgo.twg.FacilitiesFragment) -> a
+    51:51:com.google.android.gms.maps.model.PolylineOptions access$1(com.modusgo.twg.FacilitiesFragment) -> b
+com.modusgo.twg.FacilitiesFragment$1 -> com.modusgo.twg.bp:
+    com.modusgo.twg.FacilitiesFragment this$0 -> a
+    com.google.android.gms.maps.model.LatLng val$origin -> b
+    com.google.android.gms.maps.model.LatLng val$destination -> c
+    106:110:void onClick(android.view.View) -> onClick
+com.modusgo.twg.FacilitiesFragment$2 -> com.modusgo.twg.bq:
+    com.modusgo.twg.FacilitiesFragment this$0 -> a
+    com.google.android.gms.maps.model.LatLng val$origin -> b
+    com.google.android.gms.maps.model.LatLng val$destination -> c
+    125:131:void onClick(android.view.View) -> onClick
 com.modusgo.twg.FindMechanicActivity -> com.modusgo.twg.FindMechanicActivity:
-    com.modusgo.twg.customviews.GoogleMapFragment mMapFragment -> q
     com.google.android.gms.maps.MapView mapView -> r
     com.google.android.gms.maps.GoogleMap map -> s
+    java.util.ArrayList lines -> t
+    com.google.android.gms.maps.model.PolylineOptions options -> u
+    long vehicleId -> v
     java.lang.String locHTML -> n
-    double latitude -> o
-    double longitude -> p
-    85:113:void onCreate(android.os.Bundle) -> onCreate
-    116:120:void addMarkerToMap() -> j
-    124:127:void onResume() -> onResume
-    131:133:void onDestroy() -> onDestroy
-    137:139:void onLowMemory() -> onLowMemory
+    java.lang.String linkHTML -> o
+    double latitude -> p
+    double longitude -> q
+    58:156:void onCreate(android.os.Bundle) -> onCreate
+    160:166:void addMarkerToMap() -> j
+    172:175:void onResume() -> onResume
+    180:182:void onDestroy() -> onDestroy
+    187:189:void onLowMemory() -> onLowMemory
+    158:158:void access$0(com.modusgo.twg.FindMechanicActivity) -> a
+    41:41:java.util.ArrayList access$1(com.modusgo.twg.FindMechanicActivity) -> b
+    42:42:void access$2(com.modusgo.twg.FindMechanicActivity,com.google.android.gms.maps.model.PolylineOptions) -> a
+    42:42:com.google.android.gms.maps.model.PolylineOptions access$3(com.modusgo.twg.FindMechanicActivity) -> c
+    40:40:com.google.android.gms.maps.GoogleMap access$4(com.modusgo.twg.FindMechanicActivity) -> d
+com.modusgo.twg.FindMechanicActivity$1 -> com.modusgo.twg.br:
+    com.modusgo.twg.FindMechanicActivity this$0 -> a
+    103:111:void onMapLoaded() -> a
+com.modusgo.twg.FindMechanicActivity$2 -> com.modusgo.twg.bs:
+    com.modusgo.twg.FindMechanicActivity this$0 -> a
+    com.google.android.gms.maps.model.LatLng val$origin -> b
+    com.google.android.gms.maps.model.LatLng val$destination -> c
+    127:131:void onClick(android.view.View) -> onClick
+com.modusgo.twg.FindMechanicActivity$3 -> com.modusgo.twg.bt:
+    com.modusgo.twg.FindMechanicActivity this$0 -> a
+    com.google.android.gms.maps.model.LatLng val$origin -> b
+    com.google.android.gms.maps.model.LatLng val$destination -> c
+    147:153:void onClick(android.view.View) -> onClick
 com.modusgo.twg.FindMyCarActivity -> com.modusgo.twg.FindMyCarActivity:
     com.google.android.gms.location.LocationClient mLocationClient -> x
     com.google.android.gms.location.LocationRequest REQUEST -> y
@@ -15860,7 +15898,7 @@ com.modusgo.twg.FindMyCarActivity -> com.modusgo.twg.FindMyCarActivity:
     android.widget.LinearLayout llInfo -> u
     android.widget.TextView tvInfo -> v
     java.util.ArrayList points -> w
-    boolean locationUpdatesEnabled -> I
+    boolean locationUpdatesEnabled -> A
     82:153:void onCreate(android.os.Bundle) -> onCreate
     156:165:void drawPolyline() -> j
     168:196:void updateActivity() -> k
@@ -15884,13 +15922,13 @@ com.modusgo.twg.FindMyCarActivity -> com.modusgo.twg.FindMyCarActivity:
     167:167:void access$5(com.modusgo.twg.FindMyCarActivity) -> e
     78:78:void access$6(com.modusgo.twg.FindMyCarActivity,boolean) -> a
     207:207:void access$7(com.modusgo.twg.FindMyCarActivity) -> f
-com.modusgo.twg.FindMyCarActivity$1 -> com.modusgo.twg.bp:
+com.modusgo.twg.FindMyCarActivity$1 -> com.modusgo.twg.bu:
     com.modusgo.twg.FindMyCarActivity this$0 -> a
     111:112:void onMapLoaded() -> a
-com.modusgo.twg.FindMyCarActivity$2 -> com.modusgo.twg.bq:
+com.modusgo.twg.FindMyCarActivity$2 -> com.modusgo.twg.bv:
     com.modusgo.twg.FindMyCarActivity this$0 -> a
     136:150:void onClick(android.view.View) -> onClick
-com.modusgo.twg.FindMyCarActivity$GetRouteTask -> com.modusgo.twg.br:
+com.modusgo.twg.FindMyCarActivity$GetRouteTask -> com.modusgo.twg.bw:
     com.modusgo.twg.FindMyCarActivity this$0 -> a
     360:370:org.json.JSONObject doInBackground(java.lang.String[]) -> a
     376:420:void onPostExecute(org.json.JSONObject) -> b
@@ -15924,25 +15962,25 @@ com.modusgo.twg.GeofenceActivity -> com.modusgo.twg.GeofenceActivity:
     56:56:boolean access$5(com.modusgo.twg.GeofenceActivity) -> c
     189:189:void access$6(com.modusgo.twg.GeofenceActivity) -> d
     211:211:void access$7(com.modusgo.twg.GeofenceActivity) -> e
-com.modusgo.twg.GeofenceActivity$1 -> com.modusgo.twg.bs:
+com.modusgo.twg.GeofenceActivity$1 -> com.modusgo.twg.bx:
     com.modusgo.twg.GeofenceActivity this$0 -> a
     109:112:void onMapLoaded() -> a
-com.modusgo.twg.GeofenceActivity$2 -> com.modusgo.twg.bt:
+com.modusgo.twg.GeofenceActivity$2 -> com.modusgo.twg.by:
     com.modusgo.twg.GeofenceActivity this$0 -> a
     118:134:void onMapLongClick(com.google.android.gms.maps.model.LatLng) -> a
-com.modusgo.twg.GeofenceActivity$3 -> com.modusgo.twg.bu:
+com.modusgo.twg.GeofenceActivity$3 -> com.modusgo.twg.bz:
     com.modusgo.twg.GeofenceActivity this$0 -> a
     141:149:void onMapClick(com.google.android.gms.maps.model.LatLng) -> a
-com.modusgo.twg.GeofenceActivity$4 -> com.modusgo.twg.bv:
+com.modusgo.twg.GeofenceActivity$4 -> com.modusgo.twg.ca:
     com.modusgo.twg.GeofenceActivity this$0 -> a
     176:185:void onClick(android.view.View) -> onClick
-com.modusgo.twg.GeofenceActivity$GetGeofenceTask -> com.modusgo.twg.bw:
+com.modusgo.twg.GeofenceActivity$GetGeofenceTask -> com.modusgo.twg.cb:
     com.modusgo.twg.GeofenceActivity this$0 -> a
     327:331:void onPreExecute() -> onPreExecute
     335:335:org.json.JSONObject doInBackground(java.lang.String[]) -> a
     340:358:void onSuccess(org.json.JSONObject) -> a
     362:364:void onError(java.lang.String) -> a
-com.modusgo.twg.GeofenceActivity$SetGeofenceTask -> com.modusgo.twg.bx:
+com.modusgo.twg.GeofenceActivity$SetGeofenceTask -> com.modusgo.twg.cc:
     com.modusgo.twg.GeofenceActivity this$0 -> a
     375:399:void onPreExecute() -> onPreExecute
     403:407:void onPostExecute(org.json.JSONObject) -> b
@@ -15958,17 +15996,17 @@ com.modusgo.twg.HomeActivity -> com.modusgo.twg.HomeActivity:
     103:104:void up() -> u_
     243:247:void onResume() -> onResume
     86:86:void access$0(com.modusgo.twg.HomeActivity) -> a
-com.modusgo.twg.HomeActivity$1 -> com.modusgo.twg.by:
+com.modusgo.twg.HomeActivity$1 -> com.modusgo.twg.cd:
     com.modusgo.twg.HomeActivity this$0 -> a
     74:77:void onRefresh() -> a
-com.modusgo.twg.HomeActivity$GetVehiclesTask -> com.modusgo.twg.bz:
+com.modusgo.twg.HomeActivity$GetVehiclesTask -> com.modusgo.twg.ce:
     com.modusgo.twg.HomeActivity this$0 -> a
     257:258:void onPreExecute() -> onPreExecute
     262:264:void onPostExecute(org.json.JSONObject) -> b
     268:270:org.json.JSONObject doInBackground(java.lang.String[]) -> a
     275:276:void onError(java.lang.String) -> a
     281:296:void onSuccess(org.json.JSONObject) -> a
-com.modusgo.twg.HomeActivity$VehiclesAdapter -> com.modusgo.twg.ca:
+com.modusgo.twg.HomeActivity$VehiclesAdapter -> com.modusgo.twg.cf:
     android.content.Context ctx -> a
     android.view.LayoutInflater lInflater -> b
     java.text.SimpleDateFormat sdfFrom -> c
@@ -15981,11 +16019,11 @@ com.modusgo.twg.HomeActivity$VehiclesAdapter -> com.modusgo.twg.ca:
     147:232:android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
     236:236:com.modusgo.twg.utils.Vehicle getVehicle(int) -> a
     106:106:com.modusgo.twg.HomeActivity access$0(com.modusgo.twg.HomeActivity$VehiclesAdapter) -> a
-com.modusgo.twg.HomeActivity$VehiclesAdapter$1 -> com.modusgo.twg.cb:
+com.modusgo.twg.HomeActivity$VehiclesAdapter$1 -> com.modusgo.twg.cg:
     com.modusgo.twg.HomeActivity$VehiclesAdapter this$1 -> a
     com.modusgo.twg.utils.Vehicle val$vehicle -> b
     212:215:void onClick(android.view.View) -> onClick
-com.modusgo.twg.HomeActivity$VehiclesAdapter$2 -> com.modusgo.twg.cc:
+com.modusgo.twg.HomeActivity$VehiclesAdapter$2 -> com.modusgo.twg.ch:
     com.modusgo.twg.HomeActivity$VehiclesAdapter this$1 -> a
     int val$position -> b
     com.modusgo.twg.utils.Vehicle val$vehicle -> c
@@ -15995,7 +16033,7 @@ com.modusgo.twg.InitActivity -> com.modusgo.twg.InitActivity:
     android.content.SharedPreferences prefs -> o
     java.lang.String clientId -> p
     65:123:void onCreate(android.os.Bundle) -> onCreate
-com.modusgo.twg.InitActivity$ServerCheckTask -> com.modusgo.twg.cd:
+com.modusgo.twg.InitActivity$ServerCheckTask -> com.modusgo.twg.ci:
     org.json.JSONArray welcomeScreens -> a
     int status -> b
     java.lang.String message -> c
@@ -16006,79 +16044,79 @@ com.modusgo.twg.InitActivity$ServerCheckTask -> com.modusgo.twg.cd:
     339:366:void onPostExecute(java.lang.Boolean) -> a
     1:1:void onPostExecute(java.lang.Object) -> onPostExecute
     1:1:java.lang.Object doInBackground(java.lang.Object[]) -> doInBackground
-com.modusgo.twg.ListItem -> com.modusgo.twg.ce:
+com.modusgo.twg.ListItem -> com.modusgo.twg.cj:
 com.modusgo.twg.MainActivity -> com.modusgo.twg.MainActivity:
     android.support.v4.widget.DrawerLayout mDrawerLayout -> n
     android.widget.ListView mDrawerList -> o
     android.support.v4.app.ActionBarDrawerToggle mDrawerToggle -> p
     int mDrawerSelectedItem -> q
-    android.widget.ImageButton btnUp -> A
-    android.widget.TextView tvActionBarTitle -> B
+    android.widget.ImageButton btnUp -> B
+    android.widget.TextView tvActionBarTitle -> C
     android.widget.ImageButton btnNavigationDrawer -> r
     java.lang.String actionBarTitle -> s
-    com.modusgo.twg.utils.Vehicle vehicle -> C
-    android.app.ProgressDialog busyDialog -> D
-    android.support.v4.app.FragmentTabHost tabHost -> E
-    java.util.ArrayList menuItems -> F
-    android.content.SharedPreferences prefs -> G
-    android.app.ActionBar actionBar -> H
-    106:269:void onCreate(android.os.Bundle) -> onCreate
-    277:280:void setActionBarTitle(java.lang.String) -> b
-    283:287:void setButtonUpVisibility(boolean) -> b
-    290:291:void up() -> u_
-    301:356:void setActionBarAppearance() -> v_
-    365:378:void showBusyDialog(int) -> a
-    382:395:void hideBusyDialog() -> h
-    399:410:void onResume() -> onResume
-    419:419:boolean onPrepareOptionsMenu(android.view.Menu) -> onPrepareOptionsMenu
-    424:431:boolean onOptionsItemSelected(android.view.MenuItem) -> onOptionsItemSelected
-    542:550:void setNavigationDrawerItemSelected(com.modusgo.twg.MainActivity$MenuItems) -> a
-    553:558:void setNavigationDrawerItemsUnselected() -> i
-    572:576:void onPostCreate(android.os.Bundle) -> onPostCreate
-    580:583:void onConfigurationChanged(android.content.res.Configuration) -> onConfigurationChanged
-    587:596:boolean onKeyDown(int,android.view.KeyEvent) -> onKeyDown
-    601:607:void onBackPressed() -> onBackPressed
-    610:617:void checkForCrashes() -> j
-    53:53:android.widget.ListView access$0(com.modusgo.twg.MainActivity) -> a
-    55:55:int access$1(com.modusgo.twg.MainActivity) -> b
-    59:59:java.lang.String access$2(com.modusgo.twg.MainActivity) -> c
-    52:52:android.support.v4.widget.DrawerLayout access$3(com.modusgo.twg.MainActivity) -> d
-    58:58:android.widget.ImageButton access$4(com.modusgo.twg.MainActivity) -> e
-com.modusgo.twg.MainActivity$1 -> com.modusgo.twg.cf:
+    com.modusgo.twg.utils.Vehicle vehicle -> D
+    android.app.ProgressDialog busyDialog -> E
+    android.support.v4.app.FragmentTabHost tabHost -> F
+    java.util.ArrayList menuItems -> G
+    android.content.SharedPreferences prefs -> H
+    android.app.ActionBar actionBar -> I
+    109:309:void onCreate(android.os.Bundle) -> onCreate
+    317:320:void setActionBarTitle(java.lang.String) -> b
+    323:327:void setButtonUpVisibility(boolean) -> b
+    330:331:void up() -> u_
+    341:396:void setActionBarAppearance() -> v_
+    405:418:void showBusyDialog(int) -> a
+    422:435:void hideBusyDialog() -> h
+    439:450:void onResume() -> onResume
+    459:459:boolean onPrepareOptionsMenu(android.view.Menu) -> onPrepareOptionsMenu
+    464:471:boolean onOptionsItemSelected(android.view.MenuItem) -> onOptionsItemSelected
+    583:591:void setNavigationDrawerItemSelected(com.modusgo.twg.MainActivity$MenuItems) -> a
+    594:599:void setNavigationDrawerItemsUnselected() -> i
+    613:617:void onPostCreate(android.os.Bundle) -> onPostCreate
+    621:624:void onConfigurationChanged(android.content.res.Configuration) -> onConfigurationChanged
+    628:637:boolean onKeyDown(int,android.view.KeyEvent) -> onKeyDown
+    642:648:void onBackPressed() -> onBackPressed
+    651:658:void checkForCrashes() -> j
+    56:56:android.widget.ListView access$0(com.modusgo.twg.MainActivity) -> a
+    58:58:int access$1(com.modusgo.twg.MainActivity) -> b
+    62:62:java.lang.String access$2(com.modusgo.twg.MainActivity) -> c
+    55:55:android.support.v4.widget.DrawerLayout access$3(com.modusgo.twg.MainActivity) -> d
+    61:61:android.widget.ImageButton access$4(com.modusgo.twg.MainActivity) -> e
+com.modusgo.twg.MainActivity$1 -> com.modusgo.twg.ck:
     com.modusgo.twg.MainActivity this$0 -> a
-    133:139:void onClick(android.view.View) -> onClick
-com.modusgo.twg.MainActivity$2 -> com.modusgo.twg.cg:
+    173:179:void onClick(android.view.View) -> onClick
+com.modusgo.twg.MainActivity$2 -> com.modusgo.twg.cl:
     com.modusgo.twg.MainActivity this$0 -> a
-    147:148:void onClick(android.view.View) -> onClick
-com.modusgo.twg.MainActivity$3 -> com.modusgo.twg.ch:
+    187:188:void onClick(android.view.View) -> onClick
+com.modusgo.twg.MainActivity$3 -> com.modusgo.twg.cm:
     com.modusgo.twg.MainActivity this$0 -> a
-    173:173:int getCount() -> getCount
-    180:210:android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
-com.modusgo.twg.MainActivity$4 -> com.modusgo.twg.ci:
+    213:213:int getCount() -> getCount
+    220:250:android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
+com.modusgo.twg.MainActivity$4 -> com.modusgo.twg.cn:
     com.modusgo.twg.MainActivity this$0 -> a
     android.widget.ImageView val$menuLogo -> b
-    249:256:void onDrawerClosed(android.view.View) -> b
-    259:266:void onDrawerOpened(android.view.View) -> a
-com.modusgo.twg.MainActivity$5 -> com.modusgo.twg.cj:
+    289:296:void onDrawerClosed(android.view.View) -> b
+    299:306:void onDrawerOpened(android.view.View) -> a
+com.modusgo.twg.MainActivity$5 -> com.modusgo.twg.co:
     com.modusgo.twg.MainActivity this$0 -> a
-    313:318:void onLoadingComplete(java.lang.String,android.view.View,android.graphics.Bitmap) -> a
-com.modusgo.twg.MainActivity$6 -> com.modusgo.twg.ck:
+    353:358:void onLoadingComplete(java.lang.String,android.view.View,android.graphics.Bitmap) -> a
+com.modusgo.twg.MainActivity$6 -> com.modusgo.twg.cp:
     com.modusgo.twg.MainActivity this$0 -> a
     com.modusgo.twg.MainActivity val$main -> b
     int val$resId -> c
-    372:376:void run() -> run
-com.modusgo.twg.MainActivity$7 -> com.modusgo.twg.cl:
+    412:416:void run() -> run
+com.modusgo.twg.MainActivity$7 -> com.modusgo.twg.cq:
     com.modusgo.twg.MainActivity this$0 -> a
-    390:392:void run() -> run
-com.modusgo.twg.MainActivity$8 -> com.modusgo.twg.cm:
+    430:432:void run() -> run
+com.modusgo.twg.MainActivity$8 -> com.modusgo.twg.cr:
     com.modusgo.twg.MainActivity this$0 -> a
-    614:614:boolean shouldAutoUploadCrashes() -> a
-com.modusgo.twg.MainActivity$DrawerItemClickListener -> com.modusgo.twg.cn:
+    655:655:boolean shouldAutoUploadCrashes() -> a
+com.modusgo.twg.MainActivity$DrawerItemClickListener -> com.modusgo.twg.cs:
     com.modusgo.twg.MainActivity this$0 -> a
     int[] $SWITCH_TABLE$com$modusgo$twg$MainActivity$MenuItems -> b
-    441:533:void onItemClick(android.widget.AdapterView,android.view.View,int,long) -> onItemClick
-    435:435:int[] $SWITCH_TABLE$com$modusgo$twg$MainActivity$MenuItems() -> a
-com.modusgo.twg.MainActivity$MenuItems -> com.modusgo.twg.co:
+    481:574:void onItemClick(android.widget.AdapterView,android.view.View,int,long) -> onItemClick
+    475:475:int[] $SWITCH_TABLE$com$modusgo$twg$MainActivity$MenuItems() -> a
+com.modusgo.twg.MainActivity$MenuItems -> com.modusgo.twg.ct:
     com.modusgo.twg.MainActivity$MenuItems HOME -> a
     com.modusgo.twg.MainActivity$MenuItems CALLSUPPORT -> b
     com.modusgo.twg.MainActivity$MenuItems FEEDBACK -> c
@@ -16089,11 +16127,11 @@ com.modusgo.twg.MainActivity$MenuItems -> com.modusgo.twg.co:
     java.lang.String text -> h
     int num -> i
     com.modusgo.twg.MainActivity$MenuItems[] ENUM$VALUES -> j
-    87:87:java.lang.String toString() -> toString
+    90:90:java.lang.String toString() -> toString
     1:1:com.modusgo.twg.MainActivity$MenuItems[] values() -> values
     1:1:com.modusgo.twg.MainActivity$MenuItems valueOf(java.lang.String) -> valueOf
-    82:82:java.lang.String access$2(com.modusgo.twg.MainActivity$MenuItems) -> a
-com.modusgo.twg.MainActivity$ViewHolder -> com.modusgo.twg.cp:
+    85:85:java.lang.String access$2(com.modusgo.twg.MainActivity$MenuItems) -> a
+com.modusgo.twg.MainActivity$ViewHolder -> com.modusgo.twg.cu:
     android.widget.TextView tvTitle -> a
     android.widget.ImageView imageIcon -> b
     com.modusgo.twg.MainActivity this$0 -> c
@@ -16107,10 +16145,10 @@ com.modusgo.twg.MapActivity -> com.modusgo.twg.MapActivity:
     80:82:void onDestroy() -> onDestroy
     86:88:void onLowMemory() -> onLowMemory
     64:64:void access$0(com.modusgo.twg.MapActivity) -> a
-com.modusgo.twg.MapActivity$1 -> com.modusgo.twg.cq:
+com.modusgo.twg.MapActivity$1 -> com.modusgo.twg.cv:
     com.modusgo.twg.MapActivity this$0 -> a
     54:57:void onMapLoaded() -> a
-com.modusgo.twg.PieChartFragment -> com.modusgo.twg.cr:
+com.modusgo.twg.PieChartFragment -> com.modusgo.twg.cw:
     java.lang.String LOG_TAG -> a
     float[] chartValues -> b
     java.lang.String[] titles -> c
@@ -16123,8 +16161,8 @@ com.modusgo.twg.PieChartFragment -> com.modusgo.twg.cr:
     85:97:void updateChart(com.modusgo.twg.customviews.PieChartView,boolean) -> a
     101:102:void onViewCreated(android.view.View,android.os.Bundle) -> a
     106:110:void onSaveInstanceState(android.os.Bundle) -> e
-com.modusgo.twg.R -> com.modusgo.twg.cs:
-com.modusgo.twg.R$styleable -> com.modusgo.twg.ct:
+com.modusgo.twg.R -> com.modusgo.twg.cx:
+com.modusgo.twg.R$styleable -> com.modusgo.twg.cy:
     int[] ActionBar -> ActionBar
     int ActionBar_background -> ActionBar_background
     int ActionBar_backgroundSplit -> ActionBar_backgroundSplit
@@ -16386,7 +16424,7 @@ com.modusgo.twg.RecallActivity -> com.modusgo.twg.RecallActivity:
     138:140:void onResume() -> onResume
     144:151:void setActionBarAppearance() -> v_
     155:158:void onSaveInstanceState(android.os.Bundle) -> onSaveInstanceState
-com.modusgo.twg.RecallActivity$1 -> com.modusgo.twg.cu:
+com.modusgo.twg.RecallActivity$1 -> com.modusgo.twg.cz:
     com.modusgo.twg.RecallActivity this$0 -> a
     76:80:void onClick(android.view.View) -> onClick
 com.modusgo.twg.ScoreCirclesActivity -> com.modusgo.twg.ScoreCirclesActivity:
@@ -16398,12 +16436,12 @@ com.modusgo.twg.ScoreCirclesActivity -> com.modusgo.twg.ScoreCirclesActivity:
     186:189:void onSaveInstanceState(android.os.Bundle) -> onSaveInstanceState
     193:195:void up() -> u_
     199:201:void onBackPressed() -> onBackPressed
-com.modusgo.twg.ScoreCirclesActivity$1 -> com.modusgo.twg.cv:
+com.modusgo.twg.ScoreCirclesActivity$1 -> com.modusgo.twg.da:
     com.modusgo.twg.ScoreCirclesActivity this$0 -> a
     android.support.v4.app.Fragment val$fragment -> b
     java.lang.String val$tabName -> c
     159:167:void onCheckedChanged(android.widget.CompoundButton,boolean) -> onCheckedChanged
-com.modusgo.twg.ScoreCirclesActivity$CirclesSection -> com.modusgo.twg.cw:
+com.modusgo.twg.ScoreCirclesActivity$CirclesSection -> com.modusgo.twg.db:
     java.lang.String sectionName -> a
     int[] marks -> b
     double[] distances -> c
@@ -16420,7 +16458,7 @@ com.modusgo.twg.ScoreInfoActivity -> com.modusgo.twg.ScoreInfoActivity:
     254:256:void onSaveInstanceState(android.os.Bundle) -> onSaveInstanceState
     260:262:void up() -> u_
     266:268:void onBackPressed() -> onBackPressed
-com.modusgo.twg.ScoreInfoActivity$1 -> com.modusgo.twg.cx:
+com.modusgo.twg.ScoreInfoActivity$1 -> com.modusgo.twg.dc:
     com.modusgo.twg.ScoreInfoActivity this$0 -> a
     91:117:void onItemClick(android.widget.AdapterView,android.view.View,int,long) -> onItemClick
 com.modusgo.twg.ScorePieChartActivity -> com.modusgo.twg.ScorePieChartActivity:
@@ -16431,12 +16469,12 @@ com.modusgo.twg.ScorePieChartActivity -> com.modusgo.twg.ScorePieChartActivity:
     164:166:void onSaveInstanceState(android.os.Bundle) -> onSaveInstanceState
     170:172:void up() -> u_
     176:178:void onBackPressed() -> onBackPressed
-com.modusgo.twg.ScorePieChartActivity$1 -> com.modusgo.twg.cy:
+com.modusgo.twg.ScorePieChartActivity$1 -> com.modusgo.twg.dd:
     com.modusgo.twg.ScorePieChartActivity this$0 -> a
     android.support.v4.app.Fragment val$fragment -> b
     java.lang.String val$tabName -> c
     137:145:void onCheckedChanged(android.widget.CompoundButton,boolean) -> onCheckedChanged
-com.modusgo.twg.ServiceFragment -> com.modusgo.twg.cz:
+com.modusgo.twg.ServiceFragment -> com.modusgo.twg.de:
     com.modusgo.twg.utils.Vehicle vehicle -> c
     android.content.SharedPreferences prefs -> d
     android.support.v4.widget.SwipeRefreshLayout lRefresh -> e
@@ -16456,17 +16494,17 @@ com.modusgo.twg.ServiceFragment -> com.modusgo.twg.cz:
     50:50:com.modusgo.twg.MainActivity access$1(com.modusgo.twg.ServiceFragment) -> a
     43:43:com.modusgo.twg.utils.Vehicle access$2(com.modusgo.twg.ServiceFragment) -> b
     41:41:int[] $SWITCH_TABLE$com$modusgo$twg$ServiceFragment$TaskState() -> c
-com.modusgo.twg.ServiceFragment$1 -> com.modusgo.twg.da:
+com.modusgo.twg.ServiceFragment$1 -> com.modusgo.twg.df:
     com.modusgo.twg.ServiceFragment this$0 -> a
     com.modusgo.twg.ServiceFragment val$servicefrag -> b
     86:91:void onRefresh() -> a
-com.modusgo.twg.ServiceFragment$2 -> com.modusgo.twg.db:
+com.modusgo.twg.ServiceFragment$2 -> com.modusgo.twg.dg:
     com.modusgo.twg.ServiceFragment this$0 -> a
     169:172:void onClick(android.view.View) -> onClick
-com.modusgo.twg.ServiceFragment$3 -> com.modusgo.twg.dc:
+com.modusgo.twg.ServiceFragment$3 -> com.modusgo.twg.dh:
     com.modusgo.twg.ServiceFragment this$0 -> a
     183:187:void onClick(android.view.View) -> onClick
-com.modusgo.twg.ServiceFragment$TaskState -> com.modusgo.twg.dd:
+com.modusgo.twg.ServiceFragment$TaskState -> com.modusgo.twg.di:
     com.modusgo.twg.ServiceFragment$TaskState Diagnostics -> a
     com.modusgo.twg.ServiceFragment$TaskState CountDown -> b
     com.modusgo.twg.ServiceFragment$TaskState Idle -> c
@@ -16485,19 +16523,19 @@ com.modusgo.twg.ServiceLogActivity -> com.modusgo.twg.ServiceLogActivity:
     69:172:void updateInfo() -> j
     177:193:void sendEmail(java.lang.String,java.lang.String,java.lang.String) -> a
     46:46:java.util.ArrayList access$0(com.modusgo.twg.ServiceLogActivity) -> a
-com.modusgo.twg.ServiceLogActivity$1 -> com.modusgo.twg.de:
+com.modusgo.twg.ServiceLogActivity$1 -> com.modusgo.twg.dj:
     com.modusgo.twg.ServiceLogActivity this$0 -> a
     129:135:boolean onItemLongClick(android.widget.AdapterView,android.view.View,int,long) -> onItemLongClick
-com.modusgo.twg.ServiceLogActivity$2 -> com.modusgo.twg.df:
+com.modusgo.twg.ServiceLogActivity$2 -> com.modusgo.twg.dk:
     com.modusgo.twg.ServiceLogActivity this$0 -> a
     147:150:void onClick(android.view.View) -> onClick
-com.modusgo.twg.ServiceLogActivity$3 -> com.modusgo.twg.dg:
+com.modusgo.twg.ServiceLogActivity$3 -> com.modusgo.twg.dl:
     com.modusgo.twg.ServiceLogActivity this$0 -> a
     160:170:void onClick(android.view.View) -> onClick
 com.modusgo.twg.SettingsActivity -> com.modusgo.twg.SettingsActivity:
     10:18:void onCreate(android.os.Bundle) -> onCreate
     22:24:void onResume() -> onResume
-com.modusgo.twg.SettingsEditFragment -> com.modusgo.twg.dh:
+com.modusgo.twg.SettingsEditFragment -> com.modusgo.twg.dm:
     android.widget.ProgressBar progress -> a
     android.widget.LinearLayout llMainInfo -> b
     android.widget.ScrollView svAdditionalInfo -> c
@@ -16545,73 +16583,73 @@ com.modusgo.twg.SettingsEditFragment -> com.modusgo.twg.dh:
     97:97:void access$7(com.modusgo.twg.SettingsEditFragment,boolean) -> a
     96:96:int access$8(com.modusgo.twg.SettingsEditFragment) -> g
     98:98:void access$9(com.modusgo.twg.SettingsEditFragment,boolean) -> b
-com.modusgo.twg.SettingsEditFragment$1 -> com.modusgo.twg.di:
+com.modusgo.twg.SettingsEditFragment$1 -> com.modusgo.twg.dn:
     com.modusgo.twg.SettingsEditFragment this$0 -> a
     156:174:void onClick(android.view.View) -> onClick
     153:153:com.modusgo.twg.SettingsEditFragment access$0(com.modusgo.twg.SettingsEditFragment$1) -> a
-com.modusgo.twg.SettingsEditFragment$1$1 -> com.modusgo.twg.dj:
+com.modusgo.twg.SettingsEditFragment$1$1 -> com.modusgo.twg.do:
     com.modusgo.twg.SettingsEditFragment$1 this$1 -> a
     160:171:void onClick(android.content.DialogInterface,int) -> onClick
-com.modusgo.twg.SettingsEditFragment$2 -> com.modusgo.twg.dk:
+com.modusgo.twg.SettingsEditFragment$2 -> com.modusgo.twg.dp:
     com.modusgo.twg.SettingsEditFragment this$0 -> a
     179:185:boolean onTouch(android.view.View,android.view.MotionEvent) -> onTouch
-com.modusgo.twg.SettingsEditFragment$3 -> com.modusgo.twg.dl:
+com.modusgo.twg.SettingsEditFragment$3 -> com.modusgo.twg.dq:
     com.modusgo.twg.SettingsEditFragment this$0 -> a
     200:208:void onItemSelected(android.widget.AdapterView,android.view.View,int,long) -> onItemSelected
     212:212:void onNothingSelected(android.widget.AdapterView) -> onNothingSelected
-com.modusgo.twg.SettingsEditFragment$4 -> com.modusgo.twg.dm:
+com.modusgo.twg.SettingsEditFragment$4 -> com.modusgo.twg.dr:
     com.modusgo.twg.SettingsEditFragment this$0 -> a
     244:252:void onItemSelected(android.widget.AdapterView,android.view.View,int,long) -> onItemSelected
     256:256:void onNothingSelected(android.widget.AdapterView) -> onNothingSelected
-com.modusgo.twg.SettingsEditFragment$5 -> com.modusgo.twg.dn:
+com.modusgo.twg.SettingsEditFragment$5 -> com.modusgo.twg.ds:
     com.modusgo.twg.SettingsEditFragment this$0 -> a
     android.widget.EditText val$editConfirmPassword -> b
     android.widget.TextView val$tvPasswordError -> c
     280:287:void onClick(android.view.View) -> onClick
-com.modusgo.twg.SettingsEditFragment$6 -> com.modusgo.twg.do:
+com.modusgo.twg.SettingsEditFragment$6 -> com.modusgo.twg.dt:
     com.modusgo.twg.SettingsEditFragment this$0 -> a
     299:300:void onClick(android.view.View) -> onClick
-com.modusgo.twg.SettingsEditFragment$7 -> com.modusgo.twg.dp:
+com.modusgo.twg.SettingsEditFragment$7 -> com.modusgo.twg.du:
     com.modusgo.twg.SettingsEditFragment this$0 -> a
     android.graphics.Bitmap val$bitmap -> b
     667:674:void run() -> run
-com.modusgo.twg.SettingsEditFragment$8 -> com.modusgo.twg.dq:
+com.modusgo.twg.SettingsEditFragment$8 -> com.modusgo.twg.dv:
     com.modusgo.twg.SettingsEditFragment this$0 -> a
     java.lang.String val$reason -> b
     685:686:void run() -> run
-com.modusgo.twg.SettingsEditFragment$AsteriskPasswordTransformationMethod -> com.modusgo.twg.dr:
+com.modusgo.twg.SettingsEditFragment$AsteriskPasswordTransformationMethod -> com.modusgo.twg.dw:
     com.modusgo.twg.SettingsEditFragment this$0 -> a
     343:343:java.lang.CharSequence getTransformation(java.lang.CharSequence,android.view.View) -> getTransformation
-com.modusgo.twg.SettingsEditFragment$AsteriskPasswordTransformationMethod$PasswordCharSequence -> com.modusgo.twg.ds:
+com.modusgo.twg.SettingsEditFragment$AsteriskPasswordTransformationMethod$PasswordCharSequence -> com.modusgo.twg.dx:
     java.lang.CharSequence mSource -> b
     com.modusgo.twg.SettingsEditFragment$AsteriskPasswordTransformationMethod this$1 -> a
     352:352:char charAt(int) -> charAt
     355:355:int length() -> length
     358:358:java.lang.CharSequence subSequence(int,int) -> subSequence
-com.modusgo.twg.SettingsEditFragment$CustomTextWatcher -> com.modusgo.twg.dt:
+com.modusgo.twg.SettingsEditFragment$CustomTextWatcher -> com.modusgo.twg.dy:
     android.widget.EditText mEditText -> b
     java.lang.String defaultValue -> c
     com.modusgo.twg.SettingsEditFragment this$0 -> a
     323:323:void beforeTextChanged(java.lang.CharSequence,int,int,int) -> beforeTextChanged
     326:326:void onTextChanged(java.lang.CharSequence,int,int,int) -> onTextChanged
     329:337:void afterTextChanged(android.text.Editable) -> afterTextChanged
-com.modusgo.twg.SettingsEditFragment$GetDriverTask -> com.modusgo.twg.du:
+com.modusgo.twg.SettingsEditFragment$GetDriverTask -> com.modusgo.twg.dz:
     com.modusgo.twg.SettingsEditFragment this$0 -> a
     403:407:void onPreExecute() -> onPreExecute
     411:412:void onPostExecute(org.json.JSONObject) -> b
     417:424:void onError(java.lang.String) -> a
     428:463:void onSuccess(org.json.JSONObject) -> a
-com.modusgo.twg.SettingsEditFragment$SetDriverTask -> com.modusgo.twg.dv:
+com.modusgo.twg.SettingsEditFragment$SetDriverTask -> com.modusgo.twg.ea:
     com.modusgo.twg.SettingsEditFragment this$0 -> a
     474:478:void onPreExecute() -> onPreExecute
     482:486:void onPostExecute(org.json.JSONObject) -> b
     492:526:org.json.JSONObject doInBackground(java.lang.String[]) -> a
     532:571:void onSuccess(org.json.JSONObject) -> a
-com.modusgo.twg.SettingsEditFragment$TypefacedArrayAdapter -> com.modusgo.twg.dw:
+com.modusgo.twg.SettingsEditFragment$TypefacedArrayAdapter -> com.modusgo.twg.eb:
     com.modusgo.twg.SettingsEditFragment this$0 -> a
     370:378:android.view.View getView(int,android.view.View,android.view.ViewGroup) -> getView
     383:391:android.view.View getDropDownView(int,android.view.View,android.view.ViewGroup) -> getDropDownView
-com.modusgo.twg.SettingsViewFragment -> com.modusgo.twg.dx:
+com.modusgo.twg.SettingsViewFragment -> com.modusgo.twg.ec:
     android.widget.ProgressBar progress -> a
     android.widget.LinearLayout llMainInfo -> b
     android.widget.ScrollView svAdditionalInfo -> c
@@ -16627,7 +16665,7 @@ com.modusgo.twg.SettingsViewFragment -> com.modusgo.twg.dx:
     50:92:android.view.View onCreateView(android.view.LayoutInflater,android.view.ViewGroup,android.os.Bundle) -> a
     97:100:void onResume() -> r
     103:145:void updateFields() -> a
-com.modusgo.twg.SettingsViewFragment$1 -> com.modusgo.twg.dy:
+com.modusgo.twg.SettingsViewFragment$1 -> com.modusgo.twg.ed:
     com.modusgo.twg.SettingsViewFragment this$0 -> a
     84:89:void onClick(android.view.View) -> onClick
 com.modusgo.twg.SignInActivity -> com.modusgo.twg.SignInActivity:
@@ -16652,20 +16690,20 @@ com.modusgo.twg.SignInActivity -> com.modusgo.twg.SignInActivity:
     324:325:void afterGCMRegistration() -> i
     315:315:void access$0(com.modusgo.twg.SignInActivity,java.lang.String) -> a
     323:323:void access$1(com.modusgo.twg.SignInActivity) -> a
-com.modusgo.twg.SignInActivity$1 -> com.modusgo.twg.dz:
+com.modusgo.twg.SignInActivity$1 -> com.modusgo.twg.ee:
     com.modusgo.twg.SignInActivity this$0 -> a
     java.lang.String val$clientId -> b
     123:127:void onClick(android.view.View) -> onClick
-com.modusgo.twg.SignInActivity$2 -> com.modusgo.twg.ea:
+com.modusgo.twg.SignInActivity$2 -> com.modusgo.twg.ef:
     com.modusgo.twg.SignInActivity this$0 -> a
     144:145:void onClick(android.view.View) -> onClick
-com.modusgo.twg.SignInActivity$3 -> com.modusgo.twg.eb:
+com.modusgo.twg.SignInActivity$3 -> com.modusgo.twg.eg:
     com.modusgo.twg.SignInActivity this$0 -> a
     281:298:java.lang.String doInBackground(java.lang.Void[]) -> a
     303:305:void onPostExecute(java.lang.String) -> a
     1:1:void onPostExecute(java.lang.Object) -> onPostExecute
     1:1:java.lang.Object doInBackground(java.lang.Object[]) -> doInBackground
-com.modusgo.twg.SignInActivity$LoginTask -> com.modusgo.twg.ec:
+com.modusgo.twg.SignInActivity$LoginTask -> com.modusgo.twg.eh:
     android.view.animation.Animation fadeInProgress -> a
     android.view.animation.Animation fadeOutProgress -> b
     android.view.animation.Animation fadeInFields -> c
@@ -16678,9 +16716,9 @@ com.modusgo.twg.SignInActivity$LoginTask -> com.modusgo.twg.ec:
     426:489:void onSuccess(org.json.JSONObject) -> a
     493:496:void onError(java.lang.String) -> a
     500:503:void onError401() -> a
-com.modusgo.twg.TitledFragment -> com.modusgo.twg.ed:
+com.modusgo.twg.TitledFragment -> com.modusgo.twg.ei:
     java.lang.String title -> i
-com.modusgo.twg.Tracking -> com.modusgo.twg.ee:
+com.modusgo.twg.Tracking -> com.modusgo.twg.ej:
     java.lang.String timestamp -> a
     double latitude -> b
     double longitude -> c
@@ -16694,7 +16732,7 @@ com.modusgo.twg.Tracking -> com.modusgo.twg.ee:
     java.lang.String event -> k
     java.lang.String rawData -> l
     boolean blocked -> m
-com.modusgo.twg.Trip -> com.modusgo.twg.ef:
+com.modusgo.twg.Trip -> com.modusgo.twg.ek:
     long id -> a
     int eventsCount -> b
     java.lang.String startDate -> c
@@ -16726,7 +16764,7 @@ com.modusgo.twg.Trip -> com.modusgo.twg.ef:
     107:107:java.util.ArrayList getPoints() -> e
     112:112:java.util.ArrayList getRoute() -> f
     117:117:java.util.ArrayList getSpeedingRoutes() -> g
-com.modusgo.twg.Trip$EventType -> com.modusgo.twg.eg:
+com.modusgo.twg.Trip$EventType -> com.modusgo.twg.el:
     com.modusgo.twg.Trip$EventType START -> a
     com.modusgo.twg.Trip$EventType STOP -> b
     com.modusgo.twg.Trip$EventType HARSH_BRAKING -> c
@@ -16738,7 +16776,7 @@ com.modusgo.twg.Trip$EventType -> com.modusgo.twg.eg:
     com.modusgo.twg.Trip$EventType[] ENUM$VALUES -> i
     1:1:com.modusgo.twg.Trip$EventType[] values() -> values
     1:1:com.modusgo.twg.Trip$EventType valueOf(java.lang.String) -> valueOf
-com.modusgo.twg.Trip$Point -> com.modusgo.twg.eh:
+com.modusgo.twg.Trip$Point -> com.modusgo.twg.em:
     com.google.android.gms.maps.model.LatLng location -> a
     com.modusgo.twg.Trip$EventType event -> b
     java.lang.String title -> c
@@ -16763,7 +16801,7 @@ com.modusgo.twg.TripActivity -> com.modusgo.twg.TripActivity:
     android.widget.TextView tvDistance -> x
     android.widget.TextView tvAvgSpeedUnits -> y
     android.widget.TextView tvMaxSpeedUnits -> z
-    android.widget.TextView tvDistanceUnits -> I
+    android.widget.TextView tvDistanceUnits -> A
     android.widget.TextView tvScore -> J
     android.widget.ImageView imageArrow -> K
     android.widget.TextView tvFuelUsed -> L
@@ -16794,27 +16832,27 @@ com.modusgo.twg.TripActivity -> com.modusgo.twg.TripActivity:
     346:346:void access$1(com.modusgo.twg.TripActivity) -> b
     485:485:void access$2(com.modusgo.twg.TripActivity) -> c
     65:65:int[] $SWITCH_TABLE$com$modusgo$twg$Trip$EventType() -> j
-com.modusgo.twg.TripActivity$1 -> com.modusgo.twg.ei:
+com.modusgo.twg.TripActivity$1 -> com.modusgo.twg.en:
     com.modusgo.twg.TripActivity this$0 -> a
     171:173:void onClick(android.view.View) -> onClick
-com.modusgo.twg.TripActivity$2 -> com.modusgo.twg.ej:
+com.modusgo.twg.TripActivity$2 -> com.modusgo.twg.eo:
     com.modusgo.twg.TripActivity this$0 -> a
     196:197:void onClick(android.view.View) -> onClick
-com.modusgo.twg.TripActivity$3 -> com.modusgo.twg.ek:
+com.modusgo.twg.TripActivity$3 -> com.modusgo.twg.ep:
     com.modusgo.twg.TripActivity this$0 -> a
     321:322:void onMapLoaded() -> a
-com.modusgo.twg.TripActivity$4 -> com.modusgo.twg.el:
+com.modusgo.twg.TripActivity$4 -> com.modusgo.twg.eq:
     com.modusgo.twg.TripActivity this$0 -> a
     int val$isr -> b
     470:473:void onClick(android.view.View) -> onClick
-com.modusgo.twg.TripActivity$FetchAddresses -> com.modusgo.twg.em:
+com.modusgo.twg.TripActivity$FetchAddresses -> com.modusgo.twg.er:
     android.content.Context context -> a
     com.modusgo.twg.TripActivity this$0 -> b
     704:718:java.lang.Void doInBackground(java.lang.Void[]) -> a
     723:725:void onPostExecute(java.lang.Void) -> a
     1:1:void onPostExecute(java.lang.Object) -> onPostExecute
     1:1:java.lang.Object doInBackground(java.lang.Object[]) -> doInBackground
-com.modusgo.twg.TripActivity$GetTripTask -> com.modusgo.twg.en:
+com.modusgo.twg.TripActivity$GetTripTask -> com.modusgo.twg.es:
     com.modusgo.twg.TripActivity this$0 -> a
     599:602:org.json.JSONObject doInBackground(java.lang.String[]) -> a
     607:670:void onSuccess(org.json.JSONObject) -> a
@@ -16832,22 +16870,22 @@ com.modusgo.twg.WelcomeActivity -> com.modusgo.twg.WelcomeActivity:
     45:84:void onCreate(android.os.Bundle) -> onCreate
     87:172:void showNextScreen() -> f
     86:86:void access$0(com.modusgo.twg.WelcomeActivity) -> a
-com.modusgo.twg.WelcomeActivity$1 -> com.modusgo.twg.eo:
+com.modusgo.twg.WelcomeActivity$1 -> com.modusgo.twg.et:
     com.modusgo.twg.WelcomeActivity this$0 -> a
     org.json.JSONObject val$screenJSON -> b
     java.lang.String val$welcomePagesIds -> c
     java.lang.String val$pageId -> d
     128:146:void onClick(android.view.View) -> onClick
     125:125:com.modusgo.twg.WelcomeActivity access$0(com.modusgo.twg.WelcomeActivity$1) -> a
-com.modusgo.twg.WelcomeActivity$1$1 -> com.modusgo.twg.ep:
+com.modusgo.twg.WelcomeActivity$1$1 -> com.modusgo.twg.eu:
     com.modusgo.twg.WelcomeActivity$1 this$1 -> a
     java.lang.String val$welcomePagesIds -> b
     java.lang.String val$pageId -> c
     133:138:void onClick(android.content.DialogInterface,int) -> onClick
-com.modusgo.twg.WelcomeActivity$1$2 -> com.modusgo.twg.eq:
+com.modusgo.twg.WelcomeActivity$1$2 -> com.modusgo.twg.ev:
     com.modusgo.twg.WelcomeActivity$1 this$1 -> a
     142:143:void onClick(android.content.DialogInterface,int) -> onClick
-com.modusgo.twg.WelcomeActivity$2 -> com.modusgo.twg.er:
+com.modusgo.twg.WelcomeActivity$2 -> com.modusgo.twg.ew:
     com.modusgo.twg.WelcomeActivity this$0 -> a
     java.lang.String val$welcomePagesIds -> b
     java.lang.String val$pageId -> c
@@ -17029,12 +17067,28 @@ com.modusgo.twg.requesttasks.GetDiagnosticsTask -> com.modusgo.twg.b.d:
     57:59:org.json.JSONObject doInBackground(java.lang.String[]) -> a
     66:66:void onError(java.lang.String) -> a
     71:197:void onSuccess(org.json.JSONObject) -> a
-com.modusgo.twg.requesttasks.SendEventsRequest -> com.modusgo.twg.b.e:
+com.modusgo.twg.requesttasks.GetRouteAsyncTask -> com.modusgo.twg.b.e:
+    android.content.Context context -> a
+    android.content.SharedPreferences prefs -> b
+    int status -> c
+    java.lang.String message -> d
+    java.lang.String baseUrl -> e
+    boolean checkSuccess -> f
+    java.util.ArrayList lines -> g
+    java.util.List requestParams -> h
+    61:98:java.util.ArrayList doInBackground(java.lang.Void[]) -> a
+    105:106:void onPostExecute(java.util.ArrayList) -> a
+    110:125:java.lang.String buildString(java.io.InputStream) -> a
+    130:153:java.util.ArrayList decodeRoutes(org.json.JSONObject) -> a
+    159:191:java.util.ArrayList decodePolyline(java.lang.String) -> a
+    1:1:void onPostExecute(java.lang.Object) -> onPostExecute
+    1:1:java.lang.Object doInBackground(java.lang.Object[]) -> doInBackground
+com.modusgo.twg.requesttasks.SendEventsRequest -> com.modusgo.twg.b.f:
     java.util.ArrayList eventIds -> a
     28:104:org.json.JSONObject doInBackground(java.lang.String[]) -> a
     109:113:void onError(java.lang.String) -> a
     117:121:void onSuccess(org.json.JSONObject) -> a
-com.modusgo.twg.requesttasks.UpdateMaintenanceCountdownTask -> com.modusgo.twg.b.f:
+com.modusgo.twg.requesttasks.UpdateMaintenanceCountdownTask -> com.modusgo.twg.b.g:
     android.content.SharedPreferences prefs -> a
     android.content.Context context -> b
     com.modusgo.templates.UpdateCallback callback -> c

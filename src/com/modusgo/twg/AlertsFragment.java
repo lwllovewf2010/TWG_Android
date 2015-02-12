@@ -18,6 +18,7 @@ import com.modusgo.twg.db.DTCContract.DTCEntry;
 import com.modusgo.twg.db.MaintenanceContract.MaintenanceEntry;
 import com.modusgo.twg.db.RecallContract.RecallEntry;
 import com.modusgo.twg.db.ScoreGraphContract.ScoreGraphEntry;
+import com.modusgo.twg.db.VehicleContract.VehicleEntry;
 import com.modusgo.twg.requesttasks.BaseRequestAsyncTask;
 import com.modusgo.twg.requesttasks.GetDiagnosticsTask;
 import com.modusgo.twg.utils.Maintenance;
@@ -251,6 +252,7 @@ public class AlertsFragment extends Fragment implements UpdateCallback
 					DiagnosticsTroubleCode dtc = (DiagnosticsTroubleCode) item.value;
 					intent = new Intent(getActivity(), DiagnosticDetailActivity.class);
 					intent.putExtra(DiagnosticDetailActivity.EXTRA_DTC, dtc);
+					intent.putExtra(VehicleEntry._ID, vehicle.id);		
 					startActivity(intent);
 					break;
 				case li_service_due_item:

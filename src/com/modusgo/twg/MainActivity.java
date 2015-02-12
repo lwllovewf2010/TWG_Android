@@ -8,7 +8,9 @@ import net.hockeyapp.android.CrashManagerListener;
 import net.hockeyapp.android.FeedbackManager;
 import net.hockeyapp.android.UpdateManager;
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -25,6 +27,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v4.app.NavUtils;
 import android.support.v4.widget.DrawerLayout;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -38,9 +41,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.modusgo.dd.LocationService;
 import com.modusgo.twg.R;
+import com.modusgo.twg.db.VehicleContract.VehicleEntry;
 import com.modusgo.twg.utils.Utils;
 import com.modusgo.twg.utils.Vehicle;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -111,11 +116,48 @@ public class MainActivity extends FragmentActivity {
 	         this.finishAffinity();
 	         return;
 	    }
-		
+		 
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
+		//Determine screen size
+//		if ((getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_LARGE) {
+//		    Toast.makeText(this, "Large screen", Toast.LENGTH_LONG).show();
+//		}
+//		else if ((getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_NORMAL) {
+//		    Toast.makeText(this, "Normal sized screen", Toast.LENGTH_LONG).show();
+//		}
+//		else if ((getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_SMALL) {
+//		    Toast.makeText(this, "Small sized screen", Toast.LENGTH_LONG).show();
+//		}
+//		else {
+//		    Toast.makeText(this, "Screen size is neither large, normal or small", Toast.LENGTH_LONG).show();
+//		}
+		//Determine density
+//		DisplayMetrics metrics = new DisplayMetrics();
+//		getWindowManager().getDefaultDisplay().getMetrics(metrics);
+//		int density = metrics.densityDpi;
+//
+//		if (density == DisplayMetrics.DENSITY_XXHIGH) {
+//		    Toast.makeText(this, "DENSITY_XXHIGH... Density is " + String.valueOf(density), Toast.LENGTH_LONG).show();
+//		}
+//		else if (density == DisplayMetrics.DENSITY_XHIGH) {
+//		    Toast.makeText(this, "DENSITY_XHIGH... Density is " + String.valueOf(density), Toast.LENGTH_LONG).show();
+//		}
+//		else if (density == DisplayMetrics.DENSITY_HIGH) {
+//		    Toast.makeText(this, "DENSITY_HIGH... Density is " + String.valueOf(density), Toast.LENGTH_LONG).show();
+//		}
+//		else if (density == DisplayMetrics.DENSITY_MEDIUM) {
+//		    Toast.makeText(this, "DENSITY_MEDIUM... Density is " + String.valueOf(density), Toast.LENGTH_LONG).show();
+//		}
+//		else if (density == DisplayMetrics.DENSITY_LOW) {
+//		    Toast.makeText(this, "DENSITY_LOW... Density is " + String.valueOf(density), Toast.LENGTH_LONG).show();
+//		}
+//		else {
+//		    Toast.makeText(this, "Density is neither HIGH, MEDIUM OR LOW.  Density is " + String.valueOf(density), Toast.LENGTH_LONG).show();
+//		}
+		
 		actionBar = getActionBar();
 		actionBar.setDisplayShowHomeEnabled(false);
 		actionBar.setDisplayShowTitleEnabled(true);
@@ -480,8 +522,9 @@ public class MainActivity extends FragmentActivity {
 					break;
 				case FINDAMECHANIC:
 					// Facilities
-					startActivity(new Intent(MainActivity.this,	FindMechanicActivity.class));
-//					startActivity(new Intent(MainActivity.this,	MapActivity.class));
+					intent = new Intent(MainActivity.this,	FindMechanicActivity.class);
+					intent.putExtra(VehicleEntry._ID, vehicle.id);		
+					startActivity(intent);
 					break;
 //				case CALLSUPPORT:
 //					// Call support
@@ -597,13 +640,43 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	@Override
-	public void onBackPressed() {
+	public void onBackPressed() 
+	{
 		if (mDrawerLayout.isDrawerOpen(Gravity.RIGHT)) {
 			mDrawerLayout.closeDrawers();
 			return;
 		}
-
-		super.onBackPressed();
+		else
+		{
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle(R.string.ExitTitle).setMessage(R.string.ExitMessage);
+			builder.setPositiveButton(R.string.Yes, new DialogInterface.OnClickListener()
+			{
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which)
+				{
+					Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					intent.putExtra("EXIT", true);
+					startActivity(intent);
+				}
+			});
+			builder.setNegativeButton(R.string.No, new DialogInterface.OnClickListener()
+			{
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which)
+				{
+					dialog.dismiss();
+					MainActivity.super.onBackPressed();
+				}
+			});
+			
+			AlertDialog lert = builder.create();
+			lert.show();
+			return;
+		}
 	}
 
 	private void checkForCrashes() {

@@ -20,12 +20,15 @@
     <string name="EnterOtherLocationInfo">Enter Other Location Info</string>
     <string name="EnterOtherTypeInfo">Enter Other Type Info</string>
     <string name="EnterServiceCompletion">Enter Service Completion Info</string>
+    <string name="ExitMessage">Do you want to exit TWG</string>
+    <string name="ExitTitle">Exit TWG</string>
     <string name="Facilities">Facilities</string>
     <string name="FindMechanic">Find a Mechanic</string>
     <string name="GatheringDiagnosticInformation">Gathering diagnostic information...</string>
     <string name="LogFor">LOG FOR:</string>
     <string name="MilageAtService">Milage At Service:</string>
     <string name="NextServiceIn">Next Service In: </string>
+    <string name="No">No</string>
     <string name="NoIssues">No Issues</string>
     <string name="MissingFieldsErrorMsg">Missing data, please enter data for all fields</string>
     <string name="Other">Other</string>
@@ -41,6 +44,7 @@
     <string name="VehicleInformation"><b>VEHICLE INFORMATION</b></string>
     <string name="VehicleConditionAsOf">VEHICLE CONDITION AS OF</string>
     <string name="ViewServiceLog">View Service Log</string>
+    <string name="Yes">Yes</string>
     <string name="YourVehicleHealthCheck">YOUR VEHICLE HEALTH CHECK</string>
     
     <string name="action_settings">Settings</string>

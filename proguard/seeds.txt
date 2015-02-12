@@ -3366,9 +3366,11 @@ com.modusgo.twg.R$id: int mapview
 com.modusgo.twg.R$id: int margin
 com.modusgo.twg.R$id: int markers
 com.modusgo.twg.R$id: int match_parent
-com.modusgo.twg.R$id: int mechanic_details
+com.modusgo.twg.R$id: int mechanic_address_details
+com.modusgo.twg.R$id: int mechanic_hyperlink_details
 com.modusgo.twg.R$id: int middle
 com.modusgo.twg.R$id: int monochrome
+com.modusgo.twg.R$id: int navigation_btn
 com.modusgo.twg.R$id: int never
 com.modusgo.twg.R$id: int none
 com.modusgo.twg.R$id: int normal

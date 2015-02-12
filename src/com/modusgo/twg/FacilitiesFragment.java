@@ -1,17 +1,26 @@
 package com.modusgo.twg;
 
+import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.modusgo.twg.R;
 import com.modusgo.twg.customviews.GoogleMapFragment;
 import com.modusgo.twg.customviews.GoogleMapFragment.OnMapReadyListener;
+import com.modusgo.twg.requesttasks.GetRouteAsyncTask;
 import com.modusgo.twg.utils.Vehicle;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -21,22 +30,26 @@ import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class FacilitiesFragment extends Fragment implements OnMapReadyListener {
 
 	private Vehicle vehicle;
-	private SharedPreferences prefs;
 	private View rootView = null;
 	private GoogleMapFragment mMapFragment = null;
 	private GoogleMap mMap = null;
 	private MainActivity main = null;
+	private ArrayList<LatLng> lines = null;
+	private PolylineOptions options = null;
 
 	/**************DEBUGGING ONLY ***************/
 	String locHTML = "<h2>CarMax</h2>" +  
 			"2000 Frontage Road<br>" +
 			"Northbrook, IL 60062<br>" +
-			"Open today	10:00 am – 9:00 pm <br>" +
+			"Open today	10:00 am – 9:00 pm <br>";
+	String linkHTML = 
 			"<a href=\"http://carmax.com\">carmax.com</a><br>" +
 			"<a href=\"tel:8472420045\">(847) 242-0045</a>";
 	double latitude = 42.11823;
@@ -49,22 +62,68 @@ public class FacilitiesFragment extends Fragment implements OnMapReadyListener {
 
 		main = (MainActivity)getActivity();
 		
-		View rootView = inflater.inflate(R.layout.activity_find_mechanic, container, false);
+		rootView = inflater.inflate(R.layout.activity_find_mechanic, container, false);
 
 		main.setActionBarTitle("Facilities");
 		
-		prefs = PreferenceManager.getDefaultSharedPreferences(main);
-
 		vehicle = ((DriverActivity)getActivity()).vehicle;
 
 		setUpMapIfNeeded();
 
+		final LatLng destination = new LatLng(latitude, longitude);
+		final LatLng origin = new LatLng(vehicle.latitude, vehicle.longitude);
 
-		TextView tv = (TextView) rootView.findViewById(R.id.mechanic_details);
+		GetRouteAsyncTask task = new GetRouteAsyncTask(main, origin, destination);
+		task.execute();
+		try
+		{
+			lines = task.get();
+		} catch(InterruptedException | ExecutionException e)
+		{
+			lines = new ArrayList<LatLng>();
+			e.printStackTrace();
+		}
+
+		
+
+
+		TextView tv = (TextView) rootView.findViewById(R.id.mechanic_address_details);
+		tv.setText(Html.fromHtml(locHTML));
+		tv.setOnClickListener(new OnClickListener()
+		{
+			
+			@Override
+			public void onClick(View v)
+			{
+				LatLngBounds bounds = LatLngBounds.builder().include(origin).include(destination).build();
+				Polyline polylineToAdd = mMap.addPolyline(options);
+				CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 50);
+				mMap.animateCamera(cameraUpdate);
+			}
+		});
+
+		
+		tv = (TextView) rootView.findViewById(R.id.mechanic_hyperlink_details);
 		tv.setMovementMethod(LinkMovementMethod.getInstance());
-		Spanned result = Html.fromHtml(locHTML);
+		Spanned result = Html.fromHtml(linkHTML);
 		tv.setText(result);
 		
+		Button navBtn = (Button)rootView.findViewById(R.id.navigation_btn);
+		navBtn.setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				Intent intent = new Intent(android.content.Intent.ACTION_VIEW, 
+					    Uri.parse("http://maps.google.com/maps?saddr=" +
+					    		origin.latitude + "," + origin.longitude +
+					    		"&daddr= " +
+					    		destination.latitude + "," + destination.longitude ));
+					startActivity(intent);
+			}
+		});
+
+
 		main.showBusyDialog(R.string.RetrievingMapData);
 		return rootView;
 	}
@@ -96,8 +155,17 @@ public class FacilitiesFragment extends Fragment implements OnMapReadyListener {
 		}
 
 		mMap.getUiSettings().setZoomControlsEnabled(false);
+
+		if(lines.size() > 0)
+		{
+			options = new PolylineOptions();
+			options.addAll(lines);
+			options.width(15f);
+			options.color(getResources().getColor(R.color.red));
+		}
 	}
 	
+
 	@Override
 	public void onMapReady()
 	{
@@ -105,6 +173,8 @@ public class FacilitiesFragment extends Fragment implements OnMapReadyListener {
 		
 		mMap = mMapFragment.getMap();
 		if(mMap != null)
+		{
 			setUpMap();
+		}
 	}
 }

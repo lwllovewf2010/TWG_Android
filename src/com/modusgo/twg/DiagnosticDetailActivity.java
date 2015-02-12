@@ -17,6 +17,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.modusgo.twg.R;
+import com.modusgo.twg.db.VehicleContract.VehicleEntry;
 import com.modusgo.twg.utils.Utils;
 
 public class DiagnosticDetailActivity extends MainActivity {
@@ -37,6 +38,7 @@ public class DiagnosticDetailActivity extends MainActivity {
     LinearLayout llList;
     ScrollView scrollView;
     Button btnFindMechanic;
+    long vehicleId;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -47,9 +49,11 @@ public class DiagnosticDetailActivity extends MainActivity {
 		
 		if(savedInstanceState!=null){
 			dtc = (DiagnosticsTroubleCode) savedInstanceState.getSerializable(EXTRA_DTC);
+			vehicleId = (long) savedInstanceState.getSerializable(VehicleEntry._ID);
 		}
 		else if(getIntent()!=null){
 			dtc = (DiagnosticsTroubleCode) getIntent().getSerializableExtra(EXTRA_DTC);
+			vehicleId = (long) getIntent().getSerializableExtra(VehicleEntry._ID);
 		}
 
 		tvCode = (TextView) findViewById(R.id.tvCode);
@@ -143,7 +147,9 @@ public class DiagnosticDetailActivity extends MainActivity {
 			btnFindMechanic.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
+					
 					Intent intent = new Intent(main, FindMechanicActivity.class);
+					intent.putExtra(VehicleEntry._ID, vehicleId);		
 					main.startActivity(intent);
 				}
 			});

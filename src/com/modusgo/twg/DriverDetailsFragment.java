@@ -249,7 +249,7 @@ public class DriverDetailsFragment extends Fragment implements ConnectionCallbac
 			SpannableStringBuilder cs = new SpannableStringBuilder(fuelLeftString);
 			cs.setSpan(new SuperscriptSpan(), fuelLeftString.length() - fuelUnitLength, fuelLeftString.length(),
 					Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-			cs.setSpan(new RelativeSizeSpan(0.5f), fuelLeftString.length() - fuelUnitLength, fuelLeftString.length(),
+			cs.setSpan(new RelativeSizeSpan(1.0f), fuelLeftString.length() - fuelUnitLength, fuelLeftString.length(),
 					Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 			tvFuelLevel.setText(cs);
 			tvFuelLevel.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_fuel_green, 0, 0, 0);

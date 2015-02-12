@@ -39,12 +39,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.daimajia.swipe.SwipeLayout;
 import com.modusgo.templates.UpdateCallback;
 import com.modusgo.twg.R;
 import com.modusgo.twg.db.DbHelper;
 import com.modusgo.twg.db.DTCContract.DTCEntry;
 import com.modusgo.twg.db.RecallContract.RecallEntry;
+import com.modusgo.twg.db.VehicleContract.VehicleEntry;
 import com.modusgo.twg.requesttasks.BaseRequestAsyncTask;
 import com.modusgo.twg.requesttasks.GetDiagnosticsTask;
 import com.modusgo.twg.utils.Recall;
@@ -363,9 +365,10 @@ public class DiagnosticsFragment extends Fragment implements UpdateCallback
 					@Override
 					public void onClick(View v)
 					{
-						Intent i = new Intent(getActivity(), DiagnosticDetailActivity.class);
-						i.putExtra(DiagnosticDetailActivity.EXTRA_DTC, dtc);
-						startActivity(i);
+						Intent intent = new Intent(getActivity(), DiagnosticDetailActivity.class);
+						intent.putExtra(DiagnosticDetailActivity.EXTRA_DTC, dtc);
+						intent.putExtra(VehicleEntry._ID, vehicle.id);		
+						startActivity(intent);
 					}
 				});
 
