@@ -43,6 +43,8 @@ import com.modusgo.dd.LocationService;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.jastec.DevicesListActivity;
 import com.modusgo.ubi.jastec.LogActivity;
+import com.modusgo.ubi.requesttasks.LogoutTask;
+import com.modusgo.ubi.requesttasks.RequestHelper;
 import com.modusgo.ubi.utils.Device;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -432,6 +434,7 @@ public class MainActivity extends FragmentActivity {
 		        case LOGOUT:
 		        	//Logout
 		        	Utils.gaTrackScreen(MainActivity.this, "Logout");
+		        	new LogoutTask(MainActivity.this).execute(RequestHelper.LOGOUT_REQUEST);
 		        	prefs.edit().putString(Constants.PREF_AUTH_KEY, "").commit();
 		        	stopService(new Intent(MainActivity.this, LocationService.class));
 		    		Intent intent = new Intent(MainActivity.this, InitActivity.class);

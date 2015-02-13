@@ -86,6 +86,7 @@ public class BaseRequestAsyncTask extends AsyncTask<String, Void, JSONObject>{
 		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
 		context.startActivity(intent);
 		onError("Your session has expired.");
+		new LogoutTask(context).execute(RequestHelper.LOGOUT_REQUEST);
 	}
 	
 	protected void onError(String message) {
