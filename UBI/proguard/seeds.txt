@@ -7322,6 +7322,7 @@ com.modusgo.ubi.R$color: int light_orange_2
 com.modusgo.ubi.R$color: int limits_edittext
 com.modusgo.ubi.R$color: int list_header_line
 com.modusgo.ubi.R$color: int menu_blue
+com.modusgo.ubi.R$color: int menu_color
 com.modusgo.ubi.R$color: int menu_text_gray
 com.modusgo.ubi.R$color: int orange
 com.modusgo.ubi.R$color: int pagerTabStripBg
@@ -7371,6 +7372,7 @@ com.modusgo.ubi.R$color: int wallet_link_text_light
 com.modusgo.ubi.R$color: int wallet_primary_text_holo_light
 com.modusgo.ubi.R$color: int wallet_secondary_text_holo_dark
 com.modusgo.ubi.R$color: int white
+com.modusgo.ubi.R$color: int white_ninety
 com.modusgo.ubi.R$color: int yellow
 com.modusgo.ubi.R$dimen: int abc_action_bar_default_height
 com.modusgo.ubi.R$dimen: int abc_action_bar_icon_vertical_padding
@@ -7406,6 +7408,16 @@ com.modusgo.ubi.R$dimen: int default_title_indicator_text_size
 com.modusgo.ubi.R$dimen: int default_title_indicator_title_padding
 com.modusgo.ubi.R$dimen: int default_title_indicator_top_padding
 com.modusgo.ubi.R$dimen: int drivers_menu_offset
+com.modusgo.ubi.R$dimen: int eight_dp
+com.modusgo.ubi.R$dimen: int fifteen_dp
+com.modusgo.ubi.R$dimen: int five_dp
+com.modusgo.ubi.R$dimen: int navigation_drawer_item_margin_left
+com.modusgo.ubi.R$dimen: int navigation_drawer_width
+com.modusgo.ubi.R$dimen: int one_dp
+com.modusgo.ubi.R$dimen: int ten_dp
+com.modusgo.ubi.R$dimen: int three_dp
+com.modusgo.ubi.R$dimen: int twelve_dp
+com.modusgo.ubi.R$dimen: int twenty_five
 com.modusgo.ubi.R$drawable: int abc_ab_bottom_solid_dark_holo
 com.modusgo.ubi.R$drawable: int abc_ab_bottom_solid_light_holo
 com.modusgo.ubi.R$drawable: int abc_ab_bottom_transparent_dark_holo
@@ -7551,6 +7563,7 @@ com.modusgo.ubi.R$drawable: int diagnostics_detail_shadow
 com.modusgo.ubi.R$drawable: int drawer_list_item_bg_selector
 com.modusgo.ubi.R$drawable: int drawer_list_item_text_selector
 com.modusgo.ubi.R$drawable: int drawer_shadow
+com.modusgo.ubi.R$drawable: int driver_in_trip_tab_text_selector
 com.modusgo.ubi.R$drawable: int driver_tab_text_selector
 com.modusgo.ubi.R$drawable: int home_item_bg_selector
 com.modusgo.ubi.R$drawable: int ic_action_next_item
@@ -7651,6 +7664,7 @@ com.modusgo.ubi.R$drawable: int progress_blue
 com.modusgo.ubi.R$drawable: int progress_star_rating
 com.modusgo.ubi.R$drawable: int radio_tab_bg_selector
 com.modusgo.ubi.R$drawable: int radio_tab_text_selector
+com.modusgo.ubi.R$drawable: int rectangle_in_trip
 com.modusgo.ubi.R$drawable: int rectangle_orange_with_border
 com.modusgo.ubi.R$drawable: int rectangle_orange_with_border_rounded
 com.modusgo.ubi.R$drawable: int rectangle_with_border
@@ -7938,6 +7952,7 @@ com.modusgo.ubi.R$id: int tvFuelUnit
 com.modusgo.ubi.R$id: int tvFuelUnits
 com.modusgo.ubi.R$id: int tvFuelUsed
 com.modusgo.ubi.R$id: int tvImportance
+com.modusgo.ubi.R$id: int tvInTrip
 com.modusgo.ubi.R$id: int tvInfo
 com.modusgo.ubi.R$id: int tvInstructions
 com.modusgo.ubi.R$id: int tvLaborHours
@@ -7945,6 +7960,7 @@ com.modusgo.ubi.R$id: int tvLastCheckup
 com.modusgo.ubi.R$id: int tvLastName
 com.modusgo.ubi.R$id: int tvLoading
 com.modusgo.ubi.R$id: int tvLocation
+com.modusgo.ubi.R$id: int tvLocationHour
 com.modusgo.ubi.R$id: int tvLocationLabel
 com.modusgo.ubi.R$id: int tvMaxSpeed
 com.modusgo.ubi.R$id: int tvMaxSpeedUnits
@@ -8052,8 +8068,8 @@ com.modusgo.ubi.R$layout: int diagnostics_header
 com.modusgo.ubi.R$layout: int diagnostics_item
 com.modusgo.ubi.R$layout: int dialog_feedback
 com.modusgo.ubi.R$layout: int dialog_numbers
+com.modusgo.ubi.R$layout: int drawer_layout
 com.modusgo.ubi.R$layout: int drawer_list_item
-com.modusgo.ubi.R$layout: int drawer_list_version_item
 com.modusgo.ubi.R$layout: int driver_details_fragment
 com.modusgo.ubi.R$layout: int driver_header
 com.modusgo.ubi.R$layout: int driver_tabs_bg
@@ -8067,6 +8083,7 @@ com.modusgo.ubi.R$layout: int fragment_settings_view
 com.modusgo.ubi.R$layout: int fragment_slide
 com.modusgo.ubi.R$layout: int framgent_trips
 com.modusgo.ubi.R$layout: int home_drivers_list_item
+com.modusgo.ubi.R$layout: int in_trip_indicator
 com.modusgo.ubi.R$layout: int limits_blocked_item
 com.modusgo.ubi.R$layout: int limits_edittext_double_item
 com.modusgo.ubi.R$layout: int limits_edittext_item
@@ -8113,6 +8130,7 @@ com.modusgo.ubi.R$string: int anticipation
 com.modusgo.ubi.R$string: int app_name
 com.modusgo.ubi.R$string: int checkbox1_summary
 com.modusgo.ubi.R$string: int checkbox1_title
+com.modusgo.ubi.R$string: int coming_soon
 com.modusgo.ubi.R$string: int common_android_wear_notification_needs_update_text
 com.modusgo.ubi.R$string: int common_android_wear_update_text
 com.modusgo.ubi.R$string: int common_android_wear_update_title
@@ -8145,6 +8163,18 @@ com.modusgo.ubi.R$string: int completeness
 com.modusgo.ubi.R$string: int consistency
 com.modusgo.ubi.R$string: int create_calendar_message
 com.modusgo.ubi.R$string: int create_calendar_title
+com.modusgo.ubi.R$string: int date_util_unit_day
+com.modusgo.ubi.R$string: int date_util_unit_days
+com.modusgo.ubi.R$string: int date_util_unit_hour
+com.modusgo.ubi.R$string: int date_util_unit_hours
+com.modusgo.ubi.R$string: int date_util_unit_minute
+com.modusgo.ubi.R$string: int date_util_unit_minutes
+com.modusgo.ubi.R$string: int date_util_unit_month
+com.modusgo.ubi.R$string: int date_util_unit_months
+com.modusgo.ubi.R$string: int date_util_unit_second
+com.modusgo.ubi.R$string: int date_util_unit_seconds
+com.modusgo.ubi.R$string: int date_util_unit_year
+com.modusgo.ubi.R$string: int date_util_unit_years
 com.modusgo.ubi.R$string: int decline
 com.modusgo.ubi.R$string: int distracted_driving
 com.modusgo.ubi.R$string: int edittext1_summary
@@ -8154,6 +8184,10 @@ com.modusgo.ubi.R$string: int frag2_text
 com.modusgo.ubi.R$string: int harsh_accel
 com.modusgo.ubi.R$string: int harsh_braking
 com.modusgo.ubi.R$string: int hello_world
+com.modusgo.ubi.R$string: int just_now
+com.modusgo.ubi.R$string: int last_month
+com.modusgo.ubi.R$string: int last_week
+com.modusgo.ubi.R$string: int last_year
 com.modusgo.ubi.R$string: int list1_summary
 com.modusgo.ubi.R$string: int list1_title
 com.modusgo.ubi.R$string: int pref_default_display_name
@@ -8180,6 +8214,8 @@ com.modusgo.ubi.R$string: int store_picture_title
 com.modusgo.ubi.R$string: int title_activity_settings
 com.modusgo.ubi.R$string: int use_of_speed
 com.modusgo.ubi.R$string: int wallet_buy_button_place_holder
+com.modusgo.ubi.R$string: int week_ago
+com.modusgo.ubi.R$string: int yesterday
 com.modusgo.ubi.R$string: int your_score
 com.modusgo.ubi.R$style: int AppBaseTheme
 com.modusgo.ubi.R$style: int AppTheme
