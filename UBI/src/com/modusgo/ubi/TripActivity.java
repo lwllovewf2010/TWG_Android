@@ -62,7 +62,8 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class TripActivity extends MainActivity {
-	
+
+	public static final String EXTRA_VEHICLE_ID = VehicleEntry._ID;
 	public static final String EXTRA_TRIP_ID = "tripId";
 	
 	long driverId = 0;
@@ -107,11 +108,11 @@ public class TripActivity extends MainActivity {
 		setActionBarTitle("TRIP DETAILS");
 		
 		if(savedInstanceState!=null){
-			driverId = savedInstanceState.getLong(VehicleEntry._ID);
+			driverId = savedInstanceState.getLong(EXTRA_VEHICLE_ID);
 			tripId = savedInstanceState.getLong(EXTRA_TRIP_ID);
 		}
 		else if(getIntent()!=null){
-			driverId = getIntent().getLongExtra(VehicleEntry._ID,0);
+			driverId = getIntent().getLongExtra(EXTRA_VEHICLE_ID,0);
 			tripId = getIntent().getLongExtra(EXTRA_TRIP_ID,0);
 		}
 
@@ -557,7 +558,7 @@ public class TripActivity extends MainActivity {
 	
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-		outState.putLong(VehicleEntry._ID, driverId);
+		outState.putLong(EXTRA_VEHICLE_ID, driverId);
 		outState.putLong(EXTRA_TRIP_ID, tripId);
 		super.onSaveInstanceState(outState);
 	}

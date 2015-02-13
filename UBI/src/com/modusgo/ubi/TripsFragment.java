@@ -33,7 +33,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.modusgo.ubi.db.DbHelper;
-import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.modusgo.ubi.requesttasks.GetTripsTask;
 import com.modusgo.ubi.requesttasks.GetVehicleRequest;
 import com.modusgo.ubi.utils.Utils;
@@ -468,7 +467,7 @@ public class TripsFragment extends Fragment{
 						dbHelper.close();
 					}
 					Intent intent = new Intent(getActivity(), TripActivity.class);
-					intent.putExtra(VehicleEntry._ID, vehicle.id);
+					intent.putExtra(TripActivity.EXTRA_VEHICLE_ID, vehicle.id);
 					intent.putExtra(TripActivity.EXTRA_TRIP_ID, t.id);
 					startActivity(intent);
 				}

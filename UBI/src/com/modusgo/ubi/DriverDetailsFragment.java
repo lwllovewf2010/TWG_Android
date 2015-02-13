@@ -290,7 +290,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 				@Override
 				public void onClick(View v) {
 					Intent intent = new Intent(getActivity(), TripActivity.class);
-					intent.putExtra(VehicleEntry._ID, vehicle.id);
+					intent.putExtra(TripActivity.EXTRA_VEHICLE_ID, vehicle.id);
 					intent.putExtra(TripActivity.EXTRA_TRIP_ID, vehicle.lastTripId);
 					startActivity(intent);
 				}
