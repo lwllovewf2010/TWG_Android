@@ -37,7 +37,7 @@ public class Vehicle implements Serializable{
 	private final static String FUEL_UNIT = "fuel_unit";
 	private final static String FUEL_STATUS = "fuel_status";
 	private final static String DTC_COUNT = "dtc_count";
-	private final static String CHECKUP = "checkup";
+	private final static String LAST_CHECKUP = "last_checkup";
 	private final static String UNDEFINED = "undefined";
 	private final static String CHECKUP_STATUS = "checkup_status";
 	private final static String ODOMETER = "odometer";
@@ -147,7 +147,7 @@ public class Vehicle implements Serializable{
 			v.carFuelUnit = carJSON.optString(FUEL_UNIT);
 			v.carFuelStatus = carJSON.optString(FUEL_STATUS);
 			v.carDTCCount = carJSON.optInt(DTC_COUNT);
-			v.carLastCheckup = carJSON.optString(CHECKUP).equals(UNDEFINED) ? "" : carJSON.optString(CHECKUP);
+			v.carLastCheckup = carJSON.optString(LAST_CHECKUP);
 			v.carCheckupStatus = carJSON.optString(CHECKUP_STATUS);
 			v.odometer = carJSON.optInt(ODOMETER);
 		}
