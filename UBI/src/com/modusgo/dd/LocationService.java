@@ -717,11 +717,10 @@ LocationListener{
 	    		lastLocationUpdateTime = System.currentTimeMillis();
 	        	updateLocationUpdatesHandler();
 	    		updateNotification(true); 
-				showTripDeclineNotification();	
+				//showTripDeclineNotification();	
 			}
 			else if(event.equals(EVENT_TRIP_STOP)){
 				e.putBoolean(Device.PREF_IN_TRIP_NOW, false).commit();
-				new SendEventsRequest(this, true).execute();
 	    		updateNotification(prefs.getBoolean(Constants.PREF_TRIP_DECLINED, false) ? false : true);
 				prefs.edit().putBoolean(Constants.PREF_TRIP_DECLINED, false).commit();
 			}
@@ -746,6 +745,10 @@ LocationListener{
 		    	dbhelper.close();
 			}
 			
+			if(event.equals(EVENT_TRIP_START) || event.equals(EVENT_TRIP_STOP)){
+				System.out.println("SEND - "+event);
+				new SendEventsRequest(this, true).execute();	
+			}
 	    	
 	    	if(!TextUtils.isEmpty(event))
 	    		updateNotification(false);
@@ -773,11 +776,10 @@ LocationListener{
 			stayFromMillis = 0;
 			lastLocationUpdateTime = System.currentTimeMillis();
     		updateNotification(true);
-			showTripDeclineNotification();
+			//showTripDeclineNotification();
 		}
 		else if(event.equals(EVENT_TRIP_STOP)){
 			e.putBoolean(Device.PREF_IN_TRIP_NOW, false).commit();
-			new SendEventsRequest(this, true).execute();
     		updateNotification(prefs.getBoolean(Constants.PREF_TRIP_DECLINED, false) ? false : true);
 			prefs.edit().putBoolean(Constants.PREF_TRIP_DECLINED, false).commit();
 			
@@ -801,6 +803,11 @@ LocationListener{
 					event, 
 					getRawData()), prefs.getLong(Constants.PREF_DRIVER_ID, 0));
 			dbhelper.close();
+		}
+		
+		if(event.equals(EVENT_TRIP_START) || event.equals(EVENT_TRIP_STOP)){
+			System.out.println("SEND - "+event);
+			new SendEventsRequest(this, true).execute();
 		}
 		
 		Bugsnag.notify(new RuntimeException("event: "+event));
