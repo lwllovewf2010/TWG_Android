@@ -1,16 +1,24 @@
 package com.modusgo.ubi.db;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
+import android.text.TextUtils;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.modusgo.ubi.Alert;
+import com.modusgo.ubi.Constants;
 import com.modusgo.ubi.DiagnosticsFragment.Maintenance;
 import com.modusgo.ubi.DiagnosticsFragment.WarrantyInformation;
 import com.modusgo.ubi.DiagnosticsTroubleCode;
@@ -24,8 +32,6 @@ import com.modusgo.ubi.Trip;
 import com.modusgo.ubi.Trip.Point;
 import com.modusgo.ubi.Vehicle;
 import com.modusgo.ubi.db.AlertContract.AlertEntry;
-import com.modusgo.ubi.db.ScoreInfoContract.ScoreInfoEntry;
-import com.modusgo.ubi.db.TrackingContract.TrackingEntry;
 import com.modusgo.ubi.db.DTCContract.DTCEntry;
 import com.modusgo.ubi.db.LimitsContract.LimitsEntry;
 import com.modusgo.ubi.db.MaintenanceContract.MaintenanceEntry;
@@ -34,12 +40,15 @@ import com.modusgo.ubi.db.RecallContract.RecallEntry;
 import com.modusgo.ubi.db.RouteContract.RouteEntry;
 import com.modusgo.ubi.db.ScoreCirclesContract.ScoreCirclesEntry;
 import com.modusgo.ubi.db.ScoreGraphContract.ScoreGraphEntry;
+import com.modusgo.ubi.db.ScoreInfoContract.ScoreInfoEntry;
 import com.modusgo.ubi.db.ScorePercentageContract.ScorePercentageEntry;
 import com.modusgo.ubi.db.ScorePieChartContract.ScorePieChartEntry;
 import com.modusgo.ubi.db.SpeedingRouteContract.SpeedingRouteEntry;
+import com.modusgo.ubi.db.TrackingContract.TrackingEntry;
 import com.modusgo.ubi.db.TripContract.TripEntry;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.modusgo.ubi.db.WarrantyInfoContract.WarrantyInfoEntry;
+import com.modusgo.ubi.utils.Utils;
 
 public class DbHelper extends SQLiteOpenHelper {
 	
@@ -491,6 +500,76 @@ public class DbHelper extends SQLiteOpenHelper {
 		c.close();
 		closeDatabase();
 		return v;
+	}
+	
+	
+	public ArrayList<Trip> getTripsFromDb(Date endDate, int count, long id, SharedPreferences prefs){
+		SQLiteDatabase db = openDatabase();
+		
+		SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);
+		
+		Cursor c = db.query(TripEntry.TABLE_NAME, 
+				new String[]{
+				TripEntry._ID,
+				TripEntry.COLUMN_NAME_EVENTS_COUNT,
+				TripEntry.COLUMN_NAME_START_TIME,
+				TripEntry.COLUMN_NAME_END_TIME,
+				TripEntry.COLUMN_NAME_DISTANCE,
+				TripEntry.COLUMN_NAME_GRADE,
+				TripEntry.COLUMN_NAME_FUEL,
+				TripEntry.COLUMN_NAME_FUEL_UNIT,
+				TripEntry.COLUMN_NAME_FUEL_STATUS,
+				TripEntry.COLUMN_NAME_FUEL_COST,
+				TripEntry.COLUMN_NAME_VIEWED_AT,
+				TripEntry.COLUMN_NAME_UPDATED_AT},
+				TripEntry.COLUMN_NAME_VEHICLE_ID + " = " + id + " AND " + TripEntry.COLUMN_NAME_HIDDEN + " = 0 AND " +
+				"datetime(" + TripEntry.COLUMN_NAME_START_TIME + ")<datetime('"+ Utils.fixTimeZoneColon(sdf.format(endDate)) + "')", null, null, null, "datetime("+TripEntry.COLUMN_NAME_START_TIME+") DESC", ""+count);
+
+		System.out.println("trips from db: "+c.getCount());
+		
+		ArrayList<Trip> trips = new ArrayList<Trip>();
+		if(c.moveToFirst()){
+			while(!c.isAfterLast()){
+				Trip t = new Trip(
+						prefs,
+						c.getLong(0), 
+						c.getInt(1), 
+						c.getString(2), 
+						c.getString(3), 
+						c.getDouble(4),
+						c.getString(5));
+				t.fuel = c.getFloat(6);
+				t.fuelUnit = c.getString(7);
+				t.fuelStatus = c.getString(8);
+				t.fuelCost = c.getFloat(9);
+				t.viewedAt = c.getString(10);
+				t.updatedAt = c.getString(11);
+				
+				try {
+					if(!TextUtils.isEmpty(t.viewedAt) && !TextUtils.isEmpty(t.updatedAt)){
+						Calendar cViewedAt = Calendar.getInstance();
+						cViewedAt.setTime(sdf.parse(t.viewedAt));
+						Calendar cUpdatedAt = Calendar.getInstance();
+						cUpdatedAt.setTime(sdf.parse(t.updatedAt));
+						
+						if(cViewedAt.after(cUpdatedAt))
+							t.viewed = true;
+					}
+					
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+				
+				trips.add(t);
+				c.moveToNext();
+			}
+		}
+		c.close();
+		closeDatabase();
+		
+		System.out.println("trips array "+trips.size());
+		
+		return trips;
 	}
 	
 	public void saveVehicle(Vehicle v){

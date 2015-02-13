@@ -1,24 +1,17 @@
 package com.modusgo.ubi;
 
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -36,12 +29,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.modusgo.ubi.db.DbHelper;
-import com.modusgo.ubi.db.TripContract.TripEntry;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
-import com.modusgo.ubi.requesttasks.BaseRequestAsyncTask;
+import com.modusgo.ubi.requesttasks.GetTripsTask;
 import com.modusgo.ubi.requesttasks.GetVehicleRequest;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -49,21 +40,21 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class TripsFragment extends Fragment{
 	
-	private final static int TRIPS_PER_REQUEST = 10;
+	public final static int TRIPS_PER_REQUEST = 10;
 	
-	Vehicle vehicle;
-	SharedPreferences prefs;
+	private Vehicle vehicle;
+	private SharedPreferences prefs;
 	
-	ArrayList<Trip> trips;
-	ArrayList<ListItem> tripListItems;
-	TripsAdapter adapter;
+	private ArrayList<Trip> trips;
+	private ArrayList<ListItem> tripListItems;
+	private TripsAdapter adapter;
 	
-	SwipeRefreshLayout lRefresh;
+	private SwipeRefreshLayout lRefresh;
 	LinearLayout llProgress;
-	ListView lv;
+	private ListView lv;
 	
-	private boolean offlineMode = false;
 	private boolean thereAreOlderTrips = true;
+	private DbHelper dbHelper;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -77,6 +68,7 @@ public class TripsFragment extends Fragment{
 		tripListItems = new ArrayList<ListItem>();
 		
 		prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+		dbHelper = DbHelper.getInstance(getActivity());
 		rootView.findViewById(R.id.btnSwitchDriverMenu).setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_SWITCH_DRIVER_MENU_BUTTON_COLOR, Constants.SWITCH_DRIVER_BUTTON_BG_COLOR)));
 		rootView.findViewById(R.id.bottom_line).setBackgroundColor(Color.parseColor(prefs.getString(Constants.PREF_BR_LIST_HEADER_LINE_COLOR, Constants.LIST_HEADER_LINE_COLOR)));
 		
@@ -114,7 +106,7 @@ public class TripsFragment extends Fragment{
 		lRefresh.setOnRefreshListener(new OnRefreshListener() {
 			@Override
 			public void onRefresh() {
-				new GetTripsTask(getActivity(), true).execute("vehicles/"+vehicle.id+"/trips.json");
+				runTripsTask(true);
 				new GetVehicleRequest(getActivity().getApplicationContext()).execute("vehicles/"+vehicle.id+".json");
 			}
 		});
@@ -122,12 +114,29 @@ public class TripsFragment extends Fragment{
 		adapter = new TripsAdapter();
 		lv.setAdapter(adapter);
 		
-		trips.addAll(getTripsFromDb(Calendar.getInstance().getTime(), TRIPS_PER_REQUEST));
+		trips.addAll(dbHelper.getTripsFromDb(Calendar.getInstance().getTime(), TRIPS_PER_REQUEST, vehicle.id, prefs));
 		
 		if(trips.size()==0)
-			new GetTripsTask(getActivity(), true).execute("vehicles/"+vehicle.id+"/trips.json");
+			runTripsTask(true);
 		
 		return rootView;
+	}
+	
+	private void runTripsTask(boolean value){
+		new GetTripsTask(getActivity(), value, vehicle.id, getFragmentManager()){
+			
+			@Override
+			protected void onPreExecute() {
+				lRefresh.setRefreshing(true);
+				super.onPreExecute();
+			}
+			
+			@Override
+			protected void onPostExecute(JSONObject result) {
+				lRefresh.setRefreshing(false);
+				super.onPostExecute(result);
+			}
+		}.execute("vehicles/"+vehicle.id+"/trips.json");
 	}
 	
 	@Override
@@ -137,79 +146,15 @@ public class TripsFragment extends Fragment{
 		super.onResume();
 	}
 	
-	private ArrayList<Trip> getTripsFromDb(Date endDate, int count){
-		DbHelper dbHelper = DbHelper.getInstance(getActivity());
-		SQLiteDatabase db = dbHelper.openDatabase();
-		
-		SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);
-		
-		Cursor c = db.query(TripEntry.TABLE_NAME, 
-				new String[]{
-				TripEntry._ID,
-				TripEntry.COLUMN_NAME_EVENTS_COUNT,
-				TripEntry.COLUMN_NAME_START_TIME,
-				TripEntry.COLUMN_NAME_END_TIME,
-				TripEntry.COLUMN_NAME_DISTANCE,
-				TripEntry.COLUMN_NAME_GRADE,
-				TripEntry.COLUMN_NAME_FUEL,
-				TripEntry.COLUMN_NAME_FUEL_UNIT,
-				TripEntry.COLUMN_NAME_FUEL_STATUS,
-				TripEntry.COLUMN_NAME_FUEL_COST,
-				TripEntry.COLUMN_NAME_VIEWED_AT,
-				TripEntry.COLUMN_NAME_UPDATED_AT},
-				TripEntry.COLUMN_NAME_VEHICLE_ID + " = " + vehicle.id + " AND " + TripEntry.COLUMN_NAME_HIDDEN + " = 0 AND " +
-				"datetime(" + TripEntry.COLUMN_NAME_START_TIME + ")<datetime('"+ Utils.fixTimeZoneColon(sdf.format(endDate)) + "')", null, null, null, "datetime("+TripEntry.COLUMN_NAME_START_TIME+") DESC", ""+count);
-
-		System.out.println("trips from db: "+c.getCount());
-		
-		ArrayList<Trip> trips = new ArrayList<Trip>();
-		if(c.moveToFirst()){
-			while(!c.isAfterLast()){
-				Trip t = new Trip(
-						prefs,
-						c.getLong(0), 
-						c.getInt(1), 
-						c.getString(2), 
-						c.getString(3), 
-						c.getDouble(4),
-						c.getString(5));
-				t.fuel = c.getFloat(6);
-				t.fuelUnit = c.getString(7);
-				t.fuelStatus = c.getString(8);
-				t.fuelCost = c.getFloat(9);
-				t.viewedAt = c.getString(10);
-				t.updatedAt = c.getString(11);
-				
-				try {
-					if(!TextUtils.isEmpty(t.viewedAt) && !TextUtils.isEmpty(t.updatedAt)){
-						Calendar cViewedAt = Calendar.getInstance();
-						cViewedAt.setTime(sdf.parse(t.viewedAt));
-						Calendar cUpdatedAt = Calendar.getInstance();
-						cUpdatedAt.setTime(sdf.parse(t.updatedAt));
-						
-						if(cViewedAt.after(cUpdatedAt))
-							t.viewed = true;
-					}
-					
-				} catch (ParseException e) {
-					e.printStackTrace();
-				}
-				
-				trips.add(t);
-				c.moveToNext();
-			}
-		}
-		c.close();
-		dbHelper.closeDatabase();
-		dbHelper.close();
-		
-		System.out.println("trips array "+trips.size());
-		
-		return trips;
+	public void setThereOldTrip(boolean bool){
+		thereAreOlderTrips = bool;
 	}
 	
-	private void updateTripsListView(){
-		
+	
+	
+	public void updateTripsListView(){
+		trips.clear();
+		trips.addAll(dbHelper.getTripsFromDb(Calendar.getInstance().getTime(), TripsFragment.TRIPS_PER_REQUEST, vehicle.id, prefs));
 		Trip.updateTimezones(prefs);
 		SimpleDateFormat sdfDate = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
 		TimeZone tzTo = TimeZone.getTimeZone(prefs.getString(Constants.PREF_TIMEZONE_OFFSET, Constants.DEFAULT_TIMEZONE));
@@ -273,122 +218,7 @@ public class TripsFragment extends Fragment{
 		adapter.notifyDataSetChanged();
 	}
 	
-	class GetTripsTask extends BaseRequestAsyncTask{
-		
-		boolean getNewTrips = false;
-		private Calendar cEndTime = Calendar.getInstance();
-		
-		public GetTripsTask(Context context, boolean getNewTrips) {
-			super(context);
-			this.getNewTrips = getNewTrips;
-			if(getNewTrips)
-				cEndTime.setTimeInMillis(System.currentTimeMillis());
-			else
-				cEndTime.setTime(trips.get(trips.size()-1).getStartDate());
-		}
-		
-		@Override
-		protected void onPreExecute() {
-			lRefresh.setRefreshing(true);
-			super.onPreExecute();
-		}
-
-		@Override
-		protected JSONObject doInBackground(String... params) {
-			SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);
-			requestParams.add(new BasicNameValuePair("vehicle_id", ""+vehicle.id));
-			requestParams.add(new BasicNameValuePair("page", "1"));
-	        requestParams.add(new BasicNameValuePair("per_page", ""+TRIPS_PER_REQUEST));
-	        requestParams.add(new BasicNameValuePair("end_time", sdf.format(cEndTime.getTime())));
-			return super.doInBackground(params);
-		}
-		
-		@Override
-		protected void onPostExecute(JSONObject result) {
-			super.onPostExecute(result);
-			lRefresh.setRefreshing(false);
-		}
-		
-		@Override
-		protected void onSuccess(JSONObject responseJSON) throws JSONException {
-			JSONArray tripsJSON = responseJSON.getJSONArray("trips");
-			System.out.println(responseJSON);
-			
-			if(offlineMode && getNewTrips){
-				trips.clear();
-				offlineMode = false;
-				thereAreOlderTrips = true;
-			}
-			
-			boolean clearTrips = true;
-			
-			ArrayList<Trip> newTrips = new ArrayList<Trip>();
-			Trip firstOldTrip = null;
-			if(trips.size()>0)
-				firstOldTrip = trips.get(0);
-			
-			for (int i = 0; i < tripsJSON.length(); i++) {
-				JSONObject tripJSON = tripsJSON.getJSONObject(i);
-				
-				System.out.println("i = "+i);
-				Trip t = new Trip(
-						prefs,
-						tripJSON.optLong("id"), 
-						tripJSON.optInt("harsh_events_count"), 
-						Utils.fixTimezoneZ(tripJSON.optString("start_time")), 
-						Utils.fixTimezoneZ(tripJSON.optString("end_time")), 
-						tripJSON.optDouble("mileage"));
-				t.grade = tripJSON.optString("grade");
-				t.fuel = (float) tripJSON.optDouble("fuel_used",-1);
-				t.fuelUnit = tripJSON.optString("fuel_unit");
-				t.fuelCost = (float) tripJSON.optDouble("fuel_cost");
-				t.fuelStatus = tripJSON.optString("fuel_status");
-				t.updatedAt = tripJSON.optString("updated_at");
-				t.hidden = tripJSON.optBoolean("hidden");
-				
-				if(firstOldTrip != null && t.id == firstOldTrip.id){
-					clearTrips = false;
-					break;
-				}
-				newTrips.add(t);
-			}
-			
-			DbHelper dbHelper = DbHelper.getInstance(getActivity());
-			dbHelper.saveTrips(vehicle.id, newTrips);
-			dbHelper.close();
-			
-			if(getNewTrips) {
-				if(clearTrips){
-					trips.clear();
-				}
-				
-				trips.addAll(0, newTrips);
-			}
-			else {
-				if(newTrips.size() == 0)
-					thereAreOlderTrips = false;
-				
-				trips.addAll(getTripsFromDb(cEndTime.getTime(), TRIPS_PER_REQUEST));
-			}
-			
-			updateTripsListView();
-			
-			super.onSuccess(responseJSON);
-		}
-		
-		@Override
-		protected void onError(String message) {
-			offlineMode = true;
-			if(!getNewTrips){
-				ArrayList<Trip> dbTrips = getTripsFromDb(cEndTime.getTime(), TRIPS_PER_REQUEST);
-				if(dbTrips.size()!=0)
-					trips.addAll(dbTrips);
-				else
-					thereAreOlderTrips = false;
-				updateTripsListView();
-			}
-		}
-	}
+	
 	
 	class ViewHolderHeader{
 		TextView tvDate;
@@ -460,7 +290,7 @@ public class TripsFragment extends Fragment{
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			if(thereAreOlderTrips && position == getCount() - 1)
-				new GetTripsTask(getActivity(), false).execute("vehicles/"+vehicle.id+"/trips.json");
+				runTripsTask(false);
 			
 			if(getItemViewType(position)==HEADER_ITEM)
 				return getHeaderView(position, convertView, parent);
@@ -611,9 +441,8 @@ public class TripsFragment extends Fragment{
 						SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);
 						t.viewed = true;
 						t.viewedAt = sdf.format(Calendar.getInstance().getTime());
-						DbHelper dHelper = DbHelper.getInstance(getActivity());
-						dHelper.saveTrip(vehicle.id, t);
-						dHelper.close();
+						dbHelper.saveTrip(vehicle.id, t);
+						dbHelper.close();
 					}
 					Intent intent = new Intent(getActivity(), TripActivity.class);
 					intent.putExtra(VehicleEntry._ID, vehicle.id);
