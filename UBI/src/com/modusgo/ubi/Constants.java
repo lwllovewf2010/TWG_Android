@@ -50,6 +50,7 @@ public class Constants {
 	public static final String PREF_JASTEC_MEID = "jastecMEID";
 	
 	public static final String BROADCAST_UPDATE_VEHICLES = "com.modusgo.updateVehicles";
+	public static final String BROADCAST_UPDATE_TRIPS = "com.modusgo.updateTrips";
 	
 	public static final String ROLE_CUSTOMER = "customer";
 

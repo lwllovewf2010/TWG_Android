@@ -9,8 +9,10 @@ import java.util.TimeZone;
 
 import org.json.JSONObject;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -56,6 +58,9 @@ public class TripsFragment extends Fragment{
 	private boolean thereAreOlderTrips = true;
 	private DbHelper dbHelper;
 	
+	private BroadcastReceiver tripsUpdateReceiver;
+	private IntentFilter tripsUpdateFilter;
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -66,6 +71,15 @@ public class TripsFragment extends Fragment{
 		vehicle = ((DriverActivity)getActivity()).vehicle;
 		trips = new ArrayList<Trip>();
 		tripListItems = new ArrayList<ListItem>();
+		
+		tripsUpdateFilter = new IntentFilter(Constants.BROADCAST_UPDATE_TRIPS);
+		tripsUpdateReceiver = new BroadcastReceiver(){
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				long id = intent.getLongExtra("vehicle_id", 0);
+				runTripsTask(true, id);
+			}
+		};
 		
 		prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		dbHelper = DbHelper.getInstance(getActivity());
@@ -106,7 +120,7 @@ public class TripsFragment extends Fragment{
 		lRefresh.setOnRefreshListener(new OnRefreshListener() {
 			@Override
 			public void onRefresh() {
-				runTripsTask(true);
+				runTripsTask(true, vehicle.id);
 				new GetVehicleRequest(getActivity().getApplicationContext()).execute("vehicles/"+vehicle.id+".json");
 			}
 		});
@@ -117,13 +131,15 @@ public class TripsFragment extends Fragment{
 		trips.addAll(dbHelper.getTripsFromDb(Calendar.getInstance().getTime(), TRIPS_PER_REQUEST, vehicle.id, prefs));
 		
 		if(trips.size()==0)
-			runTripsTask(true);
+			runTripsTask(true, vehicle.id);
+		
+		
 		
 		return rootView;
 	}
 	
-	private void runTripsTask(boolean value){
-		new GetTripsTask(getActivity(), value, vehicle.id, getFragmentManager()){
+	private void runTripsTask(boolean value,long id){
+		new GetTripsTask(getActivity(), value, id, getFragmentManager()){
 			
 			@Override
 			protected void onPreExecute() {
@@ -136,14 +152,21 @@ public class TripsFragment extends Fragment{
 				lRefresh.setRefreshing(false);
 				super.onPostExecute(result);
 			}
-		}.execute("vehicles/"+vehicle.id+"/trips.json");
+		}.execute("vehicles/"+id+"/trips.json");
 	}
 	
 	@Override
 	public void onResume() {
 		updateTripsListView();
+		getActivity().registerReceiver(tripsUpdateReceiver, tripsUpdateFilter);
 		Utils.gaTrackScreen(getActivity(), "Trips Screen");		
 		super.onResume();
+	}
+	
+	@Override
+	public void onPause() {
+		getActivity().unregisterReceiver(tripsUpdateReceiver);
+		super.onPause();
 	}
 	
 	public void setThereOldTrip(boolean bool){
@@ -290,7 +313,7 @@ public class TripsFragment extends Fragment{
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			if(thereAreOlderTrips && position == getCount() - 1)
-				runTripsTask(false);
+				runTripsTask(false, vehicle.id);
 			
 			if(getItemViewType(position)==HEADER_ITEM)
 				return getHeaderView(position, convertView, parent);

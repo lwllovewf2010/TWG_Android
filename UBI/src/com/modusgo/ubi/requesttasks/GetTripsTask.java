@@ -16,7 +16,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 
 import com.modusgo.ubi.Constants;
-import com.modusgo.ubi.DriverActivity;
 import com.modusgo.ubi.Trip;
 import com.modusgo.ubi.TripsFragment;
 import com.modusgo.ubi.db.DbHelper;

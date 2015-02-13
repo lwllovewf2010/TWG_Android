@@ -178,8 +178,6 @@ public class GcmIntentService extends IntentService {
             					vehicle = dbHelper.getVehicle(Long.parseLong(extras.getString("id")));            					
             				}
             				
-            				boolean lastInfoInTrip = vehicle.inTrip;
-            				
 							Calendar calVehicleUpdatedAt = Calendar.getInstance();
 		            		try {
 		            			calVehicleUpdatedAt.setTime(sdf.parse(vehicle.updatedAt));
@@ -204,10 +202,6 @@ public class GcmIntentService extends IntentService {
 	                        			}
 	                        			if(!locationJSON.isNull("in_trip")){
 	                        				vehicle.inTrip = !TextUtils.isEmpty(locationJSON.optString("in_trip"));
-	                        				if(lastInfoInTrip != vehicle.inTrip){
-	                        					new GetTripsTask(this, true, vehicle.id, null)
-	                        				.execute("vehicles/"+vehicle.id+"/trips.json");
-	                        				}
 	                        			}
 	                        			if(locationJSON.has("last_trip_id")){
 	                        				vehicle.lastTripId = locationJSON.optLong("last_trip_id");	
@@ -231,6 +225,15 @@ public class GcmIntentService extends IntentService {
             				
             				dbHelper.close();
             			}
+            			
+            		case "nt":
+            			if(extras.containsKey("vehicle_id")){
+            				Intent i = new Intent(Constants.BROADCAST_UPDATE_TRIPS);
+            				i.putExtra("vehicle_id", Long.parseLong(extras.getString("vehicle_id")));
+            				sendBroadcast(i);
+        				}
+    					
+            			break;
             			
             		default:
             			break;
