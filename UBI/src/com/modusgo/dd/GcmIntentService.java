@@ -29,7 +29,6 @@ import com.modusgo.ubi.R;
 import com.modusgo.ubi.Vehicle;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.requesttasks.GetDeviceInfoRequest;
-import com.modusgo.ubi.requesttasks.GetTripsTask;
 import com.modusgo.ubi.utils.Device;
 import com.modusgo.ubi.utils.Utils;
 
@@ -97,11 +96,13 @@ public class GcmIntentService extends IntentService {
             	
             	
             	Calendar calUpdatedAt = Calendar.getInstance();
+            	calUpdatedAt.set(Calendar.YEAR, 0);
             	if(extras.containsKey("updated_at")){
             		SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);
             		try {
             			calUpdatedAt.setTime(sdf.parse(Utils.fixTimezoneZ(extras.getString("updated_at"))));
             		} catch (ParseException ex) {
+            			System.out.println("Can't parse push updated_at field :"+Utils.fixTimezoneZ(extras.getString("updated_at")));
             			ex.printStackTrace();
             		}
             	}
@@ -116,6 +117,8 @@ public class GcmIntentService extends IntentService {
 	            		try {
 	            			calDeviceUpdatedAt.setTime(sdf.parse(prefs.getString(Device.PREF_DEVICE_UPDATED_AT, "")));
 	            		} catch (ParseException ex) {
+	            			System.out.println("Can't parse device updated_at field :"+prefs.getString(Device.PREF_DEVICE_UPDATED_AT, ""));
+	            			calDeviceUpdatedAt.set(Calendar.YEAR, 0);
 	            			ex.printStackTrace();
 	            		}
             			
@@ -123,7 +126,7 @@ public class GcmIntentService extends IntentService {
             			if(deviceType.equals(Device.DEVICE_TYPE_OBD) && calDeviceUpdatedAt.before(calUpdatedAt)){
             				Editor e  = prefs.edit();
             				if(extras.containsKey("in_trip")){
-            					e.putBoolean(Device.PREF_DEVICE_IN_TRIP, !TextUtils.isEmpty(extras.getString("in_trip")));
+            					e.putBoolean(Device.PREF_DEVICE_IN_TRIP, !isNull(extras.getString("in_trip")));
             				}
             				else{
             					e.putBoolean(Device.PREF_DEVICE_IN_TRIP, false);
@@ -182,8 +185,11 @@ public class GcmIntentService extends IntentService {
 		            		try {
 		            			calVehicleUpdatedAt.setTime(sdf.parse(vehicle.updatedAt));
 		            		} catch (ParseException ex) {
+		            			System.out.println("Can't parse db vehicle updated_at field :"+vehicle.updatedAt);
+		            			calVehicleUpdatedAt.set(Calendar.YEAR, 0);
 		            			ex.printStackTrace();
 		            		}
+		            		
 							if(calVehicleUpdatedAt.before(calUpdatedAt)){
 	            				if(extras.containsKey("location")){
 	            					String locationJSONStr = extras.getString("location");
@@ -200,8 +206,9 @@ public class GcmIntentService extends IntentService {
 	                        				vehicle.longitude = locationJSON.optDouble("longitude");
 	                        				System.out.println("longitude: "+locationJSON.optDouble("longitude"));
 	                        			}
-	                        			if(!locationJSON.isNull("in_trip")){
-	                        				vehicle.inTrip = !TextUtils.isEmpty(locationJSON.optString("in_trip"));
+	                        			if(locationJSON.has("in_trip")){
+	                        				vehicle.inTrip = !locationJSON.isNull("in_trip");
+	                        				System.out.println("Vehicle in trip: "+vehicle.inTrip);
 	                        			}
 	                        			if(locationJSON.has("last_trip_id")){
 	                        				vehicle.lastTripId = locationJSON.optLong("last_trip_id");	
@@ -219,11 +226,11 @@ public class GcmIntentService extends IntentService {
 	            					vehicle.updatedAt = Utils.fixTimezoneZ(extras.getString("updated_at"));
 	            				}
 	            				dbHelper.saveVehicle(vehicle);
-	            				
-	            				sendBroadcast(new Intent(Constants.BROADCAST_UPDATE_VEHICLES));
 							}
             				
             				dbHelper.close();
+            				
+            				sendBroadcast(new Intent(Constants.BROADCAST_UPDATE_VEHICLES));
             			}
             			
             		case "nt":
@@ -246,6 +253,13 @@ public class GcmIntentService extends IntentService {
         
         // Release the wake lock provided by the WakefulBroadcastReceiver.
         GcmBroadcastReceiver.completeWakefulIntent(intent);
+    }
+    
+    private boolean isNull(String value){
+    	if(value == null || value.equals("") || value.equals("null"))
+    		return true;
+    	else
+    		return false;
     }
 
     // Put the message into a notification and post it.
