@@ -24,8 +24,8 @@ import android.text.TextUtils;
 import com.bugsnag.android.Bugsnag;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.modusgo.ubi.Constants;
-import com.modusgo.ubi.InitActivity;
 import com.modusgo.ubi.R;
+import com.modusgo.ubi.TripActivity;
 import com.modusgo.ubi.Vehicle;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.requesttasks.GetDeviceInfoRequest;
@@ -48,7 +48,11 @@ public class GcmIntentService extends IntentService {
         super("GcmIntentService");
     }
     
-    public static final String TAG = "UBI GCM";    
+    public static final String TAG = "UBI GCM";        
+    private static final String ACTION_DRIVER_UPDATE = "du";
+    private static final String ACTION_VEHICLE_UPDATE = "vu";
+    private static final String ACTION_NEW_TRIP = "nt";
+
 
     @Override
     protected void onHandleIntent(Intent intent) {
@@ -78,22 +82,7 @@ public class GcmIntentService extends IntentService {
 //            	}
             	
             	Bugsnag.addToTab("User", "Push data", extras.toString());
-            	Bugsnag.notify(new RuntimeException("Push received"));
-            	
-            	if(extras.containsKey("aps")){
-            		String apsJSON = extras.getString("aps");
-            		try {
-            			JSONObject jsonObj = new JSONObject(apsJSON);
-            			if(jsonObj.optInt("content-available")==0){
-            				String message = jsonObj.optString("alert");
-            				if(!TextUtils.isEmpty(message))
-            					sendNotification(getResources().getString(R.string.app_name), message);
-            			}
-            		} catch (JSONException e1) {
-            			e1.printStackTrace();
-            		}
-            	}
-            	
+            	Bugsnag.notify(new RuntimeException("Push received"));            	
             	
             	Calendar calUpdatedAt = Calendar.getInstance();
             	calUpdatedAt.set(Calendar.YEAR, 0);
@@ -107,12 +96,14 @@ public class GcmIntentService extends IntentService {
             		}
             	}
             	
+            	Intent notificationIntent = null;
+            	
             	if(extras.containsKey("act")){
             		SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);;
             		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
                 	
-            		switch (extras.getString("act", "du")) {
-            		case "du":
+            		switch (extras.getString("act", ACTION_DRIVER_UPDATE)) {
+            		case ACTION_DRIVER_UPDATE:
             			Calendar calDeviceUpdatedAt = Calendar.getInstance();
 	            		try {
 	            			calDeviceUpdatedAt.setTime(sdf.parse(prefs.getString(Device.PREF_DEVICE_UPDATED_AT, "")));
@@ -169,7 +160,7 @@ public class GcmIntentService extends IntentService {
             				Bugsnag.notify(new RuntimeException("Push received, not proccessed, device is not OBD or data is old"));
             			}
             			break;
-            		case "vu":
+            		case ACTION_VEHICLE_UPDATE:
             			if(extras.containsKey("id")){
             				DbHelper dbHelper = DbHelper.getInstance(this);
             				Vehicle vehicle;
@@ -233,19 +224,42 @@ public class GcmIntentService extends IntentService {
             				sendBroadcast(new Intent(Constants.BROADCAST_UPDATE_VEHICLES));
             			}
             			
-            		case "nt":
+            		case ACTION_NEW_TRIP:
+            			long vehicleId = 0;
             			if(extras.containsKey("vehicle_id")){
+            				vehicleId = Long.parseLong(extras.getString("vehicle_id"));
             				Intent i = new Intent(Constants.BROADCAST_UPDATE_TRIPS);
-            				i.putExtra("vehicle_id", Long.parseLong(extras.getString("vehicle_id")));
+            				i.putExtra("vehicle_id", vehicleId);
             				sendBroadcast(i);
         				}
-    					
+            			
+            			long tripId = extras.containsKey("trip_id") ? Long.parseLong(extras.getString("trip_id")) : 0;
+            			
+            			if(vehicleId!=0 && tripId!=0){
+            				notificationIntent = new Intent(getApplicationContext(), TripActivity.class);
+            				notificationIntent.putExtra(TripActivity.EXTRA_VEHICLE_ID, vehicleId);
+            				notificationIntent.putExtra(TripActivity.EXTRA_TRIP_ID, tripId);
+            			}
             			break;
             			
             		default:
             			break;
             		}
-            	}            	
+            	}
+            	
+            	if(extras.containsKey("aps")){
+            		String apsJSON = extras.getString("aps");
+            		try {
+            			JSONObject jsonObj = new JSONObject(apsJSON);
+            			String message = jsonObj.optString("alert");
+            			String sound = jsonObj.optString("sound");
+            			if(!TextUtils.isEmpty(message))
+            				sendNotification(getResources().getString(R.string.app_name), message, TextUtils.isEmpty(sound) ? false : true, notificationIntent);
+            			
+            		} catch (JSONException e1) {
+            			e1.printStackTrace();
+            		}
+            	}
             	
             	new GetDeviceInfoRequest(this).execute();
             }
@@ -265,24 +279,29 @@ public class GcmIntentService extends IntentService {
     // Put the message into a notification and post it.
     // This is just one simple example of what you might choose to do with
     // a GCM message.
-    private void sendNotification(String title, String msg) {
-        mNotificationManager = (NotificationManager)
-                this.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, InitActivity.class), 0);
-
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this)
+    private void sendNotification(String title, String msg, boolean sound, Intent intent) {
+        mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
         .setSmallIcon(R.drawable.ic_launcher)
         .setContentTitle(title)
         .setStyle(new NotificationCompat.BigTextStyle().bigText(msg))
         .setAutoCancel(true)
         .setTicker(msg)
-        .setContentText(msg);
-
-        mBuilder.setContentIntent(contentIntent);
+        .setContentText(msg)
+        .setStyle(new NotificationCompat.BigTextStyle().bigText(msg));
+        
+        if(intent!=null){
+            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        	mBuilder.setContentIntent(contentIntent);
+        }
+        
         Notification n = mBuilder.build();
         n.flags = Notification.DEFAULT_LIGHTS | Notification.FLAG_AUTO_CANCEL;
+		if(sound){
+			n.defaults |= Notification.DEFAULT_SOUND;
+			n.defaults |= Notification.DEFAULT_VIBRATE;
+		}
         mNotificationManager.notify(NOTIFICATION_ID, n);
     }
 }
