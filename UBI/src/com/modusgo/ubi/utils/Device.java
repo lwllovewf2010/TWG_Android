@@ -99,7 +99,7 @@ public class Device {
 		}
 		
 		if(!deviceType.equals(DEVICE_TYPE_OBD)){
-			if(prefs.getBoolean(PREF_IN_TRIP_NOW, false)){
+			if(prefs.getBoolean(PREF_IN_TRIP_NOW, false) || prefs.getBoolean(Constants.PREF_JASTEC_CONNECTED, false)){
 				newTrackingMode = MODE_SUPER_TRACKING;
 			}
 		}

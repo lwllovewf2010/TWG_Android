@@ -187,6 +187,8 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 	public void onDisconnected(Exception e) {
 		System.out.println("Bt disconnected");
 		mConnectionStarted = false;
+		prefs.edit().putBoolean(Constants.PREF_JASTEC_CONNECTED, false).commit();
+		
 		if(mOnConnectionListener!=null)
 			mOnConnectionListener.onDisconnected(e);
 		
@@ -196,6 +198,8 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 	public void onConnected() {
 		System.out.println("Bt connected");
 		mConnectionStarted = false;
+		prefs.edit().putBoolean(Constants.PREF_JASTEC_CONNECTED, true).commit();
+		Device.checkDevice(context);
 		
 		String addressStored = prefs.getString(Constants.PREF_JASTEC_ADDRESS, "");
 		
