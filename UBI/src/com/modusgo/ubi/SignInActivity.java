@@ -16,6 +16,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -430,6 +431,7 @@ public class SignInActivity extends FragmentActivity {
 	        requestParams.add(new BasicNameValuePair("email", editUsername.getText().toString()));
 	        requestParams.add(new BasicNameValuePair("password", editPassword.getText().toString()));
 	        requestParams.add(new BasicNameValuePair("platform", Constants.API_PLATFORM));
+	        requestParams.add(new BasicNameValuePair("model", Build.BRAND +" "+ Build.MODEL));
 	        requestParams.add(new BasicNameValuePair("mobile_id", Utils.getUUID(SignInActivity.this)));
 	        requestParams.add(new BasicNameValuePair("push_id", prefs.getString(Constants.PREF_GCM_REG_ID, "")));
 	        System.out.println(requestParams);

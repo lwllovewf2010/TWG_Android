@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -20,7 +21,6 @@ import com.bugsnag.android.Bugsnag;
 import com.modusgo.ubi.Constants;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.TrackingContract.TrackingEntry;
-import com.modusgo.ubi.utils.Device;
 
 public class SendEventsRequest extends BasePostRequestAsyncTask {
 
@@ -75,7 +75,7 @@ public class SendEventsRequest extends BasePostRequestAsyncTask {
 			}
 			dataJSON.put("firmware", "android "+android.os.Build.VERSION.RELEASE);
 			try{
-				dataJSON.put("device_type", prefs.getString(Device.PREF_DEVICE_TYPE, "n/a"));
+				dataJSON.put("device_type", Build.BRAND +" "+ Build.MODEL);
 			}
 			catch(ClassCastException e){
 				Bugsnag.notify(new Exception("ClassCastException deviceTypeWrong"), e.getMessage());				
