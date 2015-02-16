@@ -136,7 +136,7 @@ public class Vehicle implements Serializable{
 		if(!vehicleJSON.isNull(DRIVER)){
 			JSONObject driverJSON = vehicleJSON.getJSONObject(DRIVER);
 			v.name = driverJSON.optString(NAME);
-			v.photo = driverJSON.optString(PHOTO);
+			v.photo = driverJSON.optString(PHOTO).equals(NULL) ? "" :  driverJSON.optString(PHOTO);
 			v.markerIcon = driverJSON.optString(ICON);
 		}
 		
