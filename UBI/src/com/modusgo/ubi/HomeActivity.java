@@ -31,10 +31,10 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.modusgo.ubi.DriverActivity.VehiclesAdapter.ViewHolder;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
 import com.modusgo.ubi.requesttasks.BaseRequestAsyncTask;
+import com.modusgo.ubi.requesttasks.RequestHelper;
 import com.modusgo.ubi.requesttasks.SendEventsRequest;
 import com.modusgo.ubi.utils.AnimationUtils;
 import com.modusgo.ubi.utils.Device;
@@ -43,6 +43,8 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class HomeActivity extends MainActivity{
+	
+	public static final String VEHICLES = "vehicles";
 	
 	VehiclesAdapter driversAdapter;
 	ArrayList<Vehicle> vehicles = new ArrayList<Vehicle>();
@@ -77,7 +79,7 @@ public class HomeActivity extends MainActivity{
 			public void onRefresh() {
 				lRefresh.setRefreshing(true);
 				AnimationUtils.collapse(tvError);
-				new GetVehiclesTask(HomeActivity.this).execute("vehicles.json");
+				new GetVehiclesTask(HomeActivity.this).execute(RequestHelper.VEHICLES);
 			}
 		});
 		
@@ -214,7 +216,8 @@ public class HomeActivity extends MainActivity{
 		    }
 		    
 		    
-		    if(prefs.getBoolean(Constants.PREF_DIAGNOSTIC, false)){
+		    if(prefs.getBoolean(Constants.PREF_DIAGNOSTIC, false) && !vehicle.hideEngineIcon){
+		    	holder.imageDiagnostics.setVisibility(View.VISIBLE);
 			    if(vehicle.carDTCCount<=0){
 			    	holder.imageDiagnostics.setImageResource(R.drawable.ic_diagnostics_green);
 			    }else{
@@ -224,6 +227,8 @@ public class HomeActivity extends MainActivity{
 		    else{
 		    	holder.imageDiagnostics.setVisibility(View.GONE);
 		    }
+		    
+		   
 		    
 		    if(vehicle.alerts<=0){
 		    	holder.imageAlerts.setImageResource(R.drawable.ic_alerts_green);
@@ -323,7 +328,7 @@ public class HomeActivity extends MainActivity{
 			//responseJSON = Utils.getJSONObjectFromAssets(HomeActivity.this, "vehicles.json");
 			tvError.setVisibility(View.GONE);
 			
-			JSONArray vehiclesJSON = responseJSON.getJSONArray("vehicles");
+			JSONArray vehiclesJSON = responseJSON.getJSONArray(VEHICLES);
 			vehicles.clear();
 			for (int i = 0; i < vehiclesJSON.length(); i++) {
 				JSONObject vehicleJSON = vehiclesJSON.getJSONObject(i);

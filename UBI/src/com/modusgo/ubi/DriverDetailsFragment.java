@@ -50,6 +50,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 public class DriverDetailsFragment extends Fragment  implements ConnectionCallbacks,
 OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	
+	private final static String DRIVER_DERAIL = "DRIVER DETAIL";
+	
 	Vehicle vehicle;
 	SharedPreferences prefs;
 	
@@ -71,6 +73,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	View tvInTrip;
 	View rlLocation;
 	View spaceFuel;
+	View spaceDiagnostic;
 
 	private GoogleMapFragment mMapFragment;
     private GoogleMap mMap;
@@ -90,7 +93,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 		
 		View rootView = inflater.inflate(R.layout.driver_details_fragment, container, false);
 
-		((MainActivity)getActivity()).setActionBarTitle("DRIVER DETAIL");
+		((MainActivity)getActivity()).setActionBarTitle(DRIVER_DERAIL);
 		
 		prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
@@ -113,6 +116,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	    rlLastTrip = rootView.findViewById(R.id.rlDate);
 	    tvInTrip = rootView.findViewById(R.id.tvInTrip);
 	    spaceFuel = rootView.findViewById(R.id.spaceFuel);
+	    spaceDiagnostic = rootView.findViewById(R.id.spaceDiagnostics);
 	    
 	    updateFragment();
 	    
@@ -235,6 +239,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	    }
 		
 		View fuelBlock = (View)tvFuel.getParent();
+		View diagnosticBlock = (View)tvDiagnostics.getParent();
 		
 		if(vehicle.carFuelLevel>=0 && !TextUtils.isEmpty(vehicle.carFuelUnit)){
 			String fuelLeftString = vehicle.carFuelLevel+vehicle.carFuelUnit;
@@ -252,7 +257,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 			});
 		}
 		else{
-			if(!TextUtils.isEmpty(vehicle.carFuelStatus)){
+			if(!TextUtils.isEmpty(vehicle.carFuelStatus) && !vehicle.hideEngineIcon){
 				tvFuel.setText("");
 				tvFuel.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_fuel_green, 0, R.drawable.ic_fuel_arrow_down, 0);
 				fuelBlock.setOnClickListener(new OnClickListener() {
@@ -266,6 +271,11 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 				spaceFuel.setVisibility(View.GONE);
 				fuelBlock.setVisibility(View.GONE);
 			}
+		}
+		
+		if(vehicle.hideEngineIcon){
+			spaceDiagnostic.setVisibility(View.GONE);
+			diagnosticBlock.setVisibility(View.GONE);
 		}
 	    
 	    if(vehicle.carDTCCount<=0){
