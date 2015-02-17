@@ -37,6 +37,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -59,6 +60,8 @@ public class SignInActivity extends FragmentActivity {
 	View layoutFields;
 	EditText editUsername;
 	EditText editPassword;
+	
+	Button btnSignIn;
 	
 	private ViewPager mPager;
     private PagerAdapter mPagerAdapter;
@@ -108,7 +111,7 @@ public class SignInActivity extends FragmentActivity {
 	    editUsername = (EditText)findViewById(R.id.username);
 	    editPassword = (EditText)findViewById(R.id.password);
 
-	    Button btnSignIn = (Button)findViewById(R.id.btnSignIn);
+	    btnSignIn = (Button)findViewById(R.id.btnSignIn);
 	    btnSignIn.setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, Constants.BUTTON_BG_COLOR)));
 	    try{
 	    	btnSignIn.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, Constants.BUTTON_TEXT_COLOR)));
@@ -142,6 +145,7 @@ public class SignInActivity extends FragmentActivity {
 	    btnSignIn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				btnSignIn.setEnabled(false);
 				startSignIn();
 			}
 		});
@@ -423,6 +427,7 @@ public class SignInActivity extends FragmentActivity {
 		
 		@Override
 		protected void onPostExecute(JSONObject result) {
+			btnSignIn.setEnabled(true);
 			super.onPostExecute(result);
 		}
 
@@ -499,7 +504,13 @@ public class SignInActivity extends FragmentActivity {
 		
 		@Override
 		protected void onError(String message) {
-			startActivity(new Intent(SignInActivity.this, HomeActivity.class));
+			try{
+				if(!TextUtils.isEmpty(message))
+					Toast.makeText(SignInActivity.this, "Error: "+message, Toast.LENGTH_LONG).show();
+			}
+			catch(Exception ex){
+				ex.printStackTrace();
+			}
 			finish();
 			//super.onError(message);
 		}

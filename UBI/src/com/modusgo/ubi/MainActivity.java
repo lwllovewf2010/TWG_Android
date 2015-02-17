@@ -447,6 +447,8 @@ public class MainActivity extends FragmentActivity {
 		        case RESET:
 		        	//Clear all app data
 		        	stopService(new Intent(MainActivity.this, LocationService.class));
+		        	new LogoutTask(MainActivity.this).execute(RequestHelper.LOGOUT_REQUEST);
+		        	
 		        	if(!TextUtils.isEmpty(prefs.getString(Constants.PREF_JASTEC_ADDRESS, "")))
 		        			JastecManager.getInstance(MainActivity.this).clearDevice();
 		        	

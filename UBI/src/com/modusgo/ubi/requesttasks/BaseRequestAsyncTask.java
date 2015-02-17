@@ -51,6 +51,8 @@ public class BaseRequestAsyncTask extends AsyncTask<String, Void, JSONObject>{
 		try{
 			status = result.getStatusLine().getStatusCode();
 			message = "Error "+result.getStatusLine().getStatusCode()+": "+result.getStatusLine().getReasonPhrase();
+			if(result.getStatusLine().getStatusCode()>=200 || result.getStatusLine().getStatusCode()<300)
+				message = "Unknown error";
 		}
 		catch(NullPointerException e){
 			e.printStackTrace();
