@@ -22,11 +22,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
-import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
-import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -47,8 +48,7 @@ import com.modusgo.ubi.utils.Utils;
 public class FindMyCarActivity extends MainActivity implements ConnectionCallbacks,
 OnConnectionFailedListener, LocationListener {
 	
-	private LocationClient mLocationClient;
-
+	private GoogleApiClient mGoogleApiClient;
     // These settings are the same as the settings for the map. They will in fact give you updates
     // at the maximal rates currently possible.
     private static final LocationRequest REQUEST = LocationRequest.create()
@@ -132,9 +132,9 @@ OnConnectionFailedListener, LocationListener {
         btnStart.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if(mLocationClient!=null && mLocationClient.isConnected()){
+				if(mGoogleApiClient!=null && mGoogleApiClient.isConnected()){
 					btnStart.setText("Start");
-					mLocationClient.disconnect();
+					mGoogleApiClient.disconnect();
 					locationUpdatesEnabled = false;
 				}
 				else{
@@ -143,7 +143,7 @@ OnConnectionFailedListener, LocationListener {
 					tvInfo.setVisibility(View.VISIBLE);
 					btnStart.setEnabled(false);
 			        setUpLocationClientIfNeeded();
-			        mLocationClient.connect();
+			        mGoogleApiClient.connect();
 					locationUpdatesEnabled = true;
 				}
 			}
@@ -204,11 +204,12 @@ OnConnectionFailedListener, LocationListener {
 	}
 	
 	private void setUpLocationClientIfNeeded() {
-        if (mLocationClient == null) {
-            mLocationClient = new LocationClient(
-                    getApplicationContext(),
-                    this,  // ConnectionCallbacks
-                    this); // OnConnectionFailedListener
+        if (mGoogleApiClient == null) {
+        	mGoogleApiClient = new GoogleApiClient.Builder(this)
+            .addApi(LocationServices.API)
+            .addConnectionCallbacks(this)
+            .addOnConnectionFailedListener(this)
+            .build();
         }
     }
 	
@@ -235,17 +236,10 @@ OnConnectionFailedListener, LocationListener {
 	
 	@Override
     public void onConnected(Bundle connectionHint) {
-        mLocationClient.requestLocationUpdates(
+		LocationServices.FusedLocationApi.requestLocationUpdates(
+                mGoogleApiClient,
                 REQUEST,
                 this);  // LocationListener
-    }
-	
-	/**
-     * Callback called when disconnected from GCore. Implementation of {@link ConnectionCallbacks}.
-     */
-    @Override
-    public void onDisconnected() {
-        // Do nothing
     }
 
     /**
@@ -267,8 +261,8 @@ OnConnectionFailedListener, LocationListener {
 	@Override
 	protected void onPause() {
 		mapView.onPause();
-        if (mLocationClient != null) {
-            mLocationClient.disconnect();
+        if (mGoogleApiClient != null) {
+        	mGoogleApiClient.disconnect();
         }
 		super.onPause();
 	}
@@ -425,9 +419,15 @@ OnConnectionFailedListener, LocationListener {
 			tvInfo.setVisibility(View.VISIBLE);
 			
 			btnStart.setText("Start");
-			if(mLocationClient!=null && mLocationClient.isConnected())
-				mLocationClient.disconnect();
+			if(mGoogleApiClient!=null && mGoogleApiClient.isConnected())
+				mGoogleApiClient.disconnect();
 		}
+	}
+
+	@Override
+	public void onConnectionSuspended(int arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

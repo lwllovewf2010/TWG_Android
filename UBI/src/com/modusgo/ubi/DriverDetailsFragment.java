@@ -27,11 +27,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
-import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
-import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -78,8 +79,8 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	private GoogleMapFragment mMapFragment;
     private GoogleMap mMap;
     
-    private LocationClient mLocationClient;
 
+    private GoogleApiClient mGoogleApiClient;
     // These settings are the same as the settings for the map. They will in fact give you updates
     // at the maximal rates currently possible.
     private static final LocationRequest REQUEST = LocationRequest.create()
@@ -179,7 +180,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 			updateDriverInfo();
 			
 	        setUpLocationClientIfNeeded();
-	        mLocationClient.connect();
+	        mGoogleApiClient.connect();
 		}
 		catch(NullPointerException e){
 			e.printStackTrace();
@@ -356,11 +357,12 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
     }
 	
     private void setUpLocationClientIfNeeded() {
-        if (mLocationClient == null) {
-            mLocationClient = new LocationClient(
-                    getActivity().getApplicationContext(),
-                    this,  // ConnectionCallbacks
-                    this); // OnConnectionFailedListener
+        if (mGoogleApiClient == null) {
+        	mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+            .addApi(LocationServices.API)
+            .addConnectionCallbacks(this)
+            .addOnConnectionFailedListener(this)
+            .build();
         }
     }
     
@@ -417,26 +419,19 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 			}
     	}
 
-        if (mLocationClient != null) {
-            mLocationClient.disconnect();
+        if (mGoogleApiClient != null) {
+        	mGoogleApiClient.disconnect();
         }
     }
 	
 	@Override
     public void onConnected(Bundle connectionHint) {
-        mLocationClient.requestLocationUpdates(
+		LocationServices.FusedLocationApi.requestLocationUpdates(
+                mGoogleApiClient,
                 REQUEST,
-                this);  // LocationListener
+                this);
     }
 	
-	/**
-     * Callback called when disconnected from GCore. Implementation of {@link ConnectionCallbacks}.
-     */
-    @Override
-    public void onDisconnected() {
-        // Do nothing
-    }
-
     /**
      * Implementation of {@link OnConnectionFailedListener}.
      */
@@ -468,10 +463,16 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
     @Override
     public void onPause() {
         super.onPause();
-        if (mLocationClient != null) {
-            mLocationClient.disconnect();
+        if (mGoogleApiClient != null) {
+        	mGoogleApiClient.disconnect();
         }
     }
+
+	@Override
+	public void onConnectionSuspended(int arg0) {
+		// TODO Auto-generated method stub
+		
+	}
     
 //    class GetTripsTask extends BaseRequestAsyncTask{
 //		
