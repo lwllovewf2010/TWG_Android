@@ -6990,6 +6990,8 @@ com.modusgo.ubi.CompareActivity$Paramater: com.modusgo.ubi.CompareActivity$Param
 com.modusgo.ubi.CompareActivity$Paramater: com.modusgo.ubi.CompareActivity$Paramater valueOf(java.lang.String)
 com.modusgo.ubi.DiagnosticDetailActivity
 com.modusgo.ubi.DiagnosticDetailActivity: DiagnosticDetailActivity()
+com.modusgo.ubi.DiagnosticsFragment$MileageDialogState: com.modusgo.ubi.DiagnosticsFragment$MileageDialogState[] values()
+com.modusgo.ubi.DiagnosticsFragment$MileageDialogState: com.modusgo.ubi.DiagnosticsFragment$MileageDialogState valueOf(java.lang.String)
 com.modusgo.ubi.DriverActivity
 com.modusgo.ubi.DriverActivity: DriverActivity()
 com.modusgo.ubi.DriverSetupActivity
