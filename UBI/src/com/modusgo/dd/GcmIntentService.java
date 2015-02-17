@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.bugsnag.android.Bugsnag;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
@@ -60,11 +61,12 @@ public class GcmIntentService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         Bundle extras = intent.getExtras();
         GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         // The getMessageType() intent parameter must be the intent you received
         // in your BroadcastReceiver.
         String messageType = gcm.getMessageType(intent);
 
-        if (!extras.isEmpty()) {  // has effect of unparcelling Bundle
+        if (!extras.isEmpty() && !TextUtils.isEmpty(prefs.getString(Constants.PREF_AUTH_KEY, ""))) {  // has effect of unparcelling Bundle
             /*
              * Filter messages based on message type. Since it is likely that GCM will be
              * extended in the future with new message types, just ignore any message types you're
@@ -77,11 +79,11 @@ public class GcmIntentService extends IntentService {
             // If it's a regular GCM message, do some work.
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
             	
-//            	for (String key : extras.keySet()) {
-//            	    Object value = extras.get(key);
-//            	    Log.d(TAG, String.format("%s %s (%s)", key,  
-//            	        value.toString(), value.getClass().getName()));
-//            	}
+            	for (String key : extras.keySet()) {
+            	    Object value = extras.get(key);
+            	    Log.d(TAG, String.format("%s %s (%s)", key,  
+            	        value.toString(), value.getClass().getName()));
+            	}
             	
             	Bugsnag.addToTab("User", "Push data", extras.toString());
             	Bugsnag.notify(new RuntimeException("Push received"));            	
@@ -101,8 +103,7 @@ public class GcmIntentService extends IntentService {
             	Intent notificationIntent = null;
             	
             	if(extras.containsKey("act")){
-            		SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);;
-            		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            		SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_TIME_FORMAT, Locale.US);
                 	
             		switch (extras.getString("act", ACTION_DRIVER_UPDATE)) {
             		case ACTION_DRIVER_UPDATE:
@@ -174,52 +175,55 @@ public class GcmIntentService extends IntentService {
             					vehicle = dbHelper.getVehicle(Long.parseLong(extras.getString("id")));            					
             				}
             				
-							Calendar calVehicleUpdatedAt = Calendar.getInstance();
-		            		try {
-		            			calVehicleUpdatedAt.setTime(sdf.parse(vehicle.updatedAt));
-		            		} catch (ParseException ex) {
-		            			System.out.println("Can't parse db vehicle updated_at field :"+vehicle.updatedAt);
-		            			calVehicleUpdatedAt.set(Calendar.YEAR, 0);
-		            			ex.printStackTrace();
-		            		}
-		            		
-							if(calVehicleUpdatedAt.before(calUpdatedAt)){
-	            				if(extras.containsKey("location")){
-	            					String locationJSONStr = extras.getString("location");
-	                        		try {
-	                        			JSONObject locationJSON = new JSONObject(locationJSONStr);
-	                        			
-	                        			if(locationJSON.has("location_date")){
-	                        				
-	                        			}
-	                        			if(locationJSON.has("latitude")){
-	                        				vehicle.latitude = locationJSON.optDouble("latitude");
-	                        			}
-	                        			if(locationJSON.has("longitude")){
-	                        				vehicle.longitude = locationJSON.optDouble("longitude");
-	                        				System.out.println("longitude: "+locationJSON.optDouble("longitude"));
-	                        			}
-	                        			if(locationJSON.has("in_trip")){
-	                        				vehicle.inTrip = !locationJSON.isNull("in_trip");
-	                        				System.out.println("Vehicle in trip: "+vehicle.inTrip);
-	                        			}
-	                        			if(locationJSON.has("last_trip_id")){
-	                        				vehicle.lastTripId = locationJSON.optLong("last_trip_id");	
-	                        				System.out.println("last_trip_id: "+locationJSON.optLong("last_trip_id"));								
-	                        			}
-	                        			if(locationJSON.has("last_trip_time")){
-	                        				vehicle.lastTripDate = Utils.fixTimezoneZ(locationJSON.optString("last_trip_time"));										
-	                        			}
-	                        		} catch (JSONException ex) {
-	                        			ex.printStackTrace();
-	                        		}
-	            				}
-
-	            				if(extras.containsKey("updated_at")){
-	            					vehicle.updatedAt = Utils.fixTimezoneZ(extras.getString("updated_at"));
-	            				}
-	            				dbHelper.saveVehicle(vehicle);
-							}
+            				//if vehicle exist, then update it
+            				if(vehicle.id!=0){
+								Calendar calVehicleUpdatedAt = Calendar.getInstance();
+			            		try {
+			            			calVehicleUpdatedAt.setTime(sdf.parse(vehicle.updatedAt));
+			            		} catch (ParseException ex) {
+			            			System.out.println("Can't parse db vehicle updated_at field :"+vehicle.updatedAt);
+			            			calVehicleUpdatedAt.set(Calendar.YEAR, 0);
+			            			ex.printStackTrace();
+			            		}
+			            		
+								if(calVehicleUpdatedAt.before(calUpdatedAt)){
+		            				if(extras.containsKey("location")){
+		            					String locationJSONStr = extras.getString("location");
+		                        		try {
+		                        			JSONObject locationJSON = new JSONObject(locationJSONStr);
+		                        			
+		                        			if(locationJSON.has("location_date")){
+		                        				
+		                        			}
+		                        			if(locationJSON.has("latitude")){
+		                        				vehicle.latitude = locationJSON.optDouble("latitude");
+		                        			}
+		                        			if(locationJSON.has("longitude")){
+		                        				vehicle.longitude = locationJSON.optDouble("longitude");
+		                        				System.out.println("longitude: "+locationJSON.optDouble("longitude"));
+		                        			}
+		                        			if(locationJSON.has("in_trip")){
+		                        				vehicle.inTrip = !locationJSON.isNull("in_trip");
+		                        				System.out.println("Vehicle in trip: "+vehicle.inTrip);
+		                        			}
+		                        			if(locationJSON.has("last_trip_id")){
+		                        				vehicle.lastTripId = locationJSON.optLong("last_trip_id");	
+		                        				System.out.println("last_trip_id: "+locationJSON.optLong("last_trip_id"));								
+		                        			}
+		                        			if(locationJSON.has("last_trip_time")){
+		                        				vehicle.lastTripDate = Utils.fixTimezoneZ(locationJSON.optString("last_trip_time"));										
+		                        			}
+		                        		} catch (JSONException ex) {
+		                        			ex.printStackTrace();
+		                        		}
+		            				}
+	
+		            				if(extras.containsKey("updated_at")){
+		            					vehicle.updatedAt = Utils.fixTimezoneZ(extras.getString("updated_at"));
+		            				}
+		            				dbHelper.saveVehicle(vehicle);
+								}
+            				}
             				
             				dbHelper.close();
             				
