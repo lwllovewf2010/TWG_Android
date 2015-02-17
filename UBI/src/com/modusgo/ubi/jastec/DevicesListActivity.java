@@ -19,7 +19,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.modusgo.ubi.HomeActivity;
 import com.modusgo.ubi.MainActivity;
@@ -45,6 +44,7 @@ public class DevicesListActivity extends MainActivity implements OnConnectionLis
 	private Timer mTimer;
 //	private long mCurrentTime;
 	
+	private JastecManager jastecMan;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -88,17 +88,19 @@ public class DevicesListActivity extends MainActivity implements OnConnectionLis
                 doDiscovery();
             }
         }, 1000);
+        
+        jastecMan = JastecManager.getInstance(this);
 	}
 	
 	@Override
 	protected void onResume() {
-		JastecManager.getInstance(getApplicationContext()).setOnConnectionListener(this);
+		jastecMan.setOnConnectionListener(this);
 		super.onResume();
 	}
 	
 	@Override
 	protected void onPause() {
-		JastecManager.getInstance(getApplicationContext()).setOnConnectionListener(null);
+		jastecMan.setOnConnectionListener(null);
 		super.onPause();
 	}
 	
@@ -174,7 +176,7 @@ public class DevicesListActivity extends MainActivity implements OnConnectionLis
     		progressDialog = ProgressDialog.show(DevicesListActivity.this, "Processing", "Please, wait...");
     		progressDialog.setCancelable(false);
     		
-            JastecManager.getInstance(getApplicationContext()).connect(devinceInfo[1], devinceInfo[0]);
+    		jastecMan.connect(devinceInfo[1], devinceInfo[0]);
         }
     };
 
@@ -184,7 +186,7 @@ public class DevicesListActivity extends MainActivity implements OnConnectionLis
 		if(progressDialog!=null)
 			progressDialog.dismiss();
 
-		JastecManager.getInstance(getApplicationContext()).setOnConnectionListener(null);
+		jastecMan.setOnConnectionListener(null);
 		startActivity(new Intent(getApplicationContext(), HomeActivity.class));
 		finish();
 	}

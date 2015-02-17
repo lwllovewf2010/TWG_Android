@@ -9,6 +9,7 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
@@ -63,8 +64,6 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 			sInstance = new JastecManager(context);
 		}
 		prefs = PreferenceManager.getDefaultSharedPreferences(context);
-		mDeviceAddress = prefs.getString(Constants.PREF_JASTEC_ADDRESS, "");
-		mDeviceName = prefs.getString(Constants.PREF_JASTEC_NAME, "");
 		
 		return sInstance;
 	}
@@ -100,6 +99,15 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 		mDeviceAddress = prefs.getString(Constants.PREF_JASTEC_ADDRESS, "");
 		mDeviceName = prefs.getString(Constants.PREF_JASTEC_NAME, "");
 		
+	}
+	
+	public void clearDevice(){
+		mDeviceAddress = "";
+		mDeviceName = "";
+		Editor editor = prefs.edit();
+		editor.putString(Constants.PREF_JASTEC_ADDRESS, "");
+		editor.putString(Constants.PREF_JASTEC_NAME, "");
+		editor.commit();
 	}
 	
 	public float getLastRPM(){
@@ -205,7 +213,7 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 		
 		if(!addressStored.equals(mDeviceAddress))
 		{
-			SharedPreferences.Editor editor = prefs.edit();
+			Editor editor = prefs.edit();
 			editor.putString(Constants.PREF_JASTEC_ADDRESS, mDeviceAddress);
 			editor.putString(Constants.PREF_JASTEC_NAME, mDeviceName);
 			editor.commit();

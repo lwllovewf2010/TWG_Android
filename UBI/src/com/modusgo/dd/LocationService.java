@@ -117,6 +117,7 @@ LocationListener{
     private boolean beaconConnected = false;
     private long lastBeaconDisconnectMillis;
     
+    private JastecManager jastecMan;
     private OnSensorListener jastecTripStateListener;
     private long lastJastecPing;
     
@@ -352,8 +353,9 @@ LocationListener{
 				}
 			};
 			
-			JastecManager.getInstance(LocationService.this).setOnSensorListener(jastecTripStateListener);
-			JastecManager.getInstance(LocationService.this).setContext(this);
+			jastecMan = JastecManager.getInstance(LocationService.this);
+			jastecMan.setOnSensorListener(jastecTripStateListener);
+			jastecMan.setContext(this);
 	        
 	        if(jastecRunnable==null){
 	        	jastecHandler.removeCallbacksAndMessages(null);
@@ -361,7 +363,7 @@ LocationListener{
 	    	        @Override
 	    	        public void run() {
 	    	        	System.out.println("Jastec connection handler");
-	    				JastecManager.getInstance(LocationService.this).connect();
+	    	        	jastecMan.connect();
 	    	        	jastecHandler.postDelayed(this, 5000);
 	    	        	
 	    	        	if(lastJastecPing!=0 && System.currentTimeMillis() - lastJastecPing >= 5000){
@@ -380,7 +382,7 @@ LocationListener{
 				jastecHandler.removeCallbacksAndMessages(null);
 				jastecHandler = null;
 				jastecRunnable = null;
-				JastecManager.getInstance(this).disconnect();
+				jastecMan.disconnect();
 			}
 		}
 		
@@ -678,9 +680,8 @@ LocationListener{
 	
 	private String getRawData(){
 		String deviceType = prefs.getString(Device.PREF_DEVICE_TYPE, "");
-		if(deviceType.equals(Device.DEVICE_TYPE_OBDBLE)){
-			JastecManager jm = JastecManager.getInstance(this);
-			return "speed: " + jm.getLastSpeed() + ", rpm: " + jm.getLastRPM();
+		if(deviceType.equals(Device.DEVICE_TYPE_OBDBLE) && jastecMan != null){
+			return "speed: " + jastecMan.getLastSpeed() + ", rpm: " + jastecMan.getLastRPM();
 		}
 		else
 			return "";
@@ -847,7 +848,8 @@ LocationListener{
 			jastecHandler = null;
 			jastecRunnable = null;
 		}
-		JastecManager.getInstance(this).disconnect();
+		if(jastecMan!=null)
+			jastecMan.disconnect();
 		
 		mInProgress = false;
         if(servicesAvailable && mGoogleApiClient != null) {

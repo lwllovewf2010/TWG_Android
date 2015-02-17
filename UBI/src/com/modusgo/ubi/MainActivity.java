@@ -24,6 +24,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -42,6 +43,7 @@ import android.widget.Toast;
 import com.modusgo.dd.LocationService;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.jastec.DevicesListActivity;
+import com.modusgo.ubi.jastec.JastecManager;
 import com.modusgo.ubi.jastec.LogActivity;
 import com.modusgo.ubi.requesttasks.LogoutTask;
 import com.modusgo.ubi.requesttasks.RequestHelper;
@@ -445,6 +447,9 @@ public class MainActivity extends FragmentActivity {
 		        case RESET:
 		        	//Clear all app data
 		        	stopService(new Intent(MainActivity.this, LocationService.class));
+		        	if(!TextUtils.isEmpty(prefs.getString(Constants.PREF_JASTEC_ADDRESS, "")))
+		        			JastecManager.getInstance(MainActivity.this).clearDevice();
+		        	
 		        	prefs.edit().clear().commit();
 		        	DbHelper dbHelper = DbHelper.getInstance(MainActivity.this);
 		        	dbHelper.resetDatabase();
