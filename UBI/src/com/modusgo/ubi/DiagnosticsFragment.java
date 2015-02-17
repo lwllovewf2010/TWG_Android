@@ -49,6 +49,7 @@ import com.modusgo.ubi.db.MaintenanceContract.MaintenanceEntry;
 import com.modusgo.ubi.db.RecallContract.RecallEntry;
 import com.modusgo.ubi.db.ScoreGraphContract.ScoreGraphEntry;
 import com.modusgo.ubi.db.WarrantyInfoContract.WarrantyInfoEntry;
+import com.modusgo.ubi.requesttasks.BasePostRequestAsyncTask;
 import com.modusgo.ubi.requesttasks.BaseRequestAsyncTask;
 import com.modusgo.ubi.utils.AnimationUtils;
 import com.modusgo.ubi.utils.Utils;
@@ -672,7 +673,7 @@ public class DiagnosticsFragment extends Fragment{
 		}
 	}
 	
-	class SetMileageTask extends BaseRequestAsyncTask{
+	class SetMileageTask extends BasePostRequestAsyncTask{
 		
 		int mileage;
 		
