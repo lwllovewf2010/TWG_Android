@@ -489,7 +489,7 @@ public class DbHelper extends SQLiteOpenHelper {
 			v.totalAcceleration = c.getInt(25);
 			v.totalSpeeding = c.getInt(26);
 			v.totalSpeedingDistance = c.getDouble(27);
-			v.odometer = c.getInt(28);
+			v.carMileage = c.getInt(28);
 			v.carLastCheckup = c.getString(29);
 			v.carCheckupStatus = c.getString(30);
 			v.limitsBlocked = c.getInt(31) == 1;
@@ -658,7 +658,7 @@ public class DbHelper extends SQLiteOpenHelper {
 		    	statement.bindLong(26, vehicle.totalSpeeding);
 		    	statement.bindDouble(27, vehicle.totalSpeedingDistance);
 		    	statement.bindLong(28, vehicle.alerts);
-		    	statement.bindLong(29, vehicle.odometer);
+		    	statement.bindLong(29, vehicle.carMileage);
 		    	statement.bindString(30, vehicle.carLastCheckup);
 		    	statement.bindString(31, vehicle.carCheckupStatus);
 		    	statement.bindLong(32, vehicle.limitsBlocked ? 1 : 0);

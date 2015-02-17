@@ -40,7 +40,7 @@ public class Vehicle implements Serializable{
 	private final static String LAST_CHECKUP = "last_checkup";
 	private final static String UNDEFINED = "undefined";
 	private final static String CHECKUP_STATUS = "checkup_status";
-	private final static String ODOMETER = "odometer";
+	private final static String MILEAGE = "mileage";
 	private final static String LOCATION = "location";
 	private final static String LATITUDE = "latitude";
 	private final static String LONGITUDE = "longitude";
@@ -94,7 +94,7 @@ public class Vehicle implements Serializable{
 	public int totalAcceleration;
 	public int totalSpeeding;
 	public double totalSpeedingDistance;
-	public int odometer;
+	public int carMileage;
 	
 	public String profileDate = "";
 	public int harshEvents;
@@ -149,7 +149,7 @@ public class Vehicle implements Serializable{
 			v.carDTCCount = carJSON.optInt(DTC_COUNT);
 			v.carLastCheckup = carJSON.optString(LAST_CHECKUP);
 			v.carCheckupStatus = carJSON.optString(CHECKUP_STATUS);
-			v.odometer = carJSON.optInt(ODOMETER);
+			v.carMileage = carJSON.optInt(MILEAGE);
 		}
 		
 		if(!vehicleJSON.isNull(LOCATION)){
