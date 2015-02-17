@@ -368,7 +368,7 @@ LocationListener{
 	    	        	
 	    	        	if(lastJastecPing!=0 && System.currentTimeMillis() - lastJastecPing >= 5000){
 	    	        		if(prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false)){
-	    	        			Bugsnag.notify(new RuntimeException("Trip stop, no Jastec ping for 5 seconds"));
+	    	        			//Bugsnag.notify(new RuntimeException("Trip stop, no Jastec ping for 5 seconds"));
 	    						savePoint(EVENT_TRIP_STOP);
 	    	        		}
 	    	        	}
@@ -617,7 +617,7 @@ LocationListener{
 		    	        	if(prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false)){
 			    	        	if(System.currentTimeMillis() - lastLocationUpdateTime > MAX_STAY_TIME ||
 			    	        			(deviceType.equals(Device.DEVICE_TYPE_IBEACON) && !beaconConnected && System.currentTimeMillis() - lastBeaconDisconnectMillis > MAX_BEACON_NO_CONNECTION_STAY_TIME)){
-			    	        		Bugsnag.notify(new RuntimeException("Trip stop, no location for 2 minutes"));
+			    	        		//Bugsnag.notify(new RuntimeException("Trip stop, no location for 2 minutes"));
 			    	        		System.out.println("Trip stop, no location for 2 minutes");
 			    	        		savePoint(EVENT_TRIP_STOP);
 			    	        		checkLocationUpdatesHandler.removeCallbacks(checkLocationUpdatesRunnable);
@@ -700,12 +700,12 @@ LocationListener{
         
         if(location.getAccuracy() <= MIN_ACCURACY){
 	        
-	        if(event.equals("")){
-	        	//Bugsnag.addToTab("User", "Point data", msg);
-	        }
-	        else{
-	        	Bugsnag.notify(new RuntimeException(msg));
-	        }
+//	        if(event.equals("")){
+//	        	//Bugsnag.addToTab("User", "Point data", msg);
+//	        }
+//	        else{
+//	        	Bugsnag.notify(new RuntimeException(msg));
+//	        }
 			
 			Editor e = prefs.edit();
 	        e.putString(Constants.PREF_MOBILE_LATITUDE, ""+location.getLatitude());
@@ -810,7 +810,7 @@ LocationListener{
 			new SendEventsRequest(this, true).execute();
 		}
 		
-		Bugsnag.notify(new RuntimeException("event: "+event));
+//		Bugsnag.notify(new RuntimeException("event: "+event));
 		updateLocationUpdatesHandler();
 		updateNotification(false);
         Device.checkDevice(this);

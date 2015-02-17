@@ -166,7 +166,7 @@ public class SendEventsRequest extends BasePostRequestAsyncTask {
 		
 		MetaData metaData = new MetaData();
 		metaData.addToTab("Data", "raw_request_params", requestParams);
-		Bugsnag.notify(new Exception("SendEventsRequest"), metaData);
+		//Bugsnag.notify(new Exception("SendEventsRequest"), metaData);
 		
 		return super.doInBackground("device.json");
 	}

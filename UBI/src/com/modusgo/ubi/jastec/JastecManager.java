@@ -569,7 +569,7 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 					startStopTimerIfNeeded();
 				}
 				else{
-					Bugsnag.notify(new RuntimeException("Jastec stopTimer canceled"));
+//					Bugsnag.notify(new RuntimeException("Jastec stopTimer canceled"));
 					
 					Intent i = new Intent(LogActivity.ACTION_LOGS);
 					i.putExtra(LogActivity.BROADCAST_INTENT_EXTRA_MESSAGE, "Stop timer canceled.");
@@ -627,8 +627,8 @@ public class JastecManager implements OnConnectionListener, OnDataListener{
 			        	if(mOnSensorListener!=null){
 							mOnSensorListener.onTripStop();
 						}
-						Bugsnag.addToTab("Jastec", "Millis since Stop Timer Start", millisSinceTimerStart);
-						Bugsnag.notify(new RuntimeException("Jastec stopTimerStop"));
+//						Bugsnag.addToTab("Jastec", "Millis since Stop Timer Start", millisSinceTimerStart);
+//						Bugsnag.notify(new RuntimeException("Jastec stopTimerStop"));
 			        	stopStopTimer();
 			        	
 			        	Intent i2 = new Intent(LogActivity.ACTION_LOGS);
