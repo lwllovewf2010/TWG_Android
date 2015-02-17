@@ -16,6 +16,7 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
+import com.modusgo.dd.LocationService;
 import com.modusgo.ubi.Constants;
 import com.modusgo.ubi.SignInActivity;
 import com.modusgo.ubi.utils.RequestGet;
@@ -82,6 +83,7 @@ public class BaseRequestAsyncTask extends AsyncTask<String, Void, JSONObject>{
 	
 	protected void onError401(){
 		prefs.edit().putString(Constants.PREF_AUTH_KEY, "").commit();
+    	context.stopService(new Intent(context, LocationService.class));
 		Intent intent = new Intent(context, SignInActivity.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
 		context.startActivity(intent);
