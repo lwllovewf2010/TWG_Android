@@ -1,15 +1,7 @@
 package com.modusgo.ubi.requesttasks;
 
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.modusgo.ubi.Constants;
-import com.modusgo.ubi.TripsFragment;
 
 import android.content.Context;
 
@@ -43,6 +35,11 @@ public class LogoutTask extends BasePostRequestAsyncTask{
 	@Override
 	protected void onError(String message) {
 		System.out.println("Error logout");
+	}
+	
+	@Override
+	protected void onError401() {
+		//Do nothing
 	}
 
 }
