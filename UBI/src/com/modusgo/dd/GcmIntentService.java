@@ -40,7 +40,9 @@ import com.modusgo.ubi.utils.Utils;
  * wake lock.
  */
 public class GcmIntentService extends IntentService {
-    public static final int NOTIFICATION_ID = 1;
+	private static final String PREF_NEXT_NOTIFICATION_ID = "nextNotificationID";
+	private static final int MAX_NOTIFICATIONS = 20;
+//    public static final int NOTIFICATION_ID = 1;
     private NotificationManager mNotificationManager;
     NotificationCompat.Builder builder;
 
@@ -302,6 +304,16 @@ public class GcmIntentService extends IntentService {
 			n.defaults |= Notification.DEFAULT_SOUND;
 			n.defaults |= Notification.DEFAULT_VIBRATE;
 		}
-        mNotificationManager.notify(NOTIFICATION_ID, n);
+		
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this); 
+		int nextNotificationId = prefs.getInt(PREF_NEXT_NOTIFICATION_ID, 1);
+		
+        mNotificationManager.notify(nextNotificationId, n);
+        nextNotificationId++;
+        
+		if(nextNotificationId >= MAX_NOTIFICATIONS)
+			nextNotificationId = 1;
+		
+		prefs.edit().putInt(PREF_NEXT_NOTIFICATION_ID, nextNotificationId);
     }
 }
