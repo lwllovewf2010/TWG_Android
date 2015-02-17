@@ -622,7 +622,7 @@ public class DiagnosticsFragment extends Fragment{
 
 		@Override
 		protected JSONObject doInBackground(String... params) {
-	        requestParams.add(new BasicNameValuePair("driver_id", ""+vehicle.id));
+	        requestParams.add(new BasicNameValuePair("vehicle_id", ""+vehicle.id));
 	        requestParams.add(new BasicNameValuePair("vehicle_maintenance_id", ""+maintenanceId));
 			return super.doInBackground(params);
 		}
@@ -652,7 +652,7 @@ public class DiagnosticsFragment extends Fragment{
 
 		@Override
 		protected JSONObject doInBackground(String... params) {
-	        requestParams.add(new BasicNameValuePair("driver_id", ""+vehicle.id));
+	        requestParams.add(new BasicNameValuePair("vehicle_id", ""+vehicle.id));
 	        requestParams.add(new BasicNameValuePair("recall_update_id", ""+recallUpdateId));
 	        System.out.println(requestParams);
 			return super.doInBackground(params);
@@ -690,7 +690,7 @@ public class DiagnosticsFragment extends Fragment{
 
 		@Override
 		protected JSONObject doInBackground(String... params) {
-	        requestParams.add(new BasicNameValuePair("driver_id", ""+vehicle.id));
+	        requestParams.add(new BasicNameValuePair("vehicle_id", ""+vehicle.id));
 	        requestParams.add(new BasicNameValuePair("mileage", ""+mileage));
 	        System.out.println(requestParams);
 			return super.doInBackground(params);
