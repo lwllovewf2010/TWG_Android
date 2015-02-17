@@ -22,9 +22,14 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -68,7 +73,21 @@ public class HomeActivity extends MainActivity{
 
 		driversAdapter = new VehiclesAdapter(this, vehicles);
 		lvVehicles.setAdapter(driversAdapter);
+		lvVehicles.setOnItemClickListener(new OnItemClickListener() {
 
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(HomeActivity.this);
+				prefs.edit().putInt(Constants.PREF_CURRENT_DRIVER, position).commit();
+
+				Intent i = new Intent(HomeActivity.this, DriverActivity.class);
+				i.putExtra(VehicleEntry._ID, driversAdapter.getVehicle(position).id);
+				//i.putExtra(DriverActivity.SAVED_DRIVER, drivers.get(position));
+				startActivity(i);
+			}
+		});
+		
 		btnUp.setImageResource(R.drawable.ic_map);
 		setButtonUpVisibility(true);
 
@@ -95,6 +114,8 @@ public class HomeActivity extends MainActivity{
 		new SendEventsRequest(getApplicationContext(), true).execute();
 
 		updateDrivers();
+		
+
 	}
 
 	private void updateDrivers(){
@@ -240,20 +261,6 @@ public class HomeActivity extends MainActivity{
 				public void onClick(View v) {
 					Intent i = new Intent(HomeActivity.this, AlertsActivity.class);
 					i.putExtra(VehicleEntry._ID, vehicle.id);
-					startActivity(i);
-				}
-			});
-
-			convertView.setOnClickListener(new OnClickListener() {
-
-				@Override
-				public void onClick(View arg0) {
-					SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(HomeActivity.this);
-					prefs.edit().putInt(Constants.PREF_CURRENT_DRIVER, position).commit();
-
-					Intent i = new Intent(HomeActivity.this, DriverActivity.class);
-					i.putExtra(VehicleEntry._ID, vehicle.id);
-					//i.putExtra(DriverActivity.SAVED_DRIVER, drivers.get(position));
 					startActivity(i);
 				}
 			});
