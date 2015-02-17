@@ -103,7 +103,6 @@ LocationListener{
 	//Location stuff
 	private Boolean servicesAvailable = false;
     private boolean mInProgress;
-//	private LocationClient mLocationClient;
     private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
 

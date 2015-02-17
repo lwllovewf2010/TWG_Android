@@ -27,11 +27,12 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
-import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
-import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -50,33 +51,34 @@ import com.modusgo.ubi.utils.Utils;
 
 public class FindMechanicActivity extends MainActivity implements ConnectionCallbacks,
 OnConnectionFailedListener, LocationListener{
-	
-	public static final String EXTRA_TRIP_ID = "tripId";
-	
-	MapView mapView;
-    GoogleMap map;
-    
-    ListView listView;
-    LinearLayout llProgress;
-    
-    ArrayList<MechanicInfo> mechanics;
-    MechanicsAdapter adapter;
-    
-    private LocationClient mLocationClient;
-    LatLng currentLocation;
 
-    // These settings are the same as the settings for the map. They will in fact give you updates
-    // at the maximal rates currently possible.
-    private static final LocationRequest REQUEST = LocationRequest.create()
-            .setInterval(5000)         // 5 seconds
-            .setFastestInterval(3000)    // every 3 seconds
-            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-	
+	public static final String EXTRA_TRIP_ID = "tripId";
+
+	MapView mapView;
+	GoogleMap map;
+
+	ListView listView;
+	LinearLayout llProgress;
+
+	ArrayList<MechanicInfo> mechanics;
+	MechanicsAdapter adapter;
+
+	private GoogleApiClient mGoogleApiClient; 
+
+	LatLng currentLocation;
+
+	// These settings are the same as the settings for the map. They will in fact give you updates
+	// at the maximal rates currently possible.
+	private static final LocationRequest REQUEST = LocationRequest.create()
+			.setInterval(5000)         // 5 seconds
+			.setFastestInterval(3000)    // every 3 seconds
+			.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_find_mechanic);
 		super.onCreate(savedInstanceState);
-		
+
 		setActionBarTitle("Find Mechanic");
 
 		//dHelper = DriversHelper.getInstance();
@@ -84,38 +86,38 @@ OnConnectionFailedListener, LocationListener{
 
 		llProgress = (LinearLayout) findViewById(R.id.llProgress);
 		listView = (ListView) findViewById(R.id.listView);
-		
-		// Gets the MapView from the XML layout and creates it
-        mapView = (MapView) findViewById(R.id.mapview);
-        mapView.onCreate(savedInstanceState);
 
-        // Gets to GoogleMap from the MapView and does initialization stuff
-        map = mapView.getMap();
-        if(map!=null){
-	        map.getUiSettings().setMyLocationButtonEnabled(false);
-	
-	        MapsInitializer.initialize(this);
-	        
-	        // Updates the location and zoom of the MapView
-	        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(37.8430094,-95.0098992), 1);
-	        map.animateCamera(cameraUpdate);
-	        
-	        map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
+		// Gets the MapView from the XML layout and creates it
+		mapView = (MapView) findViewById(R.id.mapview);
+		mapView.onCreate(savedInstanceState);
+
+		// Gets to GoogleMap from the MapView and does initialization stuff
+		map = mapView.getMap();
+		if(map!=null){
+			map.getUiSettings().setMyLocationButtonEnabled(false);
+
+			MapsInitializer.initialize(this);
+
+			// Updates the location and zoom of the MapView
+			CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(37.8430094,-95.0098992), 1);
+			map.animateCamera(cameraUpdate);
+
+			map.setOnMapLoadedCallback(new OnMapLoadedCallback() {
 				@Override
 				public void onMapLoaded() {
 					updateMap();
 				}
 			});
-        }
-        
-        mechanics = new ArrayList<MechanicInfo>();
-        adapter = new MechanicsAdapter(this, R.layout.find_mechanic_item, mechanics);
-        listView.setAdapter(adapter);
-        
-        setUpLocationClientIfNeeded();
-        mLocationClient.connect();
+		}
+
+		mechanics = new ArrayList<MechanicInfo>();
+		adapter = new MechanicsAdapter(this, R.layout.find_mechanic_item, mechanics);
+		listView.setAdapter(adapter);
+
+		setUpLocationClientIfNeeded();
+		mGoogleApiClient.connect();
 	}
-	
+
 	private void updateMap(){
 		if(map!=null && mechanics.size()>0){	
 			map.clear();
@@ -124,102 +126,96 @@ OnConnectionFailedListener, LocationListener{
 				map.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromBitmap(mi.icon)).position(mi.coordinate));
 				builder.include(mi.coordinate);
 			}
-			
+
 			try{
 				int mapPadding = (int) Math.min(mapView.getHeight()*0.2f, mapView.getWidth()*0.2f);
 				CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(builder.build(), mapPadding);
-		        map.animateCamera(cameraUpdate);
+				map.animateCamera(cameraUpdate);
 			}
 			catch(IllegalStateException e){
 				CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(new CameraPosition(currentLocation, 10, 0, 0));
-		        map.animateCamera(cameraUpdate);
+				map.animateCamera(cameraUpdate);
 			}
 		}
-        
+
 	}
-	
+
 	@Override
-    public void onResume() {
-        mapView.onResume();
-        super.onResume();
+	public void onResume() {
+		mapView.onResume();
+		super.onResume();
 		setNavigationDrawerItemSelected(MenuItems.FINDAMECHANIC);
-        Utils.gaTrackScreen(this, "Find A Mechanic Screen");
-    }
+		Utils.gaTrackScreen(this, "Find A Mechanic Screen");
+	}
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mapView.onDestroy();
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        mapView.onLowMemory();
-    }
-    
-    private void setUpLocationClientIfNeeded() {
-        if (mLocationClient == null) {
-            mLocationClient = new LocationClient(
-                    getApplicationContext(),
-                    this,  // ConnectionCallbacks
-                    this); // OnConnectionFailedListener
-        }
-    }
-    
-    @Override
-    public void onLocationChanged(Location location) {
-		currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
-    	new GetMechanicsTask(this).execute("find_mechanic.json");
-
-        if (mLocationClient != null) {
-            mLocationClient.disconnect();
-        }
-    }
-	
 	@Override
-    public void onConnected(Bundle connectionHint) {
-        mLocationClient.requestLocationUpdates(
+	public void onDestroy() {
+		super.onDestroy();
+		mapView.onDestroy();
+	}
+
+	@Override
+	public void onLowMemory() {
+		super.onLowMemory();
+		mapView.onLowMemory();
+	}
+
+	private void setUpLocationClientIfNeeded() {
+		if (mGoogleApiClient == null) {
+			mGoogleApiClient = new GoogleApiClient.Builder(this)
+			.addApi(LocationServices.API)
+			.addConnectionCallbacks(this)
+			.addOnConnectionFailedListener(this)
+			.build();// OnConnectionFailedListener
+		}
+	}
+
+	@Override
+	public void onLocationChanged(Location location) {
+		currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+		new GetMechanicsTask(this).execute("find_mechanic.json");
+
+		if (mGoogleApiClient != null) {
+			mGoogleApiClient.disconnect();
+		}
+	}
+
+	@Override
+	public void onConnected(Bundle connectionHint) {
+		LocationServices.FusedLocationApi.requestLocationUpdates(
+                mGoogleApiClient,
                 REQUEST,
                 this);  // LocationListener
-    }
-	
+	}
+
 	/**
-     * Callback called when disconnected from GCore. Implementation of {@link ConnectionCallbacks}.
-     */
-    @Override
-    public void onDisconnected() {
-        // Do nothing
-    }
+	 * Implementation of {@link OnConnectionFailedListener}.
+	 */
+	@Override
+	public void onConnectionFailed(ConnectionResult result) {
+		//Do nothing
+	}
 
-    /**
-     * Implementation of {@link OnConnectionFailedListener}.
-     */
-    @Override
-    public void onConnectionFailed(ConnectionResult result) {
-    	//Do nothing
-    }
+	@Override
+	public void onPause() {
+		super.onPause();
+		mapView.onPause();
+		if (mGoogleApiClient != null) {
+			mGoogleApiClient.disconnect();
+		}
+	}
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        mapView.onPause();
-        if (mLocationClient != null) {
-            mLocationClient.disconnect();
-        }
-    }
-    
-    class MechanicInfo{
-    	
-    	float rating;
-        int reviewsCount;
-        String title;
-        String phoneNumber;
-        int index;
-        String address;
-        LatLng coordinate;
-        Bitmap icon;
-        
+	class MechanicInfo{
+
+		float rating;
+		int reviewsCount;
+		String title;
+		String phoneNumber;
+		int index;
+		String address;
+		LatLng coordinate;
+		Bitmap icon;
+
 		public MechanicInfo(float rating, int reviewsCount, String title,
 				String phoneNumber, int index, String address, LatLng coordinate, Bitmap icon) {
 			super();
@@ -232,19 +228,19 @@ OnConnectionFailedListener, LocationListener{
 			this.coordinate = coordinate;
 			this.icon = icon;
 		}
-    }
-    
-    class MechanicsAdapter extends ArrayAdapter<MechanicInfo>{
+	}
+
+	class MechanicsAdapter extends ArrayAdapter<MechanicInfo>{
 
 		public MechanicsAdapter(Context context, int resource, List<MechanicInfo> objects) {
 			super(context, resource, objects);
 		}
-		
+
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			View view = convertView;
 			ViewHolder holder;
-			
+
 			if(view==null){
 				view = getLayoutInflater().inflate(R.layout.find_mechanic_item, parent, false);
 				holder = new ViewHolder();
@@ -259,9 +255,9 @@ OnConnectionFailedListener, LocationListener{
 			else{
 				holder = (ViewHolder) convertView.getTag();
 			}
-			
+
 			final MechanicInfo mi = getItem(position);
-			
+
 			holder.icon.setImageBitmap(mi.icon);
 			holder.tvTitle.setText(""+mi.title);
 			holder.tvReviewCount.setText(""+mi.reviewsCount);
@@ -272,82 +268,82 @@ OnConnectionFailedListener, LocationListener{
 				((View)holder.tvPhone.getParent()).setVisibility(View.GONE);
 			}
 			holder.rating.setRating(mi.rating);
-			
+
 			((View)holder.tvAddress.getParent()).setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(mi.coordinate, 15);
-			        if(map!=null)
-			        	map.animateCamera(cameraUpdate);
+					if(map!=null)
+						map.animateCamera(cameraUpdate);
 				}
 			});
-			
+
 			((View)holder.tvPhone.getParent()).setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					Intent callIntent = new Intent(Intent.ACTION_VIEW);          
-		            callIntent.setData(Uri.parse("tel:"+mi.phoneNumber));          
-		            startActivity(callIntent);  
+					callIntent.setData(Uri.parse("tel:"+mi.phoneNumber));          
+					startActivity(callIntent);  
 				}
 			});
-			
+
 			return view;
 		}
-    	
-    }
-    
-    private static class ViewHolder{
-    	ImageView icon;
-    	TextView tvTitle;
-    	TextView tvReviewCount;
-    	TextView tvPhone;
-    	TextView tvAddress;
-    	RatingBar rating;
-    }
-    
-    class GetMechanicsTask extends BaseRequestAsyncTask{
+
+	}
+
+	private static class ViewHolder{
+		ImageView icon;
+		TextView tvTitle;
+		TextView tvReviewCount;
+		TextView tvPhone;
+		TextView tvAddress;
+		RatingBar rating;
+	}
+
+	class GetMechanicsTask extends BaseRequestAsyncTask{
 
 		public GetMechanicsTask(Context context) {
 			super(context);
-	        requestParams.add(new BasicNameValuePair("latitude", ""+currentLocation.latitude));
-	        requestParams.add(new BasicNameValuePair("longitude", ""+currentLocation.longitude));
+			requestParams.add(new BasicNameValuePair("latitude", ""+currentLocation.latitude));
+			requestParams.add(new BasicNameValuePair("longitude", ""+currentLocation.longitude));
 		}
-		
+
 		@Override
 		protected void onPreExecute() {
 			llProgress.setVisibility(View.VISIBLE);
 			listView.setVisibility(View.GONE);
 			super.onPreExecute();
 		}
-		
+
 		@Override
 		protected void onSuccess(JSONObject responseJSON) throws JSONException {
 			JSONArray mechanicsJSON = responseJSON.getJSONArray("results");
-        	mechanics.clear();
-        	
-            IconGenerator iconFactory = new IconGenerator(FindMechanicActivity.this);
-            iconFactory.setBackground(getResources().getDrawable(R.drawable.marker_for_number));
-            Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/EncodeSansNormal-300-Light.ttf");
-            
-        	for (int i = 0; i < mechanicsJSON.length(); i++) {
+			mechanics.clear();
 
-        		JSONObject mJSON = mechanicsJSON.getJSONObject(i);
-	        	mechanics.add(new MechanicInfo(
-	        			(float) mJSON.optDouble("rating"), 
-	        			mJSON.optInt("reviewsCount"), 
-	        			mJSON.optString("name"), 
-	        			mJSON.optString("phoneNumber"), 
-	        			i+1, 
-	        			mJSON.optString("vicinity"), 
-	        			new LatLng(mJSON.optDouble("lat"), mJSON.optDouble("lng")), 
-	        			iconFactory.makeIcon(""+(i+1), 10, Color.WHITE, typeface)));
+			IconGenerator iconFactory = new IconGenerator(FindMechanicActivity.this);
+			iconFactory.setBackground(getResources().getDrawable(R.drawable.marker_for_number));
+			Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/EncodeSansNormal-300-Light.ttf");
+
+			for (int i = 0; i < mechanicsJSON.length(); i++) {
+
+				JSONObject mJSON = mechanicsJSON.getJSONObject(i);
+				mechanics.add(new MechanicInfo(
+						(float) mJSON.optDouble("rating"), 
+						mJSON.optInt("reviewsCount"), 
+						mJSON.optString("name"), 
+						mJSON.optString("phoneNumber"), 
+						i+1, 
+						mJSON.optString("vicinity"), 
+						new LatLng(mJSON.optDouble("lat"), mJSON.optDouble("lng")), 
+						iconFactory.makeIcon(""+(i+1), 10, Color.WHITE, typeface)));
 			}
-			
-        	updateMap();
-        	
+
+			updateMap();
+
 			super.onSuccess(responseJSON);
 		}
-		
+
 		@Override
 		protected void onPostExecute(JSONObject result) {
 			super.onPostExecute(result);
@@ -355,5 +351,11 @@ OnConnectionFailedListener, LocationListener{
 			listView.setVisibility(View.VISIBLE);
 			adapter.notifyDataSetChanged();
 		}
+	}
+
+	@Override
+	public void onConnectionSuspended(int arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }

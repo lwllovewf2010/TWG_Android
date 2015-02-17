@@ -27,11 +27,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
-import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
-import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -49,6 +50,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class DriverDetailsFragment extends Fragment  implements ConnectionCallbacks,
 OnConnectionFailedListener, LocationListener, OnMapReadyListener {
+	
+	private final static String DRIVER_DERAIL = "DRIVER DETAIL";
 	
 	Vehicle vehicle;
 	SharedPreferences prefs;
@@ -71,12 +74,13 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	View tvInTrip;
 	View rlLocation;
 	View spaceFuel;
+	View spaceDiagnostic;
 
 	private GoogleMapFragment mMapFragment;
     private GoogleMap mMap;
     
-    private LocationClient mLocationClient;
 
+    private GoogleApiClient mGoogleApiClient;
     // These settings are the same as the settings for the map. They will in fact give you updates
     // at the maximal rates currently possible.
     private static final LocationRequest REQUEST = LocationRequest.create()
@@ -90,7 +94,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 		
 		View rootView = inflater.inflate(R.layout.driver_details_fragment, container, false);
 
-		((MainActivity)getActivity()).setActionBarTitle("DRIVER DETAIL");
+		((MainActivity)getActivity()).setActionBarTitle(DRIVER_DERAIL);
 		
 		prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
@@ -113,6 +117,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	    rlLastTrip = rootView.findViewById(R.id.rlDate);
 	    tvInTrip = rootView.findViewById(R.id.tvInTrip);
 	    spaceFuel = rootView.findViewById(R.id.spaceFuel);
+	    spaceDiagnostic = rootView.findViewById(R.id.spaceDiagnostics);
 	    
 	    updateFragment();
 	    
@@ -175,7 +180,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 			updateDriverInfo();
 			
 	        setUpLocationClientIfNeeded();
-	        mLocationClient.connect();
+	        mGoogleApiClient.connect();
 		}
 		catch(NullPointerException e){
 			e.printStackTrace();
@@ -235,6 +240,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	    }
 		
 		View fuelBlock = (View)tvFuel.getParent();
+		View diagnosticBlock = (View)tvDiagnostics.getParent();
 		
 		if(vehicle.carFuelLevel>=0 && !TextUtils.isEmpty(vehicle.carFuelUnit)){
 			String fuelLeftString = vehicle.carFuelLevel+vehicle.carFuelUnit;
@@ -252,7 +258,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 			});
 		}
 		else{
-			if(!TextUtils.isEmpty(vehicle.carFuelStatus)){
+			if(!TextUtils.isEmpty(vehicle.carFuelStatus) && !vehicle.hideEngineIcon){
 				tvFuel.setText("");
 				tvFuel.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_fuel_green, 0, R.drawable.ic_fuel_arrow_down, 0);
 				fuelBlock.setOnClickListener(new OnClickListener() {
@@ -266,6 +272,11 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 				spaceFuel.setVisibility(View.GONE);
 				fuelBlock.setVisibility(View.GONE);
 			}
+		}
+		
+		if(vehicle.hideEngineIcon){
+			spaceDiagnostic.setVisibility(View.GONE);
+			diagnosticBlock.setVisibility(View.GONE);
 		}
 	    
 	    if(vehicle.carDTCCount<=0){
@@ -346,11 +357,12 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
     }
 	
     private void setUpLocationClientIfNeeded() {
-        if (mLocationClient == null) {
-            mLocationClient = new LocationClient(
-                    getActivity().getApplicationContext(),
-                    this,  // ConnectionCallbacks
-                    this); // OnConnectionFailedListener
+        if (mGoogleApiClient == null) {
+        	mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+            .addApi(LocationServices.API)
+            .addConnectionCallbacks(this)
+            .addOnConnectionFailedListener(this)
+            .build();
         }
     }
     
@@ -407,26 +419,19 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 			}
     	}
 
-        if (mLocationClient != null) {
-            mLocationClient.disconnect();
+        if (mGoogleApiClient != null) {
+        	mGoogleApiClient.disconnect();
         }
     }
 	
 	@Override
     public void onConnected(Bundle connectionHint) {
-        mLocationClient.requestLocationUpdates(
+		LocationServices.FusedLocationApi.requestLocationUpdates(
+                mGoogleApiClient,
                 REQUEST,
-                this);  // LocationListener
+                this);
     }
 	
-	/**
-     * Callback called when disconnected from GCore. Implementation of {@link ConnectionCallbacks}.
-     */
-    @Override
-    public void onDisconnected() {
-        // Do nothing
-    }
-
     /**
      * Implementation of {@link OnConnectionFailedListener}.
      */
@@ -458,10 +463,16 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
     @Override
     public void onPause() {
         super.onPause();
-        if (mLocationClient != null) {
-            mLocationClient.disconnect();
+        if (mGoogleApiClient != null) {
+        	mGoogleApiClient.disconnect();
         }
     }
+
+	@Override
+	public void onConnectionSuspended(int arg0) {
+		// TODO Auto-generated method stub
+		
+	}
     
 //    class GetTripsTask extends BaseRequestAsyncTask{
 //		

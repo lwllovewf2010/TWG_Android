@@ -59,6 +59,7 @@ public class Vehicle implements Serializable{
 	private final static String ACCELERATION = "acceleration";
 	private final static String SPEDING = "speeding";
 	private final static String SPEDING_DISTANCE = "speeding_distance";
+	private final static String HIDE_ENGINE_ICON = "hide_engine_icon";
 	
 	public long id;
 	public String name = "";
@@ -101,6 +102,7 @@ public class Vehicle implements Serializable{
 	public boolean limitsBlocked;
 	public String limitsBlockedBy = "";
 	public String updatedAt = "";
+	public boolean hideEngineIcon;
 	
 	public Vehicle(){
 	}
@@ -129,11 +131,12 @@ public class Vehicle implements Serializable{
 		v.alerts = vehicleJSON.optInt(COUNT_NEW_ALERTS);
 		v.limitsBlocked = vehicleJSON.optBoolean(LIMITS_BLOCKED);
 		v.limitsBlockedBy = vehicleJSON.optString(LIMITS_BLOCKED_BY);
+		v.hideEngineIcon = vehicleJSON.optBoolean(HIDE_ENGINE_ICON);
 		
 		if(!vehicleJSON.isNull(DRIVER)){
 			JSONObject driverJSON = vehicleJSON.getJSONObject(DRIVER);
 			v.name = driverJSON.optString(NAME);
-			v.photo = driverJSON.optString(PHOTO);
+			v.photo = driverJSON.optString(PHOTO).equals(NULL) ? "" :  driverJSON.optString(PHOTO);
 			v.markerIcon = driverJSON.optString(ICON);
 		}
 		
