@@ -188,18 +188,8 @@ public class DiagnosticsFragment extends Fragment{
 			if(llContent.getChildCount()==0){
 				new GetDiagnosticsTask(getActivity()).execute("vehicles/"+vehicle.id+"/diagnostics.json");
 			}
-		}
-		
-		if(!prefs.getBoolean(Constants.PREF_DIAGNOSTICS_DELETE_POPUP_SHOWED, false)){
-			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-	        builder.setMessage("Swipe left on Recalls and Scheduled Maintenance to mark them Completed.")
-	               .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-	                   public void onClick(DialogInterface dialog, int id) {
-	                	   prefs.edit().putBoolean(Constants.PREF_DIAGNOSTICS_DELETE_POPUP_SHOWED, true).commit();
-	                       dialog.dismiss();
-	                   }
-	               });
-	        builder.show();
+			
+			showDiagnosticsDeleteEducationPopupIfNeeded();
 		}
 		
 		return rootView;
@@ -238,6 +228,7 @@ public class DiagnosticsFragment extends Fragment{
 				public void onAnimationEnd(Animation animation) {
 					llOdometer.setVisibility(View.GONE);
 					lRefresh.startAnimation(AnimationUtils.getFadeInAnmation(getActivity(), lRefresh));
+					showDiagnosticsDeleteEducationPopupIfNeeded();
 				}
 			});
 			llOdometer.startAnimation(slideDownOdometerLayoutAmination);
@@ -253,6 +244,20 @@ public class DiagnosticsFragment extends Fragment{
 
 		default:
 			break;
+		}
+	}
+	
+	private void showDiagnosticsDeleteEducationPopupIfNeeded(){
+		if(!prefs.getBoolean(Constants.PREF_DIAGNOSTICS_DELETE_POPUP_SHOWED, false)){
+			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+	        builder.setMessage("Swipe left on Recalls and Scheduled Maintenance to mark them Completed.")
+	               .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+	                   public void onClick(DialogInterface dialog, int id) {
+	                	   prefs.edit().putBoolean(Constants.PREF_DIAGNOSTICS_DELETE_POPUP_SHOWED, true).commit();
+	                       dialog.dismiss();
+	                   }
+	               });
+	        builder.show();
 		}
 	}
 	
