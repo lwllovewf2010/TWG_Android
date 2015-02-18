@@ -6,12 +6,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.location.Location;
 import android.preference.PreferenceManager;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.modusgo.dd.LocationService;
 import com.modusgo.ubi.Constants;
+import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.requesttasks.SendEventsRequest;
 
 public class Device {
@@ -27,6 +27,7 @@ public class Device {
 	public static final String PREF_DEVICE_LATITUDE = "deviceLatitude";
 	public static final String PREF_DEVICE_LONGITUDE = "deviceLongitude";
 	public static final String PREF_DEVICE_LOCATION_DATE = "locationDate";
+	public static final String PREF_DEVICE_UPDATED_AT = "updatedAt";
 	public static final String PREF_IN_TRIP_NOW = "inTripNow";
 	private static final String PREF_LAST_SENDEVENT_MILLIS = "lastSendEventMillis";
 
@@ -38,7 +39,6 @@ public class Device {
 	public static final String  MODE_LIGHT_TRACKING = "lightTracking";
 	public static final String  MODE_MEDIUM_TRACKING = "mediumTracking";
 	public static final String  MODE_SIGNIFICATION_TRACKING = "significationTracking";
-	public static final String  MODE_NAVIGATION_TRACKING = "navigationTracking";
 	public static final String  MODE_SUPER_TRACKING = "superTracking";
 	
 	public static void checkDevice(Context context){
@@ -99,8 +99,8 @@ public class Device {
 		}
 		
 		if(!deviceType.equals(DEVICE_TYPE_OBD)){
-			if(prefs.getBoolean(PREF_IN_TRIP_NOW, false)){
-				newTrackingMode = prefs.getBoolean(Constants.PREF_CHARGER_CONNECTED, false) ? MODE_SUPER_TRACKING : MODE_NAVIGATION_TRACKING;
+			if(prefs.getBoolean(PREF_IN_TRIP_NOW, false) || prefs.getBoolean(Constants.PREF_JASTEC_CONNECTED, false)){
+				newTrackingMode = MODE_SUPER_TRACKING;
 			}
 		}
 		
@@ -119,6 +119,18 @@ public class Device {
 		System.out.println("final Tracking mode: "+newTrackingMode);
 	}
 	
+	public static void cleanDeviceSpecificData(Context context){
+		DbHelper dbHelper = DbHelper.getInstance(context);
+    	dbHelper.deleteTrackingEvents();
+    	dbHelper.close();
+    	
+    	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+    	Editor e = prefs.edit();
+    	e.putString(Constants.PREF_JASTEC_VEHICLE_VIN, "");
+    	e.putString(Constants.PREF_JASTEC_DTCS, "");
+    	e.commit();
+	}
+	
 	public static boolean checkOBDInTrip(boolean inTrip, LatLng deviceLocation, LatLng mobileLocation){
 		System.out.println("check obd in trip");
 		
@@ -126,12 +138,12 @@ public class Device {
 //			return false;
 		
 		if(inTrip){
-			float[] results = new float[1];
-			Location.distanceBetween(deviceLocation.latitude, deviceLocation.longitude, mobileLocation.latitude, mobileLocation.longitude, results);
-			
-			System.out.println("odb device distance = "+results[0]);
-			
-			if(results[0]<500)
+//			float[] results = new float[1];
+//			Location.distanceBetween(deviceLocation.latitude, deviceLocation.longitude, mobileLocation.latitude, mobileLocation.longitude, results);
+//			
+//			System.out.println("odb device distance = "+results[0]);
+//			
+//			if(results[0]<500)
 				return true;
 		}
 		

@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -20,22 +21,22 @@ import com.bugsnag.android.Bugsnag;
 import com.modusgo.ubi.Constants;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.TrackingContract.TrackingEntry;
-import com.modusgo.ubi.utils.Device;
 
 public class SendEventsRequest extends BasePostRequestAsyncTask {
 
 	private static final float MPS_TO_KPH = 3.6f;
 	
-	ArrayList<Long> eventIds;
-	int limit = 30;
+	private ArrayList<Long> eventIds;
+	private int limit = 30;
+	private boolean loop;
 	
 	public SendEventsRequest(Context context) {
 		super(context);
 	}
 	
-	public SendEventsRequest(Context context, int limit) {
+	public SendEventsRequest(Context context, boolean loop) {
 		super(context);
-		this.limit = limit;
+		this.loop = loop;
 	}
 	
 	@Override
@@ -73,7 +74,21 @@ public class SendEventsRequest extends BasePostRequestAsyncTask {
 				e.printStackTrace();
 			}
 			dataJSON.put("firmware", "android "+android.os.Build.VERSION.RELEASE);
-			dataJSON.put("device_type", prefs.getString(Device.PREF_DEVICE_TYPE, "n/a"));
+			try{
+				dataJSON.put("device_type", Build.BRAND +" "+ Build.MODEL);
+			}
+			catch(ClassCastException e){
+				Bugsnag.notify(new Exception("ClassCastException deviceTypeWrong"), e.getMessage());				
+				dataJSON.put("device_type", "n/a");
+			}
+			
+			String vin = prefs.getString(Constants.PREF_JASTEC_VEHICLE_VIN, "");
+			if(!TextUtils.isEmpty(vin))
+				dataJSON.put("vin", vin);
+			
+			String dtcCodes = prefs.getString(Constants.PREF_JASTEC_DTCS, "");
+			if(!TextUtils.isEmpty(dtcCodes))
+				dataJSON.put("dtc_codes", dtcCodes);
 			
 			TelephonyManager manager = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
 			String carrierName = manager.getNetworkOperatorName();
@@ -111,8 +126,16 @@ public class SendEventsRequest extends BasePostRequestAsyncTask {
 					
 					JSONObject tpDataJSON = new JSONObject();
 					String rawData = c.getString(10);
-					if(!TextUtils.isEmpty(rawData))
-						tpDataJSON.put("raw_data", rawData);
+//					if(!TextUtils.isEmpty(rawData))
+//						tpDataJSON.put("raw_data", rawData);
+					if(!rawData.isEmpty()){
+						String[] rawDataArray = rawData.split(", ");
+						for (String string : rawDataArray) {
+							String item[] = string.split(": ");
+							tpDataJSON.put(item[0], item[1]);
+						}
+					}
+							
 					tpJSON.put("data", tpDataJSON);
 					
 					timepointsJSON.put(tpJSON);
@@ -141,9 +164,9 @@ public class SendEventsRequest extends BasePostRequestAsyncTask {
 		requestParams.add(new BasicNameValuePair("data",rootJSON.toString()));
 		System.out.println(requestParams);
 		
-		MetaData metaData = new MetaData();
-		metaData.addToTab("Data", "raw_request_params", requestParams);
-		Bugsnag.notify(new Exception("SendEventsRequest"), metaData);
+//		MetaData metaData = new MetaData();
+//		metaData.addToTab("Data", "raw_request_params", requestParams);
+//		Bugsnag.notify(new Exception("SendEventsRequest"), metaData);
 		
 		return super.doInBackground("device.json");
 	}
@@ -161,6 +184,11 @@ public class SendEventsRequest extends BasePostRequestAsyncTask {
 		DbHelper dbHelper = DbHelper.getInstance(context);
 		dbHelper.deleteTrackingEvents(eventIds);
 		dbHelper.close();
+		
+		if(eventIds!=null && eventIds.size()>0 && loop){
+			new SendEventsRequest(context, true).execute();
+		}
+		
 		super.onSuccess(responseJSON);
 	}
 }

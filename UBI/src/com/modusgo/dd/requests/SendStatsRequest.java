@@ -17,13 +17,10 @@ import org.json.JSONTokener;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Base64;
 
-import com.modusgo.dd.CallReceiver;
-import com.modusgo.dd.PhoneScreenOnOffReceiver;
 import com.modusgo.ubi.Constants;
 
 public class SendStatsRequest extends AsyncTask<String, String, String[]>{

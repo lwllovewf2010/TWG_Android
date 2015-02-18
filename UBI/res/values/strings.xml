@@ -113,7 +113,6 @@ driver, across each road category.<p></font>
 
 	      ]]>
     </string>
-    
     <string name="completeness">
 <![CDATA[ 
 	    <h3><u>Completeness</u></h3>
@@ -125,7 +124,6 @@ driver, across each road category.<p></font>
 
 	      ]]>
     </string>
-    
     <string name="consistency">
 <![CDATA[ 
 	    <h3><u>Consistency</u></h3>
@@ -136,7 +134,6 @@ across all road types and surroundings.<p></font>
 
 	      ]]>
     </string>
-    
     <string name="your_score">
 <![CDATA[ 
 	    <h5><font color="#000000">Your Score</font></h5>
@@ -148,5 +145,26 @@ across all road types and surroundings.<p></font>
 
 	      ]]>
     </string>
-    
+    <string name="coming_soon">Coming Soon!</string>
+
+    <!-- Date Util -->
+    <string name="date_util_unit_second">second ago</string>
+    <string name="date_util_unit_seconds">seconds ago</string>
+    <string name="date_util_unit_minute">minute ago</string>
+    <string name="date_util_unit_minutes">minutes ago</string>
+    <string name="date_util_unit_hour">hour ago</string>
+    <string name="date_util_unit_hours">hours ago</string>
+    <string name="date_util_unit_day">day ago</string>
+    <string name="date_util_unit_days">days ago</string>
+    <string name="date_util_unit_month">month ago</string>
+    <string name="date_util_unit_months">months ago</string>
+    <string name="date_util_unit_year">year ago</string>
+    <string name="date_util_unit_years">years ago</string>
+    <string name="just_now">Just now</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="last_week">Last week</string>
+    <string name="week_ago">week ago</string>
+    <string name="last_month">Last month</string>
+    <string name="last_year">Last year</string>
+
 </resources>

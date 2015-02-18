@@ -241,7 +241,7 @@ public class InitActivity extends FragmentActivity {
 							e.putBoolean(Constants.PREF_DTC_PRICES_ENABLED, infoJSON.optBoolean("dtc_prices_enabled"));
 							e.putBoolean(Constants.PREF_MAINTENANCE_PRICES_ENABLED, infoJSON.optBoolean("maintenance_prices"));
 							
-							String trackingId = infoJSON.optString("");
+							String trackingId = infoJSON.optString("ga_tracking");
 							if(trackingId.equals("") || trackingId.equals("false")){
 								GoogleAnalytics.getInstance(InitActivity.this).setAppOptOut(true);
 							}
@@ -283,7 +283,12 @@ public class InitActivity extends FragmentActivity {
 						
 						if(responseJSON.has("device")){
 							JSONObject deviceJSON = responseJSON.getJSONObject("device");
-							e.putString(Device.PREF_DEVICE_TYPE, deviceJSON.optString("type"));
+							
+							String newDeviceType = deviceJSON.optString("type");
+							if(!newDeviceType.equals(prefs.getString(Device.PREF_DEVICE_TYPE, "")))
+								Device.cleanDeviceSpecificData(getApplicationContext());
+							e.putString(Device.PREF_DEVICE_TYPE, newDeviceType);
+							
 							e.putString(Device.PREF_DEVICE_MEID, deviceJSON.optString("meid"));
 							e.putBoolean(Device.PREF_DEVICE_EVENTS, deviceJSON.optBoolean("events"));
 							e.putBoolean(Device.PREF_DEVICE_IN_TRIP, !TextUtils.isEmpty(deviceJSON.optString("in_trip")));

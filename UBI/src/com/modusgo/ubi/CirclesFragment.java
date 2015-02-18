@@ -24,7 +24,6 @@ import android.widget.TextView;
 import com.modusgo.ubi.ScoreCirclesActivity.CirclesSection;
 import com.modusgo.ubi.customviews.ExpandablePanel;
 import com.modusgo.ubi.customviews.ExpandablePanel.OnExpandListener;
-import com.modusgo.ubi.utils.Utils;
 
 public class CirclesFragment extends TitledFragment{
 	

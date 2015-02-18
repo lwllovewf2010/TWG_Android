@@ -15,8 +15,8 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -37,11 +37,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.modusgo.dd.LocationService;
 import com.modusgo.ubi.db.DbHelper;
+import com.modusgo.ubi.jastec.DevicesListActivity;
 import com.modusgo.ubi.requesttasks.BasePostRequestAsyncTask;
 import com.modusgo.ubi.utils.Device;
 import com.modusgo.ubi.utils.Utils;
@@ -57,6 +60,8 @@ public class SignInActivity extends FragmentActivity {
 	View layoutFields;
 	EditText editUsername;
 	EditText editPassword;
+	
+	Button btnSignIn;
 	
 	private ViewPager mPager;
     private PagerAdapter mPagerAdapter;
@@ -77,9 +82,12 @@ public class SignInActivity extends FragmentActivity {
 	    prefs = PreferenceManager.getDefaultSharedPreferences(SignInActivity.this);
 	    context = getApplicationContext();
 	    
-	    if(!prefs.getString(Constants.PREF_AUTH_KEY, "").equals("")){
-	    	startActivity(new Intent(SignInActivity.this, HomeActivity.class));
+	    if(!TextUtils.isEmpty(prefs.getString(Constants.PREF_AUTH_KEY, ""))){
+	    	startHomeActivity(null);
 			finish();
+	    }
+	    else{
+	    	stopService(new Intent(this, LocationService.class));
 	    }
 	    
 	    ImageView imageBg = (ImageView) findViewById(R.id.imageBg);
@@ -103,7 +111,7 @@ public class SignInActivity extends FragmentActivity {
 	    editUsername = (EditText)findViewById(R.id.username);
 	    editPassword = (EditText)findViewById(R.id.password);
 
-	    Button btnSignIn = (Button)findViewById(R.id.btnSignIn);
+	    btnSignIn = (Button)findViewById(R.id.btnSignIn);
 	    btnSignIn.setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, Constants.BUTTON_BG_COLOR)));
 	    try{
 	    	btnSignIn.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, Constants.BUTTON_TEXT_COLOR)));
@@ -137,6 +145,7 @@ public class SignInActivity extends FragmentActivity {
 	    btnSignIn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				btnSignIn.setEnabled(false);
 				startSignIn();
 			}
 		});
@@ -157,6 +166,21 @@ public class SignInActivity extends FragmentActivity {
         indicator.setFillColor(0xFF00aded);
         indicator.setStrokeWidth(0);
 
+	}
+	
+	private void startHomeActivity(JSONArray welcomeScreens){
+
+		if(welcomeScreens!=null && welcomeScreens.length()>0){					
+			Intent i = new Intent(SignInActivity.this, WelcomeActivity.class);
+			i.putExtra(WelcomeActivity.SAVED_SCREENS, welcomeScreens.toString());
+			startActivity(i);
+		}
+		else{
+			if(prefs.getString(Device.PREF_DEVICE_TYPE, "").equals(Device.DEVICE_TYPE_OBDBLE) && prefs.getString(Constants.PREF_JASTEC_ADDRESS, "").equals(""))
+				startActivity(new Intent(SignInActivity.this, DevicesListActivity.class));
+			else
+				startActivity(new Intent(SignInActivity.this, HomeActivity.class));
+		}
 	}
 	
 	@Override
@@ -403,6 +427,7 @@ public class SignInActivity extends FragmentActivity {
 		
 		@Override
 		protected void onPostExecute(JSONObject result) {
+			btnSignIn.setEnabled(true);
 			super.onPostExecute(result);
 		}
 
@@ -411,6 +436,7 @@ public class SignInActivity extends FragmentActivity {
 	        requestParams.add(new BasicNameValuePair("email", editUsername.getText().toString()));
 	        requestParams.add(new BasicNameValuePair("password", editPassword.getText().toString()));
 	        requestParams.add(new BasicNameValuePair("platform", Constants.API_PLATFORM));
+	        requestParams.add(new BasicNameValuePair("model", Build.BRAND +" "+ Build.MODEL));
 	        requestParams.add(new BasicNameValuePair("mobile_id", Utils.getUUID(SignInActivity.this)));
 	        requestParams.add(new BasicNameValuePair("push_id", prefs.getString(Constants.PREF_GCM_REG_ID, "")));
 	        System.out.println(requestParams);
@@ -438,7 +464,12 @@ public class SignInActivity extends FragmentActivity {
 			}
 			if(responseJSON.has("device")){
 				JSONObject deviceJSON = responseJSON.getJSONObject("device");
-				e.putString(Device.PREF_DEVICE_TYPE, deviceJSON.optString("type"));
+				
+				String newDeviceType = deviceJSON.optString("type");
+				if(!newDeviceType.equals(prefs.getString(Device.PREF_DEVICE_TYPE, "")))
+					Device.cleanDeviceSpecificData(getApplicationContext());
+				e.putString(Device.PREF_DEVICE_TYPE, newDeviceType);
+				
 				e.putString(Device.PREF_DEVICE_MEID, deviceJSON.optString("meid"));
 				e.putBoolean(Device.PREF_DEVICE_EVENTS, deviceJSON.optBoolean("events"));
 				e.putBoolean(Device.PREF_DEVICE_IN_TRIP, !TextUtils.isEmpty(deviceJSON.optString("in_trip")));
@@ -466,20 +497,20 @@ public class SignInActivity extends FragmentActivity {
 			if(responseJSON.has("welcome"))
 				welcomeScreens = responseJSON.getJSONArray("welcome");
 			
-			if(welcomeScreens!=null && welcomeScreens.length()>0){					
-				Intent i = new Intent(SignInActivity.this, WelcomeActivity.class);
-				i.putExtra(WelcomeActivity.SAVED_SCREENS, welcomeScreens.toString());
-				startActivity(i);
-			}
-			else
-				startActivity(new Intent(SignInActivity.this, HomeActivity.class));
+			startHomeActivity(welcomeScreens);
 			finish();
 			super.onSuccess(responseJSON);
 		}
 		
 		@Override
 		protected void onError(String message) {
-			startActivity(new Intent(SignInActivity.this, HomeActivity.class));
+			try{
+				if(!TextUtils.isEmpty(message))
+					Toast.makeText(SignInActivity.this, "Error: "+message, Toast.LENGTH_LONG).show();
+			}
+			catch(Exception ex){
+				ex.printStackTrace();
+			}
 			finish();
 			//super.onError(message);
 		}

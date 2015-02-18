@@ -16,6 +16,7 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
+import com.modusgo.dd.LocationService;
 import com.modusgo.ubi.Constants;
 import com.modusgo.ubi.SignInActivity;
 import com.modusgo.ubi.utils.RequestGet;
@@ -50,6 +51,8 @@ public class BaseRequestAsyncTask extends AsyncTask<String, Void, JSONObject>{
 		try{
 			status = result.getStatusLine().getStatusCode();
 			message = "Error "+result.getStatusLine().getStatusCode()+": "+result.getStatusLine().getReasonPhrase();
+			if(result.getStatusLine().getStatusCode()>=200 || result.getStatusLine().getStatusCode()<300)
+				message = "Unknown error";
 		}
 		catch(NullPointerException e){
 			e.printStackTrace();
@@ -82,10 +85,12 @@ public class BaseRequestAsyncTask extends AsyncTask<String, Void, JSONObject>{
 	
 	protected void onError401(){
 		prefs.edit().putString(Constants.PREF_AUTH_KEY, "").commit();
+    	context.stopService(new Intent(context, LocationService.class));
 		Intent intent = new Intent(context, SignInActivity.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
 		context.startActivity(intent);
 		onError("Your session has expired.");
+		new LogoutTask(context).execute(RequestHelper.LOGOUT_REQUEST);
 	}
 	
 	protected void onError(String message) {

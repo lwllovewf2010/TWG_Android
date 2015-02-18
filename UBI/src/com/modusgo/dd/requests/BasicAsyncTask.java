@@ -4,10 +4,12 @@ import android.os.AsyncTask;
 
 public abstract class BasicAsyncTask extends AsyncTask<Void, String, String[]>{
 	
+	public static final String ERROR = "error";
+	
 	@Override
     protected void onPostExecute(String[] result) {
         super.onPostExecute(result);
-        if(!result[0].equals("error")){
+        if(!result[0].equals(ERROR)){
         	onPostExecuteSuccess(result[0],result[1],result[2]);
         }
         else{

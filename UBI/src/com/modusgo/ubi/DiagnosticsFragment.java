@@ -49,6 +49,7 @@ import com.modusgo.ubi.db.MaintenanceContract.MaintenanceEntry;
 import com.modusgo.ubi.db.RecallContract.RecallEntry;
 import com.modusgo.ubi.db.ScoreGraphContract.ScoreGraphEntry;
 import com.modusgo.ubi.db.WarrantyInfoContract.WarrantyInfoEntry;
+import com.modusgo.ubi.requesttasks.BasePostRequestAsyncTask;
 import com.modusgo.ubi.requesttasks.BaseRequestAsyncTask;
 import com.modusgo.ubi.utils.AnimationUtils;
 import com.modusgo.ubi.utils.Utils;
@@ -72,6 +73,7 @@ public class DiagnosticsFragment extends Fragment{
 	TextView tvLastCheckup;
 	TextView tvStatus;
 	EditText editOdometer;
+	Button btnSubmitOdoteter;
 	
 	SharedPreferences prefs;
 	
@@ -132,6 +134,7 @@ public class DiagnosticsFragment extends Fragment{
 		tvLastCheckup = (TextView) rootView.findViewById(R.id.tvLastCheckup);
 		tvStatus = (TextView) rootView.findViewById(R.id.tvStatus);
 		editOdometer = (EditText) rootView.findViewById(R.id.odometer);
+		btnSubmitOdoteter = (Button) rootView.findViewById(R.id.btnSubmit);
 		
 		lRefresh.setColorSchemeResources(R.color.ubi_gray, R.color.ubi_green, R.color.ubi_orange, R.color.ubi_red);
 		lRefresh.setOnRefreshListener(new OnRefreshListener() {
@@ -142,21 +145,20 @@ public class DiagnosticsFragment extends Fragment{
 			}
 		});
 		
-		if(vehicle.odometer<=0){
+		if(vehicle.carMileage<=0){
 		
 			lRefresh.setVisibility(View.GONE);
 			llOdometer.setVisibility(View.VISIBLE);
 			
-			Button btnSubmit = (Button) rootView.findViewById(R.id.btnSubmit);
-			btnSubmit.setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, Constants.BUTTON_BG_COLOR)));
+			btnSubmitOdoteter.setBackgroundDrawable(Utils.getButtonBgStateListDrawable(prefs.getString(Constants.PREF_BR_BUTTONS_BG_COLOR, Constants.BUTTON_BG_COLOR)));
 			try{
-				btnSubmit.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, Constants.BUTTON_TEXT_COLOR)));
+				btnSubmitOdoteter.setTextColor(Color.parseColor(prefs.getString(Constants.PREF_BR_BUTTONS_TEXT_COLOR, Constants.BUTTON_TEXT_COLOR)));
 			}
 		    catch(Exception e){
 		    	e.printStackTrace();
 		    }
 			
-			btnSubmit.setOnClickListener(new OnClickListener() {
+			btnSubmitOdoteter.setOnClickListener(new OnClickListener() {
 				
 				@Override
 				public void onClick(View v) {
@@ -171,39 +173,7 @@ public class DiagnosticsFragment extends Fragment{
 						}
 						
 						if(odo<=999999 && odo>0){
-							
-							vehicle.odometer = odo;
-							
-							TranslateAnimation slideDownOdometerLayoutAmination = new TranslateAnimation(
-								      TranslateAnimation.RELATIVE_TO_PARENT,0.0f,
-								      TranslateAnimation.RELATIVE_TO_PARENT,0.0f,
-								      TranslateAnimation.RELATIVE_TO_PARENT,0.0f,
-								      TranslateAnimation.RELATIVE_TO_PARENT,1f);
-							slideDownOdometerLayoutAmination.setDuration(500);
-							slideDownOdometerLayoutAmination.setFillAfter(true);
-							slideDownOdometerLayoutAmination.setAnimationListener(new AnimationListener() {
-								@Override
-								public void onAnimationStart(Animation animation) {	
-								}
-								@Override
-								public void onAnimationRepeat(Animation animation) {	
-								}
-								@Override
-								public void onAnimationEnd(Animation animation) {
-									llOdometer.setVisibility(View.GONE);
-									lRefresh.startAnimation(AnimationUtils.getFadeInAnmation(getActivity(), lRefresh));
-									new GetDiagnosticsTask(getActivity()).execute("vehicles/"+vehicle.id+"/diagnostics.json");
-								}
-							});
-							llOdometer.startAnimation(slideDownOdometerLayoutAmination);
-							
-							InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-
-						    // check if no view has focus:
-						    View view = getActivity().getCurrentFocus();
-						    if (view != null) {
-						        inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-						    }
+							new SetMileageTask(getActivity().getApplicationContext(), odo).execute("vehicles/"+vehicle.id+"/update_mileage.json");
 						}
 					}
 					catch(NumberFormatException e){
@@ -218,8 +188,66 @@ public class DiagnosticsFragment extends Fragment{
 			if(llContent.getChildCount()==0){
 				new GetDiagnosticsTask(getActivity()).execute("vehicles/"+vehicle.id+"/diagnostics.json");
 			}
+			
+			showDiagnosticsDeleteEducationPopupIfNeeded();
 		}
 		
+		return rootView;
+	}
+	
+	private enum MileageDialogState {IDLE, LOADING, SUCCES};
+	
+	private void setMileageDialogState(MileageDialogState state){
+		switch (state) {
+		case IDLE:
+			editOdometer.setEnabled(true);
+			btnSubmitOdoteter.setEnabled(true);
+			btnSubmitOdoteter.setText("SUBMIT");
+			break;
+		case LOADING:
+			editOdometer.setEnabled(false);
+			btnSubmitOdoteter.setEnabled(false);
+			btnSubmitOdoteter.setText("PROCESSING...");
+			break;
+		case SUCCES:
+			TranslateAnimation slideDownOdometerLayoutAmination = new TranslateAnimation(
+				      TranslateAnimation.RELATIVE_TO_PARENT,0.0f,
+				      TranslateAnimation.RELATIVE_TO_PARENT,0.0f,
+				      TranslateAnimation.RELATIVE_TO_PARENT,0.0f,
+				      TranslateAnimation.RELATIVE_TO_PARENT,1f);
+			slideDownOdometerLayoutAmination.setDuration(500);
+			slideDownOdometerLayoutAmination.setFillAfter(true);
+			slideDownOdometerLayoutAmination.setAnimationListener(new AnimationListener() {
+				@Override
+				public void onAnimationStart(Animation animation) {	
+				}
+				@Override
+				public void onAnimationRepeat(Animation animation) {	
+				}
+				@Override
+				public void onAnimationEnd(Animation animation) {
+					llOdometer.setVisibility(View.GONE);
+					lRefresh.startAnimation(AnimationUtils.getFadeInAnmation(getActivity(), lRefresh));
+					showDiagnosticsDeleteEducationPopupIfNeeded();
+				}
+			});
+			llOdometer.startAnimation(slideDownOdometerLayoutAmination);
+			
+			InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+		    // check if no view has focus:
+		    View view = getActivity().getCurrentFocus();
+		    if (view != null) {
+		        inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+		    }
+			break;
+
+		default:
+			break;
+		}
+	}
+	
+	private void showDiagnosticsDeleteEducationPopupIfNeeded(){
 		if(!prefs.getBoolean(Constants.PREF_DIAGNOSTICS_DELETE_POPUP_SHOWED, false)){
 			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 	        builder.setMessage("Swipe left on Recalls and Scheduled Maintenance to mark them Completed.")
@@ -231,8 +259,6 @@ public class DiagnosticsFragment extends Fragment{
 	               });
 	        builder.show();
 		}
-		
-		return rootView;
 	}
 	
 	@Override
@@ -601,7 +627,7 @@ public class DiagnosticsFragment extends Fragment{
 
 		@Override
 		protected JSONObject doInBackground(String... params) {
-	        requestParams.add(new BasicNameValuePair("driver_id", ""+vehicle.id));
+	        requestParams.add(new BasicNameValuePair("vehicle_id", ""+vehicle.id));
 	        requestParams.add(new BasicNameValuePair("vehicle_maintenance_id", ""+maintenanceId));
 			return super.doInBackground(params);
 		}
@@ -631,7 +657,7 @@ public class DiagnosticsFragment extends Fragment{
 
 		@Override
 		protected JSONObject doInBackground(String... params) {
-	        requestParams.add(new BasicNameValuePair("driver_id", ""+vehicle.id));
+	        requestParams.add(new BasicNameValuePair("vehicle_id", ""+vehicle.id));
 	        requestParams.add(new BasicNameValuePair("recall_update_id", ""+recallUpdateId));
 	        System.out.println(requestParams);
 			return super.doInBackground(params);
@@ -649,6 +675,47 @@ public class DiagnosticsFragment extends Fragment{
 		protected void onError(String message) {
 			System.out.println(message);
 			//Do nothing
+		}
+	}
+	
+	class SetMileageTask extends BasePostRequestAsyncTask{
+		
+		int mileage;
+		
+		public SetMileageTask(Context context, int mileage) {
+			super(context);
+			this.mileage = mileage;
+		}
+		
+		@Override
+		protected void onPreExecute() {
+			setMileageDialogState(MileageDialogState.LOADING);
+			super.onPreExecute();
+		}
+
+		@Override
+		protected JSONObject doInBackground(String... params) {
+	        requestParams.add(new BasicNameValuePair("vehicle_id", ""+vehicle.id));
+	        requestParams.add(new BasicNameValuePair("mileage", ""+mileage));
+	        System.out.println(requestParams);
+			return super.doInBackground(params);
+		}
+		
+		@Override
+		protected void onSuccess(JSONObject responseJSON) throws JSONException {
+			setMileageDialogState(MileageDialogState.SUCCES);
+			vehicle.carMileage = mileage;
+			DbHelper dbHelper = DbHelper.getInstance(context);
+			dbHelper.saveVehicle(vehicle);
+			dbHelper.close();
+			new GetDiagnosticsTask(getActivity()).execute("vehicles/"+vehicle.id+"/diagnostics.json");
+			super.onSuccess(responseJSON);
+		}
+		
+		@Override
+		protected void onError(String message) {
+			System.out.println(message);
+			setMileageDialogState(MileageDialogState.IDLE);
 		}
 	}
 	
@@ -673,7 +740,6 @@ public class DiagnosticsFragment extends Fragment{
 		@Override
 		protected JSONObject doInBackground(String... params) {
 	        requestParams.add(new BasicNameValuePair("vehicle_id", ""+vehicle.id));
-	        requestParams.add(new BasicNameValuePair("mileage", ""+vehicle.odometer));
 			return super.doInBackground(params);
 		}
 		

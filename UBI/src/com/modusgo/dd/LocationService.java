@@ -1,7 +1,6 @@
 package com.modusgo.dd;
 
 import java.util.List;
-import java.util.UUID;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -15,6 +14,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,18 +26,21 @@ import android.text.TextUtils;
 
 import com.bugsnag.android.Bugsnag;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.kontakt.sdk.android.configuration.BeaconActivityCheckConfiguration;
 import com.kontakt.sdk.android.configuration.ForceScanConfiguration;
-import com.kontakt.sdk.android.configuration.MonitorPeriod;
 import com.kontakt.sdk.android.connection.OnServiceBoundListener;
-import com.kontakt.sdk.android.device.Beacon;
-import com.kontakt.sdk.android.device.Region;
-import com.kontakt.sdk.android.factory.Filters;
+import com.kontakt.sdk.android.device.BeaconDevice;
+import com.kontakt.sdk.android.factory.AdvertisingPackage;
+import com.kontakt.sdk.android.factory.Filters.CustomFilter;
 import com.kontakt.sdk.android.manager.BeaconManager;
+import com.kontakt.sdk.android.manager.BeaconManager.MonitoringListener;
 import com.logentries.android.AndroidLogger;
 import com.modusgo.ubi.Constants;
 import com.modusgo.ubi.InitActivity;
@@ -45,24 +48,32 @@ import com.modusgo.ubi.R;
 import com.modusgo.ubi.Tracking;
 import com.modusgo.ubi.TripDeclineActivity;
 import com.modusgo.ubi.db.DbHelper;
+import com.modusgo.ubi.jastec.JastecManager;
+import com.modusgo.ubi.jastec.JastecManager.OnSensorListener;
+import com.modusgo.ubi.jastec.LogActivity;
 import com.modusgo.ubi.requesttasks.GetDeviceInfoRequest;
 import com.modusgo.ubi.requesttasks.SendEventsRequest;
 import com.modusgo.ubi.utils.Device;
 
-public class LocationService extends Service implements GooglePlayServicesClient.ConnectionCallbacks,
-GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
+public class LocationService extends Service implements ConnectionCallbacks,
+OnConnectionFailedListener,
+LocationListener{
 
 	private static final int PERMANENT_NOTIFICATION_ID = 30;
 	private static final int SERVICES_DISABLED_NOTIFICATION_ID = 29;
-	private static final int IBEACON_DECLINE_NOTIFICATION_ID = 28;	
+	private static final int TRIP_DECLINE_NOTIFICATION_ID = 28;
 
 	private static final float TRIP_START_SPEED = 15f/3.6f;
 	private static final float TRIP_STAY_SPEED = 10f/3.6f;
 	private static final int MAX_STAY_TIME = 2*60*1000;
+	private static final int MAX_BEACON_NO_CONNECTION_STAY_TIME = 10*1000;
 	
 	public static final int GET_DEVICE_FREQUENCY = 60*60*1000;
 	
 	public static final int MIN_ACCURACY = 40;
+	
+	public static final String EXTRA_ACTION = "extraAction";
+	public static enum Action {TRIP_DECLINE}
 	
 	private long stayFromMillis = 0;
 	private long lastLocationUpdateTime = 0;
@@ -78,7 +89,10 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	private Runnable checkLocationUpdatesRunnable;
 	private int checkLocationUpdatesFrequency = 5*1000;
 	
-	private Handler cancelNotificationHandler = new Handler();
+	private Handler tripDeclineNotificationHandler = new Handler();
+	
+	private Handler jastecHandler;
+	private Runnable jastecRunnable;
 	
 	PhoneScreenOnOffReceiver phoneScreenOnOffReceiver;
 	//private boolean smsReceiverRegistered = false;
@@ -89,16 +103,23 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	//Location stuff
 	private Boolean servicesAvailable = false;
     private boolean mInProgress;
-	private LocationClient mLocationClient;
     private LocationRequest mLocationRequest;
+    private GoogleApiClient mGoogleApiClient;
 
-    private final static String EVENT_TRIP_START = "start";
-    private final static String EVENT_TRIP_STOP = "stop";
+    public final static String EVENT_TRIP_START = "start";
+    public final static String EVENT_TRIP_STOP = "stop";
     private final static String EVENT_BEACON_CONNECTED = "connected";
     private final static String EVENT_BEACON_DISCONNECTED = "disconnected";
+    public final static String EVENT_TRIP_DECLINED = "declined";
+
+    private static final double ACCEPT_DISTANCE = 4;//[m]
     private BeaconManager beaconManager;
     private boolean beaconConnected = false;
     private long lastBeaconDisconnectMillis;
+    
+    private JastecManager jastecMan;
+    private OnSensorListener jastecTripStateListener;
+    private long lastJastecPing;
     
     AndroidLogger logger;
 	
@@ -123,7 +144,6 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
          * Create a new location client, using the enclosing class to
          * handle callbacks.
          */
-        mLocationClient = new LocationClient(this, this, this);
         
         logger = AndroidLogger.getLogger(getApplicationContext(), "561a64f6-9d58-4ff3-ab25-a932ff2d10c6", false);
 
@@ -137,45 +157,60 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		
 		if(!prefs.getString(Constants.PREF_AUTH_KEY, "").equals("")){
-			updateServiceMode();
-			updateNotification();
 			
-			setUpLocationClientIfNeeded();
-	        if(!mLocationClient.isConnected() || !mLocationClient.isConnecting() && !mInProgress)
-	        {
-	        	mInProgress = true;
-	        	mLocationClient.connect();
-	        }
+			Action action = intent != null ? (Action) intent.getSerializableExtra(EXTRA_ACTION) : null;
 			
-	        if(checkIgnitionHandler==null){
-	        	checkIgnitionHandler = new Handler();
-	        }
-	        
-	        if(checkIgnitionRunnable==null){
-				checkIgnitionHandler.removeCallbacks(checkIgnitionRunnable);
-	        	checkIgnitionRunnable = new Runnable() {
-	    	        @Override
-	    	        public void run() {
-	    	        	
-	    	        	if(!prefs.getString(Constants.PREF_AUTH_KEY, "").equals("")){
-	    		        	new GetDeviceInfoRequest(LocationService.this).execute();
-	    		        	updateNotification();
-	    		            checkIgnitionHandler.postDelayed(this, GET_DEVICE_FREQUENCY);
-	    	        	}
-	    	        }
-	    	    };
-	    	    checkIgnitionHandler.postDelayed(checkIgnitionRunnable, 0);
-	        }
-	        
-	        updateLocationUpdatesHandler();
-		    
-		    if(phoneScreenOnOffReceiver==null){
-			    phoneScreenOnOffReceiver = new PhoneScreenOnOffReceiver();
-			    IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
-			    filter.addAction(Intent.ACTION_SCREEN_OFF);
-			    filter.addAction(Intent.ACTION_USER_PRESENT);
-			    registerReceiver(phoneScreenOnOffReceiver, filter);
-		    }
+			if(action!=null){
+				switch (action) {
+				case TRIP_DECLINE:
+					updateNotification(true);					
+					break;
+
+				default:
+					break;
+				}
+			}
+			else{
+				updateServiceMode();
+				updateNotification(false);
+				
+				setUpGoogleApiClientIfNeeded();
+		        if(!mGoogleApiClient.isConnected() || !mGoogleApiClient.isConnecting() && !mInProgress)
+		        {
+		        	mInProgress = true;
+		        	mGoogleApiClient.connect();
+		        }
+				
+		        if(checkIgnitionHandler==null){
+		        	checkIgnitionHandler = new Handler();
+		        }
+		        
+		        if(checkIgnitionRunnable==null){
+					checkIgnitionHandler.removeCallbacks(checkIgnitionRunnable);
+		        	checkIgnitionRunnable = new Runnable() {
+		    	        @Override
+		    	        public void run() {
+		    	        	
+		    	        	if(!prefs.getString(Constants.PREF_AUTH_KEY, "").equals("")){
+		    		        	new GetDeviceInfoRequest(LocationService.this).execute();
+		    		        	updateNotification(false);
+		    		            checkIgnitionHandler.postDelayed(this, GET_DEVICE_FREQUENCY);
+		    	        	}
+		    	        }
+		    	    };
+		    	    checkIgnitionHandler.postDelayed(checkIgnitionRunnable, 0);
+		        }
+		        
+		        updateLocationUpdatesHandler();
+			    
+			    if(phoneScreenOnOffReceiver==null){
+				    phoneScreenOnOffReceiver = new PhoneScreenOnOffReceiver();
+				    IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+				    filter.addAction(Intent.ACTION_SCREEN_OFF);
+				    filter.addAction(Intent.ACTION_USER_PRESENT);
+				    registerReceiver(phoneScreenOnOffReceiver, filter);
+			    }
+			}
 		}
 		else
 			stopSelf();
@@ -183,21 +218,28 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		return START_STICKY;//super.onStartCommand(intent, flags, startId);
 	}
 	
-	private void iBeaconConnect() {
+    private void setUpGoogleApiClientIfNeeded() {
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addApi(LocationServices.API)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .build();
+        }
+    }
+	
+	private void iBeaconStartMonitoring() {
         try {
         	System.out.println("ibeacon connect");
-            beaconManager.connect(new OnServiceBoundListener() {
-                @Override
-                public void onServiceBound() {
-                    try {
-                    	System.out.println("ibeacon start monitoring");
-                        beaconManager.startMonitoring();
-                    	
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
+        	if(!beaconManager.isConnected()){
+	            beaconManager.connect(new OnServiceBoundListener() {
+	                @Override
+	                public void onServiceBound() throws RemoteException {
+	                	System.out.println("ibeacon start monitoring");
+	                    beaconManager.startMonitoring();
+	                }
+	            });
+        	}
         } catch (RemoteException e) {
 //        	throw new IllegalStateException(e);
         	e.printStackTrace();
@@ -208,59 +250,73 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		String mode = prefs.getString(Device.PREF_CURRENT_TRACKING_MODE, "");
 		System.out.println("Mode: "+mode);
 		
+		if(!prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false))
+			prefs.edit().putBoolean(Constants.PREF_TRIP_DECLINED, false).commit();
+		
 		if(prefs.getString(Device.PREF_DEVICE_TYPE, "").equals(Device.DEVICE_TYPE_IBEACON)){
 			if(beaconManager==null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2){
-				prefs.edit().putBoolean(Constants.PREF_TRIP_DECLINED, false).commit();
-		    	beaconManager = BeaconManager.newInstance(this);
-		    	beaconManager.setMonitorPeriod(MonitorPeriod.MINIMAL);
-		    	beaconManager.setForceScanConfiguration(ForceScanConfiguration.DEFAULT);
+
 		    	System.out.println("ubi ibeacon init");
-	        	System.out.println("ibeacon set filter : "+prefs.getString(Device.PREF_DEVICE_MEID, ""));
-	        	String beaconId = prefs.getString(Device.PREF_DEVICE_MEID, "");
-	        	if(beaconId.length()>4)
-	        		beaconManager.addFilter(Filters.newProximityUUIDFilter(UUID.fromString(beaconId)));
-	        	else
-	        		beaconManager.addFilter(Filters.newBeaconUniqueIdFilter(beaconId));
-		    	beaconManager.registerMonitoringListener(new BeaconManager.MonitoringListener() {
-		    		@Override
-		    		public void onMonitorStart() {
-		    			System.out.println("ibeacon monitor start");
-		    		}
-		    		
-		    		@Override
-		    		public void onMonitorStop() {
-		    			System.out.println("ibeacon monitor stop");
-		    		}
-		    		
-		    		@Override
-		    		public void onBeaconsUpdated(final Region region, final List<Beacon> beacons) {
-		    			System.out.println("ibeacons updated, "+beacons.size()+" beacon connected: "+beaconConnected+" trip in process: "+prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false));
-		    			System.out.println("trip declined: "+prefs.getBoolean(Constants.PREF_TRIP_DECLINED, false));
-		    			iBeaconConnectedSaveEvent();
-		    		}
-		    		
-		    		@Override
-		    		public void onBeaconAppeared(final Region region, final Beacon beacon) {
-		    			System.out.println("ibeacon appeared, "+beacon.getBeaconUniqueId());
-		    		}
-		    		
-		    		@Override
-		    		public void onRegionEntered(final Region region) {
+				beaconManager = BeaconManager.newInstance(this);
+		        beaconManager.setScanMode(BeaconManager.SCAN_MODE_BALANCED);
+		        beaconManager.setBeaconActivityCheckConfiguration(BeaconActivityCheckConfiguration.DEFAULT);
+		        beaconManager.setForceScanConfiguration(ForceScanConfiguration.DEFAULT);
+		        beaconManager.registerMonitoringListener(new MonitoringListener() {
+					
+					@Override
+					public void onRegionEntered(com.kontakt.sdk.android.device.Region arg0) {
 		    			System.out.println("ibeacon region entered, bc: "+beaconConnected);
-		    			iBeaconConnectedSaveEvent();
-		    		}
-		    		
-		    		@Override
-		    		public void onRegionAbandoned(final Region region) {
+		    			iBeaconConnectedSaveEvent();					
+					}
+					
+					@Override
+					public void onRegionAbandoned(com.kontakt.sdk.android.device.Region arg0) {
 		    			System.out.println("ibeacon region abandoned");
 		    			if(beaconConnected){
-		    				prefs.edit().putBoolean(Constants.PREF_TRIP_DECLINED, false).commit();
 			    			beaconConnected = false;
 			    			savePoint(EVENT_BEACON_DISCONNECTED);
-		    			}
-		    		}
-		    	});
-		    	iBeaconConnect();
+		    			}					
+					}
+					
+					@Override
+					public void onMonitorStop() {
+		    			System.out.println("ibeacon monitor stop");
+					}
+					
+					@Override
+					public void onMonitorStart() {
+		    			System.out.println("ibeacon monitor start");
+					}
+					
+					@Override
+					public void onBeaconsUpdated(com.kontakt.sdk.android.device.Region arg0, List<BeaconDevice> beacons) {
+		    			System.out.println("ibeacons updated, "+beacons.size()+" beacon connected: "+beaconConnected+" trip in process: "+prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false));
+		    			System.out.println("trip declined: "+prefs.getBoolean(Constants.PREF_TRIP_DECLINED, false));
+		    			iBeaconConnectedSaveEvent();					
+					}
+					
+					@Override
+					public void onBeaconAppeared(com.kontakt.sdk.android.device.Region arg0, BeaconDevice arg1) {
+		    			System.out.println("ibeacon appeared");
+						
+					}
+				});
+
+		        final String beaconUniqueId = prefs.getString(Device.PREF_DEVICE_MEID, "");
+		        
+	        	System.out.println("ibeacon set filter : "+beaconUniqueId);
+		        
+		        beaconManager.addFilter(new CustomFilter() {
+		            @Override
+		            public Boolean apply(AdvertisingPackage object) {
+		                //final UUID proximityUUID = object.getProximityUUID();
+		                final double distance = object.getAccuracy();
+		                final String uniuqeId = object.getBeaconUniqueId();
+
+		                return uniuqeId.equals(beaconUniqueId) && distance <= ACCEPT_DISTANCE;
+		            }
+		        });
+		    	iBeaconStartMonitoring();
 			}
 	    }
 		else{
@@ -268,16 +324,76 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 				System.out.println("ibeacon monitoring stop on update");
 				beaconManager.stopMonitoring();
 			}
-			prefs.edit().putBoolean(Constants.PREF_TRIP_DECLINED, false).commit();
 		}
+		
+		if(prefs.getString(Device.PREF_DEVICE_TYPE, "").equals(Device.DEVICE_TYPE_OBDBLE)){
+			if(jastecHandler==null){
+				jastecHandler = new Handler();
+	        }
+			
+			jastecTripStateListener = new OnSensorListener() {
+				
+				@Override
+				public void onTripStop() {
+					if(prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false))
+						savePoint(EVENT_TRIP_STOP);
+				}
+				
+				@Override
+				public void onTripStart() {
+					if(!prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false)){
+    	        		lastJastecPing = 0;
+						savePoint(EVENT_TRIP_START);
+					}
+				}
+				
+				@Override
+				public void onPing() {
+					lastJastecPing = System.currentTimeMillis();
+				}
+			};
+			
+			jastecMan = JastecManager.getInstance(LocationService.this);
+			jastecMan.setOnSensorListener(jastecTripStateListener);
+			jastecMan.setContext(this);
+	        
+	        if(jastecRunnable==null){
+	        	jastecHandler.removeCallbacksAndMessages(null);
+	        	jastecRunnable = new Runnable() {
+	    	        @Override
+	    	        public void run() {
+	    	        	System.out.println("Jastec connection handler");
+	    	        	jastecMan.connect();
+	    	        	jastecHandler.postDelayed(this, 5000);
+	    	        	
+	    	        	if(lastJastecPing!=0 && System.currentTimeMillis() - lastJastecPing >= 5000){
+	    	        		if(prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false)){
+	    	        			//Bugsnag.notify(new RuntimeException("Trip stop, no Jastec ping for 5 seconds"));
+	    						savePoint(EVENT_TRIP_STOP);
+	    	        		}
+	    	        	}
+	    	        }
+	    	    };
+	    	    jastecHandler.postDelayed(jastecRunnable, 0);
+	        }			
+		}
+		else{
+			if(jastecHandler!=null){
+				jastecHandler.removeCallbacksAndMessages(null);
+				jastecHandler = null;
+				jastecRunnable = null;
+				jastecMan.disconnect();
+			}
+		}
+		
 		
 		switch (mode) {
 		case Device.MODE_LIGHT_TRACKING:
 			mLocationRequest = LocationRequest.create();
 	        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-	        mLocationRequest.setSmallestDisplacement(50);
-	        mLocationRequest.setInterval(15*60*1000);
-	        mLocationRequest.setFastestInterval(3*60*1000);
+	        mLocationRequest.setSmallestDisplacement(0);
+	        mLocationRequest.setInterval(5*60*1000);
+	        mLocationRequest.setFastestInterval(30*1000);
 
 			break;
 		case Device.MODE_SIGNIFICATION_TRACKING:
@@ -286,21 +402,14 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		case Device.MODE_MEDIUM_TRACKING:
 			mLocationRequest = LocationRequest.create();
 	        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-	        mLocationRequest.setSmallestDisplacement(30);
+	        mLocationRequest.setSmallestDisplacement(0);
 	        mLocationRequest.setInterval(40*1000);
 	        mLocationRequest.setFastestInterval(20*1000);
-			break;
-		case Device.MODE_NAVIGATION_TRACKING:
-			mLocationRequest = LocationRequest.create();
-	        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-	        mLocationRequest.setSmallestDisplacement(8);
-	        mLocationRequest.setInterval(5*1000);
-	        mLocationRequest.setFastestInterval(2*1000);
 			break;
 		case Device.MODE_SUPER_TRACKING:
 			mLocationRequest = LocationRequest.create();
 	        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-	        mLocationRequest.setSmallestDisplacement(5);
+	        mLocationRequest.setSmallestDisplacement(0);
 	        mLocationRequest.setInterval(1*1000);
 	        mLocationRequest.setFastestInterval(1*1000);
 			break;
@@ -309,57 +418,55 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 			break;
 		}
 		
-		if(mLocationClient!=null && mLocationClient.isConnected()){
-			mLocationClient.removeLocationUpdates(this);
+		if(mGoogleApiClient!=null && mGoogleApiClient.isConnected()){
+			LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
 			if(!mode.equals(Device.MODE_SIGNIFICATION_TRACKING))
-				mLocationClient.requestLocationUpdates(mLocationRequest, this);
+				LocationServices.FusedLocationApi.requestLocationUpdates(
+		                mGoogleApiClient,
+		                mLocationRequest,
+		                this);
 		}
 	}
 	
 	private void iBeaconConnectedSaveEvent(){
 		boolean inTrip = prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false);
 		
-		if(prefs.getBoolean(Constants.PREF_TRIP_DECLINED, false)){
-			if(inTrip)
-				savePoint(EVENT_TRIP_STOP);
-		}
-		else {
-			if(!beaconConnected || !inTrip){
-				beaconConnected = true;
-				
-				if(inTrip){
-					savePoint(EVENT_BEACON_CONNECTED);
-				}
-				else{
-					savePoint(EVENT_TRIP_START);
-					showDeclineTripNotification();
-				}
+		if(!beaconConnected || !inTrip){
+			beaconConnected = true;
+			
+			if(inTrip){
+				savePoint(EVENT_BEACON_CONNECTED);
 			}
-		}
+			else{
+				savePoint(EVENT_TRIP_START);
+			}
+		}		
 	}
 	
-	private void showDeclineTripNotification(){
+	private void showTripDeclineNotification(){
 
 		Intent resultIntent = new Intent(this, TripDeclineActivity.class);
 		
-		showNotification(IBEACON_DECLINE_NOTIFICATION_ID, "Trip Tracking Started! If you are not driving please tap here.", resultIntent);
+		showNotification(TRIP_DECLINE_NOTIFICATION_ID, "Trip Tracking Started! If you are not driving please tap here.", resultIntent, false);
 		
-    	Runnable cancelNotificationRunnable = new Runnable() {
+    	Runnable tripDeclineNotificationRunnable = new Runnable() {
 	        @Override
 	        public void run() {
 	        	NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-	        	mNotificationManager.cancel(IBEACON_DECLINE_NOTIFICATION_ID);
+	        	mNotificationManager.cancel(TRIP_DECLINE_NOTIFICATION_ID);
 	        }
 	    };
 	    
-    	cancelNotificationHandler.removeCallbacksAndMessages(null);
-    	cancelNotificationHandler.postDelayed(cancelNotificationRunnable, 10*1000);
+    	tripDeclineNotificationHandler.removeCallbacksAndMessages(null);
+    	tripDeclineNotificationHandler.postDelayed(tripDeclineNotificationRunnable, 10*1000);
 	}
 	
-	private void updateNotification(){
+	private void updateNotification(boolean sonundAndVibration){
 		
 		String servicesToEnable = "";
 		int servicesToEnableCount = 0;
+		boolean inTrip = prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false) && !prefs.getBoolean(Constants.PREF_TRIP_DECLINED, false);
+		String deviceType = prefs.getString(Device.PREF_DEVICE_TYPE, "");
 		
 		if(prefs.getString(Device.PREF_DEVICE_TYPE, "").equals(Device.DEVICE_TYPE_OBD)){
 			if(prefs.getBoolean(Device.PREF_DEVICE_EVENTS, false)){
@@ -385,24 +492,74 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		}
 
 		if(servicesToEnableCount>0){
-	    	showNotification(SERVICES_DISABLED_NOTIFICATION_ID, "Please, enable next service" + (servicesToEnableCount > 1 ? "s" : "") + " for better experience: "+servicesToEnable, new Intent(android.provider.Settings.ACTION_SETTINGS));
+			if(deviceType.equals(Device.DEVICE_TYPE_IBEACON) && android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN_MR2){
+				showNotification(SERVICES_DISABLED_NOTIFICATION_ID,
+		    		"Your phone does not support iBeacons",
+		    		new Intent(this, InitActivity.class),
+		    		!sonundAndVibration);
+			}
+			else
+				showNotification(SERVICES_DISABLED_NOTIFICATION_ID,
+	    			"Please, enable next service" + (servicesToEnableCount > 1 ? "s" : "") + " for better experience: "+servicesToEnable,
+	    			new Intent(android.provider.Settings.ACTION_SETTINGS),
+	    			!sonundAndVibration);
 		}
 		
+		String notificationText = "Trip Tracking " + (inTrip ? "Started." : "Stopped.") /*+ " Mode: " + prefs.getString(Device.PREF_CURRENT_TRACKING_MODE, "none") + "."*/;
+		
+		if(inTrip){
+			if(!prefs.getBoolean(Constants.PREF_CHARGER_CONNECTED, false) && !deviceType.equals(Device.DEVICE_TYPE_OBD)){
+				notificationText += " Don't forget to plugin your phone. Your battery will thank you!";
+			}
+			notificationText += " Drive Safe!";
+		}
+		
+		Intent resultIntent = new Intent(this, InitActivity.class);
+		PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_CANCEL_CURRENT);//stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 		
 		NotificationCompat.Builder mBuilder =
 		        new NotificationCompat.Builder(this)
 		        .setSmallIcon(R.drawable.ic_launcher)
-		        .setContentTitle(getResources().getString(R.string.app_name)) 
-		        .setContentText("Your trip is " + ((prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false) ? "in progress." : "stopped.") + " Mode: " + prefs.getString(Device.PREF_CURRENT_TRACKING_MODE, "none")));
-
-		Intent resultIntent = new Intent(this, InitActivity.class);
-
-		PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_CANCEL_CURRENT);//stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-		mBuilder.setContentIntent(resultPendingIntent);
+		        .setContentTitle(getResources().getString(R.string.app_name))
+		        .setContentText(notificationText)
+		        .setStyle(new NotificationCompat.BigTextStyle().bigText(notificationText))
+		        .setContentIntent(resultPendingIntent)
+				.setPriority(NotificationCompat.PRIORITY_HIGH)
+				.setOngoing(true);
+		
+		if(sonundAndVibration && !deviceType.equals(Device.DEVICE_TYPE_OBD)){
+			mBuilder
+	        .setVibrate(inTrip ? new long[]{0, 1000} : new long[]{0, 400, 200, 400})
+	        .setSound(Uri.parse("android.resource://" + getPackageName() + "/" + (inTrip ? R.raw.beep_sound : R.raw.double_beep_sound)));
+		}
+		
 		Notification n = mBuilder.build();
-		n.flags |= Notification.FLAG_ONGOING_EVENT;
 		
 		startForeground(PERMANENT_NOTIFICATION_ID, n);
+	}
+	
+	private void showNotification(int id, String message, Intent resultIntent, boolean soundAndVibration){
+		NotificationCompat.Builder mBuilder =
+		        new NotificationCompat.Builder(this)
+		        .setSmallIcon(R.drawable.ic_launcher)
+		        .setContentTitle(getString(R.string.app_name))
+		        .setContentText(message)
+		        .setPriority(NotificationCompat.PRIORITY_MAX)
+		        .setAutoCancel(true);
+		
+		PendingIntent resultPendingIntent = PendingIntent.getActivity(this,id,resultIntent,Intent.FLAG_ACTIVITY_NEW_TASK);
+		mBuilder.setContentIntent(resultPendingIntent);
+		mBuilder.setStyle(new NotificationCompat.BigTextStyle()
+        .bigText(message));
+
+		Notification n = mBuilder.build();
+		if(soundAndVibration){
+			n.defaults |= Notification.DEFAULT_SOUND;
+			n.defaults |= Notification.DEFAULT_VIBRATE;
+		}
+		
+		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		mNotificationManager.notify(id, n);
 	}
 	
 	private boolean isLocationServicesEnabled(){
@@ -429,26 +586,6 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		    else
 		    	return false;
 		}
-	}
-	
-	private void showNotification(int id, String message, Intent resultIntent){
-		NotificationCompat.Builder mBuilder =
-		        new NotificationCompat.Builder(this)
-		        .setSmallIcon(R.drawable.ic_launcher)
-		        .setContentTitle(getString(R.string.app_name))
-		        .setContentText(message)
-		        .setAutoCancel(true);
-		
-
-		Notification n = mBuilder.build();
-		n.defaults |= Notification.DEFAULT_SOUND;
-		n.defaults |= Notification.DEFAULT_VIBRATE;
-		
-		PendingIntent resultPendingIntent = PendingIntent.getActivity(this,id,resultIntent,Intent.FLAG_ACTIVITY_NEW_TASK);
-		mBuilder.setContentIntent(resultPendingIntent);
-		
-		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		mNotificationManager.notify(id, n);
 	}
 	
 	private void updateLocationUpdatesHandler(){
@@ -479,8 +616,8 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		    	        	System.out.println("checkLocationUpdatesRunnable");
 		    	        	if(prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false)){
 			    	        	if(System.currentTimeMillis() - lastLocationUpdateTime > MAX_STAY_TIME ||
-			    	        			(deviceType.equals(Device.DEVICE_TYPE_IBEACON) && !beaconConnected && System.currentTimeMillis() - lastBeaconDisconnectMillis > MAX_STAY_TIME)){
-			    	        		Bugsnag.notify(new RuntimeException("Trip stop, no location for 2 minutes"));
+			    	        			(deviceType.equals(Device.DEVICE_TYPE_IBEACON) && !beaconConnected && System.currentTimeMillis() - lastBeaconDisconnectMillis > MAX_BEACON_NO_CONNECTION_STAY_TIME)){
+			    	        		//Bugsnag.notify(new RuntimeException("Trip stop, no location for 2 minutes"));
 			    	        		System.out.println("Trip stop, no location for 2 minutes");
 			    	        		savePoint(EVENT_TRIP_STOP);
 			    	        		checkLocationUpdatesHandler.removeCallbacks(checkLocationUpdatesRunnable);
@@ -488,6 +625,8 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 			    	        	else{
 				    	        	System.out.println("checkLocationUpdatesRunnable reposted");
 			    	        		checkLocationUpdatesHandler.postDelayed(this, checkLocationUpdatesFrequency);
+			    	        		
+			    					new SendEventsRequest(LocationService.this, false).execute();	
 			    	        	}
 		    	        	}
 		    	        }
@@ -506,36 +645,50 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
         String deviceType = prefs.getString(Device.PREF_DEVICE_TYPE, "");
 		
         boolean deviceInTrip = prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false);
-        String event = "";
-        
-        if(deviceType.equals(Device.DEVICE_TYPE_SMARTPHONE) && !deviceInTrip && location.getSpeed()>TRIP_START_SPEED){
-        	event = EVENT_TRIP_START;
-        }
-        
-        if(deviceType.equals(Device.DEVICE_TYPE_SMARTPHONE) && deviceInTrip){
-        	
-        	if(location.getSpeed() < TRIP_STAY_SPEED){
-        		if(stayFromMillis==0)
-	    			stayFromMillis = System.currentTimeMillis();
-	    		else if(System.currentTimeMillis() - stayFromMillis > MAX_STAY_TIME){
-	    			event = EVENT_TRIP_STOP;
-	    		}
-        	}
-        	else {
-        		stayFromMillis = 0;
-			}
-        }
-        
-        lastLocationUpdateTime = System.currentTimeMillis();
-        
-        
+
         if(deviceType.equals(Device.DEVICE_TYPE_OBD)){
         	Device.checkDevice(this);
         }
         else if(deviceInTrip){
+        	
+        	String event = "";
+        	
+        	if(deviceType.equals(Device.DEVICE_TYPE_SMARTPHONE) && deviceInTrip){
+            	
+            	if(location.getSpeed() < TRIP_STAY_SPEED){
+            		if(stayFromMillis==0)
+    	    			stayFromMillis = System.currentTimeMillis();
+    	    		else if(System.currentTimeMillis() - stayFromMillis > MAX_STAY_TIME){
+    	    			event = EVENT_TRIP_STOP;
+    	    		}
+            	}
+            	else {
+            		stayFromMillis = 0;
+    			}
+            }
+
         	savePoint(location, event);
+        	Intent i = new Intent(LogActivity.ACTION_LOGS);
+			i.putExtra(LogActivity.BROADCAST_INTENT_EXTRA_MESSAGE, "GPS Speed = " + location.getSpeed());
+			sendBroadcast(i);
         }
+        else{
+        	if(deviceType.equals(Device.DEVICE_TYPE_SMARTPHONE) && location.getSpeed()>TRIP_START_SPEED){
+            	savePoint(location, EVENT_TRIP_START);
+            }
+        }
+        
+        lastLocationUpdateTime = System.currentTimeMillis();
     }
+	
+	private String getRawData(){
+		String deviceType = prefs.getString(Device.PREF_DEVICE_TYPE, "");
+		if(deviceType.equals(Device.DEVICE_TYPE_OBDBLE) && jastecMan != null){
+			return "speed: " + jastecMan.getLastSpeed() + ", rpm: " + jastecMan.getLastRPM();
+		}
+		else
+			return "";
+	}
 	
 	private void savePoint(Location location, String event){
 
@@ -550,12 +703,12 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
         
         if(location.getAccuracy() <= MIN_ACCURACY){
 	        
-	        if(event.equals("")){
-	        	//Bugsnag.addToTab("User", "Point data", msg);
-	        }
-	        else{
-	        	Bugsnag.notify(new RuntimeException(msg));
-	        }
+//	        if(event.equals("")){
+//	        	//Bugsnag.addToTab("User", "Point data", msg);
+//	        }
+//	        else{
+//	        	Bugsnag.notify(new RuntimeException(msg));
+//	        }
 			
 			Editor e = prefs.edit();
 	        e.putString(Constants.PREF_MOBILE_LATITUDE, ""+location.getLatitude());
@@ -565,36 +718,50 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 				e.putBoolean(Device.PREF_IN_TRIP_NOW, true).commit();
 	    		stayFromMillis = 0;
 	    		lastLocationUpdateTime = System.currentTimeMillis();
-	        	updateLocationUpdatesHandler(); 
+	        	updateLocationUpdatesHandler();
+	    		updateNotification(true); 
+				//showTripDeclineNotification();	
 			}
 			else if(event.equals(EVENT_TRIP_STOP)){
 				e.putBoolean(Device.PREF_IN_TRIP_NOW, false).commit();
-				new SendEventsRequest(this, 300).execute();
+	    		updateNotification(prefs.getBoolean(Constants.PREF_TRIP_DECLINED, false) ? false : true);
+				prefs.edit().putBoolean(Constants.PREF_TRIP_DECLINED, false).commit();
 			}
 			else
 				e.commit();
 	    	
-			DbHelper dbhelper = DbHelper.getInstance(this);
-	    	dbhelper.saveTrackingEvent(new Tracking(
-	    			location.getTime(), 
-	    			location.getLatitude(), 
-	    			location.getLongitude(), 
-	    			location.getAltitude(), 
-	    			location.getBearing(), 
-	    			location.getAccuracy(), 
-	    			0, 
-	    			0, 
-	    			true, 
-	    			location.getSpeed(), 
-	    			event, 
-	    			""), prefs.getLong(Constants.PREF_DRIVER_ID, 0));
-	    	dbhelper.close();
+			if(!prefs.getBoolean(Constants.PREF_TRIP_DECLINED, false)){
+				DbHelper dbhelper = DbHelper.getInstance(this);
+		    	dbhelper.saveTrackingEvent(new Tracking(
+		    			location.getTime(), 
+		    			location.getLatitude(), 
+		    			location.getLongitude(), 
+		    			location.getAltitude(), 
+		    			location.getBearing(), 
+		    			location.getAccuracy(), 
+		    			0, 
+		    			0, 
+		    			true, 
+		    			location.getSpeed(), 
+		    			event, 
+		    			getRawData()), prefs.getLong(Constants.PREF_DRIVER_ID, 0));
+		    	dbhelper.close();
+			}
+			
+			if(event.equals(EVENT_TRIP_START) || event.equals(EVENT_TRIP_STOP)){
+				System.out.println("SEND - "+event);
+				new SendEventsRequest(this, true).execute();	
+			}
 	    	
 	    	if(!TextUtils.isEmpty(event))
-	    		updateNotification();
+	    		updateNotification(false);
         }
 	   	
         Device.checkDevice(this);
+	}
+
+	private void savePoint(Location location){
+		savePoint(location, "");
 	}
 	
 	private void savePoint(String event, long eventTimeMillis){
@@ -614,35 +781,45 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 		if(event.equals(EVENT_TRIP_START)){
 			e.putBoolean(Device.PREF_IN_TRIP_NOW, true).commit();
 			stayFromMillis = 0;
-			lastLocationUpdateTime = System.currentTimeMillis();		
+			lastLocationUpdateTime = System.currentTimeMillis();
+    		updateNotification(true);
+			//showTripDeclineNotification();
 		}
 		else if(event.equals(EVENT_TRIP_STOP)){
 			e.putBoolean(Device.PREF_IN_TRIP_NOW, false).commit();
-			new SendEventsRequest(this, 300).execute();
+    		updateNotification(prefs.getBoolean(Constants.PREF_TRIP_DECLINED, false) ? false : true);
+			prefs.edit().putBoolean(Constants.PREF_TRIP_DECLINED, false).commit();
 			
 			if(lastBeaconDisconnectMillis!=0)
 				eventTimeMillis = lastBeaconDisconnectMillis;
 		}
 		
-		DbHelper dbhelper = DbHelper.getInstance(this);
-		dbhelper.saveTrackingEvent(new Tracking(
-				eventTimeMillis, 
-				0, 
-				0, 
-				0, 
-				0, 
-				0, 
-				0, 
-				0, 
-				true, 
-				0, 
-				event, 
-				""), prefs.getLong(Constants.PREF_DRIVER_ID, 0));
-		dbhelper.close();
+		if(!prefs.getBoolean(Constants.PREF_TRIP_DECLINED, false)){
+			DbHelper dbhelper = DbHelper.getInstance(this);
+			dbhelper.saveTrackingEvent(new Tracking(
+					eventTimeMillis, 
+					0, 
+					0, 
+					0, 
+					0, 
+					0, 
+					0, 
+					0, 
+					true, 
+					0, 
+					event, 
+					getRawData()), prefs.getLong(Constants.PREF_DRIVER_ID, 0));
+			dbhelper.close();
+		}
 		
-		Bugsnag.notify(new RuntimeException("event: "+event));
+		if(event.equals(EVENT_TRIP_START) || event.equals(EVENT_TRIP_STOP)){
+			System.out.println("SEND - "+event);
+			new SendEventsRequest(this, true).execute();
+		}
+		
+//		Bugsnag.notify(new RuntimeException("event: "+event));
 		updateLocationUpdatesHandler();
-		updateNotification();
+		updateNotification(false);
         Device.checkDevice(this);
         
 	}
@@ -673,12 +850,20 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
 	        beaconManager = null;
 		}
 		
+		if(jastecHandler!=null){
+			jastecHandler.removeCallbacksAndMessages(null);
+			jastecHandler = null;
+			jastecRunnable = null;
+		}
+		if(jastecMan!=null)
+			jastecMan.disconnect();
+		
 		mInProgress = false;
-        if(servicesAvailable && mLocationClient != null) {
-        	if(mLocationClient.isConnected())
-        		mLocationClient.removeLocationUpdates(this);
+        if(servicesAvailable && mGoogleApiClient != null) {
+        	if(mGoogleApiClient.isConnected())
+        		LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
 	        // Destroy the current location client
-	        mLocationClient = null;
+        	mGoogleApiClient = null;
         }
         
         if(prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false) && !prefs.getString(Device.PREF_DEVICE_TYPE, "").equals(Device.DEVICE_TYPE_OBD)){
@@ -710,12 +895,6 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
         }
     }
 	
-	private void setUpLocationClientIfNeeded()
-    {
-    	if(mLocationClient == null) 
-            mLocationClient = new LocationClient(this, this, this);
-    }
-	
 	/*
      * Called by Location Services when the request to connect the
      * client finishes successfully. At this point, you can
@@ -726,8 +905,8 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
     	
 		updateServiceMode();
     	
-		if(mLocationClient!=null){
-	    	Location lastLocation = mLocationClient.getLastLocation();
+		if(mGoogleApiClient!=null){
+	    	Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 	    	if(lastLocation!=null){
 		    	Editor e = prefs.edit();
 		        e.putString(Constants.PREF_MOBILE_LATITUDE, ""+lastLocation.getLatitude());
@@ -746,15 +925,15 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
      * Called by Location Services if the connection to the
      * location client drops because of an error.
      */
-    @Override
-    public void onDisconnected() {
-        // Turn off the request flag
-        mInProgress = false;
-        // Destroy the current location client
-        mLocationClient = null;
-        // Display the connection status
-        // Toast.makeText(this, DateFormat.getDateTimeInstance().format(new Date()) + ": Disconnected. Please re-connect.", Toast.LENGTH_SHORT).show();
-    }
+//    @Override
+//    public void onDisconnected() {
+//        // Turn off the request flag
+//        mInProgress = false;
+//        // Destroy the current location client
+//        mLocationClient = null;
+//        // Display the connection status
+//        // Toast.makeText(this, DateFormat.getDateTimeInstance().format(new Date()) + ": Disconnected. Please re-connect.", Toast.LENGTH_SHORT).show();
+//    }
  
     /*
      * Called by Location Services if the attempt to
@@ -771,4 +950,11 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener{
  
         }
     }
+
+	@Override
+	public void onConnectionSuspended(int arg0) {
+		// TODO Auto-generated method stub
+		mInProgress = false;
+		mGoogleApiClient = null;
+	}
 }

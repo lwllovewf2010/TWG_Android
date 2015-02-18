@@ -42,12 +42,21 @@ public class Constants {
 	public static final String PREF_MOBILE_LATITUDE = "mobileLatitude";
 	public static final String PREF_MOBILE_LONGITUDE = "mobileLongitude";
 	public static final String PREF_CHARGER_CONNECTED = "chargerConnected";
+	public static final String PREF_JASTEC_ADDRESS = "jastecAddress";
+	public static final String PREF_JASTEC_NAME = "jastecName";
+	public static final String PREF_JASTEC_CONNECTED = "jastecConnected";
 	public static final String PREF_TRIP_DECLINED = "tripDeclined";
+	public static final String PREF_JASTEC_VEHICLE_VIN = "jastecVIN";
+	public static final String PREF_JASTEC_DTCS = "jastecDTCs";
+	public static final String PREF_JASTEC_MEID = "jastecMEID";
+	
+	public static final String BROADCAST_UPDATE_VEHICLES = "com.modusgo.updateVehicles";
+	public static final String BROADCAST_UPDATE_TRIPS = "com.modusgo.updateTrips";
 	
 	public static final String ROLE_CUSTOMER = "customer";
 
-	public static final String API_BASE_URL_PREFIX = "http://api.";
-	public static final String API_BASE_URL_POSTFIX = ".modusgo.com/";
+	public static final String API_BASE_URL_PREFIX = "https://";
+	public static final String API_BASE_URL_POSTFIX = ".modusgo.com/api/";
 	public static final String API_PLATFORM = "android";
 	
 	//---------------------- DD -----------------------

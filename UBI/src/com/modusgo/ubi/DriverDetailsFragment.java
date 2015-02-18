@@ -6,14 +6,9 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -32,11 +27,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
-import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
-import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -46,13 +42,16 @@ import com.modusgo.ubi.customviews.GoogleMapFragment;
 import com.modusgo.ubi.customviews.GoogleMapFragment.OnMapReadyListener;
 import com.modusgo.ubi.db.DbHelper;
 import com.modusgo.ubi.db.VehicleContract.VehicleEntry;
-import com.modusgo.ubi.requesttasks.BaseRequestAsyncTask;
+import com.modusgo.ubi.requesttasks.GetVehicleRequest;
+import com.modusgo.ubi.utils.TimeAgoUtils;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class DriverDetailsFragment extends Fragment  implements ConnectionCallbacks,
 OnConnectionFailedListener, LocationListener, OnMapReadyListener {
+	
+	private final static String DRIVER_DERAIL = "DRIVER DETAIL";
 	
 	Vehicle vehicle;
 	SharedPreferences prefs;
@@ -61,23 +60,27 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	TextView tvVehicle;
 	TextView tvLocation;
 	TextView tvDate;
+	TextView tvDateLabel;
 	ImageView imagePhoto;
 	TextView tvDistanceToCar;
 	TextView tvDistanceToCarLabel;
 	TextView tvFuel;
 	TextView tvDiagnostics;
 	TextView tvAlerts;
+	TextView tvLocationHour;
 	
 	View btnDistanceToCar;
 	View rlLastTrip;
+	View tvInTrip;
 	View rlLocation;
 	View spaceFuel;
+	View spaceDiagnostic;
 
 	private GoogleMapFragment mMapFragment;
     private GoogleMap mMap;
     
-    private LocationClient mLocationClient;
 
+    private GoogleApiClient mGoogleApiClient;
     // These settings are the same as the settings for the map. They will in fact give you updates
     // at the maximal rates currently possible.
     private static final LocationRequest REQUEST = LocationRequest.create()
@@ -91,7 +94,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 		
 		View rootView = inflater.inflate(R.layout.driver_details_fragment, container, false);
 
-		((MainActivity)getActivity()).setActionBarTitle("DRIVER DETAIL");
+		((MainActivity)getActivity()).setActionBarTitle(DRIVER_DERAIL);
 		
 		prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
@@ -101,6 +104,8 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	    tvVehicle = (TextView) rootView.findViewById(R.id.tvVehicle);
 	    tvLocation = (TextView) rootView.findViewById(R.id.tvLocation);
 	    tvDate = (TextView) rootView.findViewById(R.id.tvDate);
+	    tvDateLabel = (TextView) rootView.findViewById(R.id.tvDateLabel);
+	    tvLocationHour = (TextView) rootView.findViewById(R.id.tvLocationHour);
 	    imagePhoto = (ImageView)rootView.findViewById(R.id.imagePhoto);
 	    tvDistanceToCar = (TextView)rootView.findViewById(R.id.tvDistanceToCar);
 	    tvDistanceToCarLabel = (TextView)rootView.findViewById(R.id.tvDistanceToCarLabel);
@@ -110,7 +115,9 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	    btnDistanceToCar = (View)tvDistanceToCar.getParent();
 	    rlLocation = rootView.findViewById(R.id.rlLocation);
 	    rlLastTrip = rootView.findViewById(R.id.rlDate);
+	    tvInTrip = rootView.findViewById(R.id.tvInTrip);
 	    spaceFuel = rootView.findViewById(R.id.spaceFuel);
+	    spaceDiagnostic = rootView.findViewById(R.id.spaceDiagnostics);
 	    
 	    updateFragment();
 	    
@@ -173,14 +180,16 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 			updateDriverInfo();
 			
 	        setUpLocationClientIfNeeded();
-	        mLocationClient.connect();
+	        mGoogleApiClient.connect();
 		}
 		catch(NullPointerException e){
 			e.printStackTrace();
 		}
 	}
 	
-	private void updateDriverInfo(){
+	public void updateDriverInfo(){
+		if(vehicle.id == ((DriverActivity)getActivity()).vehicle.id)
+			vehicle = ((DriverActivity)getActivity()).vehicle;
 		tvName.setText(vehicle.name);
 	    tvVehicle.setText(vehicle.getCarFullName());
 	    if(TextUtils.isEmpty(vehicle.address)){
@@ -231,6 +240,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	    }
 		
 		View fuelBlock = (View)tvFuel.getParent();
+		View diagnosticBlock = (View)tvDiagnostics.getParent();
 		
 		if(vehicle.carFuelLevel>=0 && !TextUtils.isEmpty(vehicle.carFuelUnit)){
 			String fuelLeftString = vehicle.carFuelLevel+vehicle.carFuelUnit;
@@ -248,7 +258,7 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 			});
 		}
 		else{
-			if(!TextUtils.isEmpty(vehicle.carFuelStatus)){
+			if(!TextUtils.isEmpty(vehicle.carFuelStatus) && !vehicle.hideEngineIcon){
 				tvFuel.setText("");
 				tvFuel.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_fuel_green, 0, R.drawable.ic_fuel_arrow_down, 0);
 				fuelBlock.setOnClickListener(new OnClickListener() {
@@ -262,6 +272,11 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 				spaceFuel.setVisibility(View.GONE);
 				fuelBlock.setVisibility(View.GONE);
 			}
+		}
+		
+		if(vehicle.hideEngineIcon){
+			spaceDiagnostic.setVisibility(View.GONE);
+			diagnosticBlock.setVisibility(View.GONE);
 		}
 	    
 	    if(vehicle.carDTCCount<=0){
@@ -280,25 +295,43 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 	    	tvAlerts.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_alerts_red_medium, 0, 0, 0);		    	
 	    }
 	    
-	    if(vehicle.lastTripId>0){
+	    if(vehicle.lastTripId>0 && !vehicle.inTrip){
 	    	rlLastTrip.findViewById(R.id.dateImageArrow).setVisibility(View.VISIBLE);
 		    rlLastTrip.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					Intent intent = new Intent(getActivity(), TripActivity.class);
-					intent.putExtra(VehicleEntry._ID, vehicle.id);
+					intent.putExtra(TripActivity.EXTRA_VEHICLE_ID, vehicle.id);
 					intent.putExtra(TripActivity.EXTRA_TRIP_ID, vehicle.lastTripId);
 					startActivity(intent);
 				}
 			});
 	    }
 	    else{
-	    	rlLastTrip.findViewById(R.id.dateImageArrow).setVisibility(View.GONE);	    	
+	    	rlLastTrip.findViewById(R.id.dateImageArrow).setVisibility(View.GONE);	
+	    	rlLastTrip.setOnClickListener(null);
 	    }
 	    
-	    if(TextUtils.isEmpty(vehicle.lastTripDate)){
-	    	rlLastTrip.setVisibility(View.GONE);
+	    if(vehicle.inTrip){
+	    	tvInTrip.setVisibility(View.VISIBLE);
+	    	tvDate.setVisibility(View.INVISIBLE);
+	    	tvDateLabel.setVisibility(View.INVISIBLE);
+	    	tvLocationHour.setText(TimeAgoUtils.getTimeAgo("", getActivity()));
 	    }
+	    else if(TextUtils.isEmpty(vehicle.lastTripDate)){
+	    	tvInTrip.setVisibility(View.GONE);
+	    	tvDate.setVisibility(View.INVISIBLE);
+	    	tvDateLabel.setVisibility(View.INVISIBLE);
+	    	tvLocationHour.setText("");
+	    }
+	    else{
+	    	tvInTrip.setVisibility(View.GONE);
+	    	tvDate.setVisibility(View.VISIBLE);
+	    	tvDateLabel.setVisibility(View.VISIBLE);
+	    	tvLocationHour.setText(TimeAgoUtils.getTimeAgo(vehicle.lastTripDate, getActivity()));
+	    }
+	    
+	    
 	    
         setUpMapIfNeeded();
 	}
@@ -324,11 +357,12 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
     }
 	
     private void setUpLocationClientIfNeeded() {
-        if (mLocationClient == null) {
-            mLocationClient = new LocationClient(
-                    getActivity().getApplicationContext(),
-                    this,  // ConnectionCallbacks
-                    this); // OnConnectionFailedListener
+        if (mGoogleApiClient == null) {
+        	mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+            .addApi(LocationServices.API)
+            .addConnectionCallbacks(this)
+            .addOnConnectionFailedListener(this)
+            .build();
         }
     }
     
@@ -385,26 +419,19 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
 			}
     	}
 
-        if (mLocationClient != null) {
-            mLocationClient.disconnect();
+        if (mGoogleApiClient != null) {
+        	mGoogleApiClient.disconnect();
         }
     }
 	
 	@Override
     public void onConnected(Bundle connectionHint) {
-        mLocationClient.requestLocationUpdates(
+		LocationServices.FusedLocationApi.requestLocationUpdates(
+                mGoogleApiClient,
                 REQUEST,
-                this);  // LocationListener
+                this);
     }
 	
-	/**
-     * Callback called when disconnected from GCore. Implementation of {@link ConnectionCallbacks}.
-     */
-    @Override
-    public void onDisconnected() {
-        // Do nothing
-    }
-
     /**
      * Implementation of {@link OnConnectionFailedListener}.
      */
@@ -413,9 +440,22 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
     	//Do nothing
     }
     
+    private long lastVehicleUpdateTimeMillis = 0;
+    
     @Override
 	public void onResume() {
-    	new GetVehiclesTask(getActivity()).execute("vehicles/"+vehicle.id+".json");
+    	if(lastVehicleUpdateTimeMillis == 0 || System.currentTimeMillis() - lastVehicleUpdateTimeMillis > 60000){
+    		lastVehicleUpdateTimeMillis = System.currentTimeMillis();
+	    	new GetVehicleRequest(getActivity().getApplicationContext()).execute("vehicles/"+vehicle.id+".json");
+    	}
+    	
+    	if(isAdded()){
+	    	DbHelper dbHelper = DbHelper.getInstance(getActivity());
+			vehicle = dbHelper.getVehicle(vehicle.id);
+			dbHelper.close();
+			updateFragment();
+    	}
+    	
 		Utils.gaTrackScreen(getActivity(), "Driver Details Screen");
 	    super.onResume();
     }
@@ -423,44 +463,15 @@ OnConnectionFailedListener, LocationListener, OnMapReadyListener {
     @Override
     public void onPause() {
         super.onPause();
-        if (mLocationClient != null) {
-            mLocationClient.disconnect();
+        if (mGoogleApiClient != null) {
+        	mGoogleApiClient.disconnect();
         }
     }
-    
-    class GetVehiclesTask extends BaseRequestAsyncTask{
 
-		public GetVehiclesTask(Context context) {
-			super(context);
-		}
+	@Override
+	public void onConnectionSuspended(int arg0) {
+		// TODO Auto-generated method stub
 		
-		@Override
-		protected void onError(String message) {
-			//Do nothing
-		}
-
-		@Override
-		protected JSONObject doInBackground(String... params) {			
-			return super.doInBackground(params);
-		}
-		
-		@Override
-		protected void onSuccess(JSONObject responseJSON) throws JSONException {
-			System.out.println(responseJSON);
-			
-			JSONObject vehicleJSON = responseJSON.getJSONObject("vehicle");
-			if(isAdded()){
-				vehicle = Vehicle.fromJSON(getActivity().getApplicationContext(), vehicleJSON);
-				DbHelper dbHelper = DbHelper.getInstance(getActivity());
-				dbHelper.saveVehicle(vehicle);
-				dbHelper.close();
-				
-				updateFragment();
-			}
-//			new GetTripsTask(context).execute("vehicles/"+vehicle.id+"/trips.json");
-			
-			super.onSuccess(responseJSON);
-		}
 	}
     
 //    class GetTripsTask extends BaseRequestAsyncTask{

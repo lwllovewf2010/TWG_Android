@@ -22,7 +22,9 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -36,9 +38,16 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.modusgo.dd.LocationService;
 import com.modusgo.ubi.db.DbHelper;
+import com.modusgo.ubi.jastec.DevicesListActivity;
+import com.modusgo.ubi.jastec.JastecManager;
+import com.modusgo.ubi.jastec.LogActivity;
+import com.modusgo.ubi.requesttasks.LogoutTask;
+import com.modusgo.ubi.requesttasks.RequestHelper;
+import com.modusgo.ubi.utils.Device;
 import com.modusgo.ubi.utils.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -57,7 +66,8 @@ public class MainActivity extends FragmentActivity {
     public Vehicle vehicle;
     
     public static enum MenuItems {HOME("HOME",0), COMPARE("COMPARE",1), CALLSUPPORT("CONTACT CLAIMS",2), AGENT("CALL MY AGENT",3),
-    	FEEDBACK("FEEDBACK",4), FINDAMECHANIC("FIND A MECHANIC",5), SETTINGS("SETTINGS",6), DRIVERSETUP("DRIVER SETUP",7), LOGOUT("LOGOUT",8), RESET("RESET",9); 
+    	FEEDBACK("FEEDBACK",4), FINDAMECHANIC("FIND A MECHANIC",5), SETTINGS("SETTINGS",6), JASTECSETUP("JASTEC SETUP",7), 
+    	DRIVERSETUP("DRIVER SETUP",8), TRIP_TAGGING("TRIP TAGGING",9), REWARDS("REWARDS",10), LOGOUT("LOGOUT",11), RESET("RESET",12), LOG("LOG",13); 
 	    private MenuItems(final String text, final int num) {
 	        this.text = text;
 	        this.num = num;
@@ -82,8 +92,8 @@ public class MainActivity extends FragmentActivity {
     
     ArrayList<MenuItems> menuItems;
     
-    SharedPreferences prefs;
-	ActionBar actionBar;
+    protected SharedPreferences prefs;
+    protected ActionBar actionBar;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,15 +132,19 @@ public class MainActivity extends FragmentActivity {
 		});
 	    
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout.setScrimColor(Color.TRANSPARENT);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.END);
         TextView tvVersion = (TextView) findViewById(R.id.tvVersion);
         
-        try {
-			tvVersion.setText("Version: " + getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
-		} catch (NameNotFoundException e) {
-			tvVersion.setText("Version: undefined");
-			e.printStackTrace();
-		}
+        if(tvVersion!=null){
+	        try {
+				tvVersion.setText("Version: " + getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+			} catch (NameNotFoundException e) {
+				tvVersion.setText("Version: undefined");
+				e.printStackTrace();
+			}
+        }
         
         MenuItems[] menuItemsArray = MenuItems.values();
         menuItems = new ArrayList<MenuItems>();
@@ -143,9 +157,14 @@ public class MainActivity extends FragmentActivity {
         if(prefs.getBoolean(Constants.PREF_FIND_MECHANIC_ENABLED, false))
         	menuItems.add(MenuItems.FINDAMECHANIC);
         menuItems.add(MenuItems.SETTINGS);
+        if(prefs.getString(Device.PREF_DEVICE_TYPE, "").equals(Device.DEVICE_TYPE_OBDBLE))
+        	menuItems.add(MenuItems.JASTECSETUP);
         //menuItems.add(MenuItems.DRIVERSETUP);
+        menuItems.add(MenuItems.TRIP_TAGGING);
+        menuItems.add(MenuItems.REWARDS);
         menuItems.add(MenuItems.LOGOUT);
         menuItems.add(MenuItems.RESET);
+        //menuItems.add(MenuItems.LOG);
        
         ArrayAdapter<MenuItems> adapter = new ArrayAdapter<MenuItems>(this, R.layout.drawer_list_item, menuItemsArray){
         	
@@ -192,7 +211,6 @@ public class MainActivity extends FragmentActivity {
         };
         
         
-//        mDrawerList.addFooterView(getLayoutInflater().inflate(R.layout.drawer_list_version_item, null, false));
         // set up the drawer's list view with items and click listener
         mDrawerList.setAdapter(adapter);
 
@@ -361,6 +379,10 @@ public class MainActivity extends FragmentActivity {
 		        	//Settings
 		        	startActivity(new Intent(MainActivity.this, SettingsActivity.class));
 		            break;
+		        case JASTECSETUP:
+		        	//Settings
+		        	startActivity(new Intent(MainActivity.this, DevicesListActivity.class));
+		            break;
 		        case DRIVERSETUP:
 		        	//Driver setup
 		        	startActivity(new Intent(MainActivity.this, DriverSetupActivity.class));		        	
@@ -398,9 +420,22 @@ public class MainActivity extends FragmentActivity {
 
 		        	Utils.gaTrackScreen(MainActivity.this, "Call my agent");
 		        	break;
+		        case TRIP_TAGGING:
+		        	//Trip tagging
+		        	Utils.gaTrackScreen(MainActivity.this, "Trip tagging");
+		        	Toast.makeText(MainActivity.this, R.string.coming_soon, Toast.LENGTH_SHORT).show();
+		        	setNavigationDrawerItemsUnselected();
+		            break;
+		        case REWARDS:
+		        	//Rewards
+		        	Utils.gaTrackScreen(MainActivity.this, "Rewards");
+		        	Toast.makeText(MainActivity.this, R.string.coming_soon, Toast.LENGTH_SHORT).show();
+		        	setNavigationDrawerItemsUnselected();
+		            break;
 		        case LOGOUT:
 		        	//Logout
 		        	Utils.gaTrackScreen(MainActivity.this, "Logout");
+		        	new LogoutTask(MainActivity.this).execute(RequestHelper.LOGOUT_REQUEST);
 		        	prefs.edit().putString(Constants.PREF_AUTH_KEY, "").commit();
 		        	stopService(new Intent(MainActivity.this, LocationService.class));
 		    		Intent intent = new Intent(MainActivity.this, InitActivity.class);
@@ -411,6 +446,11 @@ public class MainActivity extends FragmentActivity {
 		        case RESET:
 		        	//Clear all app data
 		        	stopService(new Intent(MainActivity.this, LocationService.class));
+		        	new LogoutTask(MainActivity.this).execute(RequestHelper.LOGOUT_REQUEST);
+		        	
+		        	if(!TextUtils.isEmpty(prefs.getString(Constants.PREF_JASTEC_ADDRESS, "")))
+		        			JastecManager.getInstance(MainActivity.this).clearDevice();
+		        	
 		        	prefs.edit().clear().commit();
 		        	DbHelper dbHelper = DbHelper.getInstance(MainActivity.this);
 		        	dbHelper.resetDatabase();
@@ -419,6 +459,11 @@ public class MainActivity extends FragmentActivity {
 		    		Intent resetItemIntent = new Intent(MainActivity.this, InitActivity.class);
 		    		resetItemIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
 		    		startActivity(resetItemIntent);
+		            break;
+		            
+		        case LOG:
+		    		Intent logItemIntent = new Intent(MainActivity.this, LogActivity.class);
+		    		startActivity(logItemIntent);
 		            break;
 	        	}
         		
