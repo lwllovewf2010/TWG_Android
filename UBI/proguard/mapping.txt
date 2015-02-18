@@ -19995,9 +19995,9 @@ com.modusgo.dd.GcmBroadcastReceiver -> com.modusgo.dd.GcmBroadcastReceiver:
     14:18:void onReceive(android.content.Context,android.content.Intent) -> onReceive
 com.modusgo.dd.GcmIntentService -> com.modusgo.dd.GcmIntentService:
     android.app.NotificationManager mNotificationManager -> a
-    62:276:void onHandleIntent(android.content.Intent) -> onHandleIntent
-    279:282:boolean isNull(java.lang.String) -> a
-    289:322:void sendNotification(java.lang.String,java.lang.String,boolean,android.content.Intent) -> a
+    62:277:void onHandleIntent(android.content.Intent) -> onHandleIntent
+    280:283:boolean isNull(java.lang.String) -> a
+    290:323:void sendNotification(java.lang.String,java.lang.String,boolean,android.content.Intent) -> a
 com.modusgo.dd.LocationService -> com.modusgo.dd.LocationService:
     long stayFromMillis -> c
     long lastLocationUpdateTime -> d
@@ -20033,18 +20033,18 @@ com.modusgo.dd.LocationService -> com.modusgo.dd.LocationService:
     543:563:void showNotification(int,java.lang.String,android.content.Intent,boolean) -> a
     566:574:boolean isLocationServicesEnabled() -> f
     579:587:boolean isBluetoothServicesEnabled() -> g
-    592:638:void updateLocationUpdatesHandler() -> h
-    643:679:void onLocationChanged(android.location.Location) -> a
-    682:687:java.lang.String getRawData() -> i
-    692:758:void savePoint(android.location.Location,java.lang.String) -> a
-    762:818:void savePoint(java.lang.String,long) -> a
-    821:822:void savePoint(java.lang.String) -> a
-    826:869:void onDestroy() -> onDestroy
-    875:875:android.os.IBinder onBind(android.content.Intent) -> onBind
-    880:887:boolean servicesConnected() -> j
-    899:915:void onConnected(android.os.Bundle) -> a
-    937:945:void onConnectionFailed(com.google.android.gms.common.ConnectionResult) -> a
-    950:952:void onConnectionSuspended(int) -> a
+    592:640:void updateLocationUpdatesHandler() -> h
+    645:682:void onLocationChanged(android.location.Location) -> a
+    685:690:java.lang.String getRawData() -> i
+    695:761:void savePoint(android.location.Location,java.lang.String) -> a
+    769:825:void savePoint(java.lang.String,long) -> a
+    828:829:void savePoint(java.lang.String) -> a
+    833:876:void onDestroy() -> onDestroy
+    882:882:android.os.IBinder onBind(android.content.Intent) -> onBind
+    887:894:boolean servicesConnected() -> j
+    906:922:void onConnected(android.os.Bundle) -> a
+    944:952:void onConnectionFailed(com.google.android.gms.common.ConnectionResult) -> a
+    957:959:void onConnectionSuspended(int) -> a
     58:58:int[] $SWITCH_TABLE$com$modusgo$dd$LocationService$Action() -> a
     101:101:android.content.SharedPreferences access$1(com.modusgo.dd.LocationService) -> a
     464:464:void access$2(com.modusgo.dd.LocationService,boolean) -> a
@@ -20053,7 +20053,7 @@ com.modusgo.dd.LocationService -> com.modusgo.dd.LocationService:
     117:117:boolean access$5(com.modusgo.dd.LocationService) -> d
     431:431:void access$6(com.modusgo.dd.LocationService) -> e
     117:117:void access$7(com.modusgo.dd.LocationService,boolean) -> b
-    820:820:void access$8(com.modusgo.dd.LocationService,java.lang.String) -> a
+    827:827:void access$8(com.modusgo.dd.LocationService,java.lang.String) -> a
     122:122:void access$9(com.modusgo.dd.LocationService,long) -> a
     120:120:com.modusgo.ubi.jastec.JastecManager access$10(com.modusgo.dd.LocationService) -> f
     94:94:android.os.Handler access$11(com.modusgo.dd.LocationService) -> g
@@ -20093,7 +20093,7 @@ com.modusgo.dd.LocationService$6 -> com.modusgo.dd.f:
 com.modusgo.dd.LocationService$8 -> com.modusgo.dd.g:
     com.modusgo.dd.LocationService this$0 -> a
     java.lang.String val$deviceType -> b
-    616:630:void run() -> run
+    616:632:void run() -> run
 com.modusgo.dd.LocationService$Action -> com.modusgo.dd.LocationService$a:
     com.modusgo.dd.LocationService$Action TRIP_DECLINE -> a
     com.modusgo.dd.LocationService$Action[] ENUM$VALUES -> b
@@ -21958,45 +21958,45 @@ com.modusgo.ubi.TripActivity -> com.modusgo.ubi.TripActivity:
     com.google.android.gms.maps.CameraUpdate tripCenterCameraUpdate -> H
     boolean mapCentered -> I
     int[] $SWITCH_TABLE$com$modusgo$ubi$Trip$EventType -> J
-    105:204:void onCreate(android.os.Bundle) -> onCreate
-    207:310:com.modusgo.ubi.Trip getTripFromDB() -> e
-    314:344:void updateActivity() -> f
-    347:483:void updateLabels() -> g
-    486:557:void updateMap() -> h
-    561:564:void onSaveInstanceState(android.os.Bundle) -> onSaveInstanceState
-    568:571:void onResume() -> onResume
-    575:577:void onPause() -> onPause
-    581:583:void onDestroy() -> onDestroy
-    587:589:void onLowMemory() -> onLowMemory
-    313:313:void access$0(com.modusgo.ubi.TripActivity) -> a
-    346:346:void access$1(com.modusgo.ubi.TripActivity) -> b
-    485:485:void access$2(com.modusgo.ubi.TripActivity) -> c
+    105:205:void onCreate(android.os.Bundle) -> onCreate
+    208:311:com.modusgo.ubi.Trip getTripFromDB() -> e
+    315:345:void updateActivity() -> f
+    348:484:void updateLabels() -> g
+    487:558:void updateMap() -> h
+    562:565:void onSaveInstanceState(android.os.Bundle) -> onSaveInstanceState
+    569:572:void onResume() -> onResume
+    576:578:void onPause() -> onPause
+    582:584:void onDestroy() -> onDestroy
+    588:590:void onLowMemory() -> onLowMemory
+    314:314:void access$0(com.modusgo.ubi.TripActivity) -> a
+    347:347:void access$1(com.modusgo.ubi.TripActivity) -> b
+    486:486:void access$2(com.modusgo.ubi.TripActivity) -> c
     64:64:int[] $SWITCH_TABLE$com$modusgo$ubi$Trip$EventType() -> d
 com.modusgo.ubi.TripActivity$1 -> com.modusgo.ubi.dq:
     com.modusgo.ubi.TripActivity this$0 -> a
-    171:173:void onClick(android.view.View) -> onClick
+    172:174:void onClick(android.view.View) -> onClick
 com.modusgo.ubi.TripActivity$2 -> com.modusgo.ubi.dr:
     com.modusgo.ubi.TripActivity this$0 -> a
-    196:197:void onClick(android.view.View) -> onClick
+    197:198:void onClick(android.view.View) -> onClick
 com.modusgo.ubi.TripActivity$3 -> com.modusgo.ubi.ds:
     com.modusgo.ubi.TripActivity this$0 -> a
-    321:322:void onMapLoaded() -> a
+    322:323:void onMapLoaded() -> a
 com.modusgo.ubi.TripActivity$4 -> com.modusgo.ubi.dt:
     com.modusgo.ubi.TripActivity this$0 -> a
     int val$isr -> b
-    470:473:void onClick(android.view.View) -> onClick
+    471:474:void onClick(android.view.View) -> onClick
 com.modusgo.ubi.TripActivity$FetchAddresses -> com.modusgo.ubi.TripActivity$a:
     android.content.Context context -> a
     com.modusgo.ubi.TripActivity this$0 -> b
-    704:718:java.lang.Void doInBackground(java.lang.Void[]) -> a
-    723:725:void onPostExecute(java.lang.Void) -> a
+    705:719:java.lang.Void doInBackground(java.lang.Void[]) -> a
+    724:726:void onPostExecute(java.lang.Void) -> a
     1:1:void onPostExecute(java.lang.Object) -> onPostExecute
     1:1:java.lang.Object doInBackground(java.lang.Object[]) -> doInBackground
 com.modusgo.ubi.TripActivity$GetTripTask -> com.modusgo.ubi.TripActivity$b:
     com.modusgo.ubi.TripActivity this$0 -> a
-    599:602:org.json.JSONObject doInBackground(java.lang.String[]) -> a
-    607:670:void onSuccess(org.json.JSONObject) -> a
-    673:689:com.modusgo.ubi.Trip$EventType getEventType(java.lang.String) -> b
+    600:603:org.json.JSONObject doInBackground(java.lang.String[]) -> a
+    608:671:void onSuccess(org.json.JSONObject) -> a
+    674:690:com.modusgo.ubi.Trip$EventType getEventType(java.lang.String) -> b
 com.modusgo.ubi.TripDeclineActivity -> com.modusgo.ubi.TripDeclineActivity:
     16:32:void onCreate(android.os.Bundle) -> onCreate
 com.modusgo.ubi.TripListHeader -> com.modusgo.ubi.du:

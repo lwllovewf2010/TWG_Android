@@ -8038,6 +8038,7 @@ com.modusgo.dd.LocationService:
     public static final java.lang.String EVENT_TRIP_DECLINED
     private static final double ACCEPT_DISTANCE
     448:462:private void showTripDeclineNotification()
+    764:765:private void savePoint(android.location.Location)
 com.modusgo.dd.LocationService$7
 com.modusgo.dd.PhoneUsageSaverService:
     public static final java.lang.String PREF_UNLOCK_COUNT
