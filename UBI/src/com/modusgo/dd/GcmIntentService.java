@@ -259,8 +259,9 @@ public class GcmIntentService extends IntentService {
             			JSONObject jsonObj = new JSONObject(apsJSON);
             			String message = jsonObj.optString("alert");
             			String sound = jsonObj.optString("sound");
-            			if(!TextUtils.isEmpty(message))
+            			if(!TextUtils.isEmpty(message)){
             				sendNotification(getResources().getString(R.string.app_name), message, TextUtils.isEmpty(sound) ? false : true, notificationIntent);
+            			}
             			
             		} catch (JSONException e1) {
             			e1.printStackTrace();
@@ -297,8 +298,11 @@ public class GcmIntentService extends IntentService {
         .setContentText(msg)
         .setStyle(new NotificationCompat.BigTextStyle().bigText(msg));
         
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this); 
+		int nextNotificationId = prefs.getInt(PREF_NEXT_NOTIFICATION_ID, 1);
+        
         if(intent!=null){
-            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
+            PendingIntent contentIntent = PendingIntent.getActivity(this, nextNotificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         	mBuilder.setContentIntent(contentIntent);
         }
         
@@ -309,15 +313,12 @@ public class GcmIntentService extends IntentService {
 			n.defaults |= Notification.DEFAULT_VIBRATE;
 		}
 		
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this); 
-		int nextNotificationId = prefs.getInt(PREF_NEXT_NOTIFICATION_ID, 1);
-		
         mNotificationManager.notify(nextNotificationId, n);
         nextNotificationId++;
         
 		if(nextNotificationId >= MAX_NOTIFICATIONS)
 			nextNotificationId = 1;
 		
-		prefs.edit().putInt(PREF_NEXT_NOTIFICATION_ID, nextNotificationId);
+		prefs.edit().putInt(PREF_NEXT_NOTIFICATION_ID, nextNotificationId).commit();
     }
 }

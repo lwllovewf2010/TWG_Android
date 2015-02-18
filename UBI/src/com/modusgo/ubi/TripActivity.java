@@ -107,13 +107,14 @@ public class TripActivity extends MainActivity {
 		
 		setActionBarTitle("TRIP DETAILS");
 		
-		if(savedInstanceState!=null){
-			driverId = savedInstanceState.getLong(EXTRA_VEHICLE_ID);
-			tripId = savedInstanceState.getLong(EXTRA_TRIP_ID);
-		}
-		else if(getIntent()!=null){
+		
+		if(getIntent()!=null){
 			driverId = getIntent().getLongExtra(EXTRA_VEHICLE_ID,0);
 			tripId = getIntent().getLongExtra(EXTRA_TRIP_ID,0);
+		}
+		else if(savedInstanceState!=null){
+			driverId = savedInstanceState.getLong(EXTRA_VEHICLE_ID);
+			tripId = savedInstanceState.getLong(EXTRA_TRIP_ID);
 		}
 
 		DbHelper dHelper = DbHelper.getInstance(this);
