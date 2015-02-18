@@ -625,6 +625,8 @@ LocationListener{
 			    	        	else{
 				    	        	System.out.println("checkLocationUpdatesRunnable reposted");
 			    	        		checkLocationUpdatesHandler.postDelayed(this, checkLocationUpdatesFrequency);
+			    	        		
+			    					new SendEventsRequest(LocationService.this, false).execute();	
 			    	        	}
 		    	        	}
 		    	        }

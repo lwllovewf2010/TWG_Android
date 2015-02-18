@@ -164,9 +164,9 @@ public class SendEventsRequest extends BasePostRequestAsyncTask {
 		requestParams.add(new BasicNameValuePair("data",rootJSON.toString()));
 		System.out.println(requestParams);
 		
-		MetaData metaData = new MetaData();
-		metaData.addToTab("Data", "raw_request_params", requestParams);
-		//Bugsnag.notify(new Exception("SendEventsRequest"), metaData);
+//		MetaData metaData = new MetaData();
+//		metaData.addToTab("Data", "raw_request_params", requestParams);
+//		Bugsnag.notify(new Exception("SendEventsRequest"), metaData);
 		
 		return super.doInBackground("device.json");
 	}
