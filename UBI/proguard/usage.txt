@@ -134,7 +134,6 @@ android.support.v4.app.DialogFragment:
     206:206:public android.app.Dialog getDialog()
     224:226:public void setCancelable(boolean)
     232:232:public boolean isCancelable()
-    253:254:public void setShowsDialog(boolean)
     260:260:public boolean getShowsDialog()
 android.support.v4.app.DialogFragment$DialogStyle
 android.support.v4.app.Fragment:
@@ -153,7 +152,6 @@ android.support.v4.app.Fragment:
     631:631:public final java.lang.CharSequence getText(int)
     641:641:public final java.lang.String getString(int)
     654:654:public final varargs java.lang.String getString(int,java.lang.Object[])
-    721:721:public final boolean isRemoving()
     732:732:public final boolean isInLayout()
     740:740:public final boolean isResumed()
     749:749:public final boolean isVisible()
@@ -163,7 +161,6 @@ android.support.v4.app.Fragment:
     807:807:public final boolean getRetainInstance()
     818:824:public void setHasOptionsMenu(boolean)
     870:870:public boolean getUserVisibleHint()
-    877:885:public android.support.v4.app.LoaderManager getLoaderManager()
     1351:1352:public void registerForContextMenu(android.view.View)
     1362:1363:public void unregisterForContextMenu(android.view.View)
     1394:1395:public void setEnterSharedElementCallback(android.support.v4.app.SharedElementCallback)
@@ -193,7 +190,6 @@ android.support.v4.app.FragmentManager:
     public abstract void removeOnBackStackChangedListener(android.support.v4.app.FragmentManager$OnBackStackChangedListener)
     public abstract void putFragment(android.os.Bundle,java.lang.String,android.support.v4.app.Fragment)
     public abstract android.support.v4.app.Fragment getFragment(android.os.Bundle,java.lang.String)
-    public abstract java.util.List getFragments()
     public abstract android.support.v4.app.Fragment$SavedState saveFragmentInstanceState(android.support.v4.app.Fragment)
     public abstract boolean isDestroyed()
     public abstract void dump(java.lang.String,java.io.FileDescriptor,java.io.PrintWriter,java.lang.String[])
@@ -219,7 +215,6 @@ android.support.v4.app.FragmentManagerImpl:
     550:550:public android.support.v4.app.FragmentManager$BackStackEntry getBackStackEntryAt(int)
     555:559:public void addOnBackStackChangedListener(android.support.v4.app.FragmentManager$OnBackStackChangedListener)
     563:566:public void removeOnBackStackChangedListener(android.support.v4.app.FragmentManager$OnBackStackChangedListener)
-    597:597:public java.util.List getFragments()
     602:610:public android.support.v4.app.Fragment$SavedState saveFragmentInstanceState(android.support.v4.app.Fragment)
     615:615:public boolean isDestroyed()
     1352:1360:public android.support.v4.app.Fragment findFragmentByWho(java.lang.String)
@@ -273,26 +268,11 @@ android.support.v4.app.ListFragment
 android.support.v4.app.ListFragment$1
 android.support.v4.app.ListFragment$2
 android.support.v4.app.LoaderManager:
-    public abstract android.support.v4.content.Loader initLoader(int,android.os.Bundle,android.support.v4.app.LoaderManager$LoaderCallbacks)
-    public abstract android.support.v4.content.Loader restartLoader(int,android.os.Bundle,android.support.v4.app.LoaderManager$LoaderCallbacks)
-    public abstract void destroyLoader(int)
-    public abstract android.support.v4.content.Loader getLoader(int)
     public abstract void dump(java.lang.String,java.io.FileDescriptor,java.io.PrintWriter,java.lang.String[])
     177:178:public static void enableDebugLogging(boolean)
 android.support.v4.app.LoaderManagerImpl:
     static final java.lang.String TAG
     boolean mRetainingStarted
-    boolean mCreatingLoader
-    489:492:private android.support.v4.app.LoaderManagerImpl$LoaderInfo createLoader(int,android.os.Bundle,android.support.v4.app.LoaderManager$LoaderCallbacks)
-    498:503:private android.support.v4.app.LoaderManagerImpl$LoaderInfo createAndInstallLoader(int,android.os.Bundle,android.support.v4.app.LoaderManager$LoaderCallbacks)
-    508:515:void installLoader(android.support.v4.app.LoaderManagerImpl$LoaderInfo)
-    543:565:public android.support.v4.content.Loader initLoader(int,android.os.Bundle,android.support.v4.app.LoaderManager$LoaderCallbacks)
-    593:647:public android.support.v4.content.Loader restartLoader(int,android.os.Bundle,android.support.v4.app.LoaderManager$LoaderCallbacks)
-    658:678:public void destroyLoader(int)
-    686:697:public android.support.v4.content.Loader getLoader(int)
-android.support.v4.app.LoaderManagerImpl$LoaderInfo:
-    228:232:public LoaderManagerImpl$LoaderInfo(android.support.v4.app.LoaderManagerImpl,int,android.os.Bundle,android.support.v4.app.LoaderManager$LoaderCallbacks)
-    362:415:public void onLoadComplete(android.support.v4.content.Loader,java.lang.Object)
 android.support.v4.app.NavUtils:
     private static final java.lang.String TAG
     public static final java.lang.String PARENT_ACTIVITY
@@ -420,16 +400,12 @@ android.support.v4.app.NotificationCompat$Builder:
     1089:1091:public android.support.v4.app.NotificationCompat$Builder setFullScreenIntent(android.app.PendingIntent,boolean)
     1109:1111:public android.support.v4.app.NotificationCompat$Builder setTicker(java.lang.CharSequence,android.widget.RemoteViews)
     1118:1119:public android.support.v4.app.NotificationCompat$Builder setLargeIcon(android.graphics.Bitmap)
-    1131:1133:public android.support.v4.app.NotificationCompat$Builder setSound(android.net.Uri)
     1148:1150:public android.support.v4.app.NotificationCompat$Builder setSound(android.net.Uri,int)
-    1165:1166:public android.support.v4.app.NotificationCompat$Builder setVibrate(long[])
     1175:1181:public android.support.v4.app.NotificationCompat$Builder setLights(int,int,int)
-    1196:1197:public android.support.v4.app.NotificationCompat$Builder setOngoing(boolean)
     1205:1206:public android.support.v4.app.NotificationCompat$Builder setOnlyAlertOnce(boolean)
     1227:1228:public android.support.v4.app.NotificationCompat$Builder setLocalOnly(boolean)
     1239:1240:public android.support.v4.app.NotificationCompat$Builder setCategory(java.lang.String)
     1254:1258:public android.support.v4.app.NotificationCompat$Builder setDefaults(int)
-    1287:1288:public android.support.v4.app.NotificationCompat$Builder setPriority(int)
     1314:1315:public android.support.v4.app.NotificationCompat$Builder addPerson(java.lang.String)
     1330:1331:public android.support.v4.app.NotificationCompat$Builder setGroup(java.lang.String)
     1342:1343:public android.support.v4.app.NotificationCompat$Builder setGroupSummary(boolean)
@@ -759,25 +735,15 @@ android.support.v4.content.IntentCompatHoneycomb:
     28:28:public static android.content.Intent makeRestartActivityTask(android.content.ComponentName)
 android.support.v4.content.IntentCompatIcsMr1
 android.support.v4.content.Loader:
-    android.content.Context mContext
-    91:93:public Loader(android.content.Context)
-    103:106:public void deliverResult(java.lang.Object)
     112:112:public android.content.Context getContext()
-    119:119:public int getId()
-    158:158:public boolean isStarted()
-    167:167:public boolean isAbandoned()
     176:176:public boolean isReset()
     218:219:public void forceLoad()
     226:226:protected void onForceLoad()
-    262:264:public void abandon()
-    276:276:protected void onAbandon()
     314:317:public boolean takeContentChanged()
     328:329:public void commitContentChanged()
     339:342:public void rollbackContentChanged()
     353:361:public void onContentChanged()
 android.support.v4.content.Loader$ForceLoadContentObserver
-android.support.v4.content.Loader$OnLoadCompleteListener:
-    public abstract void onLoadComplete(android.support.v4.content.Loader,java.lang.Object)
 android.support.v4.content.LocalBroadcastManager
 android.support.v4.content.LocalBroadcastManager$1
 android.support.v4.content.LocalBroadcastManager$BroadcastRecord
@@ -1149,15 +1115,8 @@ android.support.v4.util.SimpleArrayMap:
     231:235:public SimpleArrayMap(android.support.v4.util.SimpleArrayMap)
     429:442:public void putAll(android.support.v4.util.SimpleArrayMap)
 android.support.v4.util.SparseArrayCompat:
-    76:76:public java.lang.Object get(int)
-    85:90:public java.lang.Object get(int,java.lang.Object)
-    98:106:public void delete(int)
-    112:113:public void remove(int)
-    119:123:public void removeAt(int)
     132:136:public void removeAtRange(int,int)
-    172:216:public void put(int,java.lang.Object)
     263:268:public void setValueAt(int,java.lang.Object)
-    276:280:public int indexOfKey(int)
     294:302:public int indexOfValue(java.lang.Object)
     325:352:public void append(int,java.lang.Object)
 android.support.v4.util.TimeUtils
@@ -2290,8 +2249,6 @@ android.support.v4.widget.DrawerLayout:
     private static final boolean CHILDREN_DISALLOW_INTERCEPT
     private static final float TOUCH_SLOP_SENSITIVITY
     360:364:public void setChildInsets(java.lang.Object,boolean)
-    380:390:public void setDrawerShadow(android.graphics.drawable.Drawable,int)
-    400:401:public void setDrawerShadow(int,int)
     509:515:public void setDrawerLockMode(int,android.view.View)
     526:533:public int getDrawerLockMode(int)
     565:572:public void setDrawerTitle(int,java.lang.CharSequence)
@@ -3607,11 +3564,8 @@ com.google.android.gms.common.ConnectionResult:
     public static final int INTERRUPTED
     public static final int API_UNAVAILABLE
     public static final int DRIVE_EXTERNAL_STORAGE_REQUIRED
-    public void startResolutionForResult(android.app.Activity,int)
-    public boolean isSuccess()
-    public int getErrorCode()
-    public android.app.PendingIntent getResolution()
-com.google.android.gms.common.ErrorDialogFragment
+com.google.android.gms.common.ErrorDialogFragment:
+    public static com.google.android.gms.common.ErrorDialogFragment newInstance(android.app.Dialog)
 com.google.android.gms.common.GooglePlayServicesClient:
     public abstract void connect()
     public abstract void disconnect()
@@ -3623,6 +3577,7 @@ com.google.android.gms.common.GooglePlayServicesClient:
     public abstract void registerConnectionFailedListener(com.google.android.gms.common.GooglePlayServicesClient$OnConnectionFailedListener)
     public abstract boolean isConnectionFailedListenerRegistered(com.google.android.gms.common.GooglePlayServicesClient$OnConnectionFailedListener)
     public abstract void unregisterConnectionFailedListener(com.google.android.gms.common.GooglePlayServicesClient$OnConnectionFailedListener)
+com.google.android.gms.common.GooglePlayServicesClient$ConnectionCallbacks
 com.google.android.gms.common.GooglePlayServicesRepairableException:
     public int getConnectionStatusCode()
 com.google.android.gms.common.GooglePlayServicesUtil:
@@ -3637,7 +3592,6 @@ com.google.android.gms.common.GooglePlayServicesUtil:
     public static java.lang.String f(android.content.Context,int)
     public static android.app.PendingIntent getErrorPendingIntent(int,android.content.Context,int)
     public static boolean showErrorDialogFragment(int,android.app.Activity,int,android.content.DialogInterface$OnCancelListener)
-    public static boolean showErrorDialogFragment(int,android.app.Activity,android.support.v4.app.Fragment,int,android.content.DialogInterface$OnCancelListener)
     public static void showErrorNotification(int,android.content.Context)
     public static boolean showErrorDialogFragment(int,android.app.Activity,int)
     public static java.lang.String getOpenSourceSoftwareLicenseInfo(android.content.Context)
@@ -3645,23 +3599,31 @@ com.google.android.gms.common.GooglePlayServicesUtil:
     private static java.lang.String F(android.content.Context)
 com.google.android.gms.common.Scopes
 com.google.android.gms.common.SignInButton
-com.google.android.gms.common.SupportErrorDialogFragment
+com.google.android.gms.common.SupportErrorDialogFragment:
+    public static com.google.android.gms.common.SupportErrorDialogFragment newInstance(android.app.Dialog)
 com.google.android.gms.common.UserRecoverableException:
     public android.content.Intent getIntent()
 com.google.android.gms.common.annotation.KeepName
-com.google.android.gms.common.api.Api
-com.google.android.gms.common.api.Api$ApiOptions
 com.google.android.gms.common.api.Api$ApiOptions$HasOptions
-com.google.android.gms.common.api.Api$ApiOptions$NoOptions
-com.google.android.gms.common.api.Api$ApiOptions$NotRequiredOptions
 com.google.android.gms.common.api.Api$ApiOptions$Optional
-com.google.android.gms.common.api.Api$a
-com.google.android.gms.common.api.Api$b
-com.google.android.gms.common.api.Api$c
-com.google.android.gms.common.api.BaseImplementation
-com.google.android.gms.common.api.BaseImplementation$AbstractPendingResult
-com.google.android.gms.common.api.BaseImplementation$CallbackHandler
-com.google.android.gms.common.api.BaseImplementation$a
+com.google.android.gms.common.api.BaseImplementation:
+    public BaseImplementation()
+com.google.android.gms.common.api.BaseImplementation$AbstractPendingResult:
+    public BaseImplementation$AbstractPendingResult(android.os.Looper)
+    public BaseImplementation$AbstractPendingResult(com.google.android.gms.common.api.BaseImplementation$CallbackHandler)
+    public final com.google.android.gms.common.api.Result await()
+    public final com.google.android.gms.common.api.Result await(long,java.util.concurrent.TimeUnit)
+    public final void setResultCallback(com.google.android.gms.common.api.ResultCallback)
+    public final void setResultCallback(com.google.android.gms.common.api.ResultCallback,long,java.util.concurrent.TimeUnit)
+    public final void a(com.google.android.gms.common.api.PendingResult$a)
+    protected final void a(com.google.android.gms.common.internal.j)
+    public boolean isCanceled()
+    private void gh()
+    public bridge synthetic void b(java.lang.Object)
+com.google.android.gms.common.api.BaseImplementation$CallbackHandler:
+    public static final int CALLBACK_ON_COMPLETE
+    public static final int CALLBACK_ON_TIMEOUT
+    public void sendTimeoutResultCallback(com.google.android.gms.common.api.BaseImplementation$AbstractPendingResult,long)
 com.google.android.gms.common.api.BaseImplementation$b
 com.google.android.gms.common.api.Batch
 com.google.android.gms.common.api.Batch$1
@@ -3689,66 +3651,66 @@ com.google.android.gms.common.api.CommonStatusCodes:
     public CommonStatusCodes()
 com.google.android.gms.common.api.GoogleApiClient:
     public abstract com.google.android.gms.common.api.BaseImplementation$a a(com.google.android.gms.common.api.BaseImplementation$a)
-    public abstract com.google.android.gms.common.api.BaseImplementation$a b(com.google.android.gms.common.api.BaseImplementation$a)
     public abstract com.google.android.gms.common.api.c c(java.lang.Object)
-    public abstract com.google.android.gms.common.api.Api$a a(com.google.android.gms.common.api.Api$c)
     public abstract boolean a(com.google.android.gms.common.api.Scope)
     public abstract android.os.Looper getLooper()
-    public abstract void connect()
     public abstract com.google.android.gms.common.ConnectionResult blockingConnect()
     public abstract com.google.android.gms.common.ConnectionResult blockingConnect(long,java.util.concurrent.TimeUnit)
-    public abstract void disconnect()
     public abstract void reconnect()
     public abstract void stopAutoManage(android.support.v4.app.FragmentActivity)
-    public abstract boolean isConnected()
-    public abstract boolean isConnecting()
-    public abstract void registerConnectionCallbacks(com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks)
     public abstract boolean isConnectionCallbacksRegistered(com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks)
-    public abstract void unregisterConnectionCallbacks(com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks)
-    public abstract void registerConnectionFailedListener(com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener)
     public abstract boolean isConnectionFailedListenerRegistered(com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener)
-    public abstract void unregisterConnectionFailedListener(com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener)
-com.google.android.gms.common.api.GoogleApiClient$Builder
+com.google.android.gms.common.api.GoogleApiClient$Builder:
+    public GoogleApiClient$Builder(android.content.Context,com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks,com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener)
+    public com.google.android.gms.common.api.GoogleApiClient$Builder setHandler(android.os.Handler)
+    public com.google.android.gms.common.api.GoogleApiClient$Builder setViewForPopups(android.view.View)
+    public com.google.android.gms.common.api.GoogleApiClient$Builder addScope(com.google.android.gms.common.api.Scope)
+    public com.google.android.gms.common.api.GoogleApiClient$Builder addApi(com.google.android.gms.common.api.Api,com.google.android.gms.common.api.Api$ApiOptions$HasOptions)
+    public com.google.android.gms.common.api.GoogleApiClient$Builder setAccountName(java.lang.String)
+    public com.google.android.gms.common.api.GoogleApiClient$Builder useDefaultAccount()
+    public com.google.android.gms.common.api.GoogleApiClient$Builder setGravityForPopups(int)
+    public com.google.android.gms.common.api.GoogleApiClient$Builder enableAutoManage(android.support.v4.app.FragmentActivity,int,com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener)
 com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks:
     public static final int CAUSE_SERVICE_DISCONNECTED
     public static final int CAUSE_NETWORK_LOST
-com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener:
-    public abstract void onConnectionFailed(com.google.android.gms.common.ConnectionResult)
-com.google.android.gms.common.api.PendingResult
-com.google.android.gms.common.api.PendingResult$a
-com.google.android.gms.common.api.Releasable
-com.google.android.gms.common.api.Result
-com.google.android.gms.common.api.ResultCallback
-com.google.android.gms.common.api.Scope
+com.google.android.gms.common.api.PendingResult:
+    public abstract com.google.android.gms.common.api.Result await()
+    public abstract com.google.android.gms.common.api.Result await(long,java.util.concurrent.TimeUnit)
+    public abstract void cancel()
+    public abstract boolean isCanceled()
+    public abstract void setResultCallback(com.google.android.gms.common.api.ResultCallback)
+    public abstract void setResultCallback(com.google.android.gms.common.api.ResultCallback,long,java.util.concurrent.TimeUnit)
+    public abstract void a(com.google.android.gms.common.api.PendingResult$a)
+com.google.android.gms.common.api.Scope:
+    public Scope(java.lang.String)
 com.google.android.gms.common.api.Status:
-    public Status(int,java.lang.String,android.app.PendingIntent)
     public void startResolutionForResult(android.app.Activity,int)
     public boolean hasResolution()
-    public boolean isSuccess()
     public boolean isCanceled()
     public boolean isInterrupted()
     public android.app.PendingIntent getResolution()
     public com.google.android.gms.common.ConnectionResult gt()
-    public com.google.android.gms.common.api.Status getStatus()
 com.google.android.gms.common.api.StatusCreator:
     public static final int CONTENT_DESCRIPTION
 com.google.android.gms.common.api.a
-com.google.android.gms.common.api.b
-com.google.android.gms.common.api.b$1
-com.google.android.gms.common.api.b$2
-com.google.android.gms.common.api.b$3
-com.google.android.gms.common.api.b$4
-com.google.android.gms.common.api.b$a
-com.google.android.gms.common.api.b$b
-com.google.android.gms.common.api.b$c
-com.google.android.gms.common.api.c
+com.google.android.gms.common.api.b:
+    public com.google.android.gms.common.api.BaseImplementation$a a(com.google.android.gms.common.api.BaseImplementation$a)
+    public com.google.android.gms.common.api.c c(java.lang.Object)
+    public boolean a(com.google.android.gms.common.api.Scope)
+    public com.google.android.gms.common.ConnectionResult blockingConnect()
+    public com.google.android.gms.common.ConnectionResult blockingConnect(long,java.util.concurrent.TimeUnit)
+    public void reconnect()
+    public void stopAutoManage(android.support.v4.app.FragmentActivity)
+    public boolean isConnectionCallbacksRegistered(com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks)
+    public boolean isConnectionFailedListenerRegistered(com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener)
+    public android.os.Looper getLooper()
+com.google.android.gms.common.api.c:
+    private final com.google.android.gms.common.api.c$a Js
+    c(android.os.Looper,java.lang.Object)
+    public void a(com.google.android.gms.common.api.c$b)
+    void b(com.google.android.gms.common.api.c$b)
 com.google.android.gms.common.api.c$a
 com.google.android.gms.common.api.c$b
-com.google.android.gms.common.api.d
-com.google.android.gms.common.api.d$1
-com.google.android.gms.common.api.d$a
-com.google.android.gms.common.api.d$b
-com.google.android.gms.common.api.d$c
 com.google.android.gms.common.data.DataBuffer
 com.google.android.gms.common.data.DataBufferUtils
 com.google.android.gms.common.data.DataHolder:
@@ -3821,25 +3783,19 @@ com.google.android.gms.common.images.a$b
 com.google.android.gms.common.images.a$c:
     public a$c(com.google.android.gms.common.images.ImageManager$OnImageLoadedListener,android.net.Uri)
 com.google.android.gms.common.internal.ClientSettings:
-    private final com.google.android.gms.common.internal.ClientSettings$ParcelableClientSettings Ls
-    private final android.view.View IL
-    public ClientSettings(java.lang.String,java.util.Collection,int,android.view.View,java.lang.String)
-    public java.lang.String getAccountName()
     public java.lang.String getAccountNameOrDefault()
     public int getGravityForPopups()
-    public java.util.List getScopes()
     public java.lang.String[] getScopesArray()
     public java.lang.String getRealClientPackageName()
     public android.view.View getViewForPopups()
     public com.google.android.gms.common.internal.ClientSettings$ParcelableClientSettings getParcelableClientSettings()
 com.google.android.gms.common.internal.ClientSettings$ParcelableClientSettings:
-    public ClientSettings$ParcelableClientSettings(java.lang.String,java.util.Collection,int,java.lang.String)
     public java.lang.String getAccountNameOrDefault()
 com.google.android.gms.common.internal.ParcelableClientSettingsCreator:
     public static final int CONTENT_DESCRIPTION
 com.google.android.gms.common.internal.e:
+    protected varargs e(android.content.Context,com.google.android.gms.common.GooglePlayServicesClient$ConnectionCallbacks,com.google.android.gms.common.GooglePlayServicesClient$OnConnectionFailedListener,java.lang.String[])
     public void aA(int)
-    public final android.os.Looper getLooper()
     public final java.lang.String[] gR()
     public final void a(com.google.android.gms.common.internal.e$b)
     public void registerConnectionCallbacks(com.google.android.gms.common.GooglePlayServicesClient$ConnectionCallbacks)
@@ -3848,12 +3804,12 @@ com.google.android.gms.common.internal.e:
     public void registerConnectionFailedListener(com.google.android.gms.common.GooglePlayServicesClient$OnConnectionFailedListener)
     public boolean isConnectionFailedListenerRegistered(com.google.android.gms.common.GooglePlayServicesClient$OnConnectionFailedListener)
     public void unregisterConnectionFailedListener(com.google.android.gms.common.GooglePlayServicesClient$OnConnectionFailedListener)
+com.google.android.gms.common.internal.e$c
 com.google.android.gms.common.internal.e$d
+com.google.android.gms.common.internal.e$g
 com.google.android.gms.common.internal.f:
     public boolean isConnectionCallbacksRegistered(com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks)
-    public void unregisterConnectionCallbacks(com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks)
     public boolean isConnectionFailedListenerRegistered(com.google.android.gms.common.GooglePlayServicesClient$OnConnectionFailedListener)
-    public void unregisterConnectionFailedListener(com.google.android.gms.common.GooglePlayServicesClient$OnConnectionFailedListener)
 com.google.android.gms.common.internal.i:
     public void n(java.lang.String,java.lang.String)
     public void o(java.lang.String,java.lang.String)
@@ -3862,7 +3818,6 @@ com.google.android.gms.common.internal.i:
     public void q(java.lang.String,java.lang.String)
     public void c(java.lang.String,java.lang.String,java.lang.Throwable)
     public void a(android.content.Context,java.lang.String,java.lang.String,java.lang.Throwable)
-com.google.android.gms.common.internal.j
 com.google.android.gms.common.internal.j$a
 com.google.android.gms.common.internal.j$a$a
 com.google.android.gms.common.internal.m
@@ -3870,7 +3825,6 @@ com.google.android.gms.common.internal.m$a
 com.google.android.gms.common.internal.m$a$a
 com.google.android.gms.common.internal.o:
     public static java.lang.String b(java.lang.String,java.lang.Object)
-    public static void aT(java.lang.String)
 com.google.android.gms.common.internal.p
 com.google.android.gms.common.internal.q
 com.google.android.gms.common.internal.r
@@ -5889,8 +5843,6 @@ com.google.android.gms.internal.hi:
     public hi(java.lang.String,com.google.android.gms.internal.hq)
     public hi(java.lang.String,com.google.android.gms.internal.hq,java.lang.String)
     public hi(byte[],com.google.android.gms.internal.hq)
-com.google.android.gms.internal.hm$b:
-    public com.google.android.gms.common.api.Status getStatus()
 com.google.android.gms.internal.hp:
     public static int as(java.lang.String)
     public static int fl()
@@ -6139,16 +6091,21 @@ com.google.android.gms.internal.lr
 com.google.android.gms.internal.lr$1
 com.google.android.gms.internal.lr$2
 com.google.android.gms.internal.lr$a
-com.google.android.gms.internal.lu
-com.google.android.gms.internal.lu$1
+com.google.android.gms.internal.lu:
+    public com.google.android.gms.common.api.PendingResult requestLocationUpdates(com.google.android.gms.common.api.GoogleApiClient,com.google.android.gms.location.LocationRequest,com.google.android.gms.location.LocationListener,android.os.Looper)
+    public com.google.android.gms.common.api.PendingResult requestLocationUpdates(com.google.android.gms.common.api.GoogleApiClient,com.google.android.gms.location.LocationRequest,android.app.PendingIntent)
+    public com.google.android.gms.common.api.PendingResult removeLocationUpdates(com.google.android.gms.common.api.GoogleApiClient,android.app.PendingIntent)
+    public com.google.android.gms.common.api.PendingResult setMockMode(com.google.android.gms.common.api.GoogleApiClient,boolean)
+    public com.google.android.gms.common.api.PendingResult setMockLocation(com.google.android.gms.common.api.GoogleApiClient,android.location.Location)
 com.google.android.gms.internal.lu$2
 com.google.android.gms.internal.lu$3
 com.google.android.gms.internal.lu$4
-com.google.android.gms.internal.lu$5
 com.google.android.gms.internal.lu$6
 com.google.android.gms.internal.lu$7
-com.google.android.gms.internal.lu$a
-com.google.android.gms.internal.lv
+com.google.android.gms.internal.lv:
+    public com.google.android.gms.common.api.PendingResult addGeofences(com.google.android.gms.common.api.GoogleApiClient,java.util.List,android.app.PendingIntent)
+    public com.google.android.gms.common.api.PendingResult removeGeofences(com.google.android.gms.common.api.GoogleApiClient,android.app.PendingIntent)
+    public com.google.android.gms.common.api.PendingResult removeGeofences(com.google.android.gms.common.api.GoogleApiClient,java.util.List)
 com.google.android.gms.internal.lv$1
 com.google.android.gms.internal.lv$1$1
 com.google.android.gms.internal.lv$2
@@ -6159,21 +6116,21 @@ com.google.android.gms.internal.lv$a
 com.google.android.gms.internal.lw$a:
     public lw$a()
 com.google.android.gms.internal.ly:
-    public void requestLocationUpdates(com.google.android.gms.location.LocationRequest,com.google.android.gms.location.LocationListener,android.os.Looper)
+    public void a(com.google.android.gms.internal.ma,com.google.android.gms.location.LocationListener,android.os.Looper)
     public void b(com.google.android.gms.internal.ma,android.app.PendingIntent)
     public void requestLocationUpdates(com.google.android.gms.location.LocationRequest,android.app.PendingIntent)
     public void removeLocationUpdates(android.app.PendingIntent)
     public void setMockLocation(android.location.Location)
 com.google.android.gms.internal.lz:
+    public lz(android.content.Context,com.google.android.gms.common.GooglePlayServicesClient$ConnectionCallbacks,com.google.android.gms.common.GooglePlayServicesClient$OnConnectionFailedListener,java.lang.String)
     public lz(android.content.Context,android.os.Looper,java.lang.String,com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks,com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener,java.lang.String)
-    public lz(android.content.Context,android.os.Looper,java.lang.String,com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks,com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener,java.lang.String,java.lang.String)
-    public lz(android.content.Context,android.os.Looper,java.lang.String,com.google.android.gms.common.api.GoogleApiClient$ConnectionCallbacks,com.google.android.gms.common.api.GoogleApiClient$OnConnectionFailedListener,java.lang.String,java.lang.String,java.lang.String)
     public void requestActivityUpdates(long,android.app.PendingIntent)
     public void removeActivityUpdates(android.app.PendingIntent)
     public void addGeofences(java.util.List,android.app.PendingIntent,com.google.android.gms.location.LocationClient$OnAddGeofencesResultListener)
     public void removeGeofences(android.app.PendingIntent,com.google.android.gms.location.LocationClient$OnRemoveGeofencesResultListener)
     public void removeGeofences(java.util.List,com.google.android.gms.location.LocationClient$OnRemoveGeofencesResultListener)
-    public void requestLocationUpdates(com.google.android.gms.location.LocationRequest,com.google.android.gms.location.LocationListener,android.os.Looper)
+    public void a(com.google.android.gms.internal.ma,com.google.android.gms.location.LocationListener)
+    public void a(com.google.android.gms.internal.ma,com.google.android.gms.location.LocationListener,android.os.Looper)
     public void b(com.google.android.gms.internal.ma,android.app.PendingIntent)
     public void requestLocationUpdates(com.google.android.gms.location.LocationRequest,android.app.PendingIntent)
     public void removeLocationUpdates(android.app.PendingIntent)
@@ -6183,6 +6140,10 @@ com.google.android.gms.internal.lz$a
 com.google.android.gms.internal.lz$b
 com.google.android.gms.internal.lz$d
 com.google.android.gms.internal.m
+com.google.android.gms.internal.ma:
+    public static com.google.android.gms.internal.ma b(com.google.android.gms.location.LocationRequest)
+    public static com.google.android.gms.internal.ma a(java.lang.String,com.google.android.gms.location.LocationRequest)
+    private ma(java.lang.String,com.google.android.gms.location.LocationRequest)
 com.google.android.gms.internal.mc:
     public mc(java.lang.String,int,short,double,double,float,long,int,int)
     public static com.google.android.gms.internal.mc h(byte[])
@@ -6662,34 +6623,23 @@ com.google.android.gms.location.DetectedActivity:
     public DetectedActivity(int,int)
 com.google.android.gms.location.DetectedActivityCreator:
     public static final int CONTENT_DESCRIPTION
-com.google.android.gms.location.FusedLocationProviderApi
+com.google.android.gms.location.FusedLocationProviderApi:
+    public static final java.lang.String KEY_LOCATION_CHANGED
+    public static final java.lang.String KEY_MOCK_LOCATION
+    public abstract com.google.android.gms.common.api.PendingResult requestLocationUpdates(com.google.android.gms.common.api.GoogleApiClient,com.google.android.gms.location.LocationRequest,com.google.android.gms.location.LocationListener,android.os.Looper)
+    public abstract com.google.android.gms.common.api.PendingResult requestLocationUpdates(com.google.android.gms.common.api.GoogleApiClient,com.google.android.gms.location.LocationRequest,android.app.PendingIntent)
+    public abstract com.google.android.gms.common.api.PendingResult removeLocationUpdates(com.google.android.gms.common.api.GoogleApiClient,android.app.PendingIntent)
+    public abstract com.google.android.gms.common.api.PendingResult setMockMode(com.google.android.gms.common.api.GoogleApiClient,boolean)
+    public abstract com.google.android.gms.common.api.PendingResult setMockLocation(com.google.android.gms.common.api.GoogleApiClient,android.location.Location)
 com.google.android.gms.location.Geofence
 com.google.android.gms.location.Geofence$Builder
 com.google.android.gms.location.GeofenceStatusCodes
-com.google.android.gms.location.GeofencingApi
+com.google.android.gms.location.GeofencingApi:
+    public abstract com.google.android.gms.common.api.PendingResult addGeofences(com.google.android.gms.common.api.GoogleApiClient,java.util.List,android.app.PendingIntent)
+    public abstract com.google.android.gms.common.api.PendingResult removeGeofences(com.google.android.gms.common.api.GoogleApiClient,android.app.PendingIntent)
+    public abstract com.google.android.gms.common.api.PendingResult removeGeofences(com.google.android.gms.common.api.GoogleApiClient,java.util.List)
 com.google.android.gms.location.GeofencingEvent
-com.google.android.gms.location.LocationClient:
-    public static final java.lang.String KEY_LOCATION_CHANGED
-    public static final java.lang.String KEY_MOCK_LOCATION
-    public void addGeofences(java.util.List,android.app.PendingIntent,com.google.android.gms.location.LocationClient$OnAddGeofencesResultListener)
-    public void removeGeofences(android.app.PendingIntent,com.google.android.gms.location.LocationClient$OnRemoveGeofencesResultListener)
-    public void removeGeofences(java.util.List,com.google.android.gms.location.LocationClient$OnRemoveGeofencesResultListener)
-    public static boolean hasError(android.content.Intent)
-    public static int getErrorCode(android.content.Intent)
-    public static int getGeofenceTransition(android.content.Intent)
-    public static java.util.List getTriggeringGeofences(android.content.Intent)
-    public static android.location.Location getTriggeringLocation(android.content.Intent)
-    public void requestLocationUpdates(com.google.android.gms.location.LocationRequest,com.google.android.gms.location.LocationListener,android.os.Looper)
-    public void requestLocationUpdates(com.google.android.gms.location.LocationRequest,android.app.PendingIntent)
-    public void removeLocationUpdates(android.app.PendingIntent)
-    public void setMockMode(boolean)
-    public void setMockLocation(android.location.Location)
-    public void registerConnectionCallbacks(com.google.android.gms.common.GooglePlayServicesClient$ConnectionCallbacks)
-    public boolean isConnectionCallbacksRegistered(com.google.android.gms.common.GooglePlayServicesClient$ConnectionCallbacks)
-    public void unregisterConnectionCallbacks(com.google.android.gms.common.GooglePlayServicesClient$ConnectionCallbacks)
-    public void registerConnectionFailedListener(com.google.android.gms.common.GooglePlayServicesClient$OnConnectionFailedListener)
-    public boolean isConnectionFailedListenerRegistered(com.google.android.gms.common.GooglePlayServicesClient$OnConnectionFailedListener)
-    public void unregisterConnectionFailedListener(com.google.android.gms.common.GooglePlayServicesClient$OnConnectionFailedListener)
+com.google.android.gms.location.LocationClient
 com.google.android.gms.location.LocationClient$OnAddGeofencesResultListener
 com.google.android.gms.location.LocationClient$OnRemoveGeofencesResultListener
 com.google.android.gms.location.LocationRequest:
@@ -6706,9 +6656,8 @@ com.google.android.gms.location.LocationRequest:
     public com.google.android.gms.location.LocationRequest setNumUpdates(int)
     public int getNumUpdates()
     public float getSmallestDisplacement()
-com.google.android.gms.location.LocationServices
-com.google.android.gms.location.LocationServices$1
-com.google.android.gms.location.LocationServices$a
+com.google.android.gms.location.LocationServices:
+    private LocationServices()
 com.google.android.gms.location.LocationStatusCodes
 com.google.android.gms.maps.CameraUpdateFactory:
     private CameraUpdateFactory()
@@ -8064,22 +8013,33 @@ com.logentries.android.TimedLogger$1
 com.modusgo.dd.CallSaverService:
     public static final java.lang.String PREF_CALL_STARTED
 com.modusgo.dd.GcmIntentService:
-    public static final int NOTIFICATION_ID
+    private static final java.lang.String PREF_NEXT_NOTIFICATION_ID
+    private static final int MAX_NOTIFICATIONS
     android.support.v4.app.NotificationCompat$Builder builder
     public static final java.lang.String TAG
+    private static final java.lang.String ACTION_DRIVER_UPDATE
+    private static final java.lang.String ACTION_VEHICLE_UPDATE
+    private static final java.lang.String ACTION_NEW_TRIP
 com.modusgo.dd.LocationService:
     private static final int PERMANENT_NOTIFICATION_ID
     private static final int SERVICES_DISABLED_NOTIFICATION_ID
-    private static final int IBEACON_DECLINE_NOTIFICATION_ID
+    private static final int TRIP_DECLINE_NOTIFICATION_ID
     private static final float TRIP_START_SPEED
     private static final float TRIP_STAY_SPEED
     private static final int MAX_STAY_TIME
+    private static final int MAX_BEACON_NO_CONNECTION_STAY_TIME
     public static final int GET_DEVICE_FREQUENCY
     public static final int MIN_ACCURACY
-    private static final java.lang.String EVENT_TRIP_START
-    private static final java.lang.String EVENT_TRIP_STOP
+    public static final java.lang.String EXTRA_ACTION
+    public static final java.lang.String EVENT_TRIP_START
+    public static final java.lang.String EVENT_TRIP_STOP
     private static final java.lang.String EVENT_BEACON_CONNECTED
     private static final java.lang.String EVENT_BEACON_DISCONNECTED
+    public static final java.lang.String EVENT_TRIP_DECLINED
+    private static final double ACCEPT_DISTANCE
+    448:462:private void showTripDeclineNotification()
+    764:765:private void savePoint(android.location.Location)
+com.modusgo.dd.LocationService$7
 com.modusgo.dd.PhoneUsageSaverService:
     public static final java.lang.String PREF_UNLOCK_COUNT
     private static final java.lang.String PREF_PHONE_ON
@@ -8110,8 +8070,10 @@ com.modusgo.ubi.DiagnosticsTroubleCode:
     private static final long serialVersionUID
 com.modusgo.ubi.DriverActivity:
     public static final java.lang.String SAVED_DRIVER
-    256:259:public android.view.animation.Animation fadeOutAnimation()
-    264:267:public android.view.animation.Animation fadeInAnimation()
+    336:339:public android.view.animation.Animation fadeOutAnimation()
+    344:347:public android.view.animation.Animation fadeInAnimation()
+com.modusgo.ubi.DriverDetailsFragment:
+    private static final java.lang.String DRIVER_DERAIL
 com.modusgo.ubi.EducationActivity:
     public static final java.lang.String SAVED_STRING_RESOURCE
 com.modusgo.ubi.FindMechanicActivity:
@@ -8121,13 +8083,15 @@ com.modusgo.ubi.FindMyCarActivity:
 com.modusgo.ubi.FindMyCarActivity$ErrorDialogFragment
 com.modusgo.ubi.ForgotPasswordActivity$RestorePasswordTask:
     int status
+com.modusgo.ubi.HomeActivity:
+    public static final java.lang.String VEHICLES
 com.modusgo.ubi.LimitsFragment:
     579:582:private java.lang.String getTime24String(int,int)
 com.modusgo.ubi.MainActivity:
-    513:515:public void showFeedbackActivity()
+    558:560:public void showFeedbackActivity()
 com.modusgo.ubi.MainActivity$MenuItems:
-    75:75:public int toInt()
-    79:79:public java.lang.String[] valuesString()
+    85:85:public int toInt()
+    89:89:public java.lang.String[] valuesString()
 com.modusgo.ubi.Manifest
 com.modusgo.ubi.Manifest$permission
 com.modusgo.ubi.PieChartFragment:
@@ -8148,10 +8112,11 @@ com.modusgo.ubi.R$drawable
 com.modusgo.ubi.R$id
 com.modusgo.ubi.R$integer
 com.modusgo.ubi.R$layout
+com.modusgo.ubi.R$raw
 com.modusgo.ubi.R$string
 com.modusgo.ubi.R$style
 com.modusgo.ubi.R$styleable:
-    3194:3194:public R$styleable()
+    3242:3242:public R$styleable()
 com.modusgo.ubi.R$xml
 com.modusgo.ubi.Recall:
     private static final long serialVersionUID
@@ -8162,7 +8127,7 @@ com.modusgo.ubi.ScoreCirclesActivity:
 com.modusgo.ubi.ScoreCirclesActivity$CirclesSection:
     private static final long serialVersionUID
 com.modusgo.ubi.ScoreFragment:
-    329:377:private int gradeToNumber(java.lang.String)
+    327:375:private int gradeToNumber(java.lang.String)
 com.modusgo.ubi.ScoreInfoActivity:
     private static final java.lang.String ATTRIBUTE_NAME_VALUE
     private static final java.lang.String ATTRIBUTE_NAME_TITLE
@@ -8188,14 +8153,55 @@ com.modusgo.ubi.Tracking:
 com.modusgo.ubi.Trip:
     private static final long serialVersionUID
 com.modusgo.ubi.TripActivity:
+    public static final java.lang.String EXTRA_VEHICLE_ID
     public static final java.lang.String EXTRA_TRIP_ID
 com.modusgo.ubi.TripsFragment:
-    private static final int TRIPS_PER_REQUEST
+    public static final int TRIPS_PER_REQUEST
 com.modusgo.ubi.Vehicle:
     private static final long serialVersionUID
+    private static final java.lang.String ID
+    private static final java.lang.String COUNT_NEW_ALERTS
+    private static final java.lang.String LIMITS_BLOCKED
+    private static final java.lang.String LIMITS_BLOCKED_BY
+    private static final java.lang.String DRIVER
+    private static final java.lang.String NAME
+    private static final java.lang.String PHOTO
+    private static final java.lang.String ICON
+    private static final java.lang.String CAR
+    private static final java.lang.String VIN
+    private static final java.lang.String MAKE
+    private static final java.lang.String MODEL
+    private static final java.lang.String YEAR
+    private static final java.lang.String FUEL_LEVEL
+    private static final java.lang.String FUEL_UNIT
+    private static final java.lang.String FUEL_STATUS
+    private static final java.lang.String DTC_COUNT
+    private static final java.lang.String LAST_CHECKUP
+    private static final java.lang.String UNDEFINED
+    private static final java.lang.String CHECKUP_STATUS
+    private static final java.lang.String MILEAGE
+    private static final java.lang.String LOCATION
+    private static final java.lang.String LATITUDE
+    private static final java.lang.String LONGITUDE
+    private static final java.lang.String ADDRESS
+    private static final java.lang.String NULL
+    private static final java.lang.String LAST_TRIP_TIME
+    private static final java.lang.String LAST_TRIP_ID
+    private static final java.lang.String IN_TRIP
+    private static final java.lang.String STATS
+    private static final java.lang.String SCORE
+    private static final java.lang.String GRADE
+    private static final java.lang.String TRIPS
+    private static final java.lang.String TIME
+    private static final java.lang.String DISTANCE
+    private static final java.lang.String BRAKING
+    private static final java.lang.String ACCELERATION
+    private static final java.lang.String SPEDING
+    private static final java.lang.String SPEDING_DISTANCE
+    private static final java.lang.String HIDE_ENGINE_ICON
     public int harshEvents
-    65:65:public java.lang.String getFirstName()
-    69:75:public java.lang.String getLastName()
+    111:111:public java.lang.String getFirstName()
+    115:121:public java.lang.String getLastName()
 com.modusgo.ubi.WelcomeActivity:
     public static final java.lang.String SAVED_SCREENS
 com.modusgo.ubi.customviews.CircularProgressBar
@@ -8247,10 +8253,149 @@ com.modusgo.ubi.db.VehicleContract
 com.modusgo.ubi.db.VehicleContract$VehicleEntry
 com.modusgo.ubi.db.WarrantyInfoContract
 com.modusgo.ubi.db.WarrantyInfoContract$WarrantyInfoEntry
+com.modusgo.ubi.jastec.BluetoothCommunicator:
+    private static final java.lang.String TAG
+com.modusgo.ubi.jastec.Calenda_RTC:
+    public static final int SIZE
+com.modusgo.ubi.jastec.DevicesListActivity:
+    private static final int REQUEST_ENABLE_BT
+    private java.util.Timer mTimer
+com.modusgo.ubi.jastec.DriveRecodePerTrip
+com.modusgo.ubi.jastec.DriveRecodePerTrip$Accelation
+com.modusgo.ubi.jastec.DriveRecodePerTrip$AverageSpeed
+com.modusgo.ubi.jastec.DriveRecodePerTrip$AverageStruct
+com.modusgo.ubi.jastec.DriveRecodePerTrip$Co2Struct
+com.modusgo.ubi.jastec.DriveRecodePerTrip$DriveTime
+com.modusgo.ubi.jastec.DriveRecodePerTrip$DriveTrait
+com.modusgo.ubi.jastec.DriveRecodePerTrip$FuelConsum
+com.modusgo.ubi.jastec.DriveRecodePerTrip$SpeedDivid
+com.modusgo.ubi.jastec.IPacket
+com.modusgo.ubi.jastec.IParser
+com.modusgo.ubi.jastec.JastecManager:
+    private static final java.lang.String TAG
+    public static final int DIVIDE_SIZE
+com.modusgo.ubi.jastec.LogActivity:
+    public static final java.lang.String ACTION_ONGING_LOG
+    public static final java.lang.String ACTION_LOGS
+    public static final java.lang.String BROADCAST_INTENT_EXTRA_MESSAGE
+com.modusgo.ubi.jastec.PacketBuilder:
+    private static final int SIZE
+    32:33:public void putSrc(byte)
+com.modusgo.ubi.jastec.PacketParser:
+    23:23:public byte getTar()
+    64:64:public byte getCS()
+    80:87:public java.lang.String getLog()
+com.modusgo.ubi.jastec.Protocol:
+    public static final byte STX
+    public static final byte ETX
+    public static final byte CR
+    public static final byte SRC_BT
+    public static final byte ESCAPE
+    public static final byte ECV
+    public static final short TRIP_SIZE
+    public static final int SECTOR_SIZE
+    public static final int TRIP_ONLY_SECTOR1_START
+    4:4:public Protocol()
+com.modusgo.ubi.jastec.Protocol$PacketType:
+    65:71:public static com.modusgo.ubi.jastec.Protocol$PacketType fromOrdinal(int)
+com.modusgo.ubi.jastec.Utils:
+    9:9:public Utils()
+    13:20:public static byte[] toBytes(java.lang.Byte[])
+    25:26:public static boolean storedDevice(android.content.SharedPreferences)
+    31:32:public static short toLittleEndian(short)
+    37:38:public static short toBigEndian(short)
+    43:48:public static byte reverse4Bit(byte)
+    95:110:public static int toUShort(java.lang.Byte[],int)
+    115:129:public static long toUInt(java.lang.Byte[],int)
+    159:173:public static long toLong4Byte(java.lang.Byte[],int)
+    178:193:public static double toDouble(byte[],int)
+    219:229:public static java.lang.String convertMSToTime(long)
+    277:285:public static byte[] createReadDataBlock(int,short)
+    290:303:public static byte convertFuelTypeToCode(java.lang.String)
+    308:314:public static byte[] toReverseByte(int)
+    319:325:public static byte[] toByte(int)
+    330:334:public static byte[] toReverseByte(short)
+    339:343:public static byte[] toByte(short)
+com.modusgo.ubi.jastec.dtc.DTC01_04:
+    38:38:public boolean isThisMakerType(com.modusgo.ubi.jastec.dtc.IDTCDescriptor$MakerType)
+    75:75:public int DTCCodeCount()
+    80:80:public boolean hasPending()
+com.modusgo.ubi.jastec.dtc.DTC02_60:
+    38:38:public boolean isThisMakerType(com.modusgo.ubi.jastec.dtc.IDTCDescriptor$MakerType)
+    75:75:public int DTCCodeCount()
+    80:80:public boolean hasPending()
+com.modusgo.ubi.jastec.dtc.DTC03_20_61:
+    38:38:public boolean isThisMakerType(com.modusgo.ubi.jastec.dtc.IDTCDescriptor$MakerType)
+    71:71:public int DTCCodeCount()
+    76:76:public boolean hasPending()
+com.modusgo.ubi.jastec.dtc.DTC06_2F:
+    38:38:public boolean isThisMakerType(com.modusgo.ubi.jastec.dtc.IDTCDescriptor$MakerType)
+    75:75:public int DTCCodeCount()
+    80:80:public boolean hasPending()
+com.modusgo.ubi.jastec.dtc.DTC40:
+    38:38:public boolean isThisMakerType(com.modusgo.ubi.jastec.dtc.IDTCDescriptor$MakerType)
+    75:75:public int DTCCodeCount()
+    80:80:public boolean hasPending()
+com.modusgo.ubi.jastec.dtc.DTCDataDb:
+    public static final int SIZE
+    public byte STX
+    public byte ETX
+com.modusgo.ubi.jastec.dtc.IDTCDescriptor:
+    public abstract boolean isThisMakerType(com.modusgo.ubi.jastec.dtc.IDTCDescriptor$MakerType)
+    public abstract int DTCCodeCount()
+    public abstract boolean hasPending()
+com.modusgo.ubi.jastec.packet.AbstractExternalRead:
+    8:8:public AbstractExternalRead()
+    public abstract void parse(java.lang.Byte[])
+    15:15:public com.modusgo.ubi.jastec.Protocol$PacketType getPacketType()
+com.modusgo.ubi.jastec.packet.AbstractExternalRead$MEMORY_SPEC
+com.modusgo.ubi.jastec.packet.AbstractRealTimeReadDTC:
+    public abstract com.modusgo.ubi.jastec.Protocol$PacketType getPacketType()
+com.modusgo.ubi.jastec.packet.DTCRead:
+    public boolean HasDTC
+    public com.modusgo.ubi.jastec.dtc.IDTCDescriptor DTCDescriptor
+    18:18:public DTCRead()
+    24:94:public void parse(java.lang.Byte[])
+com.modusgo.ubi.jastec.packet.DTCRead$DTCItem:
+    137:137:public java.lang.String getDateTime()
+    138:138:public java.lang.String getOtherDateTimeFormats()
+com.modusgo.ubi.jastec.packet.DrivingBroadcastingAfterStart:
+    34:146:public void parse(java.lang.Byte[])
+    150:150:public com.modusgo.ubi.jastec.Protocol$PacketType getPacketType()
+com.modusgo.ubi.jastec.packet.DrivingBroadcastingAfterStart$AfterStartRawData:
+    188:188:public com.modusgo.ubi.jastec.Protocol$PacketType getPacketType()
+com.modusgo.ubi.jastec.packet.DrivingBroadcastingCurrent:
+    37:114:public void parse(java.lang.Byte[])
+    118:118:public com.modusgo.ubi.jastec.Protocol$PacketType getPacketType()
+com.modusgo.ubi.jastec.packet.DrivingBroadcastingCurrent$CurrentRawData:
+    144:154:public java.lang.String getLog()
+    158:158:public com.modusgo.ubi.jastec.Protocol$PacketType getPacketType()
+com.modusgo.ubi.jastec.packet.DrivingSupportWhole:
+    public static final int DRIVING_GROUP_SIZE
+    public static final int INDEX_TODAY
+    public static final int INDEX_IGNITION_ON
+    public static final int INDEX_CURRENT
+    122:122:public com.modusgo.ubi.jastec.Protocol$PacketType getPacketType()
+com.modusgo.ubi.jastec.packet.FirmwareVersion
+com.modusgo.ubi.jastec.packet.GetProtocol:
+    21:21:public com.modusgo.ubi.jastec.Protocol$PacketType getPacketType()
+com.modusgo.ubi.jastec.packet.ReadDBSuccess
+com.modusgo.ubi.jastec.packet.ReadVIN:
+    28:28:public com.modusgo.ubi.jastec.Protocol$PacketType getPacketType()
+com.modusgo.ubi.jastec.packet.RealTimeReadDTCConfirm:
+    10:10:public com.modusgo.ubi.jastec.Protocol$PacketType getPacketType()
+com.modusgo.ubi.jastec.packet.SensorBroadcating:
+    34:34:public com.modusgo.ubi.jastec.Protocol$PacketType getPacketType()
+com.modusgo.ubi.jastec.packet.SensorSupportWhole
+com.modusgo.ubi.jastec.packet.SerialNumberSuccess:
+    29:29:public com.modusgo.ubi.jastec.Protocol$PacketType getPacketType()
 com.modusgo.ubi.requesttasks.BaseRequestAsyncTask:
-    35:36:public BaseRequestAsyncTask()
+    36:37:public BaseRequestAsyncTask()
 com.modusgo.ubi.requesttasks.GetDeviceInfoRequest:
     java.util.ArrayList eventIds
+com.modusgo.ubi.requesttasks.GetTripsTask:
+    public static final java.lang.String TAG_TRIP
+com.modusgo.ubi.requesttasks.RequestHelper
 com.modusgo.ubi.requesttasks.SendEventsRequest:
     private static final float MPS_TO_KPH
 com.modusgo.ubi.utils.AnimationUtils:
@@ -8266,6 +8411,7 @@ com.modusgo.ubi.utils.Device:
     public static final java.lang.String PREF_DEVICE_LATITUDE
     public static final java.lang.String PREF_DEVICE_LONGITUDE
     public static final java.lang.String PREF_DEVICE_LOCATION_DATE
+    public static final java.lang.String PREF_DEVICE_UPDATED_AT
     public static final java.lang.String PREF_IN_TRIP_NOW
     private static final java.lang.String PREF_LAST_SENDEVENT_MILLIS
     public static final java.lang.String DEVICE_TYPE_OBD
@@ -8275,7 +8421,6 @@ com.modusgo.ubi.utils.Device:
     public static final java.lang.String MODE_LIGHT_TRACKING
     public static final java.lang.String MODE_MEDIUM_TRACKING
     public static final java.lang.String MODE_SIGNIFICATION_TRACKING
-    public static final java.lang.String MODE_NAVIGATION_TRACKING
     public static final java.lang.String MODE_SUPER_TRACKING
     17:17:public Device()
 com.modusgo.ubi.utils.RequestGet:
@@ -8287,6 +8432,8 @@ com.modusgo.ubi.utils.SwipeDismissListViewTouchListener$3
 com.modusgo.ubi.utils.SwipeDismissListViewTouchListener$4
 com.modusgo.ubi.utils.SwipeDismissListViewTouchListener$DismissCallbacks
 com.modusgo.ubi.utils.SwipeDismissListViewTouchListener$PendingDismissData
+com.modusgo.ubi.utils.TimeAgoUtils:
+    13:13:public TimeAgoUtils()
 com.modusgo.ubi.utils.Utils:
     42:42:public Utils()
     89:106:public static org.json.JSONObject getJSONObjectFromAssets(android.content.Context,java.lang.String)
