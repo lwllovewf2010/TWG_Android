@@ -50,7 +50,7 @@ public class LogActivity extends MainActivity {
 			@Override
 			public void onReceive(Context context, Intent intent) {
 				String message = sdf.format(new Date()) + " : " + intent.getStringExtra(BROADCAST_INTENT_EXTRA_MESSAGE) + "\n";
-				editTextLogs.setText(editTextLogs.getText() + message);
+				editTextLogs.setText(message + editTextLogs.getText());
 			}
 		};
 		
