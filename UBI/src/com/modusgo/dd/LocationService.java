@@ -643,39 +643,40 @@ LocationListener{
         String deviceType = prefs.getString(Device.PREF_DEVICE_TYPE, "");
 		
         boolean deviceInTrip = prefs.getBoolean(Device.PREF_IN_TRIP_NOW, false);
-        String event = "";
-        
-        if(deviceType.equals(Device.DEVICE_TYPE_SMARTPHONE) && !deviceInTrip && location.getSpeed()>TRIP_START_SPEED){
-        	event = EVENT_TRIP_START;
-        }
-        
-        if(deviceType.equals(Device.DEVICE_TYPE_SMARTPHONE) && deviceInTrip){
-        	
-        	if(location.getSpeed() < TRIP_STAY_SPEED){
-        		if(stayFromMillis==0)
-	    			stayFromMillis = System.currentTimeMillis();
-	    		else if(System.currentTimeMillis() - stayFromMillis > MAX_STAY_TIME){
-	    			event = EVENT_TRIP_STOP;
-	    		}
-        	}
-        	else {
-        		stayFromMillis = 0;
-			}
-        }
-        
-        lastLocationUpdateTime = System.currentTimeMillis();
-        
-        
+
         if(deviceType.equals(Device.DEVICE_TYPE_OBD)){
         	Device.checkDevice(this);
         }
         else if(deviceInTrip){
-        	savePoint(location, event);
         	
+        	String event = "";
+        	
+        	if(deviceType.equals(Device.DEVICE_TYPE_SMARTPHONE) && deviceInTrip){
+            	
+            	if(location.getSpeed() < TRIP_STAY_SPEED){
+            		if(stayFromMillis==0)
+    	    			stayFromMillis = System.currentTimeMillis();
+    	    		else if(System.currentTimeMillis() - stayFromMillis > MAX_STAY_TIME){
+    	    			event = EVENT_TRIP_STOP;
+    	    		}
+            	}
+            	else {
+            		stayFromMillis = 0;
+    			}
+            }
+
+        	savePoint(location, event);
         	Intent i = new Intent(LogActivity.ACTION_LOGS);
 			i.putExtra(LogActivity.BROADCAST_INTENT_EXTRA_MESSAGE, "GPS Speed = " + location.getSpeed());
 			sendBroadcast(i);
         }
+        else{
+        	if(deviceType.equals(Device.DEVICE_TYPE_SMARTPHONE) && location.getSpeed()>TRIP_START_SPEED){
+            	savePoint(location, EVENT_TRIP_START);
+            }
+        }
+        
+        lastLocationUpdateTime = System.currentTimeMillis();
     }
 	
 	private String getRawData(){
@@ -755,6 +756,10 @@ LocationListener{
         }
 	   	
         Device.checkDevice(this);
+	}
+
+	private void savePoint(Location location){
+		savePoint(location, "");
 	}
 	
 	private void savePoint(String event, long eventTimeMillis){
